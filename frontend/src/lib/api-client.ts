@@ -29,6 +29,10 @@ class ApiClient {
 
     if (response.status === 401 && isBrowser) {
       localStorage.removeItem("token");
+      // Optionnel: On peut forcer un rechargement pour que le guard de route redirige vers /auth
+      if (!window.location.pathname.includes('/auth')) {
+        window.location.href = '/auth';
+      }
     }
     
     throw new Error(message);
