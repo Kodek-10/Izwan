@@ -7,8 +7,10 @@ class ApiClient {
 
   private get headers() {
     const token = isBrowser ? localStorage.getItem("token") : null;
+    const lang = isBrowser ? localStorage.getItem("i18nextLng") || "fr" : "fr";
     const headers: Record<string, string> = {
       "Content-Type": "application/json",
+      "Accept-Language": lang,
     };
     if (token) {
       headers["Authorization"] = `Bearer ${token}`;

@@ -28,22 +28,22 @@
         {
           "id": "izwa-snippets-view",
           "type": "webview",
-          "name": "Mes Snippets"
+          "name": "%izwa.view.name%"
         }
       ]
     },
     "commands": [
       {
         "command": "izwa.searchSnippet",
-        "title": "Izwa: Rechercher un snippet"
+        "title": "%izwa.searchSnippet.title%"
       },
       {
         "command": "izwa.refreshSnippets",
-        "title": "Izwa: Rafraîchir la liste"
+        "title": "%izwa.refreshSnippets.title%"
       },
       {
         "command": "izwa.login",
-        "title": "Izwa: Se connecter"
+        "title": "%izwa.login.title%"
       }
     ],
     "configuration": {
@@ -52,7 +52,7 @@
         "izwa.backendUrl": {
           "type": "string",
           "default": "http://localhost:8000/api/v1",
-          "description": "URL de l'API Backend Izwa"
+          "description": "%izwa.configuration.backendUrl.description%"
         }
       }
     }

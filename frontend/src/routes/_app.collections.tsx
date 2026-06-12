@@ -1,5 +1,6 @@
 import { createFileRoute, Link, useNavigate, useRouter } from "@tanstack/react-router";
 import { useState, useEffect } from "react";
+import { useTranslation } from "react-i18next";
 import { Plus, ChevronRight, Server, Layout, Database, Shield, Wrench, Folder, Loader2, Trash2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
@@ -18,7 +19,7 @@ import { api } from "@/lib/api-client";
 import { motion } from "framer-motion";
 
 export const Route = createFileRoute("/_app/collections")({
-  head: () => ({ meta: [{ title: "Collections — Izwan" }] }),
+  head: ({ loaderData }) => ({ meta: [{ title: `${loaderData?.t?.('collections.title') || 'Collections'} — Izwa` }] }),
   loader: async () => {
     // On server, we can't access localStorage for the auth token.
     if (typeof window === "undefined") {
@@ -52,6 +53,7 @@ const item = {
 };
 
 function CollectionsPage() {
+  const { t } = useTranslation();
   const data = Route.useLoaderData();
   const router = useRouter();
   const initialCollections = data?.collections || [];
@@ -86,7 +88,7 @@ function CollectionsPage() {
     return (
       <div className="flex flex-col items-center justify-center h-64 space-y-4">
         <Loader2 className="h-8 w-8 animate-spin text-primary" />
-        <p className="text-sm text-muted-foreground">Chargement des collections...</p>
+        <p className="text-sm text-muted-foreground">{t("collections.loading")}</p>
       </div>
     );
   }
@@ -107,12 +109,12 @@ function CollectionsPage() {
       });
       setCollections([...collections, col]);
       router.invalidate();
-      toast.success(`Collection "${col.name}" créée`);
+      toast.success(t("collections.create_success", { name: col.name }));
       setNewColName("");
       setNewColDesc("");
       setIsDialogOpen(false);
     } catch (e: any) {
-      toast.error(e.message || "Erreur lors de la création");
+      toast.error(e.message || t("common.error"));
     } finally {
       setIsCreating(false);
     }
@@ -123,9 +125,9 @@ function CollectionsPage() {
       await api.delete(`/collections/${id}`);
       setCollections(collections.filter(c => c.id !== id));
       router.invalidate();
-      toast.success("Collection supprimée");
+      toast.success(t("collections.delete_success"));
     } catch (e: any) {
-      toast.error(e.message || "Erreur lors de la suppression");
+      toast.error(e.message || t("common.error"));
     }
   };
 
@@ -142,45 +144,45 @@ function CollectionsPage() {
   return (
     <div className="space-y-4">
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-        <h2 className="font-display font-semibold text-xl sm:text-2xl">Collections</h2>
+        <h2 className="font-display font-semibold text-xl sm:text-2xl">{t("collections.title")}</h2>
         <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
           <DialogTrigger asChild>
             <Button className="w-full sm:w-auto gradient-brand text-white border-0 hover:opacity-90">
-              <Plus className="h-4 w-4 mr-2" /> Nouvelle collection
+              <Plus className="h-4 w-4 mr-2" /> {t("collections.new")}
             </Button>
           </DialogTrigger>
           <DialogContent className="w-[95vw] max-w-lg rounded-xl">
             <DialogHeader>
-              <DialogTitle>Créer une collection</DialogTitle>
+              <DialogTitle>{t("collections.create_title")}</DialogTitle>
               <DialogDescription>
-                Organisez vos snippets en créant une nouvelle collection thématique.
+                {t("collections.create_desc")}
               </DialogDescription>
             </DialogHeader>
             <div className="space-y-4 py-4">
               <div className="space-y-2">
-                <Label htmlFor="name">Nom de la collection</Label>
+                <Label htmlFor="name">{t("collections.name_label")}</Label>
                 <Input
                   id="name"
-                  placeholder="Ex: Backend Projets, Scripts DevOps..."
+                  placeholder={t("collections.name_placeholder")}
                   value={newColName}
                   onChange={(e) => setNewColName(e.target.value)}
                 />
               </div>
               <div className="space-y-2">
-                <Label htmlFor="desc">Description (optionnel)</Label>
+                <Label htmlFor="desc">{t("collections.desc_label")}</Label>
                 <Input
                   id="desc"
-                  placeholder="Une courte description..."
+                  placeholder={t("collections.desc_placeholder")}
                   value={newColDesc}
                   onChange={(e) => setNewColDesc(e.target.value)}
                 />
               </div>
             </div>
             <DialogFooter className="flex-col-reverse sm:flex-row gap-2">
-              <Button variant="outline" className="w-full sm:w-auto" onClick={() => setIsDialogOpen(false)} disabled={isCreating}>Annuler</Button>
+              <Button variant="outline" className="w-full sm:w-auto" onClick={() => setIsDialogOpen(false)} disabled={isCreating}>{t("common.cancel")}</Button>
               <Button className="w-full sm:w-auto gradient-brand text-white border-0" onClick={handleCreateCollection} disabled={isCreating}>
                 {isCreating && <Loader2 className="h-4 w-4 animate-spin mr-2" />}
-                Créer la collection
+                {t("collections.btn_create")}
               </Button>
             </DialogFooter>
           </DialogContent>
@@ -211,15 +213,14 @@ function CollectionsPage() {
                 <div className="flex-1 min-w-0 pr-8">
                   <p className="font-semibold text-lg group-hover:text-primary transition-colors">{c.name}</p>
                   <p className="text-xs text-muted-foreground line-clamp-2 mt-1 leading-relaxed">
-                    {c.description || "Ouvrir la collection pour voir les snippets."}
+                    {c.description || t("collections.open_collection")}
                   </p>
                 </div>
               </Link>
               <button 
                 onClick={(e) => { e.preventDefault(); e.stopPropagation(); handleDeleteCollection(c.id); }}
                 className="absolute right-3 bottom-3 p-2 text-muted-foreground hover:text-destructive transition-colors rounded-lg hover:bg-destructive/10"
-                suppressHydrationWarning
-                title="Supprimer la collection"
+                title={t("collections.delete_title")}
               >
                 <Trash2 className="h-4 w-4" />
               </button>
@@ -228,7 +229,7 @@ function CollectionsPage() {
         })}
         {collections.length === 0 && (
           <div className="col-span-full p-12 text-center border-2 border-dashed border-border rounded-xl text-muted-foreground text-sm">
-            Aucune collection trouvée.
+            {t("collections.empty")}
           </div>
         )}
       </motion.div>

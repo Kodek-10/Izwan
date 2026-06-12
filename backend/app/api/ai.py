@@ -1,6 +1,6 @@
-from fastapi import APIRouter, HTTPException, Depends
+from fastapi import APIRouter, HTTPException, Depends, Header
 from pydantic import BaseModel
-from typing import List
+from typing import List, Optional
 from sqlalchemy.orm import Session
 from ..services.ai_service import ai_service
 from ..services.embedding_service import embedding_service
@@ -33,17 +33,19 @@ class ExplainResponse(BaseModel):
     explanation: str
 
 @router.post("/enrich", response_model=EnrichResponse)
-async def enrich_snippet(request: EnrichRequest):
+async def enrich_snippet(request: EnrichRequest, accept_language: Optional[str] = Header(None)):
     try:
-        result = await ai_service.generate_tags_and_description(request.code, request.language)
+        lang = "en" if accept_language and "en" in accept_language.lower() else "fr"
+        result = await ai_service.generate_tags_and_description(request.code, request.language, lang=lang)
         return result
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 
 @router.post("/explain", response_model=ExplainResponse)
-async def explain_snippet(request: ExplainRequest):
+async def explain_snippet(request: ExplainRequest, accept_language: Optional[str] = Header(None)):
     try:
-        explanation = await ai_service.explain_code(request.code, request.language)
+        lang = "en" if accept_language and "en" in accept_language.lower() else "fr"
+        explanation = await ai_service.explain_code(request.code, request.language, lang=lang)
         return {"explanation": explanation}
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
@@ -52,9 +54,11 @@ async def explain_snippet(request: ExplainRequest):
 async def chat_with_assistant(
     request: ChatRequest, 
     db: Session = Depends(get_db), 
-    current_user: models.User = Depends(get_current_user)
+    current_user: models.User = Depends(get_current_user),
+    accept_language: Optional[str] = Header(None)
 ):
     try:
+        lang = "en" if accept_language and "en" in accept_language.lower() else "fr"
         # 1. Recherche sémantique pour trouver le contexte (Top 5 snippets)
         query_vector = embedding_service.generate_embedding(request.query)
         snippets = db.query(models.Snippet).filter(models.Snippet.owner_id == current_user.id).all()
@@ -77,7 +81,7 @@ async def chat_with_assistant(
         context_snippets = results_with_score[:5]
         
         # 2. Appel au service IA avec le contexte
-        answer = await ai_service.chat_with_context(request.query, context_snippets)
+        answer = await ai_service.chat_with_context(request.query, context_snippets, lang=lang)
         return {"answer": answer}
         
     except Exception as e:

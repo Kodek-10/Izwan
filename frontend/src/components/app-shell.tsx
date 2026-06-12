@@ -31,18 +31,6 @@ import {
   SheetTitle, 
   SheetTrigger 
 } from "./ui/sheet";
-
-const navItems = [
-  { to: "/dashboard", label: "Tableau de bord", icon: LayoutDashboard },
-  { to: "/snippets", label: "Snippets", icon: Code2 },
-  { to: "/favorites", label: "Favoris", icon: Star },
-  { to: "/collections", label: "Collections", icon: FolderKanban },
-  { to: "/assistant", label: "IA Assistant", icon: Sparkles },
-  { to: "/statistics", label: "Statistiques", icon: BarChart3 },
-  { to: "/export", label: "Exportations", icon: Download },
-  { to: "/settings", label: "Paramètres", icon: Settings },
-];
-
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -52,15 +40,45 @@ import {
   DropdownMenuTrigger,
 } from "./ui/dropdown-menu";
 
-const notifications = [
-  { id: 1, title: "Nouveau snippet", description: "Un nouveau snippet Python a été ajouté.", time: "Il y a 2 min" },
-  { id: 2, title: "Mise à jour IA", description: "L'assistant IA est maintenant plus rapide.", time: "Il y a 1h" },
-  { id: 3, title: "Bienvenue", description: "Bienvenue sur Izwan, votre gestionnaire de snippets.", time: "Hier" },
-];
+import { useTranslation } from "react-i18next";
 
 export function AppShell({ children }: { children: React.ReactNode }) {
+  const { t } = useTranslation();
   const location = useLocation();
   const navigate = useNavigate();
+  
+  const [user, setUser] = React.useState<{ username: string } | null>(null);
+
+  React.useEffect(() => {
+    const fetchUser = async () => {
+      try {
+        const u = await api.get<{ username: string }>("/auth/me");
+        setUser(u);
+      } catch (e) {
+        console.error("Failed to fetch user in shell", e);
+      }
+    };
+    if (api.isAuthenticated()) {
+      fetchUser();
+    }
+  }, []);
+
+  const getInitials = (name: string) => {
+    if (!name) return "??";
+    return name.slice(0, 2).toUpperCase();
+  };
+  
+  const navItems = [
+    { to: "/dashboard", label: t("nav.dashboard"), icon: LayoutDashboard },
+    { to: "/snippets", label: t("nav.snippets"), icon: Code2 },
+    { to: "/favorites", label: t("nav.favorites"), icon: Star },
+    { to: "/collections", label: t("nav.collections"), icon: FolderKanban },
+    { to: "/assistant", label: t("nav.assistant"), icon: Sparkles },
+    { to: "/statistics", label: t("nav.statistics"), icon: BarChart3 },
+    { to: "/export", label: t("nav.export"), icon: Download },
+    { to: "/settings", label: t("nav.settings"), icon: Settings },
+  ];
+
   const { theme, toggle } = useTheme();
   const [hasUnread, setHasUnread] = React.useState(true);
   const [mounted, setMounted] = React.useState(false);
@@ -108,9 +126,15 @@ export function AppShell({ children }: { children: React.ReactNode }) {
     }
   };
 
+  const notifications = [
+    { id: 1, title: t("shell.notif_new_title"), description: t("shell.notif_new_desc"), time: t("shell.notif_new_time") },
+    { id: 2, title: t("shell.notif_ai_title"), description: t("shell.notif_ai_desc"), time: t("shell.notif_ai_time") },
+    { id: 3, title: t("shell.notif_welcome_title"), description: t("shell.notif_welcome_desc"), time: t("shell.notif_welcome_time") },
+  ];
+
   const handleLogout = () => {
     api.logout();
-    toast.success("Déconnexion réussie");
+    toast.success(t("shell.logout_success"));
     navigate({ to: "/auth" });
   };
 
@@ -156,29 +180,29 @@ export function AppShell({ children }: { children: React.ReactNode }) {
               suppressHydrationWarning
             >
               <div className="h-9 w-9 rounded-full gradient-brand flex items-center justify-center text-sm font-semibold text-white transition-transform group-hover:scale-105">
-                IZ
+                {getInitials(user?.username || "??")}
               </div>
               <div className="flex-1 min-w-0">
-                <p className="text-sm font-medium truncate">Utilisateur</p>
-                <p className="text-xs text-muted-foreground truncate">Connecté</p>
+                <p className="text-sm font-medium truncate">{user?.username || t("shell.user_label")}</p>
+                <p className="text-xs text-muted-foreground truncate">{t("shell.user_status")}</p>
               </div>
             </button>
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end" className="w-56 mb-2">
-            <DropdownMenuLabel>Mon compte</DropdownMenuLabel>
+            <DropdownMenuLabel>{t("shell.account")}</DropdownMenuLabel>
             <DropdownMenuSeparator />
             <DropdownMenuItem onClick={() => { navigate({ to: "/settings" }); setMobileMenuOpen(false); }}>
               <User className="mr-2 h-4 w-4" />
-              <span>Profil</span>
+              <span>{t("shell.profile")}</span>
             </DropdownMenuItem>
             <DropdownMenuItem onClick={() => { navigate({ to: "/settings" }); setMobileMenuOpen(false); }}>
               <Settings className="mr-2 h-4 w-4" />
-              <span>Paramètres</span>
+              <span>{t("nav.settings")}</span>
             </DropdownMenuItem>
             <DropdownMenuSeparator />
             <DropdownMenuItem onClick={handleLogout} className="text-destructive focus:text-destructive">
               <LogOut className="mr-2 h-4 w-4" />
-              <span>Se déconnecter</span>
+              <span>{t("shell.logout")}</span>
             </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
@@ -205,7 +229,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
               </SheetTrigger>
               <SheetContent side="left" className="p-0 w-72">
                 <SheetHeader className="sr-only">
-                  <SheetTitle>Navigation Menu</SheetTitle>
+                  <SheetTitle>{t("shell.nav_menu")}</SheetTitle>
                 </SheetHeader>
                 <SidebarContent />
               </SheetContent>
@@ -221,7 +245,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
               <div className="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-muted text-muted-foreground text-sm w-40 md:w-80 focus-within:ring-1 focus-within:ring-primary/50 transition-all">
                 {isSearching ? <Loader2 className="h-4 w-4 animate-spin" /> : <Search className="h-4 w-4" />}
                 <input
-                  placeholder="Recherche IA..."
+                  placeholder={t("shell.search_placeholder")}
                   value={searchQuery}
                   onChange={(e) => handleSearch(e.target.value)}
                   onFocus={() => searchQuery.length >= 3 && setShowResults(true)}
@@ -265,7 +289,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
                         ))
                       ) : (
                         <div className="p-4 text-center text-sm text-muted-foreground">
-                          {isSearching ? "Recherche en cours..." : "Aucun snippet trouvé."}
+                          {isSearching ? t("shell.searching") : t("shell.no_results")}
                         </div>
                       )}
                     </div>
@@ -291,7 +315,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
                 </Button>
               </DropdownMenuTrigger>
               <DropdownMenuContent align="end" className="w-80 max-w-[calc(100vw-2rem)]">
-                <DropdownMenuLabel>Notifications</DropdownMenuLabel>
+                <DropdownMenuLabel>{t("shell.notifications")}</DropdownMenuLabel>
                 <DropdownMenuSeparator />
                 <div className="max-h-[300px] overflow-y-auto">
                   {notifications.map((n) => (
@@ -306,7 +330,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
                 </div>
                 <DropdownMenuSeparator />
                 <DropdownMenuItem className="justify-center text-primary font-medium cursor-pointer">
-                  Tout marquer comme lu
+                  {t("shell.mark_as_read")}
                 </DropdownMenuItem>
               </DropdownMenuContent>
             </DropdownMenu>

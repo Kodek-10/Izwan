@@ -1,6 +1,7 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { Github, Eye, EyeOff, Loader2, ArrowLeft } from "lucide-react";
 import { useState, useEffect } from "react";
+import { useTranslation } from "react-i18next";
 import { IzwaLogo, IzwaWordmark } from "@/components/izwan-logo";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -13,6 +14,7 @@ export const Route = createFileRoute("/signup")({
 });
 
 function SignupPage() {
+  const { t } = useTranslation();
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
@@ -30,16 +32,16 @@ function SignupPage() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (password !== confirmPassword) {
-      toast.error("Les mots de passe ne correspondent pas");
+      toast.error(t("settings.profile.pw_mismatch"));
       return;
     }
     setLoading(true);
     try {
       await api.signup(username, password);
-      toast.success("Compte créé avec succès !");
+      toast.success(t("auth.signup_success"));
       navigate({ to: "/dashboard" });
     } catch (error: any) {
-      toast.error(error.message || "Erreur lors de l'inscription");
+      toast.error(error.message || t("auth.signup_error"));
     } finally {
       setLoading(false);
     }
@@ -60,17 +62,17 @@ function SignupPage() {
           </div>
           <IzwaWordmark size="md" />
           <p className="text-muted-foreground text-xs uppercase tracking-widest font-semibold">
-            Rejoindre l'aventure
+            {t("auth.signup_tagline")}
           </p>
         </div>
 
         <div className="bg-card border border-border rounded-2xl shadow-xl p-6 sm:p-8 space-y-6">
           <form onSubmit={handleSubmit} className="space-y-4">
             <div className="space-y-2">
-              <Label htmlFor="username">Nom d'utilisateur</Label>
+              <Label htmlFor="username">{t("auth.username")}</Label>
               <Input
                 id="username"
-                placeholder="choisissez_un_nom"
+                placeholder={t("auth.username_signup_placeholder")}
                 value={username}
                 onChange={(e) => setUsername(e.target.value)}
                 required
@@ -78,7 +80,7 @@ function SignupPage() {
               />
             </div>
             <div className="space-y-2">
-              <Label htmlFor="password">Mot de passe</Label>
+              <Label htmlFor="password">{t("auth.password")}</Label>
               <div className="relative">
                 <Input
                   id="password"
@@ -92,14 +94,13 @@ function SignupPage() {
                   type="button"
                   onClick={() => setShowPw((s) => !s)}
                   className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground transition-colors"
-                  suppressHydrationWarning
                 >
                   {showPw ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
                 </button>
               </div>
             </div>
             <div className="space-y-2">
-              <Label htmlFor="confirmPassword">Confirmer le mot de passe</Label>
+              <Label htmlFor="confirmPassword">{t("auth.confirm_password")}</Label>
               <Input
                 id="confirmPassword"
                 type={showPw ? "text" : "password"}
@@ -114,7 +115,7 @@ function SignupPage() {
               className="w-full h-11 gradient-brand text-white border-0 hover:opacity-90 font-medium text-base shadow-lg shadow-primary/20 mt-2" 
               disabled={loading}
             >
-              {loading ? <Loader2 className="h-5 w-5 animate-spin" /> : "Créer mon compte"}
+              {loading ? <Loader2 className="h-5 w-5 animate-spin" /> : t("auth.create_my_account")}
             </Button>
           </form>
 
@@ -123,7 +124,7 @@ function SignupPage() {
               <span className="w-full border-t border-border" />
             </div>
             <div className="relative flex justify-center text-[10px] uppercase">
-              <span className="bg-card px-2 text-muted-foreground">Ou s'inscrire avec</span>
+              <span className="bg-card px-2 text-muted-foreground">{t("auth.or_signup_with")}</span>
             </div>
           </div>
 
@@ -157,9 +158,9 @@ function SignupPage() {
 
         <div className="text-center">
           <p className="text-sm text-muted-foreground">
-            Déjà un compte ?{" "}
+            {t("auth.already_have_account")}{" "}
             <Link to="/auth" className="text-primary font-medium hover:underline">
-              Se connecter
+              {t("auth.login")}
             </Link>
           </p>
         </div>

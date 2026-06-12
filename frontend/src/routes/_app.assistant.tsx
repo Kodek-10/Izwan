@@ -1,6 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { Sparkles, Send, User, Bot, Loader2, Trash2 } from "lucide-react";
 import { useState, useRef, useEffect } from "react";
+import { useTranslation } from "react-i18next";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { api } from "@/lib/api-client";
@@ -18,6 +19,7 @@ interface Message {
 }
 
 function AssistantPage() {
+  const { t } = useTranslation();
   const [query, setQuery] = useState("");
   const [messages, setMessages] = useState<Message[]>([]);
   const [isLoading, setIsLoading] = useState(false);
@@ -30,12 +32,13 @@ function AssistantPage() {
     }
   }, [messages, isLoading]);
 
-  const handleSendMessage = async () => {
-    if (!query.trim() || isLoading) return;
+  const handleSendMessage = async (customQuery?: string) => {
+    const messageToSend = customQuery || query;
+    if (!messageToSend.trim() || isLoading) return;
 
     const userMessage: Message = {
       role: "user",
-      content: query,
+      content: messageToSend,
       timestamp: new Date(),
     };
 
@@ -54,7 +57,7 @@ function AssistantPage() {
       
       setMessages((prev) => [...prev, assistantMessage]);
     } catch (e) {
-      toast.error("Erreur de communication avec l'IA");
+      toast.error(t("assistant.error"));
     } finally {
       setIsLoading(false);
     }
@@ -62,7 +65,7 @@ function AssistantPage() {
 
   const clearChat = () => {
     setMessages([]);
-    toast.info("Conversation effacée");
+    toast.info(t("assistant.clear_success"));
   };
 
   return (
@@ -73,13 +76,13 @@ function AssistantPage() {
             <Sparkles className="h-5 w-5 text-white" />
           </div>
           <div>
-            <h2 className="font-display font-semibold text-2xl">Assistant Izwa</h2>
-            <p className="text-sm text-muted-foreground">Posez des questions sur vos snippets ou sur le développement.</p>
+            <h2 className="font-display font-semibold text-2xl">{t("assistant.title")}</h2>
+            <p className="text-sm text-muted-foreground">{t("assistant.subtitle")}</p>
           </div>
         </div>
         {messages.length > 0 && (
           <Button variant="ghost" size="sm" onClick={clearChat} className="text-muted-foreground hover:text-destructive">
-            <Trash2 className="h-4 w-4 mr-2" /> Effacer
+            <Trash2 className="h-4 w-4 mr-2" /> {t("assistant.clear_chat")}
           </Button>
         )}
       </div>
@@ -93,25 +96,23 @@ function AssistantPage() {
             <div className="h-full flex flex-col items-center justify-center text-center space-y-4 opacity-60">
               <Bot className="h-12 w-12 text-primary animate-pulse" />
               <div className="max-w-xs">
-                <p className="font-medium">Comment puis-je vous aider ?</p>
+                <p className="font-medium">{t("assistant.welcome_title")}</p>
                 <p className="text-xs text-muted-foreground mt-1">
-                  Je peux analyser vos snippets pour répondre à vos questions techniques.
+                  {t("assistant.welcome_desc")}
                 </p>
               </div>
               <div className="grid grid-cols-1 gap-2 w-full max-w-sm mt-4">
                 <button 
-                  onClick={() => setQuery("Quels sont mes snippets Python ?")}
-                  className="text-xs p-2 rounded-lg border border-border hover:bg-muted transition-colors"
-                  suppressHydrationWarning
+                  onClick={() => handleSendMessage(t("assistant.suggest_1"))}
+                  className="text-xs p-2 rounded-lg border border-border hover:bg-muted transition-colors text-left"
                 >
-                  Quels sont mes snippets Python ?
+                  {t("assistant.suggest_1")}
                 </button>
                 <button 
-                  onClick={() => setQuery("Comment utiliser ma fonction de tri ?")}
-                  className="text-xs p-2 rounded-lg border border-border hover:bg-muted transition-colors"
-                  suppressHydrationWarning
+                  onClick={() => handleSendMessage(t("assistant.suggest_2"))}
+                  className="text-xs p-2 rounded-lg border border-border hover:bg-muted transition-colors text-left"
                 >
-                  Comment utiliser ma fonction de tri ?
+                  {t("assistant.suggest_2")}
                 </button>
               </div>
             </div>
@@ -163,14 +164,13 @@ function AssistantPage() {
               value={query}
               onChange={(e) => setQuery(e.target.value)}
               onKeyDown={(e) => e.key === "Enter" && handleSendMessage()}
-              placeholder="Écrivez votre message..."
+              placeholder={t("assistant.placeholder")}
               className="border-0 focus-visible:ring-0 bg-transparent h-10 shadow-none"
               disabled={isLoading}
-              suppressHydrationWarning
             />
             <Button 
               size="icon" 
-              onClick={handleSendMessage} 
+              onClick={() => handleSendMessage()} 
               disabled={!query.trim() || isLoading}
               className="h-10 w-10 shrink-0 gradient-brand text-white border-0"
             >

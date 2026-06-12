@@ -1,0 +1,7 @@
+{
+    "izwa.searchSnippet.title": "Izwa: Rechercher un snippet",
+    "izwa.refreshSnippets.title": "Izwa: Rafraîchir la liste",
+    "izwa.login.title": "Izwa: Se connecter",
+    "izwa.view.name": "Mes Snippets",
+    "izwa.configuration.backendUrl.description": "URL de l'API Backend Izwa"
+}

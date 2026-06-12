@@ -11,10 +11,12 @@ import { Button } from "@/components/ui/button";
 import { useTheme } from "@/components/theme-provider";
 import { api } from "@/lib/api-client";
 import { toast } from "sonner";
+import { useTranslation } from "react-i18next";
 
 export const Route = createFileRoute("/_app/settings")({
-  head: () => ({ meta: [{ title: "Paramètres — Izwan" }] }),
+  head: ({ loaderData }) => ({ meta: [{ title: `${loaderData?.t?.('settings.title') || 'Paramètres'} — Izwan` }] }),
   loader: async () => {
+    // We can't use useTranslation here, but we can return the title key
     // On server, we can't access localStorage for the auth token.
     if (typeof window === "undefined") {
       return { user: { username: "Utilisateur" }, needsClientFetch: true };
@@ -30,19 +32,20 @@ export const Route = createFileRoute("/_app/settings")({
   component: SettingsPage,
 });
 
-const tabs = [
-// ... (rest of tabs)
-  { id: "general", label: "Général", icon: SettingsIcon },
-  { id: "profile", label: "Profil & Sécurité", icon: User },
-  { id: "ai", label: "IA & Assistant", icon: Sparkles },
-  { id: "editor", label: "Éditeur", icon: Code },
-  { id: "shortcuts", label: "Raccourcis", icon: Keyboard },
-  { id: "backup", label: "Sauvegarde", icon: Save },
-  { id: "about", label: "À propos", icon: Info },
-];
-
 function SettingsPage() {
+  const { t, i18n } = useTranslation();
   const data = Route.useLoaderData();
+  
+  const tabs = [
+    { id: "general", label: t("settings.tabs.general"), icon: SettingsIcon },
+    { id: "profile", label: t("settings.tabs.profile"), icon: User },
+    { id: "ai", label: t("settings.tabs.ai"), icon: Sparkles },
+    { id: "editor", label: t("settings.tabs.editor"), icon: Code },
+    { id: "shortcuts", label: t("settings.tabs.shortcuts"), icon: Keyboard },
+    { id: "backup", label: t("settings.tabs.backup"), icon: Save },
+    { id: "about", label: t("settings.tabs.about"), icon: Info },
+  ];
+
   const [user, setUser] = useState(data?.user || { username: "Utilisateur" });
   const initialUser = user;
   
@@ -91,7 +94,7 @@ function SettingsPage() {
     return (
       <div className="flex flex-col items-center justify-center h-64 space-y-4">
         <Loader2 className="h-8 w-8 animate-spin text-primary" />
-        <p className="text-sm text-muted-foreground">Chargement de vos paramètres...</p>
+        <p className="text-sm text-muted-foreground">{t("common.loading")}</p>
       </div>
     );
   }
@@ -101,9 +104,9 @@ function SettingsPage() {
     setIsUpdatingProfile(true);
     try {
       await api.put("/auth/me", { username });
-      toast.success("Profil mis à jour");
+      toast.success(t("common.success"));
     } catch (e: any) {
-      toast.error(e.message || "Erreur lors de la mise à jour");
+      toast.error(e.message || t("common.error"));
     } finally {
       setIsUpdatingProfile(false);
     }
@@ -111,22 +114,22 @@ function SettingsPage() {
 
   const handleChangePassword = async () => {
     if (!currentPw || !newPw) {
-      toast.error("Veuillez remplir tous les champs");
+      toast.error(t("settings.profile.fill_fields"));
       return;
     }
     if (newPw !== confirmPw) {
-      toast.error("Les mots de passe ne correspondent pas");
+      toast.error(t("settings.profile.pw_mismatch"));
       return;
     }
     setIsChangingPw(true);
     try {
       await api.post("/auth/change-password", { current_password: currentPw, new_password: newPw });
-      toast.success("Mot de passe modifié");
+      toast.success(t("common.success"));
       setCurrentPw("");
       setNewPw("");
       setConfirmPw("");
     } catch (e: any) {
-      toast.error(e.message || "Erreur lors du changement");
+      toast.error(e.message || t("common.error"));
     } finally {
       setIsChangingPw(false);
     }
@@ -167,18 +170,18 @@ function SettingsPage() {
             <div className="space-y-6 animate-in fade-in slide-in-from-bottom-2 duration-300">
               <div className="space-y-4">
                 <h3 className="text-xs font-semibold uppercase tracking-wider text-muted-foreground flex items-center gap-2">
-                  <Palette className="h-4 w-4" /> Apparence
+                  <Palette className="h-4 w-4" /> {t("settings.general.appearance")}
                 </h3>
                 <div className="flex flex-col sm:flex-row sm:items-center justify-between p-4 rounded-lg bg-muted/30 border border-border gap-4">
                   <div className="space-y-0.5">
-                    <Label>Thème de l'interface</Label>
-                    <p className="text-xs text-muted-foreground">Basculez entre le mode clair et sombre.</p>
+                    <Label>{t("settings.general.theme")}</Label>
+                    <p className="text-xs text-muted-foreground">{t("settings.general.theme_desc")}</p>
                   </div>
                   <Select value={theme} onValueChange={() => toggle()}>
                     <SelectTrigger className="w-full sm:w-40"><SelectValue /></SelectTrigger>
                     <SelectContent>
-                      <SelectItem value="dark">Sombre</SelectItem>
-                      <SelectItem value="light">Clair</SelectItem>
+                      <SelectItem value="dark">{t("settings.general.dark")}</SelectItem>
+                      <SelectItem value="light">{t("settings.general.light")}</SelectItem>
                     </SelectContent>
                   </Select>
                 </div>
@@ -186,18 +189,18 @@ function SettingsPage() {
 
               <div className="space-y-4">
                 <h3 className="text-xs font-semibold uppercase tracking-wider text-muted-foreground flex items-center gap-2">
-                  <Globe className="h-4 w-4" /> Régional
+                  <Globe className="h-4 w-4" /> {t("settings.general.regional")}
                 </h3>
                 <div className="flex flex-col sm:flex-row sm:items-center justify-between p-4 rounded-lg bg-muted/30 border border-border gap-4">
                   <div className="space-y-0.5">
-                    <Label>Langue</Label>
-                    <p className="text-xs text-muted-foreground">Langue utilisée dans l'application.</p>
+                    <Label>{t("settings.general.language")}</Label>
+                    <p className="text-xs text-muted-foreground">{t("settings.general.language_desc")}</p>
                   </div>
-                  <Select defaultValue="fr">
+                  <Select value={i18n.language} onValueChange={(val) => i18n.changeLanguage(val)}>
                     <SelectTrigger className="w-full sm:w-40"><SelectValue /></SelectTrigger>
                     <SelectContent>
                       <SelectItem value="fr">Français</SelectItem>
-                      <SelectItem value="en">English (Coming soon)</SelectItem>
+                      <SelectItem value="en">English</SelectItem>
                     </SelectContent>
                   </Select>
                 </div>
@@ -205,15 +208,15 @@ function SettingsPage() {
 
               <div className="space-y-4">
                 <h3 className="text-xs font-semibold uppercase tracking-wider text-muted-foreground flex items-center gap-2">
-                  <Bell className="h-4 w-4" /> Notifications
+                  <Bell className="h-4 w-4" /> {t("settings.general.notifications")}
                 </h3>
                 <div className="space-y-2">
                   <div className="flex items-center justify-between p-4 rounded-lg bg-muted/30 border border-border">
-                    <Label className="text-sm">Notifications de bureau</Label>
+                    <Label className="text-sm">{t("settings.general.desktop_notif")}</Label>
                     <Switch defaultChecked />
                   </div>
                   <div className="flex items-center justify-between p-4 rounded-lg bg-muted/30 border border-border">
-                    <Label className="text-sm">Alertes de sécurité</Label>
+                    <Label className="text-sm">{t("settings.general.security_alerts")}</Label>
                     <Switch defaultChecked />
                   </div>
                 </div>
@@ -224,10 +227,10 @@ function SettingsPage() {
           {tab === "profile" && (
             <div className="space-y-8 animate-in fade-in slide-in-from-bottom-2 duration-300">
               <div className="space-y-4">
-                <h3 className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">Profil Utilisateur</h3>
+                <h3 className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">{t("settings.profile.title")}</h3>
                 <div className="space-y-4 p-4 rounded-lg bg-muted/30 border border-border">
                   <div className="space-y-2">
-                    <Label htmlFor="username">Nom d'utilisateur</Label>
+                    <Label htmlFor="username">{t("settings.profile.username")}</Label>
                     <Input 
                       id="username" 
                       value={username} 
@@ -236,31 +239,31 @@ function SettingsPage() {
                   </div>
                   <Button onClick={handleUpdateProfile} disabled={isUpdatingProfile || username === initialUser.username} className="w-full sm:w-auto gradient-brand text-white border-0">
                     {isUpdatingProfile && <Loader2 className="h-4 w-4 animate-spin mr-2" />}
-                    Mettre à jour le profil
+                    {t("settings.profile.update_profile")}
                   </Button>
                 </div>
               </div>
 
               <div className="space-y-4">
                 <h3 className="text-xs font-semibold uppercase tracking-wider text-muted-foreground flex items-center gap-2">
-                  <Lock className="h-4 w-4" /> Sécurité
+                  <Lock className="h-4 w-4" /> {t("settings.profile.security")}
                 </h3>
                 <div className="space-y-4 p-4 rounded-lg bg-muted/30 border border-border">
                   <div className="space-y-2">
-                    <Label htmlFor="current-pw">Mot de passe actuel</Label>
+                    <Label htmlFor="current-pw">{t("settings.profile.current_pw")}</Label>
                     <Input id="current-pw" type="password" value={currentPw} onChange={(e) => setCurrentPw(e.target.value)} />
                   </div>
                   <div className="space-y-2">
-                    <Label htmlFor="new-pw">Nouveau mot de passe</Label>
+                    <Label htmlFor="new-pw">{t("settings.profile.new_pw")}</Label>
                     <Input id="new-pw" type="password" value={newPw} onChange={(e) => setNewPw(e.target.value)} />
                   </div>
                   <div className="space-y-2">
-                    <Label htmlFor="confirm-pw">Confirmer le nouveau mot de passe</Label>
+                    <Label htmlFor="confirm-pw">{t("settings.profile.confirm_pw")}</Label>
                     <Input id="confirm-pw" type="password" value={confirmPw} onChange={(e) => setConfirmPw(e.target.value)} />
                   </div>
                   <Button onClick={handleChangePassword} disabled={isChangingPw} variant="secondary" className="w-full">
                     {isChangingPw && <Loader2 className="h-4 w-4 animate-spin mr-2" />}
-                    Changer le mot de passe
+                    {t("settings.profile.change_pw")}
                   </Button>
                 </div>
               </div>
@@ -272,22 +275,22 @@ function SettingsPage() {
               <div className="p-4 rounded-lg bg-primary/5 border border-primary/10 space-y-3">
                 <div className="flex items-center gap-2 text-primary font-semibold text-sm">
                   <Sparkles className="h-5 w-5" />
-                  Configurations IA
+                  {t("settings.ai.title")}
                 </div>
-                <p className="text-xs text-muted-foreground">Personnalisez le comportement de l'assistant intelligent.</p>
+                <p className="text-xs text-muted-foreground">{t("settings.ai.desc")}</p>
               </div>
               <div className="space-y-4">
                 <div className="flex items-center justify-between p-4 rounded-lg bg-muted/30 border border-border">
                   <div className="space-y-0.5">
-                    <Label className="text-sm">Auto-génération de tags</Label>
-                    <p className="hidden xs:block text-[10px] text-muted-foreground">Suggérer des tags dès la création d'un snippet.</p>
+                    <Label className="text-sm">{t("settings.ai.auto_tags")}</Label>
+                    <p className="hidden xs:block text-[10px] text-muted-foreground">{t("settings.ai.auto_tags_desc")}</p>
                   </div>
                   <Switch defaultChecked />
                 </div>
                 <div className="flex items-center justify-between p-4 rounded-lg bg-muted/30 border border-border">
                   <div className="space-y-0.5">
-                    <Label className="text-sm">Modèle haute performance</Label>
-                    <p className="hidden xs:block text-[10px] text-muted-foreground">Utiliser des modèles plus puissants.</p>
+                    <Label className="text-sm">{t("settings.ai.high_perf")}</Label>
+                    <p className="hidden xs:block text-[10px] text-muted-foreground">{t("settings.ai.high_perf_desc")}</p>
                   </div>
                   <Switch />
                 </div>
@@ -299,15 +302,15 @@ function SettingsPage() {
             <div className="space-y-6 animate-in fade-in duration-300">
               <div className="space-y-4">
                 <div className="flex items-center justify-between p-4 rounded-lg bg-muted/30 border border-border">
-                  <Label className="text-sm">Numéros de ligne</Label>
+                  <Label className="text-sm">{t("settings.editor.line_numbers")}</Label>
                   <Switch defaultChecked />
                 </div>
                 <div className="flex items-center justify-between p-4 rounded-lg bg-muted/30 border border-border">
-                  <Label className="text-sm">Auto-complétion</Label>
+                  <Label className="text-sm">{t("settings.editor.auto_complete")}</Label>
                   <Switch defaultChecked />
                 </div>
                 <div className="flex items-center justify-between p-4 rounded-lg bg-muted/30 border border-border">
-                  <Label className="text-sm">Taille de la police</Label>
+                  <Label className="text-sm">{t("settings.editor.font_size")}</Label>
                   <Select defaultValue="14">
                     <SelectTrigger className="w-24"><SelectValue /></SelectTrigger>
                     <SelectContent>
@@ -325,10 +328,10 @@ function SettingsPage() {
           {tab === "shortcuts" && (
             <div className="space-y-3 animate-in fade-in duration-300">
               {[
-                { label: "Nouveau snippet", keys: "Ctrl + N" },
-                { label: "Recherche globale", keys: "Ctrl + K" },
-                { label: "Sauvegarder", keys: "Ctrl + S" },
-                { label: "Ouvrir l'assistant", keys: "Ctrl + I" },
+                { label: t("settings.shortcuts.new_snippet"), keys: "Ctrl + N" },
+                { label: t("settings.shortcuts.global_search"), keys: "Ctrl + K" },
+                { label: t("settings.shortcuts.save"), keys: "Ctrl + S" },
+                { label: t("settings.shortcuts.open_assistant"), keys: "Ctrl + I" },
               ].map((s) => (
                 <div key={s.label} className="flex items-center justify-between p-4 rounded-lg bg-muted/30 border border-border">
                   <span className="text-sm">{s.label}</span>
@@ -342,16 +345,16 @@ function SettingsPage() {
             <div className="space-y-6 animate-in fade-in duration-300">
               <div className="p-4 rounded-lg bg-amber-500/5 border border-amber-500/10 space-y-2">
                 <h3 className="text-amber-500 font-semibold flex items-center gap-2 text-sm">
-                  <Info className="h-4 w-4" /> Zone importante
+                  <Info className="h-4 w-4" /> {t("settings.backup.zone")}
                 </h3>
-                <p className="text-xs text-muted-foreground">Assurez-vous de sauvegarder régulièrement vos données localement ou sur le cloud.</p>
+                <p className="text-xs text-muted-foreground">{t("settings.backup.desc")}</p>
               </div>
               <div className="flex flex-col sm:flex-row gap-3">
                 <Button className="flex-1" variant="outline" onClick={() => navigate({ to: "/export" })}>
-                  <Download className="h-4 w-4 mr-2" /> Exporter les données
+                  <Download className="h-4 w-4 mr-2" /> {t("settings.backup.export")}
                 </Button>
                 <Button className="flex-1" variant="outline">
-                  <Save className="h-4 w-4 mr-2" /> Cloud Sync (Beta)
+                  <Save className="h-4 w-4 mr-2" /> {t("settings.backup.sync")}
                 </Button>
               </div>
             </div>
@@ -365,16 +368,15 @@ function SettingsPage() {
                 </div>
                 <div>
                   <h3 className="text-xl sm:text-2xl font-display font-bold">Izwan</h3>
-                  <p className="text-xs sm:text-sm text-muted-foreground">Version 1.2.0-beta</p>
+                  <p className="text-xs sm:text-sm text-muted-foreground">{t("settings.about.version")} 1.2.0-beta</p>
                 </div>
               </div>
               <p className="max-w-md mx-auto text-xs sm:text-sm text-muted-foreground leading-relaxed">
-                Izwan est un gestionnaire de snippets intelligent conçu pour les développeurs modernes. 
-                Gérez, partagez et optimisez votre code avec l'aide de l'IA.
+                {t("settings.about.desc")}
               </p>
               <div className="pt-4 flex flex-wrap justify-center gap-4 text-[10px] sm:text-xs text-muted-foreground">
-                <a href="#" className="hover:text-primary underline">Conditions d'utilisation</a>
-                <a href="#" className="hover:text-primary underline">Politique de confidentialité</a>
+                <a href="#" className="hover:text-primary underline">{t("settings.about.terms")}</a>
+                <a href="#" className="hover:text-primary underline">{t("settings.about.privacy")}</a>
               </div>
             </div>
           )}

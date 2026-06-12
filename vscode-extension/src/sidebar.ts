@@ -1,7 +1,9 @@
 import * as vscode from 'vscode';
 import { IzwaAPI, Snippet } from './api';
+import { t } from './i18n';
 
 export class IzwaSidebarProvider implements vscode.WebviewViewProvider {
+    // ... rest of class
     public static readonly viewType = 'izwa-snippets-view';
     private _view?: vscode.WebviewView;
 
@@ -55,12 +57,13 @@ export class IzwaSidebarProvider implements vscode.WebviewViewProvider {
     }
 
     private _getHtmlForWebview(webview: vscode.Webview) {
+        const lang = vscode.env.language.startsWith('fr') ? 'fr' : 'en';
         return `<!DOCTYPE html>
-            <html lang="fr">
+            <html lang="${lang}">
             <head>
                 <meta charset="UTF-8">
                 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-                <title>Izwa Snippets</title>
+                <title>${t('sidebar.title')}</title>
                 <style>
                     body { font-family: sans-serif; padding: 10px; }
                     .snippet-card { 
@@ -78,8 +81,8 @@ export class IzwaSidebarProvider implements vscode.WebviewViewProvider {
                 </style>
             </head>
             <body>
-                <input type="text" class="search-box" id="search" placeholder="Rechercher un snippet...">
-                <div id="snippets-list">Chargement...</div>
+                <input type="text" class="search-box" id="search" placeholder="${t('sidebar.search_placeholder')}">
+                <div id="snippets-list">${t('sidebar.loading')}</div>
 
                 <script>
                     const vscode = acquireVsCodeApi();

@@ -7,7 +7,7 @@ Le backend est une API REST performante construite avec **FastAPI**, conçue pou
 - **CRUD Snippets :** Gestion complète des morceaux de code.
 - **Recherche Sémantique :** Intégration de `FastEmbed` pour une recherche par intention (proximité vectorielle).
 - **Pagination :** Optimisation des performances pour les grandes collections.
-- **Enrichissement IA :** Service mocké prêt pour une intégration LLM (Ollama/OpenAI).
+- **Enrichissement IA :** Intégration LLM via **Groq** (API) ou **Ollama** (Local).
 - **Exports :**
   - **Markdown :** Formatage propre pour documentation.
   - **PDF :** Rendu professionnel via templates HTML (Jinja2) et `xhtml2pdf`.

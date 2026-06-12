@@ -1,5 +1,6 @@
 import { createFileRoute, Link, useRouter } from "@tanstack/react-router";
 import { useState, useEffect } from "react";
+import { useTranslation } from "react-i18next";
 import { Star, Code2, MoreVertical, Trash2, Edit, Share2, Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
@@ -13,7 +14,7 @@ import { api } from "@/lib/api-client";
 import { motion } from "framer-motion";
 
 export const Route = createFileRoute("/_app/favorites")({
-  head: () => ({ meta: [{ title: "Favoris — Izwan" }] }),
+  head: ({ loaderData }) => ({ meta: [{ title: `${loaderData?.t?.('favorites.title') || 'Favoris'} — Izwan` }] }),
   loader: async () => {
     // On server, we can't access localStorage for the auth token.
     if (typeof window === "undefined") {
@@ -26,7 +27,6 @@ export const Route = createFileRoute("/_app/favorites")({
         initialSnippets: data.items.map(s => ({
           ...s,
           tags: s.tags.map((t: any) => t.name),
-          date: new Date(s.updated_at).toLocaleDateString('fr-FR'),
         })),
         needsClientFetch: false
       };
@@ -54,6 +54,7 @@ const item = {
 };
 
 function FavoritesPage() {
+  const { t } = useTranslation();
   const data = Route.useLoaderData();
   const router = useRouter();
   const initialSnippets = data?.initialSnippets || [];
@@ -76,7 +77,6 @@ function FavoritesPage() {
           setSnippets(res.items.map(s => ({
             ...s,
             tags: s.tags.map((t: any) => t.name),
-            date: new Date(s.updated_at).toLocaleDateString('fr-FR'),
           })));
         } catch (e) {
           console.error("Failed to fetch favorites on client", e);
@@ -92,7 +92,7 @@ function FavoritesPage() {
     return (
       <div className="flex flex-col items-center justify-center h-64 space-y-4">
         <Loader2 className="h-8 w-8 animate-spin text-primary" />
-        <p className="text-sm text-muted-foreground">Chargement de vos favoris...</p>
+        <p className="text-sm text-muted-foreground">{t("favorites.loading")}</p>
       </div>
     );
   }
@@ -102,9 +102,9 @@ function FavoritesPage() {
       await api.put(`/snippets/${id}`, { is_favorite: false });
       setSnippets((prev) => prev.filter((s) => s.id !== id));
       router.invalidate();
-      toast.success("Retiré des favoris");
+      toast.success(t("snippets.remove_favorite"));
     } catch (e) {
-      toast.error("Erreur lors de la mise à jour");
+      toast.error(t("snippets.update_error"));
     }
   };
 
@@ -113,21 +113,21 @@ function FavoritesPage() {
       await api.delete(`/snippets/${id}`);
       setSnippets((prev) => prev.filter((s) => s.id !== id));
       router.invalidate();
-      toast.success("Snippet supprimé");
+      toast.success(t("snippets.delete_success"));
     } catch (e) {
-      toast.error("Erreur lors de la suppression");
+      toast.error(t("snippets.delete_error"));
     }
   };
 
   const shareSnippet = (s: any) => {
     const url = `${window.location.origin}/snippets/${s.id}`;
     navigator.clipboard.writeText(url);
-    toast.success("Lien copié dans le presse-papier");
+    toast.success(t("snippets.copy_link"));
   };
 
   return (
     <div className="space-y-4">
-      <h2 className="font-display font-semibold text-xl sm:text-2xl">Mes Favoris</h2>
+      <h2 className="font-display font-semibold text-xl sm:text-2xl">{t("favorites.title")}</h2>
       <motion.div 
         variants={container}
         initial="hidden"
@@ -178,20 +178,20 @@ function FavoritesPage() {
                   </Button>
                 </DropdownMenuTrigger>
                 <DropdownMenuContent align="end">
-                  <DropdownMenuItem onClick={() => toast.info("Fonctionnalité de modification à venir")}>
+                  <DropdownMenuItem onClick={() => toast.info(t("snippets.edit_coming_soon"))}>
                     <Edit className="mr-2 h-4 w-4" />
-                    <span>Modifier</span>
+                    <span>{t("common.edit")}</span>
                   </DropdownMenuItem>
                   <DropdownMenuItem onClick={() => shareSnippet(s)}>
                     <Share2 className="mr-2 h-4 w-4" />
-                    <span>Partager</span>
+                    <span>{t("common.share")}</span>
                   </DropdownMenuItem>
                   <DropdownMenuItem 
                     className="text-destructive focus:text-destructive"
                     onClick={() => deleteSnippet(s.id)}
                   >
                     <Trash2 className="mr-2 h-4 w-4" />
-                    <span>Supprimer</span>
+                    <span>{t("common.delete")}</span>
                   </DropdownMenuItem>
                 </DropdownMenuContent>
               </DropdownMenu>
@@ -200,7 +200,7 @@ function FavoritesPage() {
         ))}
         {snippets.length === 0 && (
           <div className="p-12 text-center text-muted-foreground text-sm">
-            Aucun favori pour le moment.
+            {t("favorites.empty")}
           </div>
         )}
       </motion.div>

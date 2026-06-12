@@ -1,6 +1,7 @@
 import { createFileRoute, Link, useNavigate, useRouter } from "@tanstack/react-router";
 import { ArrowLeft, X, Loader2, Sparkles } from "lucide-react";
 import { useState } from "react";
+import { useTranslation } from "react-i18next";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -13,8 +14,7 @@ import { api } from "@/lib/api-client";
 import { toast } from "sonner";
 
 export const Route = createFileRoute("/_app/snippets/new")({
-  // ... (rest of route config)
-  head: () => ({ meta: [{ title: "Nouveau snippet — Izwan" }] }),
+  head: ({ loaderData }) => ({ meta: [{ title: `${loaderData?.t?.('snippets.new') || 'Nouveau snippet'} — Izwan` }] }),
   loader: async () => {
     try {
       const collections = await api.get<any[]>("/collections/");
@@ -27,12 +27,12 @@ export const Route = createFileRoute("/_app/snippets/new")({
 });
 
 function NewSnippetPage() {
+  const { t } = useTranslation();
   const data = Route.useLoaderData();
   const collections = data?.collections || [];
   const nav = useNavigate();
   const router = useRouter();
   const [isLoading, setIsLoading] = useState(false);
-  // ... (rest of states)
   const [title, setTitle] = useState("");
   const [language, setLanguage] = useState("Python");
   const [customLanguage, setCustomLanguage] = useState("");
@@ -45,7 +45,7 @@ function NewSnippetPage() {
 
   const handleAIEnrich = async () => {
     if (!code.trim()) {
-      toast.error("Veuillez d'abord coller du code");
+      toast.error(t("snippets.paste_code_first"));
       return;
     }
     setIsEnriching(true);
@@ -54,13 +54,12 @@ function NewSnippetPage() {
       const result = await api.post<any>("/ai/enrich", { code, language: finalLanguage });
       if (result.description) setDescription(result.description);
       if (result.tags && result.tags.length > 0) {
-        // Nettoyage et fusion avec les tags existants
         const newTags = Array.from(new Set([...tags, ...result.tags.map((t: string) => t.toLowerCase())]));
         setTags(newTags);
       }
-      toast.success("Enrichissement par Ollama (gemma2:2b) réussi !");
+      toast.success(t("snippets.enrich_success"));
     } catch (e: any) {
-      toast.error("L'IA n'a pas répondu. Vérifiez qu'Ollama (gemma2:2b) est lancé.");
+      toast.error(t("snippets.enrich_error"));
     } finally {
       setIsEnriching(false);
     }
@@ -68,13 +67,13 @@ function NewSnippetPage() {
 
   const handleSave = async () => {
     if (!title || !code) {
-      toast.error("Le titre et le code sont obligatoires");
+      toast.error(t("snippets.form.required_fields"));
       return;
     }
 
     const finalLanguage = language === "other" ? customLanguage.trim() : language;
     if (language === "other" && !finalLanguage) {
-      toast.error("Veuillez préciser le langage");
+      toast.error(t("snippets.form.language_required"));
       return;
     }
 
@@ -88,12 +87,11 @@ function NewSnippetPage() {
         tags,
         collection_id: collectionId === "none" ? null : parseInt(collectionId),
       });
-      toast.success("Snippet créé avec succès");
-      // Force the router to refresh data for all active routes
+      toast.success(t("snippets.form.create_success"));
       await router.invalidate();
       nav({ to: "/snippets" });
     } catch (error: any) {
-      toast.error(error.message || "Erreur lors de la création");
+      toast.error(error.message || t("snippets.form.create_error"));
     } finally {
       setIsLoading(false);
     }
@@ -102,35 +100,35 @@ function NewSnippetPage() {
   return (
     <>
       <Link to="/snippets" className="inline-flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground mb-4">
-        <ArrowLeft className="h-4 w-4" /> Retour aux snippets
+        <ArrowLeft className="h-4 w-4" /> {t("snippets.back_to_list")}
       </Link>
 
       <div className="bg-card border border-border rounded-xl p-4 sm:p-6 space-y-5">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div className="space-y-2">
-            <Label htmlFor="title">Titre</Label>
+            <Label htmlFor="title">{t("snippets.form.title")}</Label>
             <Input
               id="title"
-              placeholder="Ex: Connexion MySQL Python"
+              placeholder={t("snippets.form.title_placeholder")}
               value={title}
               onChange={(e) => setTitle(e.target.value)}
             />
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="lang">Langage</Label>
+            <Label htmlFor="lang">{t("snippets.form.language")}</Label>
             <div className="space-y-3">
               <Select value={language} onValueChange={setLanguage}>
                 <SelectTrigger id="lang"><SelectValue /></SelectTrigger>
                 <SelectContent>
                   {languages.map((l) => <SelectItem key={l} value={l}>{l}</SelectItem>)}
-                  <SelectItem value="other">Autre...</SelectItem>
+                  <SelectItem value="other">{t("snippets.form.other")}</SelectItem>
                 </SelectContent>
               </Select>
               {language === "other" && (
                 <div className="animate-in fade-in slide-in-from-top-2 duration-300">
                   <Input
-                    placeholder="Précisez le langage (ex: Rust, Ruby...)"
+                    placeholder={t("snippets.form.other_placeholder")}
                     value={customLanguage}
                     onChange={(e) => setCustomLanguage(e.target.value)}
                     autoFocus
@@ -143,11 +141,11 @@ function NewSnippetPage() {
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div className="space-y-2">
-            <Label htmlFor="collection">Collection</Label>
+            <Label htmlFor="collection">{t("snippets.form.collection")}</Label>
             <Select value={collectionId} onValueChange={setCollectionId}>
               <SelectTrigger id="collection"><SelectValue /></SelectTrigger>
               <SelectContent>
-                <SelectItem value="none">Aucune collection</SelectItem>
+                <SelectItem value="none">{t("snippets.form.no_collection")}</SelectItem>
                 {collections.map((c) => (
                   <SelectItem key={c.id} value={c.id.toString()}>{c.name}</SelectItem>
                 ))}
@@ -156,15 +154,12 @@ function NewSnippetPage() {
           </div>
 
           <div className="space-y-2">
-            <Label>Tags</Label>
+            <Label>{t("snippets.form.tags")}</Label>
             <div className="flex flex-wrap gap-2 p-2 rounded-md border border-input bg-input/40 min-h-[44px]">
               {tags.map((t) => (
                 <span key={t} className="inline-flex items-center gap-1 px-2.5 py-1 rounded-md bg-primary/15 text-primary text-xs font-medium">
                   {t}
-                  <button 
-                    onClick={() => setTags(tags.filter((x) => x !== t))}
-                    suppressHydrationWarning
-                  >
+                  <button onClick={() => setTags(tags.filter((x) => x !== t))}>
                     <X className="h-3 w-3" />
                   </button>
                 </span>
@@ -179,19 +174,18 @@ function NewSnippetPage() {
                     setTagInput("");
                   }
                 }}
-                placeholder="Ajouter un tag..."
+                placeholder={t("snippets.form.add_tag")}
                 className="bg-transparent flex-1 min-w-[120px] outline-none text-sm"
-                suppressHydrationWarning
               />
             </div>
           </div>
         </div>
 
         <div className="space-y-2">
-          <Label htmlFor="desc">Description</Label>
+          <Label htmlFor="desc">{t("snippets.form.description")}</Label>
           <Textarea
             id="desc"
-            placeholder="Courte description du snippet"
+            placeholder={t("snippets.form.desc_placeholder")}
             rows={2} 
             value={description}
             onChange={(e) => setDescription(e.target.value)}
@@ -199,12 +193,12 @@ function NewSnippetPage() {
         </div>
 
         <div className="space-y-2">
-          <Label htmlFor="code">Code</Label>
+          <Label htmlFor="code">{t("snippets.form.code")}</Label>
           <Textarea
             id="code"
             className="font-mono text-sm bg-muted/50"
             rows={10}
-            placeholder="Collez votre code ici..."
+            placeholder={t("snippets.form.code_placeholder")}
             value={code}
             onChange={(e) => setCode(e.target.value)}
           />
@@ -218,11 +212,11 @@ function NewSnippetPage() {
             disabled={isEnriching || isLoading}
           >
             {isEnriching ? <Loader2 className="h-4 w-4 animate-spin mr-2" /> : <Sparkles className="h-4 w-4 mr-2" />}
-            Enrichir par IA
+            {t("snippets.enrich_ai")}
           </Button>
           <div className="flex gap-2 w-full sm:w-auto">
             <Button variant="outline" className="flex-1 sm:flex-none" onClick={() => nav({ to: "/snippets" })} disabled={isLoading || isEnriching}>
-              Annuler
+              {t("common.cancel")}
             </Button>
             <Button
               className="flex-1 sm:flex-none gradient-brand text-white border-0 hover:opacity-90"
@@ -230,12 +224,11 @@ function NewSnippetPage() {
               disabled={isLoading}
             >
               {isLoading ? <Loader2 className="h-4 w-4 animate-spin mr-2" /> : null}
-              Enregistrer
+              {t("common.save")}
             </Button>
           </div>
         </div>
       </div>
     </>
   );
-
 }

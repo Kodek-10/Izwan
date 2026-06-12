@@ -28,7 +28,7 @@ L'écosystème Izwa repose sur quatre piliers :
 Vous créez des snippets en précisant leur langage (Python, JS, SQL, ou même un langage personnalisé via l'option "Autre"). Vous pouvez les classer dans des **Collections** pour une organisation thématique.
 
 ### 2. L'Intelligence Artificielle (IA)
-Izwa intègre des modèles de langage locaux (via Ollama) pour :
+Izwa est flexible et s'adapte à vos besoins en supportant des modèles de langage locaux (via **Ollama**) ou haute performance via API (**Groq**) pour :
 *   **Enrichir** : Générer automatiquement une description et des tags à partir de votre code brut.
 *   **Expliquer** : Analyser ligne par ligne le fonctionnement d'un snippet complexe.
 *   **Recherche Sémantique** : Retrouver un snippet par son *intention* (ex: "comment trier une liste") plutôt que par des mots-clés exacts.

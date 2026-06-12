@@ -3,8 +3,10 @@ import { Code2, FolderKanban, Star, Languages, Plus, ArrowRight, Loader2 } from 
 import { Button } from "@/components/ui/button";
 import { api } from "@/lib/api-client";
 
+import { useTranslation } from "react-i18next";
+
 export const Route = createFileRoute("/_app/dashboard")({
-  head: () => ({ meta: [{ title: "Tableau de bord — Izwan" }] }),
+  head: ({ loaderData }) => ({ meta: [{ title: `${loaderData?.t?.('dashboard.title') || 'Dashboard'} — Izwan` }] }),
   loader: async () => {
     // On server, we can't access localStorage for the auth token.
     if (typeof window === "undefined") {
@@ -16,7 +18,7 @@ export const Route = createFileRoute("/_app/dashboard")({
       const snippets = data.items.map(s => ({
         ...s,
         tags: s.tags.map((t: any) => t.name),
-        date: new Date(s.updated_at).toLocaleDateString('fr-FR'),
+        dateObj: new Date(s.updated_at),
       }));
       
       const languages = new Set(snippets.map(s => s.language)).size;
@@ -26,10 +28,10 @@ export const Route = createFileRoute("/_app/dashboard")({
       return { 
         snippets: snippets.slice(0, 5),
         stats: [
-          { label: "Total Snippets", value: snippets.length, icon: Code2, color: "from-violet-500 to-indigo-500" },
-          { label: "Langages", value: languages, icon: Languages, color: "from-blue-500 to-cyan-500" },
-          { label: "Tags uniques", value: tags, icon: FolderKanban, color: "from-cyan-500 to-teal-500" },
-          { label: "Favoris", value: favorites, icon: Star, color: "from-amber-500 to-pink-500" },
+          { label: "total_snippets", value: snippets.length, icon: Code2, color: "from-violet-500 to-indigo-500" },
+          { label: "languages", value: languages, icon: Languages, color: "from-blue-500 to-cyan-500" },
+          { label: "unique_tags", value: tags, icon: FolderKanban, color: "from-cyan-500 to-teal-500" },
+          { label: "favorites", value: favorites, icon: Star, color: "from-amber-500 to-pink-500" },
         ],
         needsClientFetch: false
       };
@@ -60,6 +62,7 @@ const item = {
 };
 
 function Dashboard() {
+  const { t, i18n } = useTranslation();
   const data = Route.useLoaderData();
   const [snippets, setSnippets] = useState<any[]>(data?.snippets || []);
   const [stats, setStats] = useState<any[]>(data?.stats || []);
@@ -82,7 +85,7 @@ function Dashboard() {
           const allSnippets = res.items.map(s => ({
             ...s,
             tags: s.tags.map((t: any) => t.name),
-            date: new Date(s.updated_at).toLocaleDateString('fr-FR'),
+            dateObj: new Date(s.updated_at),
           }));
           
           setSnippets(allSnippets.slice(0, 5));
@@ -92,10 +95,10 @@ function Dashboard() {
           const favorites = allSnippets.filter(s => s.is_favorite).length;
 
           setStats([
-            { label: "Total Snippets", value: allSnippets.length, icon: Code2, color: "from-violet-500 to-indigo-500" },
-            { label: "Langages", value: languages, icon: Languages, color: "from-blue-500 to-cyan-500" },
-            { label: "Tags uniques", value: tags, icon: FolderKanban, color: "from-cyan-500 to-teal-500" },
-            { label: "Favoris", value: favorites, icon: Star, color: "from-amber-500 to-pink-500" },
+            { label: "total_snippets", value: allSnippets.length, icon: Code2, color: "from-violet-500 to-indigo-500" },
+            { label: "languages", value: languages, icon: Languages, color: "from-blue-500 to-cyan-500" },
+            { label: "unique_tags", value: tags, icon: FolderKanban, color: "from-cyan-500 to-teal-500" },
+            { label: "favorites", value: favorites, icon: Star, color: "from-amber-500 to-pink-500" },
           ]);
         } catch (e) {
           console.error("Failed to fetch dashboard data on client", e);
@@ -111,7 +114,7 @@ function Dashboard() {
     return (
       <div className="flex flex-col items-center justify-center h-64 space-y-4">
         <Loader2 className="h-8 w-8 animate-spin text-primary" />
-        <p className="text-sm text-muted-foreground">Chargement du tableau de bord...</p>
+        <p className="text-sm text-muted-foreground">{t("dashboard.loading")}</p>
       </div>
     );
   }
@@ -119,8 +122,8 @@ function Dashboard() {
   if (!data || (stats.length === 0 && !isClientLoading)) {
     return (
       <div className="flex flex-col items-center justify-center h-64 border-2 border-dashed border-border rounded-xl">
-        <p className="text-muted-foreground mb-4">Erreur de connexion au backend ou aucun contenu.</p>
-        <Link to="/auth"><Button>Se connecter</Button></Link>
+        <p className="text-muted-foreground mb-4">{t("dashboard.error")}</p>
+        <Link to="/auth"><Button>{t("auth.login")}</Button></Link>
       </div>
     );
   }
@@ -138,7 +141,7 @@ function Dashboard() {
             <motion.div variants={item} key={s.label} className="bg-card border border-border rounded-xl p-5 hover:shadow-md transition-shadow group">
               <div className="flex items-start justify-between">
                 <div>
-                  <p className="text-xs text-muted-foreground uppercase tracking-wide">{s.label}</p>
+                  <p className="text-xs text-muted-foreground uppercase tracking-wide">{t(`dashboard.stats.${s.label}`)}</p>
                   <p className="text-2xl sm:text-3xl font-display font-bold mt-2">{s.value}</p>
                 </div>
                 <div className={`h-10 w-10 rounded-lg bg-gradient-to-br ${s.color} flex items-center justify-center transition-transform group-hover:scale-110 shrink-0`}>
@@ -157,9 +160,9 @@ function Dashboard() {
         className="bg-card border border-border rounded-xl overflow-hidden"
       >
         <div className="flex items-center justify-between p-4 sm:p-5 border-b border-border">
-          <h2 className="font-display font-semibold text-base sm:text-lg">Snippets récents</h2>
+          <h2 className="font-display font-semibold text-base sm:text-lg">{t("dashboard.recent_snippets")}</h2>
           <Link to="/snippets" className="text-sm text-primary hover:underline flex items-center gap-1">
-            Voir tous <ArrowRight className="h-3 w-3" />
+            {t("dashboard.view_all")} <ArrowRight className="h-3 w-3" />
           </Link>
         </div>
         <div className="divide-y divide-border">
@@ -181,11 +184,13 @@ function Dashboard() {
                   </p>
                 </div>
               </div>
-              <span className="text-[10px] sm:text-xs text-muted-foreground shrink-0 ml-3 tabular-nums">{s.date}</span>
+              <span className="text-[10px] sm:text-xs text-muted-foreground shrink-0 ml-3 tabular-nums">
+                {s.dateObj.toLocaleDateString(i18n.language === 'fr' ? 'fr-FR' : 'en-US')}
+              </span>
             </Link>
           ))}
           {snippets.length === 0 && (
-            <div className="p-8 text-center text-sm text-muted-foreground">Aucun snippet récent.</div>
+            <div className="p-8 text-center text-sm text-muted-foreground">{t("dashboard.no_snippets")}</div>
           )}
         </div>
       </motion.div>
@@ -198,7 +203,7 @@ function Dashboard() {
       >
         <Link to="/snippets/new">
           <Button className="gradient-brand text-white border-0 hover:opacity-90">
-            <Plus className="h-4 w-4 mr-2" /> Ajouter un snippet
+            <Plus className="h-4 w-4 mr-2" /> {t("dashboard.add_snippet")}
           </Button>
         </Link>
       </motion.div>

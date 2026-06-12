@@ -1,9 +1,10 @@
 import * as vscode from 'vscode';
 import { IzwaSidebarProvider } from './sidebar';
 import { IzwaAPI } from './api';
+import { t } from './i18n';
 
 export function activate(context: vscode.ExtensionContext) {
-    console.log('Félicitations, votre extension "Izwa" est maintenant active !');
+    console.log(t('extension.active'));
 
     const sidebarProvider = new IzwaSidebarProvider(context.extensionUri, context);
 
@@ -19,34 +20,34 @@ export function activate(context: vscode.ExtensionContext) {
     });
 
     let loginCommand = vscode.commands.registerCommand('izwa.login', async () => {
-        const username = await vscode.window.showInputBox({ prompt: 'Nom d\'utilisateur' });
+        const username = await vscode.window.showInputBox({ prompt: t('login.prompt.username') });
         if (!username) return;
         
         const password = await vscode.window.showInputBox({ 
-            prompt: 'Mot de passe',
+            prompt: t('login.prompt.password'),
             password: true 
         });
         if (!password) return;
 
         const success = await IzwaAPI.login(context, username, password);
         if (success) {
-            vscode.window.showInformationMessage('Izwa: Connexion réussie !');
+            vscode.window.showInformationMessage(t('login.success'));
             sidebarProvider.refresh();
         } else {
-            vscode.window.showErrorMessage('Izwa: Échec de la connexion. Vérifiez vos identifiants.');
+            vscode.window.showErrorMessage(t('login.error'));
         }
     });
 
     let searchCommand = vscode.commands.registerCommand('izwa.searchSnippet', async () => {
         const query = await vscode.window.showInputBox({
-            prompt: 'Entrez votre recherche sémantique (ex: filtrer un tableau par date)',
-            placeHolder: 'Recherche Izwa...'
+            prompt: t('search.prompt'),
+            placeHolder: t('search.placeholder')
         });
         
         if (query) {
             const results = await IzwaAPI.searchSemantic(context, query);
             if (results.length === 0) {
-                vscode.window.showInformationMessage('Aucun résultat trouvé.');
+                vscode.window.showInformationMessage(t('search.no_results'));
                 return;
             }
             
@@ -58,7 +59,7 @@ export function activate(context: vscode.ExtensionContext) {
             }));
 
             const selected = await vscode.window.showQuickPick(items, {
-                placeHolder: 'Sélectionnez un snippet à insérer'
+                placeHolder: t('search.select_placeholder')
             });
 
             if (selected) {

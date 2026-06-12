@@ -1,6 +1,7 @@
 import { createFileRoute, Link, useRouter } from "@tanstack/react-router";
 import { Plus, Search, Star, MoreVertical, Code2, Edit, Share2, Trash2, X, Loader2 } from "lucide-react";
 import { useState, useEffect } from "react";
+import { useTranslation } from "react-i18next";
 import { languages } from "@/lib/mock-data";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -28,7 +29,7 @@ const snippetsSearchSchema = z.object({
 
 export const Route = createFileRoute("/_app/snippets/")({
   validateSearch: snippetsSearchSchema,
-  head: () => ({ meta: [{ title: "Snippets — Izwan" }] }),
+  head: ({ loaderData }) => ({ meta: [{ title: `${loaderData?.t?.('snippets.title') || 'Snippets'} — Izwa` }] }),
   loader: async ({ search }) => {
     const { collection } = (search || {}) as { collection?: number };
     
@@ -48,7 +49,7 @@ export const Route = createFileRoute("/_app/snippets/")({
           const colData = await api.get<any>(`/collections/${collection}`);
           collectionName = colData.name;
         } catch (e) {
-          collectionName = "Inconnue";
+          collectionName = null;
         }
       }
 
@@ -56,7 +57,7 @@ export const Route = createFileRoute("/_app/snippets/")({
         initialSnippets: data.items.map(s => ({
           ...s,
           tags: s.tags.map((t: any) => t.name),
-          date: new Date(s.updated_at).toLocaleDateString('fr-FR'),
+          dateObj: new Date(s.updated_at),
         })),
         collectionName,
         needsClientFetch: false
@@ -85,6 +86,7 @@ const item = {
 };
 
 function SnippetsPage() {
+  const { t, i18n } = useTranslation();
   const { collection } = Route.useSearch();
   const data = Route.useLoaderData();
   const router = useRouter();
@@ -110,7 +112,7 @@ function SnippetsPage() {
           setSnippets(res.items.map(s => ({
             ...s,
             tags: s.tags.map((t: any) => t.name),
-            date: new Date(s.updated_at).toLocaleDateString('fr-FR'),
+            dateObj: new Date(s.updated_at),
           })));
         } catch (e) {
           console.error("Failed to fetch snippets on client", e);
@@ -134,7 +136,7 @@ function SnippetsPage() {
     return (
       <div className="flex flex-col items-center justify-center h-64 space-y-4">
         <Loader2 className="h-8 w-8 animate-spin text-primary" />
-        <p className="text-sm text-muted-foreground">Chargement de vos snippets...</p>
+        <p className="text-sm text-muted-foreground">{t("snippets.loading")}</p>
       </div>
     );
   }
@@ -154,9 +156,9 @@ function SnippetsPage() {
       );
       // Invalidate to update other routes (favorites, statistics)
       router.invalidate();
-      toast.success(!current ? "Ajouté aux favoris" : "Retiré des favoris");
+      toast.success(!current ? t("snippets.add_favorite") : t("snippets.remove_favorite"));
     } catch (e) {
-      toast.error("Erreur lors de la mise à jour");
+      toast.error(t("snippets.update_error"));
     }
   };
 
@@ -167,16 +169,16 @@ function SnippetsPage() {
       setSnippets((prev) => prev.filter((s) => s.id !== id));
       // Invalidate to update other routes
       router.invalidate();
-      toast.success("Snippet supprimé");
+      toast.success(t("snippets.delete_success"));
     } catch (e) {
-      toast.error("Erreur lors de la suppression");
+      toast.error(t("snippets.delete_error"));
     }
   };
 
   const shareSnippet = (s: any) => {
     const url = `${window.location.origin}/snippets/${s.id}`;
     navigator.clipboard.writeText(url);
-    toast.success("Lien copié dans le presse-papier");
+    toast.success(t("snippets.copy_link"));
   };
 
   return (
@@ -184,11 +186,11 @@ function SnippetsPage() {
       <div className="flex items-center justify-between gap-3">
         <div className="flex items-center gap-3 min-w-0">
           <h2 className="font-display font-semibold text-2xl truncate">
-            {collection ? "Snippets" : "Tous les snippets"}
+            {collection ? t("snippets.title") : t("snippets.all_snippets")}
           </h2>
           {collection && (
             <div className="inline-flex items-center gap-1.5 px-2 py-1 rounded-full bg-primary/10 text-primary text-xs font-medium animate-in fade-in zoom-in duration-300">
-              <span>Collection : {data.collectionName}</span>
+              <span>{t("snippets.collection_label")}{data.collectionName || t("collections.unknown")}</span>
               <Link to="/snippets" className="hover:text-primary/70 transition-colors">
                 <X className="h-3 w-3" />
               </Link>
@@ -197,7 +199,7 @@ function SnippetsPage() {
         </div>
         <Link to="/snippets/new">
           <Button className="gradient-brand text-white border-0 hover:opacity-90 shrink-0">
-            <Plus className="h-4 w-4 mr-2" /> Nouveau
+            <Plus className="h-4 w-4 mr-2" /> {t("snippets.new")}
           </Button>
         </Link>
       </div>
@@ -208,22 +210,22 @@ function SnippetsPage() {
           <Input
             value={q}
             onChange={(e) => setQ(e.target.value)}
-            placeholder="Rechercher un snippet..."
+            placeholder={t("snippets.search_placeholder")}
             className="pl-9"
           />
         </div>
         <div className="flex flex-col sm:flex-row gap-2">
           <Select value={lang} onValueChange={setLang}>
-            <SelectTrigger className="w-full sm:w-44"><SelectValue placeholder="Tous les langages" /></SelectTrigger>
+            <SelectTrigger className="w-full sm:w-44"><SelectValue placeholder={t("common.all_languages")} /></SelectTrigger>
             <SelectContent>
-              <SelectItem value="all">Tous les langages</SelectItem>
+              <SelectItem value="all">{t("common.all_languages")}</SelectItem>
               {languages.map((l) => <SelectItem key={l} value={l}>{l}</SelectItem>)}
             </SelectContent>
           </Select>
           <Select defaultValue="all">
-            <SelectTrigger className="w-full sm:w-40"><SelectValue placeholder="Tous les tags" /></SelectTrigger>
+            <SelectTrigger className="w-full sm:w-40"><SelectValue placeholder={t("common.all_tags")} /></SelectTrigger>
             <SelectContent>
-              <SelectItem value="all">Tous les tags</SelectItem>
+              <SelectItem value="all">{t("common.all_tags")}</SelectItem>
             </SelectContent>
           </Select>
         </div>
@@ -253,7 +255,9 @@ function SnippetsPage() {
                   <span>{s.tags.slice(0, 2).join(", ")}{s.tags.length > 2 ? "..." : ""}</span>
                 </p>
               </div>
-              <span className="text-xs text-muted-foreground shrink-0 hidden md:inline">{s.date}</span>
+              <span className="text-xs text-muted-foreground shrink-0 hidden md:inline">
+                {s.dateObj.toLocaleDateString(i18n.language === 'fr' ? 'fr-FR' : 'en-US')}
+              </span>
             </Link>
             <div className="absolute right-2 sm:right-4 top-1/2 -translate-y-1/2 flex items-center gap-0.5 sm:gap-1">
               <Button
@@ -280,20 +284,20 @@ function SnippetsPage() {
                   </Button>
                 </DropdownMenuTrigger>
                 <DropdownMenuContent align="end">
-                  <DropdownMenuItem onClick={() => toast.info("Fonctionnalité de modification à venir")}>
+                  <DropdownMenuItem onClick={() => toast.info(t("snippets.edit_coming_soon"))}>
                     <Edit className="mr-2 h-4 w-4" />
-                    <span>Modifier</span>
+                    <span>{t("common.edit")}</span>
                   </DropdownMenuItem>
                   <DropdownMenuItem onClick={() => shareSnippet(s)}>
                     <Share2 className="mr-2 h-4 w-4" />
-                    <span>Partager</span>
+                    <span>{t("common.share")}</span>
                   </DropdownMenuItem>
                   <DropdownMenuItem 
                     className="text-destructive focus:text-destructive"
                     onClick={() => deleteSnippet(s.id)}
                   >
                     <Trash2 className="mr-2 h-4 w-4" />
-                    <span>Supprimer</span>
+                    <span>{t("common.delete")}</span>
                   </DropdownMenuItem>
                 </DropdownMenuContent>
               </DropdownMenu>
@@ -301,7 +305,7 @@ function SnippetsPage() {
           </motion.div>
         ))}
         {filtered.length === 0 && (
-          <div className="p-12 text-center text-muted-foreground text-sm">Aucun snippet trouvé.</div>
+          <div className="p-12 text-center text-muted-foreground text-sm">{t("snippets.no_results")}</div>
         )}
       </motion.div>
     </div>

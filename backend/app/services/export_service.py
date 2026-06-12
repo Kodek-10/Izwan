@@ -8,7 +8,7 @@ from io import BytesIO
 import os
 
 class ExportService:
-    def export_to_markdown(self, db: Session, user_id: int, collection_id: int = None, favorite_only: bool = False) -> str:
+    def export_to_markdown(self, db: Session, user_id: int, collection_id: int = None, favorite_only: bool = False, lang: str = "fr") -> str:
         query = db.query(models.Snippet).filter(models.Snippet.owner_id == user_id)
         if collection_id:
             query = query.filter(models.Snippet.collection_id == collection_id)
@@ -16,18 +16,20 @@ class ExportService:
             query = query.filter(models.Snippet.is_favorite == True)
             
         snippets = query.all()
-        md_content = f"# Snippets Export ({datetime.now().strftime('%Y-%m-%d')})\n\n"
+        date_str = datetime.now().strftime('%Y-%m-%d')
+        title = f"# Snippets Export ({date_str})\n\n"
+        md_content = title
         for s in snippets:
             tags_str = ", ".join([t.name for t in s.tags])
             md_content += f"## {s.title}\n"
-            md_content += f"- **Language:** {s.language}\n"
+            md_content += f"- **{'Language' if lang == 'en' else 'Langage'}:** {s.language}\n"
             md_content += f"- **Tags:** {tags_str}\n"
             md_content += f"- **Description:** {s.description}\n\n"
             md_content += f"```{s.language}\n{s.code}\n```\n\n"
             md_content += "---\n\n"
         return md_content
 
-    def export_to_pdf(self, db: Session, user_id: int, collection_id: int = None, favorite_only: bool = False) -> BytesIO:
+    def export_to_pdf(self, db: Session, user_id: int, collection_id: int = None, favorite_only: bool = False, lang: str = "fr") -> BytesIO:
         query = db.query(models.Snippet).filter(models.Snippet.owner_id == user_id)
         if collection_id:
             query = query.filter(models.Snippet.collection_id == collection_id)
@@ -62,7 +64,8 @@ class ExportService:
         template = Template(template_content)
         html_out = template.render(
             snippets=snippets,
-            date=datetime.now().strftime("%Y-%m-%d %H:%M")
+            date=datetime.now().strftime("%Y-%m-%d %H:%M"),
+            lang=lang
         )
         
         buffer = BytesIO()

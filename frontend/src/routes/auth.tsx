@@ -1,6 +1,7 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { Github, Eye, EyeOff, Loader2 } from "lucide-react";
 import { useState, useEffect } from "react";
+import { useTranslation } from "react-i18next";
 import { IzwaLogo, IzwaWordmark } from "@/components/izwan-logo";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -13,6 +14,7 @@ export const Route = createFileRoute("/auth")({
 });
 
 function AuthPage() {
+  const { t } = useTranslation();
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [showPw, setShowPw] = useState(false);
@@ -31,10 +33,10 @@ function AuthPage() {
     setLoading(true);
     try {
       await api.login(username, password);
-      toast.success("Connexion réussie !");
+      toast.success(t("auth.login_success"));
       navigate({ to: "/dashboard" });
     } catch (error: any) {
-      toast.error(error.message || "Identifiants invalides");
+      toast.error(error.message || t("auth.invalid_credentials"));
     } finally {
       setLoading(false);
     }
@@ -55,17 +57,17 @@ function AuthPage() {
           </div>
           <IzwaWordmark size="lg" />
           <p className="text-muted-foreground text-sm max-w-[280px]">
-            Centralisez votre code, retrouvez l'essentiel avec l'IA.
+            {t("auth.tagline")}
           </p>
         </div>
 
         <div className="bg-card border border-border rounded-2xl shadow-xl p-6 sm:p-8 space-y-6">
           <form onSubmit={handleSubmit} className="space-y-4">
             <div className="space-y-2">
-              <Label htmlFor="username">Nom d'utilisateur</Label>
+              <Label htmlFor="username">{t("auth.username")}</Label>
               <Input
                 id="username"
-                placeholder="votre_nom"
+                placeholder={t("auth.username_placeholder")}
                 value={username}
                 onChange={(e) => setUsername(e.target.value)}
                 required
@@ -74,7 +76,7 @@ function AuthPage() {
             </div>
             <div className="space-y-2">
               <div className="flex items-center justify-between">
-                <Label htmlFor="password">Mot de passe</Label>
+                <Label htmlFor="password">{t("auth.password")}</Label>
               </div>
               <div className="relative">
                 <Input
@@ -89,7 +91,6 @@ function AuthPage() {
                   type="button"
                   onClick={() => setShowPw((s) => !s)}
                   className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground transition-colors"
-                  suppressHydrationWarning
                 >
                   {showPw ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
                 </button>
@@ -100,7 +101,7 @@ function AuthPage() {
               className="w-full h-11 gradient-brand text-white border-0 hover:opacity-90 font-medium text-base shadow-lg shadow-primary/20" 
               disabled={loading}
             >
-              {loading ? <Loader2 className="h-5 w-5 animate-spin" /> : "Se connecter"}
+              {loading ? <Loader2 className="h-5 w-5 animate-spin" /> : t("auth.login")}
             </Button>
           </form>
 
@@ -109,7 +110,7 @@ function AuthPage() {
               <span className="w-full border-t border-border" />
             </div>
             <div className="relative flex justify-center text-xs uppercase">
-              <span className="bg-card px-2 text-muted-foreground">Ou continuer avec</span>
+              <span className="bg-card px-2 text-muted-foreground">{t("auth.or_continue_with")}</span>
             </div>
           </div>
 
@@ -143,12 +144,12 @@ function AuthPage() {
 
         <div className="text-center">
           <p className="text-sm text-muted-foreground">
-            Pas encore de compte ?{" "}
+            {t("auth.no_account")}{" "}
             <Link 
               to="/signup" 
               className="text-primary font-medium hover:underline"
             >
-              Créer un compte
+              {t("auth.create_account")}
             </Link>
           </p>
         </div>

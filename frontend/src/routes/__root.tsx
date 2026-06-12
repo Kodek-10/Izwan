@@ -11,6 +11,7 @@ import { type ReactNode } from "react";
 import appCss from "../styles.css?url";
 import { ThemeProvider } from "@/components/theme-provider";
 import { Toaster } from "@/components/ui/sonner";
+import "@/lib/i18n";
 
 export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()({
   head: () => ({

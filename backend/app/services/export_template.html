@@ -55,14 +55,14 @@
 <body>
     <div class="header">
         <h1>Snippets Export</h1>
-        <p>Généré le {{ date }}</p>
+        <p>{{ "Generated on" if lang == "en" else "Généré le" }} {{ date }}</p>
     </div>
 
     {% for s in snippets %}
     <div class="snippet">
         <div class="title">{{ s.title }}</div>
         <div class="meta">
-            <b>Langage:</b> {{ s.language }} | 
+            <b>{{ "Language" if lang == "en" else "Langage" }}:</b> {{ s.language }} | 
             <b>Tags:</b> 
             {% for t in s.tags %}
                 <span class="tag">{{ t.name }}</span>
