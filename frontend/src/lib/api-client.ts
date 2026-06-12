@@ -82,6 +82,24 @@ class ApiClient {
     }
   }
 
+  // Helper for registration + login
+  async signup(username: string, password: string): Promise<{ access_token: string }> {
+    const response = await fetch(`${API_URL}/auth/register`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ username, password }),
+    });
+
+    if (!response.ok) {
+      await this.handleError(response);
+    }
+
+    // After successful registration, log in automatically
+    return this.login(username, password);
+  }
+
   // Helper for OAuth2 password grant (FastAPI login)
   async login(username: string, password: string): Promise<{ access_token: string }> {
     const formData = new URLSearchParams();
