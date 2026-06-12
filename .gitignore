@@ -1,0 +1,23 @@
+# Python
+backend/venv/
+backend/__pycache__/
+backend/.env
+backend/*.db
+backend/.pytest_cache/
+
+# Node / React / VS Code
+node_modules/
+frontend/dist/
+frontend/node_modules/
+vscode-extension/node_modules/
+vscode-extension/out/
+*.vsix
+
+# OS / IDE
+.vscode/
+.DS_Store
+Thumbs.db
+.cursor/
+.pytest_cache/
+test.db
+snippets.db

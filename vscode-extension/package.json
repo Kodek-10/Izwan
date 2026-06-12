@@ -1,0 +1,76 @@
+{
+  "name": "izwa-vscode",
+  "displayName": "Izwa - Snippet Manager IA",
+  "description": "Accédez à vos snippets Izwa directement depuis votre éditeur.",
+  "version": "0.0.1",
+  "engines": {
+    "vscode": "^1.85.0"
+  },
+  "categories": [
+    "Other"
+  ],
+  "activationEvents": [
+    "onView:izwa-snippets-view"
+  ],
+  "main": "./out/extension.js",
+  "contributes": {
+    "viewsContainers": {
+      "activitybar": [
+        {
+          "id": "izwa-explorer",
+          "title": "Izwa",
+          "icon": "media/icon.svg"
+        }
+      ]
+    },
+    "views": {
+      "izwa-explorer": [
+        {
+          "id": "izwa-snippets-view",
+          "type": "webview",
+          "name": "Mes Snippets"
+        }
+      ]
+    },
+    "commands": [
+      {
+        "command": "izwa.searchSnippet",
+        "title": "Izwa: Rechercher un snippet"
+      },
+      {
+        "command": "izwa.refreshSnippets",
+        "title": "Izwa: Rafraîchir la liste"
+      },
+      {
+        "command": "izwa.login",
+        "title": "Izwa: Se connecter"
+      }
+    ],
+    "configuration": {
+      "title": "Izwa",
+      "properties": {
+        "izwa.backendUrl": {
+          "type": "string",
+          "default": "http://localhost:8000/api/v1",
+          "description": "URL de l'API Backend Izwa"
+        }
+      }
+    }
+  },
+  "scripts": {
+    "vscode:prepublish": "npm run compile",
+    "compile": "tsc -p ./",
+    "watch": "tsc -watch -p ./",
+    "pretest": "npm run compile && npm run lint",
+    "lint": "eslint src --ext ts",
+    "test": "node ./out/test/runTest.js"
+  },
+  "devDependencies": {
+    "@types/vscode": "^1.85.0",
+    "@types/node": "20.x",
+    "typescript": "^5.3.3",
+    "eslint": "^8.56.0",
+    "@typescript-eslint/parser": "^6.19.1",
+    "@typescript-eslint/eslint-plugin": "^6.19.1"
+  }
+}
