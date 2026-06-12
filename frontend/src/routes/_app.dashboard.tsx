@@ -1,5 +1,5 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { Code2, FolderKanban, Star, Languages, Plus, ArrowRight } from "lucide-react";
+import { Code2, FolderKanban, Star, Languages, Plus, ArrowRight, Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { api } from "@/lib/api-client";
 
