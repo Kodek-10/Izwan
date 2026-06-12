@@ -1,0 +1,22 @@
+langchain-ollama>=0.1.0
+langchain-core>=0.1.0
+fastapi
+uvicorn
+sqlalchemy
+pydantic
+pydantic-settings
+pytest
+httpx
+python-multipart
+jinja2
+markdown
+# weasyprint or reportlab for PDF
+reportlab
+python-jose[cryptography]
+passlib[bcrypt]
+python-multipart
+fastembed
+numpy
+xhtml2pdf
+jinja2
+pygments

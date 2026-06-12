@@ -1,0 +1,114 @@
+from fastapi import APIRouter, Depends, HTTPException, status
+from sqlalchemy.orm import Session
+from typing import List
+from ..core.database import get_db
+from ..core.security import get_current_user
+from .. import models, schemas
+
+from ..services.embedding_service import embedding_service
+import json
+
+router = APIRouter()
+
+def get_or_create_tags(db: Session, tag_names: List[str]):
+    tags = []
+    for name in tag_names:
+        name = name.lower().strip()
+        tag = db.query(models.Tag).filter(models.Tag.name == name).first()
+        if not tag:
+            tag = models.Tag(name=name)
+            db.add(tag)
+            db.commit()
+            db.refresh(tag)
+        tags.append(tag)
+    return tags
+
+def update_snippet_embedding(db: Session, snippet: models.Snippet):
+    # Combine title, description and code for a rich embedding
+    text_to_embed = f"{snippet.title} {snippet.description or ''} {snippet.code}"
+    vector = embedding_service.generate_embedding(text_to_embed)
+    
+    if snippet.embedding:
+        snippet.embedding.vector = json.dumps(vector)
+    else:
+        db_embedding = models.SnippetEmbedding(snippet_id=snippet.id, vector=json.dumps(vector))
+        db.add(db_embedding)
+    db.commit()
+
+@router.post("/", response_model=schemas.Snippet, status_code=status.HTTP_201_CREATED)
+def create_snippet(snippet: schemas.SnippetCreate, db: Session = Depends(get_db), current_user: models.User = Depends(get_current_user)):
+    db_snippet = models.Snippet(
+        title=snippet.title,
+        language=snippet.language,
+        code=snippet.code,
+        description=snippet.description,
+        is_favorite=snippet.is_favorite,
+        collection_id=snippet.collection_id,
+        owner_id=current_user.id
+    )
+    if snippet.tags:
+        db_snippet.tags = get_or_create_tags(db, snippet.tags)
+    
+    db.add(db_snippet)
+    db.commit()
+    db.refresh(db_snippet)
+    
+    # Generate embedding
+    update_snippet_embedding(db, db_snippet)
+    
+    return db_snippet
+
+@router.get("/", response_model=schemas.PaginatedSnippet)
+def read_snippets(skip: int = 0, limit: int = 100, favorite: bool = None, collection_id: int = None, db: Session = Depends(get_db), current_user: models.User = Depends(get_current_user)):
+    query = db.query(models.Snippet).filter(models.Snippet.owner_id == current_user.id)
+    if favorite is not None:
+        query = query.filter(models.Snippet.is_favorite == favorite)
+    if collection_id is not None:
+        query = query.filter(models.Snippet.collection_id == collection_id)
+    total = query.count()
+    snippets = query.offset(skip).limit(limit).all()
+    return {
+        "total": total,
+        "skip": skip,
+        "limit": limit,
+        "items": snippets
+    }
+
+@router.get("/{snippet_id}", response_model=schemas.Snippet)
+def read_snippet(snippet_id: int, db: Session = Depends(get_db), current_user: models.User = Depends(get_current_user)):
+    db_snippet = db.query(models.Snippet).filter(models.Snippet.id == snippet_id, models.Snippet.owner_id == current_user.id).first()
+    if db_snippet is None:
+        raise HTTPException(status_code=404, detail="Snippet not found")
+    return db_snippet
+
+@router.put("/{snippet_id}", response_model=schemas.Snippet)
+def update_snippet(snippet_id: int, snippet: schemas.SnippetUpdate, db: Session = Depends(get_db), current_user: models.User = Depends(get_current_user)):
+    db_snippet = db.query(models.Snippet).filter(models.Snippet.id == snippet_id, models.Snippet.owner_id == current_user.id).first()
+    if db_snippet is None:
+        raise HTTPException(status_code=404, detail="Snippet not found")
+    
+    update_data = snippet.model_dump(exclude_unset=True)
+    
+    if "tags" in update_data:
+        db_snippet.tags = get_or_create_tags(db, update_data["tags"])
+        del update_data["tags"]
+        
+    for key, value in update_data.items():
+        setattr(db_snippet, key, value)
+    
+    db.commit()
+    db.refresh(db_snippet)
+    
+    # Update embedding
+    update_snippet_embedding(db, db_snippet)
+    
+    return db_snippet
+
+@router.delete("/{snippet_id}", status_code=status.HTTP_204_NO_CONTENT)
+def delete_snippet(snippet_id: int, db: Session = Depends(get_db), current_user: models.User = Depends(get_current_user)):
+    db_snippet = db.query(models.Snippet).filter(models.Snippet.id == snippet_id, models.Snippet.owner_id == current_user.id).first()
+    if db_snippet is None:
+        raise HTTPException(status_code=404, detail="Snippet not found")
+    db.delete(db_snippet)
+    db.commit()
+    return None
