@@ -16,7 +16,12 @@ Ce projet est un monorepo comprenant :
 - 🔌 **Intégration VS Code** : Insertion en un clic et recherche IA intégrée.
 - 📁 **Organisation Intelligente** : Collections, tags et favoris.
 - 📤 **Export Flexible** : Exportez vos snippets en Markdown ou PDF.
-- 🔒 **Sécurité** : Authentification JWT robuste.
+- 🔒 **Sécurité** : Authentification JWT robuste et isolation stricte Admin/User.
+
+## 🗺️ Vision & Roadmap
+Izwan évolue vers un véritable **Cerveau Numérique pour Développeurs** à l'ère du Vibecoding.
+- Consultez notre [Feuille de Route Détaillée](./ajout_supplementaires.md) pour les évolutions futures.
+- Retrouvez le [Résumé de nos orientations stratégiques](./DISCUSSION_SUMMARY.md).
 
 ## 🛠️ Installation Rapide
 

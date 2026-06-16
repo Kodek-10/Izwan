@@ -33,3 +33,14 @@ Backend is fully functional and tested.
 
 ## Current Phase: Completed
 All advanced improvements requested are implemented and tested.
+
+# Phase 3: Infrastructure, Admin & Security (In Progress)
+- [ ] Migrate User model to support roles (USER, ADMIN).
+- [ ] Implement Admin API router and role-based protection.
+- [ ] Create separate Admin Dashboard backend logic.
+- [ ] Implement "Save from VS Code" API endpoint.
+
+# Phase 4: Advanced AI Features (Planned)
+- [ ] Smart Adaptive Insertion.
+- [ ] Polyglot Vibe-Converter.
+- [ ] Knowledge Constellation Graph.

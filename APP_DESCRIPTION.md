@@ -12,13 +12,13 @@ Il peut s'agir de :
 
 ## 🚀 Pourquoi utiliser Izwa ?
 
-Izwa n'est pas qu'un simple carnet de notes pour développeurs. C'est un **cerveau numérique** pour votre code. L'application résout le problème du "Où est-ce que j'ai déjà écrit ça ?" en centralisant vos solutions techniques dans une interface moderne et rapide.
+Izwa n'est pas qu'un simple carnet de notes pour développeurs. C'est un **cerveau numérique** pour votre code. À l'ère du **Vibecoding**, il résout le problème du chaos de code généré par l'IA en centralisant vos solutions validées ("Source of Truth") dans une interface moderne et rapide.
 
 ### Les Avantages :
-1.  **Gain de Temps** : Évitez de passer 20 minutes à chercher une solution que vous avez déjà implémentée il y a 6 mois.
-2.  **Standardisation** : Gardez vos meilleures pratiques à portée de main pour maintenir une qualité de code constante.
+1.  **Gain de Temps** : Évitez de passer 20 minutes à chercher une solution que vous avez déjà implémentée ou "vibée" il y a 6 mois.
+2.  **Standardisation** : Gardez vos meilleures pratiques à portée de main pour maintenir une qualité de code constante face à l'instabilité des LLM.
 3.  **Apprentissage** : Utilisez l'IA intégrée pour expliquer des morceaux de code complexes ou générer des tags pertinents.
-4.  **Local & Sécurisé** : Vos données vous appartiennent, stockées localement pour une confidentialité totale.
+4.  **Local & Sécurisé** : Vos données vous appartiennent, stockées localement pour une confidentialité totale, compatible avec des environnements restreints (Air-gapped).
 
 ## 🛠️ Comment ça fonctionne ?
 
