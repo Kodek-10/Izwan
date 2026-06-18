@@ -141,4 +141,30 @@ export class IzwaAPI {
             return [];
         }
     }
+
+    static async explainSnippet(context: vscode.ExtensionContext, code: string, language: string): Promise<string> {
+        try {
+            const baseUrl = this.getBaseUrl();
+            const headers = await this.getAuthHeader(context);
+            
+            const response = await fetch(`${baseUrl}/ai/explain`, {
+                method: 'POST',
+                headers: {
+                    ...headers,
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ code, language })
+            });
+
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
+
+            const data = await response.json() as { explanation: string };
+            return data.explanation;
+        } catch (error) {
+            console.error('Izwa Error explaining snippet:', error);
+            throw error;
+        }
+    }
 }

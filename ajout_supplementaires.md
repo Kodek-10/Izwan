@@ -4,10 +4,10 @@ Ce document propose une vision approfondie et pédagogique des évolutions du pr
 
 ---
 
-## 🏗️ ÉTAPE 1 : Amélioration de l'Extension VS Code (Productivité)
+## 🏗️ ÉTAPE 1 : Amélioration de l'Extension VS Code (Productivité) - [FAIT] ✅
 *L'objectif est de transformer l'extension d'un simple visualiseur en un véritable outil de capture et de compréhension du code sans quitter l'éditeur.*
 
-### 1.1 - Flux de données bidirectionnel (Capture de code)
+### 1.1 - Flux de données bidirectionnel (Capture de code) - [FAIT] ✅
 - **Pourquoi ?** Actuellement, pour ajouter un snippet, l'utilisateur doit quitter VS Code. Cela brise le "flow" de travail.
 - **Comment ?** 
     1.  **Sélection** : L'utilisateur sélectionne un bloc de code dans l'éditeur.
@@ -15,14 +15,14 @@ Ce document propose une vision approfondie et pédagogique des évolutions du pr
     3.  **Collecte** : L'extension récupère le texte sélectionné, le langage du fichier (via l'extension du fichier) et demande un titre via une petite fenêtre d'input.
     4.  **Envoi** : Le code est envoyé au backend via `POST /snippets/`. L'IA s'occupe de générer les tags et la description en arrière-plan.
 
-### 1.2 - Expérience Utilisateur Riche (UI/UX Sidebar)
+### 1.2 - Expérience Utilisateur Riche (UI/UX Sidebar) - [FAIT] ✅
 - **Pourquoi ?** Une liste plate devient illisible avec le temps. L'utilisateur a besoin de repères visuels.
 - **Comment ?**
     - **Tree View** : Utiliser les composants d'arborescence de VS Code pour regrouper les snippets par "Collections".
     - **Syntax Highlighting** : Intégrer `Prism.js` dans la Webview pour colorer le code affiché dans les aperçus.
     - **Badges** : Afficher des pastilles de couleur (ex: jaune pour JS, bleu pour Python) pour une identification instantanée.
 
-### 1.3 - Intelligence Contextuelle (Explication)
+### 1.3 - Intelligence Contextuelle (Explication) - [FAIT] ✅
 - **Pourquoi ?** On oublie parfois pourquoi on a sauvegardé un code complexe. L'IA peut servir de tuteur.
 - **Comment ?** Ajouter une icône d'aide sur chaque carte de snippet. Au clic, l'extension appelle le service IA qui analyse le code et renvoie une explication structurée en Markdown affichée directement dans la barre latérale.
 
