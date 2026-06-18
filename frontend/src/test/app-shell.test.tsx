@@ -8,6 +8,7 @@ import { ThemeProvider } from '../components/theme-provider';
 vi.mock('@tanstack/react-router', () => ({
   Link: ({ children, to, className }: any) => <a href={to} className={className}>{children}</a>,
   useLocation: () => ({ pathname: '/dashboard' }),
+  useNavigate: () => vi.fn(),
 }));
 
 // Mock Radix UI Portal

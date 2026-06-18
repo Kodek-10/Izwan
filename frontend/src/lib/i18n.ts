@@ -185,6 +185,11 @@ const resources = {
         "delete_error": "Erreur lors de la suppression",
         "copy_link": "Lien copié dans le presse-papier",
         "collection_label": "Collection : ",
+        "assign_collection": "Assigner à une collection",
+        "assign_collection_title": "Assigner à une collection",
+        "assign_collection_desc": "Choisissez la collection à laquelle appartient ce snippet.",
+        "collection_assigned": "Snippet assigné à la collection",
+        "collection_removed": "Snippet retiré de la collection",
         "edit_coming_soon": "Fonctionnalité de modification à venir",
         "enrich_ai": "Enrichir par IA",
         "enrich_success": "Enrichissement par l'IA réussi !",
@@ -465,6 +470,11 @@ const resources = {
         "delete_error": "Error deleting snippet",
         "copy_link": "Link copied to clipboard",
         "collection_label": "Collection: ",
+        "assign_collection": "Assign to a collection",
+        "assign_collection_title": "Assign to a collection",
+        "assign_collection_desc": "Choose the collection this snippet belongs to.",
+        "collection_assigned": "Snippet assigned to collection",
+        "collection_removed": "Snippet removed from collection",
         "edit_coming_soon": "Edit feature coming soon",
         "enrich_ai": "Enrich by AI",
         "enrich_success": "AI Enrichment successful!",
@@ -570,6 +580,7 @@ i18n
   .use(initReactI18next)
   .init({
     resources,
+    lng: 'fr',
     fallbackLng: 'fr',
     interpolation: {
       escapeValue: false,

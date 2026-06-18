@@ -1,9 +1,8 @@
 import * as vscode from 'vscode';
-import { IzwaAPI, Snippet } from './api';
+import { IzwaAPI, Snippet, Collection } from './api';
 import { t } from './i18n';
 
 export class IzwaSidebarProvider implements vscode.WebviewViewProvider {
-    // ... rest of class
     public static readonly viewType = 'izwa-snippets-view';
     private _view?: vscode.WebviewView;
 
@@ -42,8 +41,11 @@ export class IzwaSidebarProvider implements vscode.WebviewViewProvider {
 
     public async refresh() {
         if (this._view) {
-            const snippets = await IzwaAPI.fetchSnippets(this._context);
-            this._view.webview.postMessage({ type: 'setSnippets', snippets });
+            const [snippets, collections] = await Promise.all([
+                IzwaAPI.fetchSnippets(this._context),
+                IzwaAPI.fetchCollections(this._context)
+            ]);
+            this._view.webview.postMessage({ type: 'setData', snippets, collections });
         }
     }
 
@@ -58,69 +60,186 @@ export class IzwaSidebarProvider implements vscode.WebviewViewProvider {
 
     private _getHtmlForWebview(webview: vscode.Webview) {
         const lang = vscode.env.language.startsWith('fr') ? 'fr' : 'en';
+        
         return `<!DOCTYPE html>
             <html lang="${lang}">
             <head>
                 <meta charset="UTF-8">
                 <meta name="viewport" content="width=device-width, initial-scale=1.0">
                 <title>${t('sidebar.title')}</title>
+                <link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" />
                 <style>
-                    body { font-family: sans-serif; padding: 10px; }
+                    body { font-family: var(--vscode-font-family); padding: 10px; color: var(--vscode-foreground); }
+                    .search-box { 
+                        width: 100%; 
+                        margin-bottom: 15px; 
+                        padding: 6px; 
+                        background: var(--vscode-input-background);
+                        color: var(--vscode-input-foreground);
+                        border: 1px solid var(--vscode-input-border);
+                        border-radius: 2px;
+                    }
+                    
+                    .collection-container { margin-bottom: 15px; }
+                    .collection-header { 
+                        font-weight: bold; 
+                        padding: 4px 0; 
+                        border-bottom: 1px solid var(--vscode-divider);
+                        margin-bottom: 8px;
+                        display: flex;
+                        align-items: center;
+                        font-size: 0.9em;
+                        text-transform: uppercase;
+                        opacity: 0.8;
+                    }
+                    
                     .snippet-card { 
-                        border: 1px solid #ccc; 
-                        margin-bottom: 10px; 
+                        margin-bottom: 8px; 
                         padding: 8px; 
                         border-radius: 4px;
                         cursor: pointer;
                         background: var(--vscode-sideBar-background);
+                        border: 1px solid transparent;
+                        transition: all 0.2s;
                     }
-                    .snippet-card:hover { background: var(--vscode-list-hoverBackground); }
-                    .title { font-weight: bold; margin-bottom: 4px; }
-                    .lang { font-size: 0.8em; color: #888; }
-                    .search-box { width: 100%; margin-bottom: 15px; padding: 5px; }
+                    .snippet-card:hover { 
+                        background: var(--vscode-list-hoverBackground);
+                        border-color: var(--vscode-focusBorder);
+                    }
+                    
+                    .card-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 4px; }
+                    .title { font-weight: 600; font-size: 0.95em; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+                    
+                    .badge { 
+                        font-size: 0.7em; 
+                        padding: 2px 6px; 
+                        border-radius: 10px; 
+                        font-weight: bold;
+                        text-transform: uppercase;
+                    }
+                    
+                    .lang-js, .lang-javascript, .lang-typescript, .lang-ts { background: #f1e05a; color: #000; }
+                    .lang-python, .lang-py { background: #3572A5; color: #fff; }
+                    .lang-html { background: #e34c26; color: #fff; }
+                    .lang-css { background: #563d7c; color: #fff; }
+                    .lang-json { background: #ccc; color: #000; }
+                    .lang-default { background: var(--vscode-badge-background); color: var(--vscode-badge-foreground); }
+
+                    pre[class*="language-"] {
+                        font-size: 0.8em !important;
+                        padding: 5px !important;
+                        margin: 5px 0 0 0 !important;
+                        border-radius: 3px !important;
+                        max-height: 100px;
+                        overflow: hidden;
+                    }
+                    code[class*="language-"] { text-shadow: none !important; }
                 </style>
             </head>
             <body>
                 <input type="text" class="search-box" id="search" placeholder="${t('sidebar.search_placeholder')}">
-                <div id="snippets-list">${t('sidebar.loading')}</div>
+                <div id="content">${t('sidebar.loading')}</div>
+
+                <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+                <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
+                <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-typescript.min.js"></script>
+                <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-json.min.js"></script>
 
                 <script>
                     const vscode = acquireVsCodeApi();
-                    const listElement = document.getElementById('snippets-list');
+                    const contentElement = document.getElementById('content');
                     const searchInput = document.getElementById('search');
+                    let allSnippets = [];
+                    let allCollections = [];
 
                     window.addEventListener('message', event => {
                         const message = event.data;
-                        if (message.type === 'setSnippets') {
-                            renderSnippets(message.snippets);
+                        if (message.type === 'setData') {
+                            allSnippets = message.snippets;
+                            allCollections = message.collections;
+                            render();
                         }
                     });
 
-                    function renderSnippets(snippets) {
-                        listElement.innerHTML = '';
-                        snippets.forEach(s => {
-                            const div = document.createElement('div');
-                            div.className = 'snippet-card';
-                            div.innerHTML = \`
-                                <div class="title">\${s.title}</div>
-                                <div class="lang">\${s.language}</div>
-                            \`;
-                            div.onclick = () => {
-                                vscode.postMessage({ type: 'insertSnippet', code: s.code });
-                            };
-                            listElement.appendChild(div);
-                        });
+                    function getLangClass(lang) {
+                        const l = lang.toLowerCase();
+                        if (['javascript', 'js', 'typescript', 'ts', 'python', 'py', 'html', 'css', 'json'].includes(l)) {
+                            return 'lang-' + l;
+                        }
+                        return 'lang-default';
                     }
 
-                    searchInput.oninput = (e) => {
-                        // Logique de filtrage simple pour le MVP
-                        const term = e.target.value.toLowerCase();
-                        const cards = document.querySelectorAll('.snippet-card');
-                        cards.forEach(card => {
-                            const title = card.querySelector('.title').innerText.toLowerCase();
-                            card.style.display = title.includes(term) ? 'block' : 'none';
+                    function render() {
+                        contentElement.innerHTML = '';
+                        const term = searchInput.value.toLowerCase();
+                        
+                        // Group snippets by collection
+                        const grouped = {};
+                        const unclassified = [];
+
+                        allSnippets.forEach(s => {
+                            if (term && !s.title.toLowerCase().includes(term) && !s.code.toLowerCase().includes(term)) return;
+                            
+                            if (s.collection_id) {
+                                if (!grouped[s.collection_id]) grouped[s.collection_id] = [];
+                                grouped[s.collection_id].push(s);
+                            } else {
+                                unclassified.push(s);
+                            }
                         });
-                    };
+
+                        // Render Collections
+                        allCollections.forEach(c => {
+                            const snippets = grouped[c.id] || [];
+                            if (snippets.length === 0 && !term) return; // Don't show empty collections unless searching
+                            if (snippets.length === 0 && term) return;
+
+                            renderGroup(c.name, snippets);
+                        });
+
+                        // Render Unclassified
+                        if (unclassified.length > 0) {
+                            renderGroup('Sans Collection', unclassified);
+                        }
+
+                        Prism.highlightAll();
+                    }
+
+                    function renderGroup(name, snippets) {
+                        const container = document.createElement('div');
+                        container.className = 'collection-container';
+                        
+                        const header = document.createElement('div');
+                        header.className = 'collection-header';
+                        header.innerText = name;
+                        container.appendChild(header);
+
+                        snippets.forEach(s => {
+                            const card = document.createElement('div');
+                            card.className = 'snippet-card';
+                            card.innerHTML = \`
+                                <div class="card-header">
+                                    <div class="title" title="\${s.title}">\${s.title}</div>
+                                    <span class="badge \${getLangClass(s.language)}">\${s.language}</span>
+                                </div>
+                                <pre class="language-\${s.language.toLowerCase()}"><code class="language-\${s.language.toLowerCase()}">\${escapeHtml(s.code.substring(0, 150))}\${s.code.length > 150 ? '...' : ''}</code></pre>
+                            \`;
+                            card.onclick = () => {
+                                vscode.postMessage({ type: 'insertSnippet', code: s.code });
+                            };
+                            container.appendChild(card);
+                        });
+
+                        contentElement.appendChild(container);
+                    }
+
+                    function escapeHtml(text) {
+                        const div = document.createElement('div');
+                        div.textContent = text;
+                        return div.innerHTML;
+                    }
+
+                    searchInput.oninput = render;
                 </script>
             </body>
             </html>`;

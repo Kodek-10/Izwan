@@ -1,5 +1,5 @@
 import { createFileRoute, Link, useRouter } from "@tanstack/react-router";
-import { Plus, Search, Star, MoreVertical, Code2, Edit, Share2, Trash2, X, Loader2 } from "lucide-react";
+import { Plus, Search, Star, MoreVertical, Code2, Edit, Share2, Trash2, X, Loader2, FolderOpen } from "lucide-react";
 import { useState, useEffect } from "react";
 import { useTranslation } from "react-i18next";
 import { languages } from "@/lib/mock-data";
@@ -18,6 +18,14 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
 import { toast } from "sonner";
 import { api } from "@/lib/api-client";
 import { motion } from "framer-motion";
@@ -29,38 +37,39 @@ const snippetsSearchSchema = z.object({
 
 export const Route = createFileRoute("/_app/snippets/")({
   validateSearch: snippetsSearchSchema,
-  head: ({ loaderData }) => ({ meta: [{ title: `${loaderData?.t?.('snippets.title') || 'Snippets'} — Izwa` }] }),
-  loader: async ({ search }) => {
+  head: ({ loaderData }: any) => ({ meta: [{ title: `${loaderData?.collectionName || "Snippets"} — Izwa` }] }),
+  loader: async ({ search }: any) => {
     const { collection } = (search || {}) as { collection?: number };
-    
+
     // On server, we can't access localStorage for the auth token.
-    // Return a flag so the client knows it needs to fetch the real data.
     if (typeof window === "undefined") {
       return { initialSnippets: [], collectionName: null, needsClientFetch: true };
     }
 
     try {
-      const endpoint = collection ? `/snippets/?collection_id=${collection}&limit=100` : "/snippets/?limit=100";
+      const endpoint = collection
+        ? `/snippets/?collection_id=${collection}&limit=100`
+        : "/snippets/?limit=100";
       const data = await api.get<{ items: any[] }>(endpoint);
-      
+
       let collectionName = null;
       if (collection) {
         try {
           const colData = await api.get<any>(`/collections/${collection}`);
           collectionName = colData.name;
-        } catch (e) {
+        } catch {
           collectionName = null;
         }
       }
 
-      return { 
-        initialSnippets: data.items.map(s => ({
+      return {
+        initialSnippets: data.items.map((s) => ({
           ...s,
           tags: s.tags.map((t: any) => t.name),
           dateObj: new Date(s.updated_at),
         })),
         collectionName,
-        needsClientFetch: false
+        needsClientFetch: false,
       };
     } catch (e) {
       return { initialSnippets: [], collectionName: null, needsClientFetch: false };
@@ -93,46 +102,73 @@ function SnippetsPage() {
   const [q, setQ] = useState("");
   const [lang, setLang] = useState("all");
   const [snippets, setSnippets] = useState<any[]>(data?.initialSnippets || []);
-  const [isClientLoading, setIsClientLoading] = useState(false);
+  const [collectionName, setCollectionName] = useState<string | null>(data?.collectionName || null);
+  const [isLoading, setIsLoading] = useState(data?.needsClientFetch ?? true);
 
-  useEffect(() => {
-    if (data?.initialSnippets && !data.needsClientFetch) {
-      setSnippets(data.initialSnippets);
-    }
-  }, [data?.initialSnippets, data?.needsClientFetch]);
+  // Collections for assignment dialog
+  const [collections, setCollections] = useState<any[]>([]);
+  const [assignDialogOpen, setAssignDialogOpen] = useState(false);
+  const [assignSnippet, setAssignSnippet] = useState<any>(null);
+  const [assignColId, setAssignColId] = useState<string>("none");
+  const [isAssigning, setIsAssigning] = useState(false);
 
+  // Fetch or sync snippets whenever the collection filter or loader data changes
   useEffect(() => {
-    // If the loader ran on server, we need to re-fetch on client where token is available
-    if (data?.needsClientFetch) {
-      const fetchOnClient = async () => {
-        setIsClientLoading(true);
+    if (!data) return;
+
+    if (data.needsClientFetch) {
+      let cancelled = false;
+      const fetchSnippets = async () => {
+        setIsLoading(true);
         try {
-          const endpoint = collection ? `/snippets/?collection_id=${collection}&limit=100` : "/snippets/?limit=100";
+          const endpoint = collection
+            ? `/snippets/?collection_id=${collection}&limit=100`
+            : "/snippets/?limit=100";
           const res = await api.get<{ items: any[] }>(endpoint);
-          setSnippets(res.items.map(s => ({
-            ...s,
-            tags: s.tags.map((t: any) => t.name),
-            dateObj: new Date(s.updated_at),
-          })));
+          if (cancelled) return;
+          setSnippets(
+            res.items.map((s) => ({
+              ...s,
+              tags: s.tags.map((t: any) => t.name),
+              dateObj: new Date(s.updated_at),
+            }))
+          );
+
+          if (collection) {
+            try {
+              const colData = await api.get<any>(`/collections/${collection}`);
+              if (!cancelled) setCollectionName(colData.name);
+            } catch {
+              if (!cancelled) setCollectionName(null);
+            }
+          } else {
+            setCollectionName(null);
+          }
         } catch (e) {
-          console.error("Failed to fetch snippets on client", e);
+          console.error("Failed to fetch snippets client-side", e);
         } finally {
-          setIsClientLoading(false);
+          if (!cancelled) setIsLoading(false);
         }
       };
-      fetchOnClient();
+      fetchSnippets();
+      return () => {
+        cancelled = true;
+      };
+    } else {
+      setSnippets(data.initialSnippets || []);
+      setCollectionName(data.collectionName || null);
+      setIsLoading(false);
     }
-  }, [data?.needsClientFetch, collection]);
+  }, [data, collection]);
 
-  if (!data) {
-    return (
-      <div className="flex items-center justify-center h-64">
-        <Loader2 className="h-8 w-8 animate-spin text-primary" />
-      </div>
-    );
-  }
+  // Load collections for the assignment dialog
+  useEffect(() => {
+    api.get<any[]>("/collections/")
+      .then(setCollections)
+      .catch(() => {});
+  }, []);
 
-  if (isClientLoading) {
+  if (isLoading) {
     return (
       <div className="flex flex-col items-center justify-center h-64 space-y-4">
         <Loader2 className="h-8 w-8 animate-spin text-primary" />
@@ -150,12 +186,9 @@ function SnippetsPage() {
   const toggleFavorite = async (id: number, current: boolean) => {
     try {
       await api.put(`/snippets/${id}`, { is_favorite: !current });
-      // Update local state for immediate feedback
       setSnippets((prev) =>
         prev.map((s) => (s.id === id ? { ...s, is_favorite: !current } : s))
       );
-      // Invalidate to update other routes (favorites, statistics)
-      router.invalidate();
       toast.success(!current ? t("snippets.add_favorite") : t("snippets.remove_favorite"));
     } catch (e) {
       toast.error(t("snippets.update_error"));
@@ -165,9 +198,7 @@ function SnippetsPage() {
   const deleteSnippet = async (id: number) => {
     try {
       await api.delete(`/snippets/${id}`);
-      // Update local state for immediate feedback
       setSnippets((prev) => prev.filter((s) => s.id !== id));
-      // Invalidate to update other routes
       router.invalidate();
       toast.success(t("snippets.delete_success"));
     } catch (e) {
@@ -181,6 +212,36 @@ function SnippetsPage() {
     toast.success(t("snippets.copy_link"));
   };
 
+  const openAssignDialog = (s: any) => {
+    setAssignSnippet(s);
+    setAssignColId(s.collection_id ? s.collection_id.toString() : "none");
+    setAssignDialogOpen(true);
+  };
+
+  const handleAssignCollection = async () => {
+    if (!assignSnippet) return;
+    setIsAssigning(true);
+    try {
+      const newColId = assignColId === "none" ? null : parseInt(assignColId);
+      await api.put(`/snippets/${assignSnippet.id}`, { collection_id: newColId });
+      setSnippets((prev) =>
+        prev.map((s) =>
+          s.id === assignSnippet.id ? { ...s, collection_id: newColId } : s
+        )
+      );
+      toast.success(
+        newColId
+          ? t("snippets.collection_assigned")
+          : t("snippets.collection_removed")
+      );
+      setAssignDialogOpen(false);
+    } catch (e) {
+      toast.error(t("snippets.update_error"));
+    } finally {
+      setIsAssigning(false);
+    }
+  };
+
   return (
     <div className="space-y-4">
       <div className="flex items-center justify-between gap-3">
@@ -190,7 +251,7 @@ function SnippetsPage() {
           </h2>
           {collection && (
             <div className="inline-flex items-center gap-1.5 px-2 py-1 rounded-full bg-primary/10 text-primary text-xs font-medium animate-in fade-in zoom-in duration-300">
-              <span>{t("snippets.collection_label")}{data.collectionName || t("collections.unknown")}</span>
+              <span>{t("snippets.collection_label")}{collectionName || t("collections.unknown")}</span>
               <Link to="/snippets" className="hover:text-primary/70 transition-colors">
                 <X className="h-3 w-3" />
               </Link>
@@ -284,9 +345,9 @@ function SnippetsPage() {
                   </Button>
                 </DropdownMenuTrigger>
                 <DropdownMenuContent align="end">
-                  <DropdownMenuItem onClick={() => toast.info(t("snippets.edit_coming_soon"))}>
-                    <Edit className="mr-2 h-4 w-4" />
-                    <span>{t("common.edit")}</span>
+                  <DropdownMenuItem onClick={() => openAssignDialog(s)}>
+                    <FolderOpen className="mr-2 h-4 w-4" />
+                    <span>{t("snippets.assign_collection")}</span>
                   </DropdownMenuItem>
                   <DropdownMenuItem onClick={() => shareSnippet(s)}>
                     <Share2 className="mr-2 h-4 w-4" />
@@ -308,6 +369,40 @@ function SnippetsPage() {
           <div className="p-12 text-center text-muted-foreground text-sm">{t("snippets.no_results")}</div>
         )}
       </motion.div>
+
+      {/* Dialog: Assign snippet to collection */}
+      <Dialog open={assignDialogOpen} onOpenChange={setAssignDialogOpen}>
+        <DialogContent className="w-[95vw] max-w-md rounded-xl">
+          <DialogHeader>
+            <DialogTitle>{t("snippets.assign_collection_title")}</DialogTitle>
+            <DialogDescription>
+              {t("snippets.assign_collection_desc")}
+            </DialogDescription>
+          </DialogHeader>
+          <div className="py-4">
+            <Select value={assignColId} onValueChange={setAssignColId}>
+              <SelectTrigger>
+                <SelectValue placeholder={t("snippets.form.no_collection")} />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="none">{t("snippets.form.no_collection")}</SelectItem>
+                {collections.map((c) => (
+                  <SelectItem key={c.id} value={c.id.toString()}>{c.name}</SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          </div>
+          <DialogFooter className="flex-col-reverse sm:flex-row gap-2">
+            <Button variant="outline" className="w-full sm:w-auto" onClick={() => setAssignDialogOpen(false)} disabled={isAssigning}>
+              {t("common.cancel")}
+            </Button>
+            <Button className="w-full sm:w-auto gradient-brand text-white border-0" onClick={handleAssignCollection} disabled={isAssigning}>
+              {isAssigning && <Loader2 className="h-4 w-4 animate-spin mr-2" />}
+              {t("common.save")}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }

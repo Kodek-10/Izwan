@@ -8,7 +8,7 @@ import { toast } from "sonner";
 import { motion, AnimatePresence } from "framer-motion";
 
 export const Route = createFileRoute("/_app/snippets/$id")({
-  head: ({ loaderData }) => {
+  head: ({ loaderData }: any) => {
     return { meta: [{ title: `${loaderData?.snippet?.title ?? "Snippet"} — Izwan` }] };
   },
   loader: async ({ params }) => {

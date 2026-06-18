@@ -7,6 +7,14 @@ export interface Snippet {
     code: string;
     description: string;
     tags: string[];
+    collection_id?: number | null;
+}
+
+export interface Collection {
+    id: number;
+    name: string;
+    description?: string;
+    icon?: string;
 }
 
 export class IzwaAPI {
@@ -115,6 +123,22 @@ export class IzwaAPI {
         } catch (error) {
             console.error('Create snippet network error:', error);
             return false;
+        }
+    }
+
+    static async fetchCollections(context: vscode.ExtensionContext): Promise<Collection[]> {
+        try {
+            const baseUrl = this.getBaseUrl();
+            const headers = await this.getAuthHeader(context);
+            const response = await fetch(`${baseUrl}/collections/`, { headers });
+            
+            if (!response.ok) {
+                return [];
+            }
+            return await response.json() as Collection[];
+        } catch (error) {
+            console.error('Izwa Error fetching collections:', error);
+            return [];
         }
     }
 }

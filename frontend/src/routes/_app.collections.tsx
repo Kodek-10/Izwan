@@ -19,7 +19,7 @@ import { api } from "@/lib/api-client";
 import { motion } from "framer-motion";
 
 export const Route = createFileRoute("/_app/collections")({
-  head: ({ loaderData }) => ({ meta: [{ title: `${loaderData?.t?.('collections.title') || 'Collections'} — Izwa` }] }),
+  head: ({ loaderData }: any) => ({ meta: [{ title: `${loaderData?.t?.('collections.title') || 'Collections'} — Izwa` }] }),
   loader: async () => {
     // On server, we can't access localStorage for the auth token.
     if (typeof window === "undefined") {
@@ -59,6 +59,10 @@ function CollectionsPage() {
   const initialCollections = data?.collections || [];
   const [collections, setCollections] = useState(initialCollections);
   const [isClientLoading, setIsClientLoading] = useState(false);
+  const [newColName, setNewColName] = useState("");
+  const [newColDesc, setNewColDesc] = useState("");
+  const [isDialogOpen, setIsDialogOpen] = useState(false);
+  const [isCreating, setIsCreating] = useState(false);
 
   useEffect(() => {
     if (data?.collections && !data.needsClientFetch) {
@@ -92,11 +96,6 @@ function CollectionsPage() {
       </div>
     );
   }
-
-  const [newColName, setNewColName] = useState("");
-  const [newColDesc, setNewColDesc] = useState("");
-  const [isDialogOpen, setIsDialogOpen] = useState(false);
-  const [isCreating, setIsCreating] = useState(false);
 
   const handleCreateCollection = async () => {
     if (!newColName.trim()) return;

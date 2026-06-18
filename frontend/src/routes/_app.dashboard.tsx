@@ -6,7 +6,7 @@ import { api } from "@/lib/api-client";
 import { useTranslation } from "react-i18next";
 
 export const Route = createFileRoute("/_app/dashboard")({
-  head: ({ loaderData }) => ({ meta: [{ title: `${loaderData?.t?.('dashboard.title') || 'Dashboard'} — Izwan` }] }),
+  head: ({ loaderData }: any) => ({ meta: [{ title: `${loaderData?.t?.('dashboard.title') || 'Dashboard'} — Izwan` }] }),
   loader: async () => {
     // On server, we can't access localStorage for the auth token.
     if (typeof window === "undefined") {

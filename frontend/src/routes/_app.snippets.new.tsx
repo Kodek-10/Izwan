@@ -1,6 +1,6 @@
 import { createFileRoute, Link, useNavigate, useRouter } from "@tanstack/react-router";
 import { ArrowLeft, X, Loader2, Sparkles } from "lucide-react";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useTranslation } from "react-i18next";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -14,13 +14,17 @@ import { api } from "@/lib/api-client";
 import { toast } from "sonner";
 
 export const Route = createFileRoute("/_app/snippets/new")({
-  head: ({ loaderData }) => ({ meta: [{ title: `${loaderData?.t?.('snippets.new') || 'Nouveau snippet'} — Izwan` }] }),
+  head: ({ loaderData }: any) => ({ meta: [{ title: `${loaderData?.t?.('snippets.new') || 'Nouveau snippet'} — Izwan` }] }),
   loader: async () => {
+    // On server, no localStorage token available
+    if (typeof window === "undefined") {
+      return { collections: [], needsClientFetch: true };
+    }
     try {
       const collections = await api.get<any[]>("/collections/");
-      return { collections };
+      return { collections, needsClientFetch: false };
     } catch (e) {
-      return { collections: [] };
+      return { collections: [], needsClientFetch: false };
     }
   },
   component: NewSnippetPage,
@@ -29,9 +33,9 @@ export const Route = createFileRoute("/_app/snippets/new")({
 function NewSnippetPage() {
   const { t } = useTranslation();
   const data = Route.useLoaderData();
-  const collections = data?.collections || [];
   const nav = useNavigate();
   const router = useRouter();
+  const [collections, setCollections] = useState<any[]>(data?.collections || []);
   const [isLoading, setIsLoading] = useState(false);
   const [title, setTitle] = useState("");
   const [language, setLanguage] = useState("Python");
@@ -42,6 +46,17 @@ function NewSnippetPage() {
   const [tagInput, setTagInput] = useState("");
   const [collectionId, setCollectionId] = useState<string>("none");
   const [isEnriching, setIsEnriching] = useState(false);
+
+  // Re-fetch collections on client if server couldn't (no auth token server-side)
+  useEffect(() => {
+    if (data?.needsClientFetch) {
+      api.get<any[]>("/collections/")
+        .then((cols) => setCollections(cols))
+        .catch(() => {});
+    } else if (data?.collections) {
+      setCollections(data.collections);
+    }
+  }, [data?.needsClientFetch, data?.collections]);
 
   const handleAIEnrich = async () => {
     if (!code.trim()) {

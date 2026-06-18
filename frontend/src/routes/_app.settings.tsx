@@ -14,7 +14,7 @@ import { toast } from "sonner";
 import { useTranslation } from "react-i18next";
 
 export const Route = createFileRoute("/_app/settings")({
-  head: ({ loaderData }) => ({ meta: [{ title: `${loaderData?.t?.('settings.title') || 'Paramètres'} — Izwan` }] }),
+  head: ({ loaderData }: any) => ({ meta: [{ title: `${loaderData?.t?.('settings.title') || 'Paramètres'} — Izwan` }] }),
   loader: async () => {
     // We can't use useTranslation here, but we can return the title key
     // On server, we can't access localStorage for the auth token.

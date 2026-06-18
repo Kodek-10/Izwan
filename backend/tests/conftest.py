@@ -1,3 +1,7 @@
+import os
+# Force sqlite for tests before app imports load_dotenv or database.py
+os.environ["DATABASE_URL"] = "sqlite:///./test.db"
+
 import pytest
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker

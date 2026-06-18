@@ -14,7 +14,7 @@ import { api } from "@/lib/api-client";
 import { motion } from "framer-motion";
 
 export const Route = createFileRoute("/_app/favorites")({
-  head: ({ loaderData }) => ({ meta: [{ title: `${loaderData?.t?.('favorites.title') || 'Favoris'} — Izwan` }] }),
+  head: ({ loaderData }: any) => ({ meta: [{ title: `${loaderData?.t?.('favorites.title') || 'Favoris'} — Izwan` }] }),
   loader: async () => {
     // On server, we can't access localStorage for the auth token.
     if (typeof window === "undefined") {
@@ -22,7 +22,7 @@ export const Route = createFileRoute("/_app/favorites")({
     }
 
     try {
-      const data = await api.get<{ items: any[] }>("/snippets/?is_favorite=true&limit=100");
+      const data = await api.get<{ items: any[] }>("/snippets/?favorite=true&limit=100");
       return { 
         initialSnippets: data.items.map(s => ({
           ...s,
@@ -73,7 +73,7 @@ function FavoritesPage() {
       const fetchOnClient = async () => {
         setIsClientLoading(true);
         try {
-          const res = await api.get<{ items: any[] }>("/snippets/?is_favorite=true&limit=100");
+          const res = await api.get<{ items: any[] }>("/snippets/?favorite=true&limit=100");
           setSnippets(res.items.map(s => ({
             ...s,
             tags: s.tags.map((t: any) => t.name),
@@ -101,7 +101,6 @@ function FavoritesPage() {
     try {
       await api.put(`/snippets/${id}`, { is_favorite: false });
       setSnippets((prev) => prev.filter((s) => s.id !== id));
-      router.invalidate();
       toast.success(t("snippets.remove_favorite"));
     } catch (e) {
       toast.error(t("snippets.update_error"));
