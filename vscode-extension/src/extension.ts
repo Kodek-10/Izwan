@@ -73,7 +73,47 @@ export function activate(context: vscode.ExtensionContext) {
         }
     });
 
-    context.subscriptions.push(refreshCommand, loginCommand, searchCommand);
+    let saveCommand = vscode.commands.registerCommand('izwa.saveSnippet', async () => {
+        const editor = vscode.window.activeTextEditor;
+        if (!editor) {
+            vscode.window.showWarningMessage(t('capture.no_selection'));
+            return;
+        }
+
+        const selection = editor.selection;
+        const text = editor.document.getText(selection);
+
+        if (!text || text.trim().length === 0) {
+            vscode.window.showWarningMessage(t('capture.no_selection'));
+            return;
+        }
+
+        const title = await vscode.window.showInputBox({
+            prompt: t('capture.prompt.title'),
+            placeHolder: 'e.g., Quick sort implementation'
+        });
+
+        if (!title || title.trim().length === 0) {
+            return;
+        }
+
+        const languageId = editor.document.languageId || 'plaintext';
+
+        const success = await IzwaAPI.createSnippet(context, {
+            title: title,
+            code: text,
+            language: languageId
+        });
+
+        if (success) {
+            vscode.window.showInformationMessage(t('capture.success'));
+            sidebarProvider.refresh();
+        } else {
+            vscode.window.showErrorMessage(t('capture.error'));
+        }
+    });
+
+    context.subscriptions.push(refreshCommand, loginCommand, searchCommand, saveCommand);
 }
 
 export function deactivate() {}

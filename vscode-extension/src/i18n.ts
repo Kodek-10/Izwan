@@ -11,6 +11,10 @@ const translations: Record<string, Record<string, string>> = {
         'search.placeholder': 'Recherche Izwa...',
         'search.no_results': 'Aucun résultat trouvé.',
         'search.select_placeholder': 'Sélectionnez un snippet à insérer',
+        'capture.prompt.title': 'Entrez le titre du snippet',
+        'capture.no_selection': 'Izwa: Veuillez d\'abord sélectionner du code dans l\'éditeur.',
+        'capture.success': 'Izwa: Snippet sauvegardé avec succès !',
+        'capture.error': 'Izwa: Échec de la sauvegarde du snippet.',
         'sidebar.search_placeholder': 'Rechercher un snippet...',
         'sidebar.loading': 'Chargement...',
         'sidebar.title': 'Izwa Snippets'
@@ -25,6 +29,10 @@ const translations: Record<string, Record<string, string>> = {
         'search.placeholder': 'Izwa Search...',
         'search.no_results': 'No results found.',
         'search.select_placeholder': 'Select a snippet to insert',
+        'capture.prompt.title': 'Enter snippet title',
+        'capture.no_selection': 'Izwa: Please select some code in the editor first.',
+        'capture.success': 'Izwa: Snippet successfully saved!',
+        'capture.error': 'Izwa: Failed to save snippet.',
         'sidebar.search_placeholder': 'Search a snippet...',
         'sidebar.loading': 'Loading...',
         'sidebar.title': 'Izwa Snippets'

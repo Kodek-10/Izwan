@@ -85,4 +85,36 @@ export class IzwaAPI {
             return [];
         }
     }
+
+    static async createSnippet(context: vscode.ExtensionContext, snippetData: { title: string; code: string; language: string }): Promise<boolean> {
+        try {
+            const baseUrl = this.getBaseUrl();
+            const headers = await this.getAuthHeader(context);
+            
+            const response = await fetch(`${baseUrl}/snippets/`, {
+                method: 'POST',
+                headers: {
+                    ...headers,
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    title: snippetData.title,
+                    code: snippetData.code,
+                    language: snippetData.language,
+                    description: "", // Généré automatiquement par l'IA au backend si non spécifié
+                    tags: []
+                })
+            });
+
+            if (!response.ok) {
+                const errText = await response.text();
+                console.error('Create snippet error response:', errText);
+                return false;
+            }
+            return true;
+        } catch (error) {
+            console.error('Create snippet network error:', error);
+            return false;
+        }
+    }
 }

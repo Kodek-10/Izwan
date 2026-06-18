@@ -10,7 +10,8 @@
     "Other"
   ],
   "activationEvents": [
-    "onView:izwa-snippets-view"
+    "onView:izwa-snippets-view",
+    "onCommand:izwa.saveSnippet"
   ],
   "main": "./out/extension.js",
   "contributes": {
@@ -38,6 +39,10 @@
         "title": "%izwa.searchSnippet.title%"
       },
       {
+        "command": "izwa.saveSnippet",
+        "title": "%izwa.saveSnippet.title%"
+      },
+      {
         "command": "izwa.refreshSnippets",
         "title": "%izwa.refreshSnippets.title%"
       },
@@ -46,6 +51,15 @@
         "title": "%izwa.login.title%"
       }
     ],
+    "menus": {
+      "editor/context": [
+        {
+          "command": "izwa.saveSnippet",
+          "when": "editorHasSelection",
+          "group": "navigation"
+        }
+      ]
+    },
     "configuration": {
       "title": "Izwa",
       "properties": {
