@@ -1,22 +1,23 @@
 import os
-from langchain_groq import ChatGroq
 from langchain_core.output_parsers import JsonOutputParser
 from langchain_core.prompts import PromptTemplate
 from typing import List, Dict, Any
 import json
+from ..core.privacy import is_air_gapped
 
 class AIService:
     def __init__(self):
-        # Utilise Groq si une clé est présente, sinon reste sur Ollama (local)
-        api_key = os.getenv("GROQ_API_KEY")
-        if api_key:
-            print("INFO: Initialisation de l'IA avec Groq (llama-3.1-8b-instant)")
-            self.model = ChatGroq(
-                model_name="llama-3.1-8b-instant",
-                groq_api_key=api_key,
-                temperature=0.3
-            )
-        else:
+        self.model = None
+        self.provider = None
+        self.parser = JsonOutputParser()
+
+    def _get_model(self):
+        provider = "ollama" if is_air_gapped() or not os.getenv("GROQ_API_KEY") else "groq"
+        if self.model is not None and self.provider == provider:
+            return self.model
+
+        self.provider = provider
+        if provider == "ollama":
             print("INFO: Initialisation de l'IA avec Ollama (gemma2:2b)")
             from langchain_ollama import ChatOllama
             self.model = ChatOllama(
@@ -24,7 +25,16 @@ class AIService:
                 temperature=0.3,
                 base_url=os.getenv("OLLAMA_BASE_URL", "http://localhost:11434")
             )
-        self.parser = JsonOutputParser()
+            return self.model
+
+        print("INFO: Initialisation de l'IA avec Groq (llama-3.1-8b-instant)")
+        from langchain_groq import ChatGroq
+        self.model = ChatGroq(
+            model_name="llama-3.1-8b-instant",
+            groq_api_key=os.getenv("GROQ_API_KEY"),
+            temperature=0.3
+        )
+        return self.model
 
     async def generate_tags_and_description(self, code: str, language: str, lang: str = "fr"):
         if lang == "en":
@@ -49,7 +59,7 @@ class AIService:
             input_variables=["code", "language"],
         )
 
-        chain = prompt | self.model | self.parser
+        chain = prompt | self._get_model() | self.parser
 
         try:
             result = await chain.ainvoke({"code": code, "language": language})
@@ -101,7 +111,7 @@ class AIService:
             input_variables=["context", "query"],
         )
 
-        chain = prompt | self.model
+        chain = prompt | self._get_model()
 
         try:
             result = await chain.ainvoke({"context": context_text, "query": query})
@@ -140,7 +150,7 @@ class AIService:
             input_variables=["code", "language"],
         )
 
-        chain = prompt | self.model
+        chain = prompt | self._get_model()
 
         try:
             result = await chain.ainvoke({"code": code, "language": language})
@@ -193,7 +203,7 @@ class AIService:
             input_variables=["code", "language", "surrounding_code"],
         )
 
-        chain = prompt | self.model
+        chain = prompt | self._get_model()
 
         try:
             result = await chain.ainvoke({"code": code, "language": language, "surrounding_code": surrounding_code})
@@ -249,7 +259,7 @@ class AIService:
                 input_variables=["code", "source_language", "target_language"],
             )
 
-            chain = prompt | self.model
+            chain = prompt | self._get_model()
 
             result = await chain.ainvoke({"code": code, "source_language": source_language, "target_language": target_language})
             content = result.content.strip()

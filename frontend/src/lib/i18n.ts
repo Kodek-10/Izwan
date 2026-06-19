@@ -114,7 +114,11 @@ const resources = {
           "auto_tags": "Auto-génération de tags",
           "auto_tags_desc": "Suggérer des tags dès la création d'un snippet.",
           "high_perf": "Modèle haute performance",
-          "high_perf_desc": "Utiliser des modèles plus puissants."
+          "high_perf_desc": "Utiliser des modèles plus puissants.",
+          "air_gapped": "Mode 100% local",
+          "air_gapped_desc": "Force Ollama et FastEmbed pour éviter les appels IA externes.",
+          "air_gapped_forced": "Forcé par la configuration serveur.",
+          "providers": "Génération : {{generation}} · Recherche : {{embedding}}"
         },
         "editor": {
           "line_numbers": "Numéros de ligne",
@@ -399,7 +403,11 @@ const resources = {
           "auto_tags": "Auto-generate tags",
           "auto_tags_desc": "Suggest tags upon snippet creation.",
           "high_perf": "High-performance model",
-          "high_perf_desc": "Use more powerful models."
+          "high_perf_desc": "Use more powerful models.",
+          "air_gapped": "100% local mode",
+          "air_gapped_desc": "Forces Ollama and FastEmbed to prevent external AI calls.",
+          "air_gapped_forced": "Forced by server configuration.",
+          "providers": "Generation: {{generation}} · Search: {{embedding}}"
         },
         "editor": {
           "line_numbers": "Line Numbers",

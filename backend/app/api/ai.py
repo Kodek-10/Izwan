@@ -6,6 +6,7 @@ from ..services.ai_service import ai_service
 from ..services.embedding_service import embedding_service
 from ..core.database import get_db
 from ..core.security import get_current_user
+from ..core.privacy import AIR_GAPPED_FORCED, is_air_gapped, set_air_gapped
 from .. import models, schemas
 
 router = APIRouter()
@@ -30,6 +31,35 @@ class ExplainRequest(BaseModel):
 
 class ExplainResponse(BaseModel):
     explanation: str
+
+class PrivacySettings(BaseModel):
+    air_gapped: bool
+    forced: bool = False
+    generation_provider: str
+    embedding_provider: str
+
+class PrivacyUpdate(BaseModel):
+    air_gapped: bool
+
+def get_privacy_settings() -> PrivacySettings:
+    return PrivacySettings(
+        air_gapped=is_air_gapped(),
+        forced=AIR_GAPPED_FORCED,
+        generation_provider="ollama" if is_air_gapped() else "auto",
+        embedding_provider="fastembed",
+    )
+
+@router.get("/privacy", response_model=PrivacySettings)
+def read_privacy_settings(current_user: models.User = Depends(get_current_user)):
+    return get_privacy_settings()
+
+@router.put("/privacy", response_model=PrivacySettings)
+def update_privacy_settings(
+    request: PrivacyUpdate,
+    current_user: models.User = Depends(get_current_user),
+):
+    set_air_gapped(request.air_gapped)
+    return get_privacy_settings()
 
 @router.post("/enrich", response_model=EnrichResponse)
 async def enrich_snippet(request: EnrichRequest, accept_language: Optional[str] = Header(None)):

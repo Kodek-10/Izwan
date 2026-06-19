@@ -65,7 +65,7 @@ Ce document propose une vision approfondie et pédagogique des évolutions du pr
 ## 🔒 ÉTAPE 4 : Souveraineté et Confidentialité (Privacy)
 *Garantir que l'outil est utilisable dans des environnements ultra-sécurisés (banques, défense, etc.).*
 
-### 4.1 - Certification "Air-gapped" (100% Local)
+### 4.1 - Certification "Air-gapped" (100% Local) - [FAIT] ✅
 - **Pourquoi ?** Pour les entreprises qui interdisent l'envoi de code vers le cloud (OpenAI/Claude).
 - **Comment ?** Optimisation du backend pour détecter et n'utiliser qu'Ollama (pour la génération) et FastEmbed (pour la recherche). Une option dans les réglages permet de couper toute velléité d'appel réseau externe.
 
