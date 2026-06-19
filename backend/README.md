@@ -1,4 +1,4 @@
-# Izwa - Backend
+# Izwan - Backend
 
 Le backend est une API REST performante construite avec **FastAPI**, conçue pour gérer efficacement vos snippets de code avec une couche d'intelligence artificielle locale.
 

@@ -37,7 +37,7 @@ const snippetsSearchSchema = z.object({
 
 export const Route = createFileRoute("/_app/snippets/")({
   validateSearch: snippetsSearchSchema,
-  head: ({ loaderData }: any) => ({ meta: [{ title: `${loaderData?.collectionName || "Snippets"} — Izwa` }] }),
+  head: ({ loaderData }: any) => ({ meta: [{ title: `${loaderData?.collectionName || "Snippets"} — Izwan` }] }),
   loader: async ({ search }: any) => {
     const { collection } = (search || {}) as { collection?: number };
 

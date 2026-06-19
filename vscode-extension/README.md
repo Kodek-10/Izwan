@@ -1,10 +1,10 @@
-# Izwa - Extension VS Code
+# Izwan - Extension VS Code
 
-Cette extension vous permet d'accéder à vos snippets Izwa directement depuis votre éditeur.
+Cette extension vous permet d'accéder à vos snippets Izwan directement depuis votre éditeur.
 
 ## Fonctionnalités
 
-- **Sidebar Izwa** : Visualisez tous vos snippets dans une barre latérale dédiée.
+- **Sidebar Izwan** : Visualisez tous vos snippets dans une barre latérale dédiée.
 - **Insertion en un clic** : Cliquez sur un snippet pour l'insérer à l'emplacement de votre curseur.
 - **Recherche rapide** : Recherchez vos snippets par titre directement dans la sidebar.
 - **Commande de rafraîchissement** : Mettez à jour la liste depuis votre base locale.
@@ -20,9 +20,9 @@ Cette extension vous permet d'accéder à vos snippets Izwa directement depuis v
 Par défaut, l'extension se connecte à `http://localhost:8000`.
 Pour l'utiliser avec une version déployée (ex: sur Render ou Hugging Face) :
 1. Allez dans les **Paramètres** de VS Code (`Ctrl+,`).
-2. Recherchez **"Izwa: Backend Url"**.
+2. Recherchez **"Izwan: Backend Url"**.
 3. Entrez l'URL de votre API déployée (ex: `https://izwa-api.onrender.com/api/v1`).
-4. Utilisez la commande **`Izwa: Se connecter`** pour vous authentifier sur le serveur distant.
+4. Utilisez la commande **`Izwan: Se connecter`** pour vous authentifier sur le serveur distant.
 
 ## Installation (Utilisateurs)
 

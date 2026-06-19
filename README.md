@@ -53,4 +53,4 @@ La documentation complète de l'API est disponible sur `http://localhost:8000/do
 Ce projet est sous licence **MIT**. Voir le fichier [LICENSE](./LICENSE) pour plus de détails.
 
 ---
-Développé avec ❤️ par la communauté Izwa.
+Développé par la communauté Izwan.

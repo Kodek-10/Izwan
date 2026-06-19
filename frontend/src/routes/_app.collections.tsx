@@ -19,7 +19,7 @@ import { api } from "@/lib/api-client";
 import { motion } from "framer-motion";
 
 export const Route = createFileRoute("/_app/collections")({
-  head: ({ loaderData }: any) => ({ meta: [{ title: `${loaderData?.t?.('collections.title') || 'Collections'} — Izwa` }] }),
+  head: ({ loaderData }: any) => ({ meta: [{ title: `${loaderData?.t?.('collections.title') || 'Collections'} — Izwan` }] }),
   loader: async () => {
     // On server, we can't access localStorage for the auth token.
     if (typeof window === "undefined") {

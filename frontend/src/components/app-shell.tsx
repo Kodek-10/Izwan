@@ -237,7 +237,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
               </SheetContent>
             </Sheet>
             <h1 className="text-lg md:text-xl font-display font-semibold truncate max-w-[150px] sm:max-w-none">
-              {current?.label ?? "Izwa"}
+              {current?.label ?? "Izwan"}
             </h1>
           </div>
 

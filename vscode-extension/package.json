@@ -1,7 +1,7 @@
 {
   "name": "izwa-vscode",
-  "displayName": "Izwa - Snippet Manager IA",
-  "description": "Accédez à vos snippets Izwa directement depuis votre éditeur.",
+  "displayName": "Izwan - Snippet Manager IA",
+  "description": "Accédez à vos snippets Izwan directement depuis votre éditeur.",
   "version": "0.0.1",
   "engines": {
     "vscode": "^1.85.0"
@@ -19,7 +19,7 @@
       "activitybar": [
         {
           "id": "izwa-explorer",
-          "title": "Izwa",
+          "title": "Izwan",
           "icon": "media/icon.svg"
         }
       ]
@@ -61,7 +61,7 @@
       ]
     },
     "configuration": {
-      "title": "Izwa",
+      "title": "Izwan",
       "properties": {
         "izwa.backendUrl": {
           "type": "string",

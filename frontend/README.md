@@ -1,4 +1,4 @@
-# Izwa - Frontend
+# Izwan - Frontend
 
 Une interface utilisateur moderne et réactive pour gérer vos snippets de code, construite avec les dernières technologies de l'écosystème React.
 

@@ -10,7 +10,7 @@ import { useEffect, useState } from "react";
 import { Loader2 } from "lucide-react";
 
 export const Route = createFileRoute("/_app/statistics")({
-  head: () => ({ meta: [{ title: "Statistiques — Izwa" }] }),
+  head: () => ({ meta: [{ title: "Statistiques — Izwan" }] }),
   loader: async () => {
     // On server, we can't access localStorage for the auth token.
     if (typeof window === "undefined") {

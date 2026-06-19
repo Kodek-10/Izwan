@@ -34,7 +34,7 @@ export class IzwaAPI {
             const response = await fetch(`${baseUrl}/snippets/`, { headers });
             
             if (response.status === 401) {
-                vscode.window.showWarningMessage('Izwa: Session expirée ou non connectée. Veuillez vous connecter.');
+                vscode.window.showWarningMessage('Izwan: Session expirée ou non connectée. Veuillez vous connecter.');
                 return [];
             }
 
@@ -46,8 +46,8 @@ export class IzwaAPI {
             // Gérer le format paginé { total, items, ... }
             return (data.items || []) as Snippet[];
         } catch (error) {
-            console.error('Izwa Error:', error);
-            vscode.window.showErrorMessage(`Izwa: Impossible de se connecter au backend. Vérifiez l'URL et assurez-vous qu'il est lancé.`);
+            console.error('Izwan Error:', error);
+            vscode.window.showErrorMessage(`Izwan: Impossible de se connecter au backend. Vérifiez l'URL et assurez-vous qu'il est lancé.`);
             return [];
         }
     }
@@ -137,7 +137,7 @@ export class IzwaAPI {
             }
             return await response.json() as Collection[];
         } catch (error) {
-            console.error('Izwa Error fetching collections:', error);
+            console.error('Izwan Error fetching collections:', error);
             return [];
         }
     }
@@ -163,7 +163,7 @@ export class IzwaAPI {
             const data = await response.json() as { explanation: string };
             return data.explanation;
         } catch (error) {
-            console.error('Izwa Error explaining snippet:', error);
+            console.error('Izwan Error explaining snippet:', error);
             throw error;
         }
     }
@@ -189,7 +189,7 @@ export class IzwaAPI {
             const data = await response.json() as { adapted_code: string };
             return data.adapted_code;
         } catch (error) {
-            console.error('Izwa Error adapting snippet:', error);
+            console.error('Izwan Error adapting snippet:', error);
             throw error;
         }
     }

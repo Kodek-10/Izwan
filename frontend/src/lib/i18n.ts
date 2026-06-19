@@ -21,7 +21,7 @@ const resources = {
         "empty": "Aucun favori pour le moment."
       },
       "assistant": {
-        "title": "Assistant Izwa",
+        "title": "Assistant Izwan",
         "subtitle": "Posez des questions sur vos snippets ou sur le développement.",
         "clear_chat": "Effacer",
         "clear_success": "Conversation effacée",
@@ -306,7 +306,7 @@ const resources = {
         "empty": "No favorites for now."
       },
       "assistant": {
-        "title": "Izwa Assistant",
+        "title": "Izwan Assistant",
         "subtitle": "Ask questions about your snippets or development.",
         "clear_chat": "Clear",
         "clear_success": "Conversation cleared",

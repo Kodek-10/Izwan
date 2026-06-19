@@ -8,7 +8,7 @@ import { api } from "@/lib/api-client";
 import { toast } from "sonner";
 
 export const Route = createFileRoute("/_app/assistant")({
-  head: () => ({ meta: [{ title: "Assistant Chat IA — Izwa" }] }),
+  head: () => ({ meta: [{ title: "Assistant Chat IA — Izwan" }] }),
   component: AssistantPage,
 });
 

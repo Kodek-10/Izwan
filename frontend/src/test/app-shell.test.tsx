@@ -28,7 +28,7 @@ describe('AppShell component', () => {
       </ThemeProvider>
     );
     
-    expect(screen.getByAltText('Izwa')).toBeInTheDocument();
+    expect(screen.getByAltText('Izwan')).toBeInTheDocument();
     expect(screen.getByText(/Izw/)).toBeInTheDocument();
     expect(screen.getAllByText('Tableau de bord').length).toBeGreaterThan(0);
   });

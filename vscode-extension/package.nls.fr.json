@@ -1,8 +1,8 @@
 {
-    "izwa.searchSnippet.title": "Izwa: Rechercher un snippet",
-    "izwa.saveSnippet.title": "Izwa: Enregistrer dans Izwan",
-    "izwa.refreshSnippets.title": "Izwa: Rafraîchir la liste",
-    "izwa.login.title": "Izwa: Se connecter",
+    "izwa.searchSnippet.title": "Izwan: Rechercher un snippet",
+    "izwa.saveSnippet.title": "Izwan: Enregistrer dans Izwan",
+    "izwa.refreshSnippets.title": "Izwan: Rafraîchir la liste",
+    "izwa.login.title": "Izwan: Se connecter",
     "izwa.view.name": "Mes Snippets",
-    "izwa.configuration.backendUrl.description": "URL de l'API Backend Izwa"
+    "izwa.configuration.backendUrl.description": "URL de l'API Backend Izwan"
 }

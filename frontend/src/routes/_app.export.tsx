@@ -10,7 +10,7 @@ import { toast } from "sonner";
 import { useTranslation } from "react-i18next";
 
 export const Route = createFileRoute("/_app/export")({
-  head: ({ loaderData }: any) => ({ meta: [{ title: `${loaderData?.t?.('export.title') || 'Exportations'} — Izwa` }] }),
+  head: ({ loaderData }: any) => ({ meta: [{ title: `${loaderData?.t?.('export.title') || 'Exportations'} — Izwan` }] }),
   loader: async () => {
     try {
       const collections = await api.get<any[]>("/collections/");
