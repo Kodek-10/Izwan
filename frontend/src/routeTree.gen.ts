@@ -19,6 +19,7 @@ import { Route as AppSettingsRouteImport } from './routes/_app.settings'
 import { Route as AppFavoritesRouteImport } from './routes/_app.favorites'
 import { Route as AppExportRouteImport } from './routes/_app.export'
 import { Route as AppDashboardRouteImport } from './routes/_app.dashboard'
+import { Route as AppConstellationRouteImport } from './routes/_app.constellation'
 import { Route as AppCollectionsRouteImport } from './routes/_app.collections'
 import { Route as AppAssistantRouteImport } from './routes/_app.assistant'
 import { Route as AppSnippetsIndexRouteImport } from './routes/_app.snippets.index'
@@ -74,6 +75,11 @@ const AppDashboardRoute = AppDashboardRouteImport.update({
   path: '/dashboard',
   getParentRoute: () => AppRoute,
 } as any)
+const AppConstellationRoute = AppConstellationRouteImport.update({
+  id: '/constellation',
+  path: '/constellation',
+  getParentRoute: () => AppRoute,
+} as any)
 const AppCollectionsRoute = AppCollectionsRouteImport.update({
   id: '/collections',
   path: '/collections',
@@ -106,6 +112,7 @@ export interface FileRoutesByFullPath {
   '/signup': typeof SignupRoute
   '/assistant': typeof AppAssistantRoute
   '/collections': typeof AppCollectionsRoute
+  '/constellation': typeof AppConstellationRoute
   '/dashboard': typeof AppDashboardRoute
   '/export': typeof AppExportRoute
   '/favorites': typeof AppFavoritesRoute
@@ -121,6 +128,7 @@ export interface FileRoutesByTo {
   '/signup': typeof SignupRoute
   '/assistant': typeof AppAssistantRoute
   '/collections': typeof AppCollectionsRoute
+  '/constellation': typeof AppConstellationRoute
   '/dashboard': typeof AppDashboardRoute
   '/export': typeof AppExportRoute
   '/favorites': typeof AppFavoritesRoute
@@ -138,6 +146,7 @@ export interface FileRoutesById {
   '/signup': typeof SignupRoute
   '/_app/assistant': typeof AppAssistantRoute
   '/_app/collections': typeof AppCollectionsRoute
+  '/_app/constellation': typeof AppConstellationRoute
   '/_app/dashboard': typeof AppDashboardRoute
   '/_app/export': typeof AppExportRoute
   '/_app/favorites': typeof AppFavoritesRoute
@@ -157,6 +166,7 @@ export interface FileRouteTypes {
     | '/signup'
     | '/assistant'
     | '/collections'
+    | '/constellation'
     | '/dashboard'
     | '/export'
     | '/favorites'
@@ -172,6 +182,7 @@ export interface FileRouteTypes {
     | '/signup'
     | '/assistant'
     | '/collections'
+    | '/constellation'
     | '/dashboard'
     | '/export'
     | '/favorites'
@@ -188,6 +199,7 @@ export interface FileRouteTypes {
     | '/signup'
     | '/_app/assistant'
     | '/_app/collections'
+    | '/_app/constellation'
     | '/_app/dashboard'
     | '/_app/export'
     | '/_app/favorites'
@@ -278,6 +290,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AppDashboardRouteImport
       parentRoute: typeof AppRoute
     }
+    '/_app/constellation': {
+      id: '/_app/constellation'
+      path: '/constellation'
+      fullPath: '/constellation'
+      preLoaderRoute: typeof AppConstellationRouteImport
+      parentRoute: typeof AppRoute
+    }
     '/_app/collections': {
       id: '/_app/collections'
       path: '/collections'
@@ -335,6 +354,7 @@ const AppSnippetsRouteWithChildren = AppSnippetsRoute._addFileChildren(
 interface AppRouteChildren {
   AppAssistantRoute: typeof AppAssistantRoute
   AppCollectionsRoute: typeof AppCollectionsRoute
+  AppConstellationRoute: typeof AppConstellationRoute
   AppDashboardRoute: typeof AppDashboardRoute
   AppExportRoute: typeof AppExportRoute
   AppFavoritesRoute: typeof AppFavoritesRoute
@@ -347,6 +367,7 @@ interface AppRouteChildren {
 const AppRouteChildren: AppRouteChildren = {
   AppAssistantRoute: AppAssistantRoute,
   AppCollectionsRoute: AppCollectionsRoute,
+  AppConstellationRoute: AppConstellationRoute,
   AppDashboardRoute: AppDashboardRoute,
   AppExportRoute: AppExportRoute,
   AppFavoritesRoute: AppFavoritesRoute,

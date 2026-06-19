@@ -1,6 +1,7 @@
 import { createFileRoute, Link, notFound } from "@tanstack/react-router";
-import { ArrowLeft, Copy, Star, Loader2, Sparkles, X } from "lucide-react";
+import { ArrowLeft, Copy, Star, Loader2, Sparkles, X, Languages } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
 import { useState, useEffect } from "react";
 import { useTranslation } from "react-i18next";
 import { api } from "@/lib/api-client";
@@ -45,6 +46,11 @@ function SnippetDetail() {
   // New AI Explanation state
   const [explanation, setExplanation] = useState("");
   const [isExplaining, setIsExplaining] = useState(false);
+
+  // New Translation state
+  const [isTranslating, setIsTranslating] = useState(false);
+  const [showTranslateUI, setShowTranslateUI] = useState(false);
+  const [targetLang, setTargetLang] = useState("");
 
   useEffect(() => {
     if (data?.snippet && !data.needsClientFetch) {
@@ -120,6 +126,41 @@ function SnippetDetail() {
     }
   };
 
+  const handleTranslate = async () => {
+    if (!targetLang.trim()) {
+      toast.error("Veuillez entrer un langage cible (ex: TypeScript, Python)");
+      return;
+    }
+    setIsTranslating(true);
+    try {
+      const res = await api.post<{ translated_code: string, description?: string, tags?: string[] }>("/ai/translate", {
+        code: snippet.code,
+        source_language: snippet.language,
+        target_language: targetLang
+      });
+      
+      const newSnippetTitle = `${snippet.title} (${targetLang})`;
+      const createRes = await api.post<any>("/snippets/", {
+        title: newSnippetTitle,
+        description: res.description || `Traduction de ${snippet.title} en ${targetLang}`,
+        code: res.translated_code,
+        language: targetLang.toLowerCase(),
+        collection_id: snippet.collection_id,
+        tags: res.tags || [targetLang.toLowerCase(), "traduction"]
+      });
+      
+      toast.success("Traduction réussie et sauvegardée comme nouveau snippet !");
+      setShowTranslateUI(false);
+      setTargetLang("");
+      // Refresh the page or navigate to new snippet if we had the router here
+      // window.location.href = `/snippets/${createRes.id}`;
+    } catch (e) {
+      toast.error("Erreur lors de la traduction");
+    } finally {
+      setIsTranslating(false);
+    }
+  };
+
   return (
     <motion.div 
       initial={{ opacity: 0, y: 20 }}
@@ -135,6 +176,15 @@ function SnippetDetail() {
         <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-4">
           <h1 className="text-xl sm:text-2xl font-display font-semibold break-words">{snippet.title}</h1>
           <div className="flex items-center gap-2 self-end sm:self-auto">
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => setShowTranslateUI(!showTranslateUI)}
+              className="text-primary border-primary/20 hover:bg-primary/5 text-xs"
+            >
+              <Languages className="h-3.5 w-3.5 mr-1.5" />
+              Traduire
+            </Button>
             <Button
               variant="outline"
               size="sm"
@@ -161,6 +211,38 @@ function SnippetDetail() {
             <span key={t} className="px-2 py-0.5 rounded-md bg-primary/10 text-primary text-[10px] sm:text-xs font-medium lowercase">{t}</span>
           ))}
         </div>
+
+        <AnimatePresence>
+          {showTranslateUI && (
+            <motion.div 
+              initial={{ opacity: 0, height: 0 }}
+              animate={{ opacity: 1, height: "auto" }}
+              exit={{ opacity: 0, height: 0 }}
+              className="bg-card border border-border rounded-xl p-4 sm:p-5 relative overflow-hidden shadow-sm"
+            >
+              <h3 className="text-sm font-semibold mb-3 flex items-center gap-2">
+                <Languages className="h-4 w-4" /> Traduire le snippet
+              </h3>
+              <div className="flex gap-2 items-center">
+                <Input 
+                  placeholder="Langage cible (ex: python, typescript)" 
+                  value={targetLang}
+                  onChange={(e) => setTargetLang(e.target.value)}
+                  className="max-w-xs h-9"
+                />
+                <Button 
+                  size="sm" 
+                  onClick={handleTranslate} 
+                  disabled={isTranslating || !targetLang.trim()}
+                  className="h-9"
+                >
+                  {isTranslating ? <Loader2 className="h-4 w-4 animate-spin mr-2" /> : <Sparkles className="h-4 w-4 mr-2" />}
+                  Lancer la traduction
+                </Button>
+              </div>
+            </motion.div>
+          )}
+        </AnimatePresence>
 
         <AnimatePresence>
           {explanation && (

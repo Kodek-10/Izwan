@@ -30,6 +30,9 @@ export class IzwaSidebarProvider implements vscode.WebviewViewProvider {
                 case 'insertSnippet':
                     this._insertSnippet(data.code);
                     break;
+                case 'smartInsertSnippet':
+                    this._smartInsertSnippet(data.code, data.language);
+                    break;
                 case 'refresh':
                     this.refresh();
                     break;
@@ -69,6 +72,43 @@ export class IzwaSidebarProvider implements vscode.WebviewViewProvider {
                 editBuilder.insert(editor.selection.active, code);
             });
         }
+    }
+
+    private async _smartInsertSnippet(code: string, language: string) {
+        const editor = vscode.window.activeTextEditor;
+        if (!editor) {
+            vscode.window.showWarningMessage('Aucun éditeur actif pour insérer le snippet.');
+            return;
+        }
+
+        const document = editor.document;
+        const position = editor.selection.active;
+        const startLine = Math.max(0, position.line - 10);
+        const endLine = Math.min(document.lineCount - 1, position.line + 10);
+        const range = new vscode.Range(startLine, 0, endLine, document.lineAt(endLine).text.length);
+        const surroundingCode = document.getText(range);
+
+        vscode.window.withProgress({
+            location: vscode.ProgressLocation.Notification,
+            title: "Adaptation du snippet en cours (IA)...",
+            cancellable: false
+        }, async () => {
+            try {
+                const adaptedCode = await IzwaAPI.adaptSnippet(this._context, code, language, surroundingCode);
+                if (vscode.window.activeTextEditor) {
+                    vscode.window.activeTextEditor.edit(editBuilder => {
+                        editBuilder.insert(vscode.window.activeTextEditor!.selection.active, adaptedCode);
+                    });
+                }
+            } catch (error) {
+                vscode.window.showErrorMessage("Erreur lors de l'adaptation. Insertion standard...");
+                if (vscode.window.activeTextEditor) {
+                    vscode.window.activeTextEditor.edit(editBuilder => {
+                        editBuilder.insert(vscode.window.activeTextEditor!.selection.active, code);
+                    });
+                }
+            }
+        });
     }
 
     private _getHtmlForWebview(webview: vscode.Webview) {
@@ -314,6 +354,17 @@ export class IzwaSidebarProvider implements vscode.WebviewViewProvider {
                         });
                     }
 
+                    function smartInsertSnippet(id) {
+                        const s = allSnippets.find(x => x.id === id);
+                        if (!s) return;
+                        
+                        vscode.postMessage({
+                            type: 'smartInsertSnippet',
+                            code: s.code,
+                            language: s.language
+                        });
+                    }
+
                     function getLangClass(lang) {
                         const l = lang.toLowerCase();
                         if (['javascript', 'js', 'typescript', 'ts', 'python', 'py', 'html', 'css', 'json'].includes(l)) {
@@ -375,6 +426,7 @@ export class IzwaSidebarProvider implements vscode.WebviewViewProvider {
                                     <div class="title" title="\${s.title}">\${s.title}</div>
                                     <div style="display: flex; gap: 6px; align-items: center;">
                                         <span class="badge \${getLangClass(s.language)}">\${s.language}</span>
+                                        <button class="explain-btn" title="Insertion Intelligente (IA)" onclick="event.stopPropagation(); smartInsertSnippet(\${s.id})">🪄</button>
                                         <button class="explain-btn" title="Expliquer avec l'IA" onclick="event.stopPropagation(); explainSnippet(\${s.id})">💡</button>
                                     </div>
                                 </div>

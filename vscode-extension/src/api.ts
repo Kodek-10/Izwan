@@ -167,4 +167,30 @@ export class IzwaAPI {
             throw error;
         }
     }
+
+    static async adaptSnippet(context: vscode.ExtensionContext, code: string, language: string, surroundingCode: string): Promise<string> {
+        try {
+            const baseUrl = this.getBaseUrl();
+            const headers = await this.getAuthHeader(context);
+            
+            const response = await fetch(`${baseUrl}/ai/adapt`, {
+                method: 'POST',
+                headers: {
+                    ...headers,
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ code, language, surrounding_code: surroundingCode })
+            });
+
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
+
+            const data = await response.json() as { adapted_code: string };
+            return data.adapted_code;
+        } catch (error) {
+            console.error('Izwa Error adapting snippet:', error);
+            throw error;
+        }
+    }
 }

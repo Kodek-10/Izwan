@@ -151,4 +151,135 @@ class AIService:
                 return "Sorry, I can't explain this code at the moment."
             return "Désolé, je ne peux pas expliquer ce code pour le moment."
 
+    async def adapt_code(self, code: str, language: str, surrounding_code: str, lang: str = "fr"):
+        """
+        Adapte le snippet de code pour correspondre au contexte du code environnant.
+        """
+        if lang == "en":
+            prompt_text = (
+                "You are an expert developer assistant. "
+                "Your task is to adapt the provided programming snippet so it fits naturally into the surrounding context code.\n"
+                "Adjust variables, naming conventions, arguments, imports, styling, etc., to match the surrounding code context.\n"
+                "Do not add comments. Return ONLY the adapted code, without any markdown formatting or code blocks.\n\n"
+                "SURROUNDING CODE CONTEXT (around cursor):\n"
+                "\"\"\"\n"
+                "{surrounding_code}\n"
+                "\"\"\"\n\n"
+                "SNIPPET TO ADAPT:\n"
+                "\"\"\"\n"
+                "{code}\n"
+                "\"\"\"\n\n"
+                "ADAPTED SNIPPET:"
+            )
+        else:
+            prompt_text = (
+                "Tu es un assistant développeur expert. "
+                "Ton but est d'adapter l'extrait de code (snippet) fourni pour qu'il s'insère naturellement dans le contexte du code environnant.\n"
+                "Ajuste les variables, les conventions de nommage, les arguments, les imports, le style, etc., pour correspondre au code environnant.\n"
+                "N'ajoute pas de commentaires. Retourne UNIQUEMENT le code adapté, sans formatage markdown ni blocs de code.\n\n"
+                "CODE ENVIRONNANT (autour du curseur) :\n"
+                "\"\"\"\n"
+                "{surrounding_code}\n"
+                "\"\"\"\n\n"
+                "SNIPPET À ADAPTER :\n"
+                "\"\"\"\n"
+                "{code}\n"
+                "\"\"\"\n\n"
+                "SNIPPET ADAPTÉ :"
+            )
+
+        prompt = PromptTemplate(
+            template=prompt_text,
+            input_variables=["code", "language", "surrounding_code"],
+        )
+
+        chain = prompt | self.model
+
+        try:
+            result = await chain.ainvoke({"code": code, "language": language, "surrounding_code": surrounding_code})
+            content = result.content.strip()
+            # Clean markdown code blocks if any (e.g. ```python ... ```)
+            if content.startswith("```"):
+                lines = content.split("\n")
+                if len(lines) > 2:
+                    content = "\n".join(lines[1:-1])
+            return content
+        except Exception as e:
+            print(f"Erreur Adaptation IA: {e}")
+            return code
+
+    async def translate_code(self, code: str, source_language: str, target_language: str, lang: str = "fr"):
+        """
+        Traduit le code d'un langage vers un autre et génère tags/description.
+        """
+        try:
+            if lang == "en":
+                prompt_text = (
+                    "You are an expert developer assistant. "
+                    "Translate the following {source_language} code into {target_language}.\n"
+                    "Provide the output EXACTLY in this format:\n"
+                    "DESCRIPTION: <1-2 lines of description>\n"
+                    "TAGS: <comma-separated tags>\n"
+                    "```\n"
+                    "<translated code>\n"
+                    "```\n\n"
+                    "CODE:\n"
+                    "\"\"\"\n"
+                    "{code}\n"
+                    "\"\"\""
+                )
+            else:
+                prompt_text = (
+                    "Tu es un assistant développeur expert. "
+                    "Traduis le code {source_language} suivant en {target_language}.\n"
+                    "Fournis la réponse EXACTEMENT dans ce format :\n"
+                    "DESCRIPTION: <1-2 lignes de description>\n"
+                    "TAGS: <tags séparés par des virgules>\n"
+                    "```\n"
+                    "<code traduit>\n"
+                    "```\n\n"
+                    "CODE :\n"
+                    "\"\"\"\n"
+                    "{code}\n"
+                    "\"\"\""
+                )
+
+            prompt = PromptTemplate(
+                template=prompt_text,
+                input_variables=["code", "source_language", "target_language"],
+            )
+
+            chain = prompt | self.model
+
+            result = await chain.ainvoke({"code": code, "source_language": source_language, "target_language": target_language})
+            content = result.content.strip()
+            
+            import re
+            
+            # Extract description
+            desc_match = re.search(r'DESCRIPTION:\s*(.*?)\n', content, re.IGNORECASE)
+            description = desc_match.group(1).strip() if desc_match else ("Traduction" if lang == "fr" else "Translation")
+            
+            # Extract tags
+            tags_match = re.search(r'TAGS:\s*(.*?)\n', content, re.IGNORECASE)
+            tags = [t.strip() for t in tags_match.group(1).split(',')] if tags_match else [target_language.lower(), "traduction"]
+            
+            # Extract code
+            code_match = re.search(r'```(?:[\w+\-]+)?\n(.*?)\n```', content, re.DOTALL)
+            translated_code = code_match.group(1).strip() if code_match else content
+            
+            return {
+                "translated_code": translated_code,
+                "description": description,
+                "tags": tags
+            }
+            
+        except Exception as e:
+            print(f"Erreur Traduction IA: {e}")
+            return {
+                "translated_code": f"// Erreur lors de la traduction IA.\n// Code original :\n{code}",
+                "description": "Erreur lors de la génération de la description." if lang == "fr" else "Error generating description.",
+                "tags": [target_language.lower(), "traduction"]
+            }
+
 ai_service = AIService()

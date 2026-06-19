@@ -45,18 +45,18 @@ Ce document propose une vision approfondie et pédagogique des évolutions du pr
 
 ---
 
-## ✨ ÉTAPE 3 : Unicité et Valeur Ajoutée (Différenciation)
+## ✨ ÉTAPE 3 : Unicité et Valeur Ajoutée (Différenciation) - [FAIT] ✅
 *Ce qui fera qu'un développeur choisira Izwan plutôt qu'un simple fichier texte ou une autre application.*
 
-### 3.1 - Smart Insertion (Adaptation intelligente)
+### 3.1 - Smart Insertion (Adaptation intelligente) - [FAIT] ✅
 - **Pourquoi ?** Copier-coller demande souvent de renommer les variables après coup pour que le code compile.
-- **Comment ?** Avant l'insertion, l'extension envoie le snippet et les 10 lignes autour du curseur à l'IA. L'IA renvoie le code du snippet où les noms de variables ont été ajustés pour correspondre au contexte actuel.
+- **Comment ?** Avant l'insertion, l'extension envoie le snippet et les 20 lignes autour du curseur à l'IA. L'IA renvoie le code du snippet où les noms de variables ont été ajustés pour correspondre au contexte actuel.
 
-### 3.2 - Polyglottisme (Vibe-Converter)
+### 3.2 - Polyglottisme (Vibe-Converter) - [FAIT] ✅
 - **Pourquoi ?** Un bon algorithme est universel, mais sa syntaxe change selon le langage.
 - **Comment ?** Un bouton "Traduire" dans l'interface web qui permet de générer une version TypeScript d'un snippet Python (par exemple) et de la sauvegarder automatiquement comme une nouvelle version ou un nouveau snippet lié.
 
-### 3.3 - Graph de Constellation (Visualisation)
+### 3.3 - Graph de Constellation (Visualisation) - [FAIT] ✅
 - **Pourquoi ?** Pour découvrir des liens entre des morceaux de code qu'on n'avait pas vus (ex: tous les snippets qui utilisent telle API ou tel pattern de sécurité).
 - **Comment ?** Une vue 2D interactive où chaque snippet est un point, et les liens sont créés par les tags communs ou les recommandations de l'IA.
 

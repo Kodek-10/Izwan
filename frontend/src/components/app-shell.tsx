@@ -17,6 +17,7 @@ import {
   User,
   Loader2,
   Menu,
+  Network,
 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { IzwaLogo, IzwaWordmark } from "./izwan-logo";
@@ -73,6 +74,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
     { to: "/snippets", label: t("nav.snippets"), icon: Code2 },
     { to: "/favorites", label: t("nav.favorites"), icon: Star },
     { to: "/collections", label: t("nav.collections"), icon: FolderKanban },
+    { to: "/constellation", label: "Constellation", icon: Network },
     { to: "/assistant", label: t("nav.assistant"), icon: Sparkles },
     { to: "/statistics", label: t("nav.statistics"), icon: BarChart3 },
     { to: "/export", label: t("nav.export"), icon: Download },

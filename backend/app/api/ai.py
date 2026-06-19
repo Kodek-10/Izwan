@@ -87,3 +87,39 @@ async def chat_with_assistant(
     except Exception as e:
         print(f"Chat error: {e}")
         raise HTTPException(status_code=500, detail=str(e))
+
+class AdaptRequest(BaseModel):
+    code: str
+    language: str
+    surrounding_code: str
+
+class AdaptResponse(BaseModel):
+    adapted_code: str
+
+@router.post("/adapt", response_model=AdaptResponse)
+async def adapt_snippet_code(request: AdaptRequest, accept_language: Optional[str] = Header(None)):
+    try:
+        lang = "en" if accept_language and "en" in accept_language.lower() else "fr"
+        adapted = await ai_service.adapt_code(request.code, request.language, request.surrounding_code, lang=lang)
+        return {"adapted_code": adapted}
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
+class TranslateRequest(BaseModel):
+    code: str
+    source_language: str
+    target_language: str
+
+class TranslateResponse(BaseModel):
+    translated_code: str
+    description: Optional[str] = None
+    tags: Optional[List[str]] = None
+
+@router.post("/translate", response_model=TranslateResponse)
+async def translate_snippet_code(request: TranslateRequest, accept_language: Optional[str] = Header(None)):
+    try:
+        lang = "en" if accept_language and "en" in accept_language.lower() else "fr"
+        result = await ai_service.translate_code(request.code, request.source_language, request.target_language, lang=lang)
+        return result
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
