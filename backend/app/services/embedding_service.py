@@ -1,6 +1,10 @@
 from fastembed import TextEmbedding
 from typing import List, Optional
+import base64
+import json
 import numpy as np
+
+EMBEDDING_BINARY_PREFIX = "f32:"
 
 class EmbeddingService:
     def __init__(self):
@@ -16,6 +20,20 @@ class EmbeddingService:
         # Generate embedding for a single text
         embeddings = list(self._get_model().embed([text]))
         return embeddings[0].tolist()
+
+    def serialize_embedding(self, vector: List[float]) -> str:
+        array = np.asarray(vector, dtype=np.float32)
+        encoded = base64.b64encode(array.tobytes()).decode("ascii")
+        return f"{EMBEDDING_BINARY_PREFIX}{encoded}"
+
+    def deserialize_embedding(self, value: str) -> List[float]:
+        if value.startswith(EMBEDDING_BINARY_PREFIX):
+            encoded = value[len(EMBEDDING_BINARY_PREFIX):]
+            raw = base64.b64decode(encoded.encode("ascii"))
+            return np.frombuffer(raw, dtype=np.float32).astype(float).tolist()
+
+        # Backward compatibility for embeddings already stored as JSON arrays.
+        return json.loads(value)
 
     def cosine_similarity(self, v1: List[float], v2: List[float]) -> float:
         v1 = np.array(v1)

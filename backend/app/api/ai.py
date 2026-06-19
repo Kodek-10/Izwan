@@ -7,7 +7,6 @@ from ..services.embedding_service import embedding_service
 from ..core.database import get_db
 from ..core.security import get_current_user
 from .. import models, schemas
-import json
 
 router = APIRouter()
 
@@ -66,7 +65,7 @@ async def chat_with_assistant(
         results_with_score = []
         for s in snippets:
             if s.embedding:
-                snippet_vector = json.loads(s.embedding.vector)
+                snippet_vector = embedding_service.deserialize_embedding(s.embedding.vector)
                 score = embedding_service.cosine_similarity(query_vector, snippet_vector)
                 if score > 0.2: # Seuil un peu plus bas pour le chat
                     results_with_score.append({

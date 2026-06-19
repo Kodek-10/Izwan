@@ -7,7 +7,6 @@ from ..core.security import get_current_user
 from .. import models, schemas
 
 from ..services.embedding_service import embedding_service
-import json
 
 router = APIRouter()
 
@@ -37,7 +36,7 @@ def semantic_search(query: str, db: Session = Depends(get_db), current_user: mod
     results_with_score = []
     for s in snippets:
         if s.embedding:
-            snippet_vector = json.loads(s.embedding.vector)
+            snippet_vector = embedding_service.deserialize_embedding(s.embedding.vector)
             score = embedding_service.cosine_similarity(query_vector, snippet_vector)
             if score > 0.3: # Minimum similarity threshold
                 results_with_score.append((s, score))

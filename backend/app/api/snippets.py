@@ -7,7 +7,6 @@ from .. import models, schemas
 
 from ..services.embedding_service import embedding_service
 from ..services.ai_service import ai_service
-import json
 
 router = APIRouter()
 
@@ -30,11 +29,12 @@ def update_snippet_embedding(db: Session, snippet: models.Snippet):
     # Combine title, description and code for a rich embedding
     text_to_embed = f"{snippet.title} {snippet.description or ''} {snippet.code}"
     vector = embedding_service.generate_embedding(text_to_embed)
+    serialized_vector = embedding_service.serialize_embedding(vector)
     
     if snippet.embedding:
-        snippet.embedding.vector = json.dumps(vector)
+        snippet.embedding.vector = serialized_vector
     else:
-        db_embedding = models.SnippetEmbedding(snippet_id=snippet.id, vector=json.dumps(vector))
+        db_embedding = models.SnippetEmbedding(snippet_id=snippet.id, vector=serialized_vector)
         db.add(db_embedding)
     db.commit()
 
