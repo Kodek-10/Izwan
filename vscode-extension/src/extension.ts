@@ -2,20 +2,27 @@ import * as vscode from 'vscode';
 import { IzwaSidebarProvider } from './sidebar';
 import { IzwaAPI } from './api';
 import { t } from './i18n';
+import { GhostSnippetProvider } from './ghostSnippets';
 
 export function activate(context: vscode.ExtensionContext) {
     console.log(t('extension.active'));
 
     const sidebarProvider = new IzwaSidebarProvider(context.extensionUri, context);
+    const ghostSnippetProvider = new GhostSnippetProvider(context);
 
     context.subscriptions.push(
         vscode.window.registerWebviewViewProvider(
             IzwaSidebarProvider.viewType,
             sidebarProvider
+        ),
+        vscode.languages.registerInlineCompletionItemProvider(
+            { scheme: 'file' },
+            ghostSnippetProvider
         )
     );
 
     let refreshCommand = vscode.commands.registerCommand('izwa.refreshSnippets', () => {
+        ghostSnippetProvider.clearCache();
         sidebarProvider.refresh();
     });
 
@@ -32,6 +39,7 @@ export function activate(context: vscode.ExtensionContext) {
         const success = await IzwaAPI.login(context, username, password);
         if (success) {
             vscode.window.showInformationMessage(t('login.success'));
+            ghostSnippetProvider.clearCache();
             sidebarProvider.refresh();
         } else {
             vscode.window.showErrorMessage(t('login.error'));
@@ -107,6 +115,7 @@ export function activate(context: vscode.ExtensionContext) {
 
         if (success) {
             vscode.window.showInformationMessage(t('capture.success'));
+            ghostSnippetProvider.clearCache();
             sidebarProvider.refresh();
         } else {
             vscode.window.showErrorMessage(t('capture.error'));

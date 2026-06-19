@@ -6,15 +6,22 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
+import { CodeEditor } from "@/components/code-editor";
 import {
-  Select, SelectContent, SelectItem, SelectTrigger, SelectValue,
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
 } from "@/components/ui/select";
 import { languages } from "@/lib/mock-data";
 import { api } from "@/lib/api-client";
 import { toast } from "sonner";
 
 export const Route = createFileRoute("/_app/snippets/new")({
-  head: ({ loaderData }: any) => ({ meta: [{ title: `${loaderData?.t?.('snippets.new') || 'Nouveau snippet'} — Izwan` }] }),
+  head: ({ loaderData }: any) => ({
+    meta: [{ title: `${loaderData?.t?.("snippets.new") || "Nouveau snippet"} — Izwan` }],
+  }),
   loader: async () => {
     // On server, no localStorage token available
     if (typeof window === "undefined") {
@@ -50,7 +57,8 @@ function NewSnippetPage() {
   // Re-fetch collections on client if server couldn't (no auth token server-side)
   useEffect(() => {
     if (data?.needsClientFetch) {
-      api.get<any[]>("/collections/")
+      api
+        .get<any[]>("/collections/")
         .then((cols) => setCollections(cols))
         .catch(() => {});
     } else if (data?.collections) {
@@ -69,7 +77,9 @@ function NewSnippetPage() {
       const result = await api.post<any>("/ai/enrich", { code, language: finalLanguage });
       if (result.description) setDescription(result.description);
       if (result.tags && result.tags.length > 0) {
-        const newTags = Array.from(new Set([...tags, ...result.tags.map((t: string) => t.toLowerCase())]));
+        const newTags = Array.from(
+          new Set([...tags, ...result.tags.map((t: string) => t.toLowerCase())]),
+        );
         setTags(newTags);
       }
       toast.success(t("snippets.enrich_success"));
@@ -114,7 +124,10 @@ function NewSnippetPage() {
 
   return (
     <>
-      <Link to="/snippets" className="inline-flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground mb-4">
+      <Link
+        to="/snippets"
+        className="inline-flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground mb-4"
+      >
         <ArrowLeft className="h-4 w-4" /> {t("snippets.back_to_list")}
       </Link>
 
@@ -134,9 +147,15 @@ function NewSnippetPage() {
             <Label htmlFor="lang">{t("snippets.form.language")}</Label>
             <div className="space-y-3">
               <Select value={language} onValueChange={setLanguage}>
-                <SelectTrigger id="lang"><SelectValue /></SelectTrigger>
+                <SelectTrigger id="lang">
+                  <SelectValue />
+                </SelectTrigger>
                 <SelectContent>
-                  {languages.map((l) => <SelectItem key={l} value={l}>{l}</SelectItem>)}
+                  {languages.map((l) => (
+                    <SelectItem key={l} value={l}>
+                      {l}
+                    </SelectItem>
+                  ))}
                   <SelectItem value="other">{t("snippets.form.other")}</SelectItem>
                 </SelectContent>
               </Select>
@@ -158,11 +177,15 @@ function NewSnippetPage() {
           <div className="space-y-2">
             <Label htmlFor="collection">{t("snippets.form.collection")}</Label>
             <Select value={collectionId} onValueChange={setCollectionId}>
-              <SelectTrigger id="collection"><SelectValue /></SelectTrigger>
+              <SelectTrigger id="collection">
+                <SelectValue />
+              </SelectTrigger>
               <SelectContent>
                 <SelectItem value="none">{t("snippets.form.no_collection")}</SelectItem>
                 {collections.map((c) => (
-                  <SelectItem key={c.id} value={c.id.toString()}>{c.name}</SelectItem>
+                  <SelectItem key={c.id} value={c.id.toString()}>
+                    {c.name}
+                  </SelectItem>
                 ))}
               </SelectContent>
             </Select>
@@ -172,7 +195,10 @@ function NewSnippetPage() {
             <Label>{t("snippets.form.tags")}</Label>
             <div className="flex flex-wrap gap-2 p-2 rounded-md border border-input bg-input/40 min-h-[44px]">
               {tags.map((t) => (
-                <span key={t} className="inline-flex items-center gap-1 px-2.5 py-1 rounded-md bg-primary/15 text-primary text-xs font-medium">
+                <span
+                  key={t}
+                  className="inline-flex items-center gap-1 px-2.5 py-1 rounded-md bg-primary/15 text-primary text-xs font-medium"
+                >
                   {t}
                   <button onClick={() => setTags(tags.filter((x) => x !== t))}>
                     <X className="h-3 w-3" />
@@ -201,7 +227,7 @@ function NewSnippetPage() {
           <Textarea
             id="desc"
             placeholder={t("snippets.form.desc_placeholder")}
-            rows={2} 
+            rows={2}
             value={description}
             onChange={(e) => setDescription(e.target.value)}
           />
@@ -209,13 +235,12 @@ function NewSnippetPage() {
 
         <div className="space-y-2">
           <Label htmlFor="code">{t("snippets.form.code")}</Label>
-          <Textarea
+          <CodeEditor
             id="code"
-            className="font-mono text-sm bg-muted/50"
-            rows={10}
+            language={language === "other" ? customLanguage || "text" : language}
             placeholder={t("snippets.form.code_placeholder")}
             value={code}
-            onChange={(e) => setCode(e.target.value)}
+            onChange={setCode}
           />
         </div>
 
@@ -226,11 +251,20 @@ function NewSnippetPage() {
             onClick={handleAIEnrich}
             disabled={isEnriching || isLoading}
           >
-            {isEnriching ? <Loader2 className="h-4 w-4 animate-spin mr-2" /> : <Sparkles className="h-4 w-4 mr-2" />}
+            {isEnriching ? (
+              <Loader2 className="h-4 w-4 animate-spin mr-2" />
+            ) : (
+              <Sparkles className="h-4 w-4 mr-2" />
+            )}
             {t("snippets.enrich_ai")}
           </Button>
           <div className="flex gap-2 w-full sm:w-auto">
-            <Button variant="outline" className="flex-1 sm:flex-none" onClick={() => nav({ to: "/snippets" })} disabled={isLoading || isEnriching}>
+            <Button
+              variant="outline"
+              className="flex-1 sm:flex-none"
+              onClick={() => nav({ to: "/snippets" })}
+              disabled={isLoading || isEnriching}
+            >
               {t("common.cancel")}
             </Button>
             <Button

@@ -10,6 +10,7 @@
     "Other"
   ],
   "activationEvents": [
+    "onStartupFinished",
     "onView:izwa-snippets-view",
     "onCommand:izwa.saveSnippet"
   ],
@@ -67,6 +68,11 @@
           "type": "string",
           "default": "http://localhost:8000/api/v1",
           "description": "%izwa.configuration.backendUrl.description%"
+        },
+        "izwa.ghostSnippets.enabled": {
+          "type": "boolean",
+          "default": true,
+          "description": "%izwa.configuration.ghostSnippets.description%"
         }
       }
     }

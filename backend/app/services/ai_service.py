@@ -1,32 +1,83 @@
 import os
-from langchain_groq import ChatGroq
 from langchain_core.output_parsers import JsonOutputParser
 from langchain_core.prompts import PromptTemplate
 from typing import List, Dict, Any
 import json
+from ..core.privacy import is_air_gapped
+
+OLLAMA_CONTEXT_WINDOWS = (4096, 8192, 16384, 32768)
+CHARS_PER_TOKEN_ESTIMATE = 4
 
 class AIService:
     def __init__(self):
-        # Utilise Groq si une clé est présente, sinon reste sur Ollama (local)
-        api_key = os.getenv("GROQ_API_KEY")
-        if api_key:
-            print("INFO: Initialisation de l'IA avec Groq (llama-3.1-8b-instant)")
-            self.model = ChatGroq(
-                model_name="llama-3.1-8b-instant",
-                groq_api_key=api_key,
-                temperature=0.3
-            )
-        else:
-            print("INFO: Initialisation de l'IA avec Ollama (gemma2:2b)")
-            from langchain_ollama import ChatOllama
-            self.model = ChatOllama(
-                model="gemma2:2b",
-                temperature=0.3,
-                base_url=os.getenv("OLLAMA_BASE_URL", "http://localhost:11434")
-            )
+        self.models = {}
         self.parser = JsonOutputParser()
 
+    def _estimate_tokens(self, text: str) -> int:
+        return max(1, len(text) // CHARS_PER_TOKEN_ESTIMATE)
+
+    def _select_context_window(self, *texts: str) -> int:
+        requested_tokens = self._estimate_tokens("\n".join(texts)) + 1024
+        forced_context = os.getenv("OLLAMA_CONTEXT_WINDOW")
+        if forced_context:
+            return int(forced_context)
+
+        for window in OLLAMA_CONTEXT_WINDOWS:
+            if requested_tokens <= int(window * 0.75):
+                return window
+        return OLLAMA_CONTEXT_WINDOWS[-1]
+
+    def _truncate_middle(self, text: str, max_chars: int) -> str:
+        if len(text) <= max_chars:
+            return text
+
+        marker = "\n\n...[context truncated for model window]...\n\n"
+        head_size = max_chars // 2
+        tail_size = max_chars - head_size - len(marker)
+        return f"{text[:head_size]}{marker}{text[-tail_size:]}"
+
+    def _prepare_context(self, text: str, context_window: int) -> str:
+        reserved_output_tokens = 1024
+        max_input_chars = max(1000, (context_window - reserved_output_tokens) * CHARS_PER_TOKEN_ESTIMATE)
+        return self._truncate_middle(text, max_input_chars)
+
+    def _get_model(self, *context_texts: str):
+        provider = "ollama" if is_air_gapped() or not os.getenv("GROQ_API_KEY") else "groq"
+        context_window = self._select_context_window(*context_texts)
+        groq_model = (
+            os.getenv("GROQ_LONG_CONTEXT_MODEL", "llama-3.1-8b-instant")
+            if context_window >= 16384
+            else os.getenv("GROQ_MODEL_NAME", "llama-3.1-8b-instant")
+        )
+        cache_key = (provider, context_window if provider == "ollama" else groq_model)
+        if cache_key in self.models:
+            return self.models[cache_key]
+
+        if provider == "ollama":
+            print(f"INFO: Initialisation de l'IA avec Ollama (gemma2:2b, contexte {context_window})")
+            from langchain_ollama import ChatOllama
+            model = ChatOllama(
+                model="gemma2:2b",
+                temperature=0.3,
+                base_url=os.getenv("OLLAMA_BASE_URL", "http://localhost:11434"),
+                num_ctx=context_window,
+            )
+            self.models[cache_key] = model
+            return model
+
+        print(f"INFO: Initialisation de l'IA avec Groq ({groq_model})")
+        from langchain_groq import ChatGroq
+        model = ChatGroq(
+            model_name=groq_model,
+            groq_api_key=os.getenv("GROQ_API_KEY"),
+            temperature=0.3
+        )
+        self.models[cache_key] = model
+        return model
+
     async def generate_tags_and_description(self, code: str, language: str, lang: str = "fr"):
+        context_window = self._select_context_window(code)
+        prepared_code = self._prepare_context(code, context_window)
         if lang == "en":
             prompt_text = (
                 "Analyze this code and generate:\n"
@@ -49,10 +100,10 @@ class AIService:
             input_variables=["code", "language"],
         )
 
-        chain = prompt | self.model | self.parser
+        chain = prompt | self._get_model(prepared_code) | self.parser
 
         try:
-            result = await chain.ainvoke({"code": code, "language": language})
+            result = await chain.ainvoke({"code": prepared_code, "language": language})
             return result
         except Exception as e:
             print(f"Erreur IA: {e}")
@@ -74,6 +125,8 @@ class AIService:
             f"Snippet: {s['title']} ({s['language']})\nCode:\n{s['code']}\nDescription: {s['description']}"
             for s in context_snippets
         ])
+        context_window = self._select_context_window(query, context_text)
+        prepared_context = self._prepare_context(context_text, context_window)
 
         if lang == "en":
             prompt_text = (
@@ -101,10 +154,10 @@ class AIService:
             input_variables=["context", "query"],
         )
 
-        chain = prompt | self.model
+        chain = prompt | self._get_model(query, prepared_context)
 
         try:
-            result = await chain.ainvoke({"context": context_text, "query": query})
+            result = await chain.ainvoke({"context": prepared_context, "query": query})
             return result.content
         except Exception as e:
             print(f"Erreur Chat IA: {e}")
@@ -116,6 +169,8 @@ class AIService:
         """
         Explique le code fourni ligne par ligne ou de manière pédagogique.
         """
+        context_window = self._select_context_window(code)
+        prepared_code = self._prepare_context(code, context_window)
         if lang == "en":
             prompt_text = (
                 "You are an expert programming teacher. "
@@ -140,10 +195,10 @@ class AIService:
             input_variables=["code", "language"],
         )
 
-        chain = prompt | self.model
+        chain = prompt | self._get_model(prepared_code)
 
         try:
-            result = await chain.ainvoke({"code": code, "language": language})
+            result = await chain.ainvoke({"code": prepared_code, "language": language})
             return result.content
         except Exception as e:
             print(f"Erreur Explication IA: {e}")
@@ -155,6 +210,9 @@ class AIService:
         """
         Adapte le snippet de code pour correspondre au contexte du code environnant.
         """
+        context_window = self._select_context_window(code, surrounding_code)
+        prepared_code = self._prepare_context(code, context_window)
+        prepared_surrounding_code = self._prepare_context(surrounding_code, context_window)
         if lang == "en":
             prompt_text = (
                 "You are an expert developer assistant. "
@@ -193,10 +251,14 @@ class AIService:
             input_variables=["code", "language", "surrounding_code"],
         )
 
-        chain = prompt | self.model
+        chain = prompt | self._get_model(prepared_code, prepared_surrounding_code)
 
         try:
-            result = await chain.ainvoke({"code": code, "language": language, "surrounding_code": surrounding_code})
+            result = await chain.ainvoke({
+                "code": prepared_code,
+                "language": language,
+                "surrounding_code": prepared_surrounding_code,
+            })
             content = result.content.strip()
             # Clean markdown code blocks if any (e.g. ```python ... ```)
             if content.startswith("```"):
@@ -213,6 +275,8 @@ class AIService:
         Traduit le code d'un langage vers un autre et génère tags/description.
         """
         try:
+            context_window = self._select_context_window(code)
+            prepared_code = self._prepare_context(code, context_window)
             if lang == "en":
                 prompt_text = (
                     "You are an expert developer assistant. "
@@ -249,9 +313,13 @@ class AIService:
                 input_variables=["code", "source_language", "target_language"],
             )
 
-            chain = prompt | self.model
+            chain = prompt | self._get_model(prepared_code)
 
-            result = await chain.ainvoke({"code": code, "source_language": source_language, "target_language": target_language})
+            result = await chain.ainvoke({
+                "code": prepared_code,
+                "source_language": source_language,
+                "target_language": target_language,
+            })
             content = result.content.strip()
             
             import re

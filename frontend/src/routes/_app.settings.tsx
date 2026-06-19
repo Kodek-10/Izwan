@@ -13,6 +13,13 @@ import { api } from "@/lib/api-client";
 import { toast } from "sonner";
 import { useTranslation } from "react-i18next";
 
+type PrivacySettings = {
+  air_gapped: boolean;
+  forced: boolean;
+  generation_provider: string;
+  embedding_provider: string;
+};
+
 export const Route = createFileRoute("/_app/settings")({
   head: ({ loaderData }: any) => ({ meta: [{ title: `${loaderData?.t?.('settings.title') || 'Paramètres'} — Izwan` }] }),
   loader: async () => {
@@ -89,6 +96,20 @@ function SettingsPage() {
   const [newPw, setNewPw] = useState("");
   const [confirmPw, setConfirmPw] = useState("");
   const [isChangingPw, setIsChangingPw] = useState(false);
+  const [privacy, setPrivacy] = useState<PrivacySettings | null>(null);
+  const [isUpdatingPrivacy, setIsUpdatingPrivacy] = useState(false);
+
+  useEffect(() => {
+    const fetchPrivacySettings = async () => {
+      try {
+        const settings = await api.get<PrivacySettings>("/ai/privacy");
+        setPrivacy(settings);
+      } catch (e) {
+        console.error("Failed to fetch privacy settings", e);
+      }
+    };
+    fetchPrivacySettings();
+  }, []);
 
   if (isClientLoading) {
     return (
@@ -132,6 +153,19 @@ function SettingsPage() {
       toast.error(e.message || t("common.error"));
     } finally {
       setIsChangingPw(false);
+    }
+  };
+
+  const handleAirGappedChange = async (checked: boolean) => {
+    setIsUpdatingPrivacy(true);
+    try {
+      const settings = await api.put<PrivacySettings>("/ai/privacy", { air_gapped: checked });
+      setPrivacy(settings);
+      toast.success(t("common.success"));
+    } catch (e: any) {
+      toast.error(e.message || t("common.error"));
+    } finally {
+      setIsUpdatingPrivacy(false);
     }
   };
 
@@ -293,6 +327,27 @@ function SettingsPage() {
                     <p className="hidden xs:block text-[10px] text-muted-foreground">{t("settings.ai.high_perf_desc")}</p>
                   </div>
                   <Switch />
+                </div>
+                <div className="flex items-center justify-between p-4 rounded-lg bg-muted/30 border border-border gap-4">
+                  <div className="space-y-0.5">
+                    <Label className="text-sm">{t("settings.ai.air_gapped")}</Label>
+                    <p className="hidden xs:block text-[10px] text-muted-foreground">
+                      {privacy?.forced ? t("settings.ai.air_gapped_forced") : t("settings.ai.air_gapped_desc")}
+                    </p>
+                    {privacy && (
+                      <p className="text-[10px] text-muted-foreground">
+                        {t("settings.ai.providers", {
+                          generation: privacy.generation_provider,
+                          embedding: privacy.embedding_provider,
+                        })}
+                      </p>
+                    )}
+                  </div>
+                  <Switch
+                    checked={privacy?.air_gapped ?? false}
+                    disabled={!privacy || privacy.forced || isUpdatingPrivacy}
+                    onCheckedChange={handleAirGappedChange}
+                  />
                 </div>
               </div>
             </div>
