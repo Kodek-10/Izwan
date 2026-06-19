@@ -16,13 +16,22 @@ Base.metadata.create_all(bind=engine)
 
 app = FastAPI(title="Izwan")
 
+default_origins = [
+    "http://localhost:8080",
+    "http://127.0.0.1:8080",
+    "http://localhost:5173",
+    "http://127.0.0.1:5173",
+]
+cors_origins = [
+    origin.strip()
+    for origin in os.getenv("CORS_ORIGINS", ",".join(default_origins)).split(",")
+    if origin.strip()
+]
+
 # Configure CORS
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=[
-        "http://localhost:8080",
-        "http://127.0.0.1:8080",
-    ],
+    allow_origins=cors_origins,
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
