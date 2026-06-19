@@ -69,7 +69,7 @@ Ce document propose une vision approfondie et pédagogique des évolutions du pr
 - **Pourquoi ?** Pour les entreprises qui interdisent l'envoi de code vers le cloud (OpenAI/Claude).
 - **Comment ?** Optimisation du backend pour détecter et n'utiliser qu'Ollama (pour la génération) et FastEmbed (pour la recherche). Une option dans les réglages permet de couper toute velléité d'appel réseau externe.
 
-### 4.2 - Suggestions Proactives (Ghost Snippets)
+### 4.2 - Suggestions Proactives (Ghost Snippets) - [FAIT] ✅
 - **Pourquoi ?** Gagner du temps avant même de chercher.
 - **Comment ?** L'extension analyse en temps réel (et localement) ce que l'utilisateur tape. Si le début d'une fonction ressemble à un snippet connu, il apparaît en gris clair (fantôme). Une touche `Tab` et le snippet est inséré.
 
