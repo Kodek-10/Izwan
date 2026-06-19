@@ -1,16 +1,20 @@
 from fastembed import TextEmbedding
-from typing import List
-import json
+from typing import List, Optional
 import numpy as np
 
 class EmbeddingService:
     def __init__(self):
-        # This will download the model on first init
-        self.model = TextEmbedding()
+        self.model: Optional[TextEmbedding] = None
+
+    def _get_model(self) -> TextEmbedding:
+        if self.model is None:
+            # FastEmbed may download the model on first use, so keep backend imports lightweight.
+            self.model = TextEmbedding()
+        return self.model
 
     def generate_embedding(self, text: str) -> List[float]:
         # Generate embedding for a single text
-        embeddings = list(self.model.embed([text]))
+        embeddings = list(self._get_model().embed([text]))
         return embeddings[0].tolist()
 
     def cosine_similarity(self, v1: List[float], v2: List[float]) -> float:
