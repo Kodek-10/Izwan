@@ -6,6 +6,7 @@ from ..core.security import get_current_user
 from .. import models, schemas
 
 from ..services.embedding_service import embedding_service
+from ..services.ai_service import ai_service
 import json
 
 router = APIRouter()
@@ -14,6 +15,8 @@ def get_or_create_tags(db: Session, tag_names: List[str]):
     tags = []
     for name in tag_names:
         name = name.lower().strip()
+        if not name:
+            continue
         tag = db.query(models.Tag).filter(models.Tag.name == name).first()
         if not tag:
             tag = models.Tag(name=name)
@@ -36,18 +39,34 @@ def update_snippet_embedding(db: Session, snippet: models.Snippet):
     db.commit()
 
 @router.post("/", response_model=schemas.Snippet, status_code=status.HTTP_201_CREATED)
-def create_snippet(snippet: schemas.SnippetCreate, db: Session = Depends(get_db), current_user: models.User = Depends(get_current_user)):
+async def create_snippet(snippet: schemas.SnippetCreate, db: Session = Depends(get_db), current_user: models.User = Depends(get_current_user)):
+    # Auto-generate description and tags via AI if not provided
+    ai_description = snippet.description
+    ai_tags = snippet.tags or []
+    
+    if not ai_description or not ai_tags:
+        try:
+            ai_result = await ai_service.generate_tags_and_description(snippet.code, snippet.language)
+            if not ai_description:
+                ai_description = ai_result.get("description", "")
+            if not ai_tags:
+                ai_tags = ai_result.get("tags", [])
+            print(f"INFO: IA a généré description='{ai_description}', tags={ai_tags}")
+        except Exception as e:
+            print(f"WARN: Échec de la génération IA pour le snippet: {e}")
+            # Fallback: on continue sans description/tags IA
+    
     db_snippet = models.Snippet(
         title=snippet.title,
         language=snippet.language,
         code=snippet.code,
-        description=snippet.description,
+        description=ai_description,
         is_favorite=snippet.is_favorite,
         collection_id=snippet.collection_id,
         owner_id=current_user.id
     )
-    if snippet.tags:
-        db_snippet.tags = get_or_create_tags(db, snippet.tags)
+    if ai_tags:
+        db_snippet.tags = get_or_create_tags(db, ai_tags)
     
     db.add(db_snippet)
     db.commit()
