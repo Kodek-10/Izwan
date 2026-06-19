@@ -5,6 +5,8 @@ import json
 import numpy as np
 
 EMBEDDING_BINARY_PREFIX = "f32:"
+DEFAULT_CHUNK_SIZE = 1800
+DEFAULT_CHUNK_OVERLAP = 250
 
 class EmbeddingService:
     def __init__(self):
@@ -20,6 +22,37 @@ class EmbeddingService:
         # Generate embedding for a single text
         embeddings = list(self._get_model().embed([text]))
         return embeddings[0].tolist()
+
+    def chunk_text(
+        self,
+        text: str,
+        chunk_size: int = DEFAULT_CHUNK_SIZE,
+        overlap: int = DEFAULT_CHUNK_OVERLAP,
+    ) -> List[str]:
+        normalized = text.strip()
+        if not normalized:
+            return []
+        if len(normalized) <= chunk_size:
+            return [normalized]
+
+        chunks: List[str] = []
+        start = 0
+        while start < len(normalized):
+            end = min(start + chunk_size, len(normalized))
+            if end < len(normalized):
+                newline = normalized.rfind("\n", start, end)
+                if newline > start + chunk_size // 2:
+                    end = newline
+
+            chunk = normalized[start:end].strip()
+            if chunk:
+                chunks.append(chunk)
+
+            if end >= len(normalized):
+                break
+            start = max(end - overlap, start + 1)
+
+        return chunks
 
     def serialize_embedding(self, vector: List[float]) -> str:
         array = np.asarray(vector, dtype=np.float32)

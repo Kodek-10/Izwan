@@ -75,6 +75,23 @@ Ce document propose une vision approfondie et pédagogique des évolutions du pr
 
 ---
 
+## 🚀 ÉTAPE 5 : Gestion des Snippets Longs (Performance & Scalabilité)
+*Permettre à Izwan de manipuler des fichiers de code complets sans perte de précision ou de confort.*
+
+### 5.1 - Recherche Sémantique Profonde (Chunking) - [FAIT] ✅
+- **Pourquoi ?** Actuellement, la recherche sémantique ne "lit" que le début des snippets longs (limite de ~500 tokens).
+- **Comment ?** Découper les snippets longs en segments (chunks) et générer un vecteur d'embedding pour chaque segment. Cela permet de retrouver un snippet même si le mot-clé se trouve à la ligne 1000.
+
+### 5.2 - Contexte IA Étendu (Large Context Window)
+- **Pourquoi ?** L'IA locale (Ollama) ou distante (Groq) peut perdre le fil si le snippet est trop long ou si le contexte global est saturé.
+- **Comment ?** Configurer dynamiquement la fenêtre de contexte dans `ai_service.py` selon la taille du code et les capacités du hardware local, ou utiliser des modèles à large contexte (ex: Llama 3.1 128k via Groq).
+
+### 5.3 - Interface Adaptative (Fluid Editor)
+- **Pourquoi ?** Un champ de texte fixe est inconfortable pour de gros fichiers ou des scripts complexes.
+- **Comment ?** Remplacer le `Textarea` classique par un éditeur de code plus robuste (type Monaco ou CodeMirror) avec auto-expansion, mode plein écran, et "minimap" pour naviguer dans les longs scripts.
+
+---
+
 ## 📌 Historique des discussions
 *(Les nouveaux points abordés seront ajoutés en respectant cette structure)*
 

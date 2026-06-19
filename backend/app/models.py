@@ -51,6 +51,7 @@ class Snippet(Base):
     collection_ref = relationship("Collection", back_populates="snippets")
     tags = relationship("Tag", secondary=snippet_tags, back_populates="snippets")
     embedding = relationship("SnippetEmbedding", back_populates="snippet", uselist=False, cascade="all, delete-orphan")
+    embedding_chunks = relationship("SnippetEmbeddingChunk", back_populates="snippet", cascade="all, delete-orphan")
 
 class SnippetEmbedding(Base):
     __tablename__ = "snippet_embeddings"
@@ -59,6 +60,17 @@ class SnippetEmbedding(Base):
     vector = Column(Text, nullable=False) # Store as JSON string of floats
 
     snippet = relationship("Snippet", back_populates="embedding")
+
+class SnippetEmbeddingChunk(Base):
+    __tablename__ = "snippet_embedding_chunks"
+
+    id = Column(Integer, primary_key=True, index=True)
+    snippet_id = Column(Integer, ForeignKey("snippets.id", ondelete="CASCADE"), index=True, nullable=False)
+    chunk_index = Column(Integer, nullable=False)
+    content = Column(Text, nullable=False)
+    vector = Column(Text, nullable=False)
+
+    snippet = relationship("Snippet", back_populates="embedding_chunks")
 
 class Tag(Base):
     __tablename__ = "tags"

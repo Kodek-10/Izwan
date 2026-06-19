@@ -36,6 +36,22 @@ def update_snippet_embedding(db: Session, snippet: models.Snippet):
     else:
         db_embedding = models.SnippetEmbedding(snippet_id=snippet.id, vector=serialized_vector)
         db.add(db_embedding)
+
+    db.query(models.SnippetEmbeddingChunk).filter(
+        models.SnippetEmbeddingChunk.snippet_id == snippet.id
+    ).delete()
+
+    chunk_source = f"{snippet.description or ''}\n{snippet.code}"
+    chunks = embedding_service.chunk_text(chunk_source)
+    for index, chunk in enumerate(chunks):
+        chunk_text = f"{snippet.title}\nLanguage: {snippet.language}\n{chunk}"
+        chunk_vector = embedding_service.generate_embedding(chunk_text)
+        db.add(models.SnippetEmbeddingChunk(
+            snippet_id=snippet.id,
+            chunk_index=index,
+            content=chunk,
+            vector=embedding_service.serialize_embedding(chunk_vector),
+        ))
     db.commit()
 
 @router.post("/", response_model=schemas.Snippet, status_code=status.HTTP_201_CREATED)

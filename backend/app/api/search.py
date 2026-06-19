@@ -28,21 +28,28 @@ def search_snippets(q: str, db: Session = Depends(get_db), current_user: models.
 def semantic_search(query: str, db: Session = Depends(get_db), current_user: models.User = Depends(get_current_user)):
     # 1. Generate embedding for the query
     query_vector = embedding_service.generate_embedding(query)
-    
-    # 2. Get all snippets for the current user with their embeddings
+
+    # 2. Score chunk embeddings first so long snippets can match deep content.
     snippets = db.query(models.Snippet).filter(models.Snippet.owner_id == current_user.id).all()
-    
-    # 3. Calculate similarity and sort
-    results_with_score = []
+    best_scores = {}
     for s in snippets:
-        if s.embedding:
+        chunk_scores = []
+        for chunk in s.embedding_chunks:
+            chunk_vector = embedding_service.deserialize_embedding(chunk.vector)
+            chunk_scores.append(embedding_service.cosine_similarity(query_vector, chunk_vector))
+
+        if chunk_scores:
+            score = max(chunk_scores)
+            if score > 0.3:
+                best_scores[s.id] = (s, score)
+        elif s.embedding:
             snippet_vector = embedding_service.deserialize_embedding(s.embedding.vector)
             score = embedding_service.cosine_similarity(query_vector, snippet_vector)
             if score > 0.3: # Minimum similarity threshold
-                results_with_score.append((s, score))
+                best_scores[s.id] = (s, score)
     
     # Sort by score descending
-    results_with_score.sort(key=lambda x: x[1], reverse=True)
+    results_with_score = sorted(best_scores.values(), key=lambda x: x[1], reverse=True)
     
     # Return top 10 results
     return [r[0] for r in results_with_score[:10]]
