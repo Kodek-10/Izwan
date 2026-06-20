@@ -3,8 +3,8 @@ import * as vscode from 'vscode';
 const translations: Record<string, Record<string, string>> = {
     fr: {
         'extension.active': 'Félicitations, votre extension "Izwan" est maintenant active !',
-        'login.prompt.username': 'Nom d\'utilisateur',
-        'login.prompt.password': 'Mot de passe',
+        'login.browser_open_error': 'Izwan: Impossible d\'ouvrir le navigateur pour la connexion.',
+        'login.callback_error': 'Izwan: Callback de connexion invalide ou expiré.',
         'login.success': 'Izwan: Connexion réussie !',
         'login.error': 'Izwan: Échec de la connexion. Vérifiez vos identifiants.',
         'search.prompt': 'Entrez votre recherche sémantique (ex: filtrer un tableau par date)',
@@ -21,8 +21,8 @@ const translations: Record<string, Record<string, string>> = {
     },
     en: {
         'extension.active': 'Congratulations, your extension "Izwan" is now active!',
-        'login.prompt.username': 'Username',
-        'login.prompt.password': 'Password',
+        'login.browser_open_error': 'Izwan: Could not open the browser sign-in page.',
+        'login.callback_error': 'Izwan: Invalid or expired sign-in callback.',
         'login.success': 'Izwan: Login successful!',
         'login.error': 'Izwan: Login failed. Check your credentials.',
         'search.prompt': 'Enter your semantic search (ex: filter an array by date)',

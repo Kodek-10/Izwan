@@ -111,6 +111,22 @@ _Permettre à Izwan de manipuler des fichiers de code complets sans perte de pr�
 
 ---
 
+## 🔐 ÉTAPE 6 : Simplification de l'Authentification VS Code - [FAIT] ✅
+
+_Améliorer l'expérience de connexion pour l'extension Izwan afin de la rendre plus fluide et sécurisée._
+
+### 6.1 - Option B : Authentification par Navigateur (OAuth Flow) - [FAIT] ✅
+
+- **Pourquoi ?** Offrir une expérience "un clic" sans aucune saisie de texte dans VS Code, comme les extensions professionnelles (GitHub, Sentry).
+- **Comment ?**
+  1.  **Déclenchement** : L'utilisateur clique sur "Se connecter" dans VS Code.
+  2.  **Ouverture navigateur** : VS Code ouvre la page d'authentification Izwan avec un `redirect_uri` sécurisé et un `state` anti-CSRF.
+  3.  **Validation Web** : L'utilisateur se connecte depuis l'interface web Izwan existante.
+  4.  **Retour VS Code** : Le navigateur renvoie le jeton à VS Code via le callback d'URL (`vscode://kodek10.izwa-vscode/auth`, compatible avec le protocole historique `izwan://auth`).
+  5.  **Stockage sécurisé** : L'extension valide le `state`, stocke le jeton dans `context.secrets`, puis rafraîchit les snippets et les suggestions fantômes.
+
+---
+
 ## 📌 Historique des discussions
 
 _(Les nouveaux points abordés seront ajoutés en respectant cette structure)_

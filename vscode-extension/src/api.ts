@@ -27,6 +27,10 @@ export class IzwaAPI {
         return token ? { 'Authorization': `Bearer ${token}` } : {};
     }
 
+    static async storeToken(context: vscode.ExtensionContext, token: string): Promise<void> {
+        await context.secrets.store('izwa.token', token);
+    }
+
     static async fetchSnippets(context: vscode.ExtensionContext): Promise<Snippet[]> {
         try {
             const baseUrl = this.getBaseUrl();
@@ -70,7 +74,7 @@ export class IzwaAPI {
             }
 
             const data = await response.json() as { access_token: string };
-            await context.secrets.store('izwa.token', data.access_token);
+            await this.storeToken(context, data.access_token);
             return true;
         } catch (error) {
             console.error('Login error:', error);

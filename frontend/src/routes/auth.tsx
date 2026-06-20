@@ -13,6 +13,38 @@ export const Route = createFileRoute("/auth")({
   component: AuthPage,
 });
 
+const ALLOWED_EXTENSION_REDIRECTS = [
+  "vscode:",
+  "vscode-insiders:",
+  "izwan:",
+];
+
+function getExtensionRedirectUrl(token: string): string | null {
+  if (typeof window === "undefined") return null;
+
+  const params = new URLSearchParams(window.location.search);
+  const redirectUri = params.get("redirect_uri");
+  const state = params.get("state");
+
+  if (!redirectUri || !state) return null;
+
+  try {
+    const url = new URL(redirectUri);
+    const isAllowedProtocol = ALLOWED_EXTENSION_REDIRECTS.includes(url.protocol);
+    const isLegacyIzwanCallback = url.protocol === "izwan:" && url.hostname === "auth";
+    const isVsCodeCallback = url.hostname === "kodek10.izwa-vscode" && url.pathname === "/auth";
+
+    if (!isAllowedProtocol || (!isLegacyIzwanCallback && !isVsCodeCallback)) {
+      return null;
+    }
+
+    url.hash = new URLSearchParams({ token, state }).toString();
+    return url.toString();
+  } catch {
+    return null;
+  }
+}
+
 function AuthPage() {
   const { t } = useTranslation();
   const [username, setUsername] = useState("");
@@ -32,8 +64,13 @@ function AuthPage() {
     e.preventDefault();
     setLoading(true);
     try {
-      await api.login(username, password);
+      const auth = await api.login(username, password);
       toast.success(t("auth.login_success"));
+      const extensionRedirectUrl = getExtensionRedirectUrl(auth.access_token);
+      if (extensionRedirectUrl) {
+        window.location.assign(extensionRedirectUrl);
+        return;
+      }
       navigate({ to: "/dashboard" });
     } catch (error: any) {
       toast.error(error.message || t("auth.invalid_credentials"));
