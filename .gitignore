@@ -11,6 +11,10 @@ frontend/dist/
 frontend/node_modules/
 vscode-extension/node_modules/
 vscode-extension/out/
+desktop/node_modules/
+desktop/release/
+backend/build/
+backend/dist/
 *.vsix
 
 # OS / IDE

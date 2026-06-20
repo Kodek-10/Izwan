@@ -127,6 +127,28 @@ _Améliorer l'expérience de connexion pour l'extension Izwan afin de la rendre 
 
 ---
 
+## 🖥️ ÉTAPE 7 : Version Desktop Autonome (Electron/Tauri) - [FAIT] ✅
+
+_Transformer Izwan d'une application web locale en un véritable logiciel téléchargeable et installable (`.exe`, `.dmg`)._
+
+### 7.1 - Packaging avec Electron ou Tauri - [FAIT] ✅
+
+- **Pourquoi ?** Faciliter l'installation pour l'utilisateur final qui ne veut pas manipuler de terminal ou installer Python/Node manuellement.
+- **Comment ?**
+  1.  **Conteneur Desktop** : Ajout d'une application Electron dédiée dans `desktop/` qui encapsule le frontend React dans une fenêtre native.
+  2.  **Backend embarqué** : Ajout d'un point d'entrée `backend/desktop_entry.py` et d'une configuration PyInstaller pour générer un binaire `izwan-backend`, avec fallback de développement via `python -m uvicorn`.
+  3.  **Installateurs standards** : Configuration `electron-builder` pour générer des installateurs Windows (`NSIS`), macOS (`DMG`) et Linux (`AppImage`/`deb`).
+
+### 7.2 - Fonctionnalités Natives - [FAIT] ✅
+
+- **Pourquoi ?** Profiter des capacités du système d'exploitation que le navigateur ne permet pas.
+- **Comment ?**
+  1.  **Global Shortcut** : Raccourci global `Alt + Space` pour afficher Izwan et focaliser rapidement la recherche.
+  2.  **Systray** : Icône de barre système avec actions rapides : ouvrir Izwan, lancer la recherche rapide, démarrer Ollama local et quitter proprement.
+  3.  **Mode Hors-ligne complet** : Orchestration locale du backend SQLite dans le dossier utilisateur de l'application et prise en charge d'un binaire Ollama embarqué ou installé sur la machine.
+
+---
+
 ## 📌 Historique des discussions
 
 _(Les nouveaux points abordés seront ajoutés en respectant cette structure)_
