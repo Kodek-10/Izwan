@@ -3,12 +3,18 @@ import { IzwaSidebarProvider } from './sidebar';
 import { IzwaAPI } from './api';
 import { t } from './i18n';
 import { GhostSnippetProvider } from './ghostSnippets';
+import { BrowserAuthHandler } from './browserAuth';
 
 export function activate(context: vscode.ExtensionContext) {
     console.log(t('extension.active'));
 
     const sidebarProvider = new IzwaSidebarProvider(context.extensionUri, context);
     const ghostSnippetProvider = new GhostSnippetProvider(context);
+    const refreshAuthenticatedViews = () => {
+        ghostSnippetProvider.clearCache();
+        sidebarProvider.refresh();
+    };
+    const browserAuthHandler = new BrowserAuthHandler(context, refreshAuthenticatedViews);
 
     context.subscriptions.push(
         vscode.window.registerWebviewViewProvider(
@@ -18,32 +24,16 @@ export function activate(context: vscode.ExtensionContext) {
         vscode.languages.registerInlineCompletionItemProvider(
             { scheme: 'file' },
             ghostSnippetProvider
-        )
+        ),
+        vscode.window.registerUriHandler(browserAuthHandler)
     );
 
     let refreshCommand = vscode.commands.registerCommand('izwa.refreshSnippets', () => {
-        ghostSnippetProvider.clearCache();
-        sidebarProvider.refresh();
+        refreshAuthenticatedViews();
     });
 
     let loginCommand = vscode.commands.registerCommand('izwa.login', async () => {
-        const username = await vscode.window.showInputBox({ prompt: t('login.prompt.username') });
-        if (!username) return;
-        
-        const password = await vscode.window.showInputBox({ 
-            prompt: t('login.prompt.password'),
-            password: true 
-        });
-        if (!password) return;
-
-        const success = await IzwaAPI.login(context, username, password);
-        if (success) {
-            vscode.window.showInformationMessage(t('login.success'));
-            ghostSnippetProvider.clearCache();
-            sidebarProvider.refresh();
-        } else {
-            vscode.window.showErrorMessage(t('login.error'));
-        }
+        await browserAuthHandler.startLogin();
     });
 
     let searchCommand = vscode.commands.registerCommand('izwa.searchSnippet', async () => {
@@ -115,8 +105,7 @@ export function activate(context: vscode.ExtensionContext) {
 
         if (success) {
             vscode.window.showInformationMessage(t('capture.success'));
-            ghostSnippetProvider.clearCache();
-            sidebarProvider.refresh();
+            refreshAuthenticatedViews();
         } else {
             vscode.window.showErrorMessage(t('capture.error'));
         }

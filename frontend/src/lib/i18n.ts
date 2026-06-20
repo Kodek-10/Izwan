@@ -227,6 +227,7 @@ const resources = {
           "desc_placeholder": "Décrivez ce que fait ce snippet...",
           "code_placeholder": "Collez votre code ici...",
           "create_success": "Snippet créé avec succès",
+          "update_success": "Snippet modifié avec succès",
           "create_error": "Erreur lors de la création du snippet",
           "required_fields": "Le titre et le code sont obligatoires",
           "language_required": "Veuillez préciser le langage"
@@ -516,6 +517,7 @@ const resources = {
           "desc_placeholder": "Describe what this snippet does...",
           "code_placeholder": "Paste your code here...",
           "create_success": "Snippet created successfully",
+          "update_success": "Snippet updated successfully",
           "create_error": "Error creating snippet",
           "required_fields": "Title and code are required",
           "language_required": "Please specify the language"

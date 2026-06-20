@@ -5,5 +5,6 @@
     "izwa.login.title": "Izwan: Login",
     "izwa.view.name": "My Snippets",
     "izwa.configuration.backendUrl.description": "Izwan Backend API URL",
+    "izwa.configuration.frontendUrl.description": "Izwan Web authentication URL",
     "izwa.configuration.ghostSnippets.description": "Enable local ghost suggestions from your Izwan snippets."
 }
