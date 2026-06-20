@@ -19,10 +19,10 @@ const ALLOWED_EXTENSION_REDIRECTS = [
   "izwan:",
 ];
 
-function getExtensionRedirectUrl(token: string): string | null {
+function getExtensionRedirectUrl(token: string, search = window.location.search): string | null {
   if (typeof window === "undefined") return null;
 
-  const params = new URLSearchParams(window.location.search);
+  const params = new URLSearchParams(search);
   const redirectUri = params.get("redirect_uri");
   const state = params.get("state");
 
@@ -55,9 +55,18 @@ function AuthPage() {
 
   // Redirect if already logged in
   useEffect(() => {
-    if (api.isAuthenticated()) {
-      navigate({ to: "/dashboard" });
+    if (!api.isAuthenticated()) {
+      return;
     }
+
+    const token = localStorage.getItem("token");
+    const extensionRedirectUrl = token ? getExtensionRedirectUrl(token) : null;
+    if (extensionRedirectUrl) {
+      window.location.assign(extensionRedirectUrl);
+      return;
+    }
+
+    navigate({ to: "/dashboard" });
   }, [navigate]);
 
   const handleSubmit = async (e: React.FormEvent) => {
