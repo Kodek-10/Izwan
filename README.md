@@ -21,7 +21,7 @@ Ce projet est un monorepo comprenant :
 ## 🗺️ Vision & Roadmap
 Izwan évolue vers un véritable **Cerveau Numérique pour Développeurs** à l'ère du Vibecoding.
 - Consultez notre [Feuille de Route Détaillée](./ajout_supplementaires.md) pour les évolutions futures.
-- Retrouvez le [Résumé de nos orientations stratégiques](./DISCUSSION_SUMMARY.md).
+- Retrouvez le [Résumé de nos orientations stratégiques](./docs/presentation/vision.md).
 
 ## 🛠️ Installation Rapide
 
@@ -47,7 +47,9 @@ npm run dev
 3. Appuyez sur `F5` pour lancer une instance de test.
 
 ## 📖 Documentation
-La documentation complète de l'API est disponible sur `http://localhost:8000/docs` une fois le backend lancé.
+
+* Toute la documentation du projet (présentation, spécifications, rapports) est organisée dans [`docs/`](./docs/README.md).
+* La documentation interactive de l'API est disponible sur `http://localhost:8000/docs` une fois le backend lancé.
 
 ## 📄 Licence
 Ce projet est sous licence **MIT**. Voir le fichier [LICENSE](./LICENSE) pour plus de détails.
