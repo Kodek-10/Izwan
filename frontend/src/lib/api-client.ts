@@ -74,6 +74,18 @@ class ApiClient {
     return response.json();
   }
 
+  async patch<T>(path: string, data: any): Promise<T> {
+    const response = await fetch(`${API_URL}${path}`, {
+      method: "PATCH",
+      headers: this.headers,
+      body: JSON.stringify(data),
+    });
+    if (!response.ok) {
+      await this.handleError(response);
+    }
+    return response.json();
+  }
+
   async delete(path: string): Promise<void> {
     const response = await fetch(`${API_URL}${path}`, {
       method: "DELETE",
