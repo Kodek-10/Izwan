@@ -10,6 +10,7 @@ class UserCreate(UserBase):
 
 class User(UserBase):
     id: int
+    role: str = "USER"
     model_config = ConfigDict(from_attributes=True)
 
 class UserUpdate(BaseModel):

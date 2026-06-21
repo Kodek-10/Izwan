@@ -1,7 +1,15 @@
+import enum
+
 from sqlalchemy import Column, Integer, String, Text, DateTime, ForeignKey, Table, Boolean
 from sqlalchemy.orm import relationship
 from sqlalchemy.sql import func
 from .core.database import Base
+
+
+class UserRole(str, enum.Enum):
+    """Rôles applicatifs. Stockés en base comme une simple chaîne (voir User.role)."""
+    USER = "USER"
+    ADMIN = "ADMIN"
 
 # Association table for Snippets and Tags
 snippet_tags = Table(
@@ -17,6 +25,12 @@ class User(Base):
     id = Column(Integer, primary_key=True, index=True)
     username = Column(String, unique=True, index=True, nullable=False)
     hashed_password = Column(String, nullable=False)
+    role = Column(
+        String,
+        nullable=False,
+        default=UserRole.USER.value,
+        server_default=UserRole.USER.value,
+    )
 
     snippets = relationship("Snippet", back_populates="owner")
     collections = relationship("Collection", back_populates="owner")

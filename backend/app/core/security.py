@@ -50,3 +50,12 @@ async def get_current_user(token: str = Depends(oauth2_scheme), db: Session = De
     if user is None:
         raise credentials_exception
     return user
+
+async def get_current_admin(current_user: models.User = Depends(get_current_user)):
+    """Role Guard : n'autorise que les comptes ADMIN, sinon renvoie 403."""
+    if current_user.role != models.UserRole.ADMIN.value:
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail="Accès réservé aux administrateurs",
+        )
+    return current_user
