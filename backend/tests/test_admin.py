@@ -1,0 +1,56 @@
+from backend.app import models
+
+BASE = "/api/v1"
+
+
+def _auth(token):
+    return {"Authorization": f"Bearer {token}"}
+
+
+def _make(client, db, username, password, role="USER"):
+    client.post(f"{BASE}/auth/register", json={"username": username, "password": password})
+    if role == "ADMIN":
+        user = db.query(models.User).filter(models.User.username == username).first()
+        user.role = "ADMIN"
+        db.commit()
+    r = client.post(f"{BASE}/auth/login", data={"username": username, "password": password})
+    return r.json()["access_token"]
+
+
+def test_user_forbidden(client, db):
+    token = _make(client, db, "bob", "pw1")
+    r = client.get(f"{BASE}/admin/users", headers=_auth(token))
+    assert r.status_code == 403
+
+
+def test_admin_lists_users(client, db):
+    admin = _make(client, db, "boss", "pw1", role="ADMIN")
+    _make(client, db, "alice", "pw2")
+    r = client.get(f"{BASE}/admin/users", headers=_auth(admin))
+    assert r.status_code == 200
+    assert {"boss", "alice"} <= {u["username"] for u in r.json()}
+
+
+def test_admin_changes_role(client, db):
+    admin = _make(client, db, "boss", "pw1", role="ADMIN")
+    _make(client, db, "alice", "pw2")
+    alice = db.query(models.User).filter(models.User.username == "alice").first()
+    r = client.patch(f"{BASE}/admin/users/{alice.id}", json={"role": "ADMIN"}, headers=_auth(admin))
+    assert r.status_code == 200
+    assert r.json()["role"] == "ADMIN"
+
+
+def test_admin_cannot_delete_self(client, db):
+    admin = _make(client, db, "boss", "pw1", role="ADMIN")
+    me = db.query(models.User).filter(models.User.username == "boss").first()
+    r = client.delete(f"{BASE}/admin/users/{me.id}", headers=_auth(admin))
+    assert r.status_code == 400
+
+
+def test_admin_deletes_user(client, db):
+    admin = _make(client, db, "boss", "pw1", role="ADMIN")
+    _make(client, db, "alice", "pw2")
+    alice = db.query(models.User).filter(models.User.username == "alice").first()
+    r = client.delete(f"{BASE}/admin/users/{alice.id}", headers=_auth(admin))
+    assert r.status_code == 204
+    assert db.query(models.User).filter(models.User.username == "alice").first() is None

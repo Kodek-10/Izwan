@@ -8,7 +8,7 @@ env_path = os.path.join(os.path.dirname(os.path.dirname(__file__)), ".env")
 load_dotenv(dotenv_path=env_path)
 
 from .core.database import engine, Base
-from .api import snippets, search, export, auth, collections
+from .api import snippets, search, export, auth, collections, admin
 from .api.ai import router as ai_router
 
 # Create database tables
@@ -47,3 +47,4 @@ app.include_router(collections.router, prefix="/api/v1/collections", tags=["coll
 app.include_router(search.router, prefix="/api/v1/search", tags=["search"])
 app.include_router(ai_router, prefix="/api/v1/ai", tags=["ai"])
 app.include_router(export.router, prefix="/api/v1/export", tags=["export"])
+app.include_router(admin.router, prefix="/api/v1/admin", tags=["admin"])

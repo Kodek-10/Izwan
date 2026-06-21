@@ -1,5 +1,5 @@
 from pydantic import BaseModel, ConfigDict
-from typing import List, Optional
+from typing import List, Optional, Dict
 from datetime import datetime
 
 class UserBase(BaseModel):
@@ -12,6 +12,16 @@ class User(UserBase):
     id: int
     role: str = "USER"
     model_config = ConfigDict(from_attributes=True)
+
+class RoleUpdate(BaseModel):
+    role: str
+
+class AdminStats(BaseModel):
+    total_users: int
+    total_admins: int
+    total_snippets: int
+    total_collections: int
+    snippets_by_language: Dict[str, int]
 
 class UserUpdate(BaseModel):
     username: Optional[str] = None
