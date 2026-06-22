@@ -67,7 +67,7 @@ def update_privacy_settings(
     return get_privacy_settings()
 
 @router.post("/enrich", response_model=EnrichResponse)
-async def enrich_snippet(request: EnrichRequest, accept_language: Optional[str] = Header(None)):
+async def enrich_snippet(request: EnrichRequest, current_user: models.User = Depends(get_current_user), accept_language: Optional[str] = Header(None)):
     try:
         lang = "en" if accept_language and "en" in accept_language.lower() else "fr"
         result = await ai_service.generate_tags_and_description(request.code, request.language, lang=lang)
@@ -76,7 +76,7 @@ async def enrich_snippet(request: EnrichRequest, accept_language: Optional[str] 
         raise HTTPException(status_code=500, detail=str(e))
 
 @router.post("/explain", response_model=ExplainResponse)
-async def explain_snippet(request: ExplainRequest, accept_language: Optional[str] = Header(None)):
+async def explain_snippet(request: ExplainRequest, current_user: models.User = Depends(get_current_user), accept_language: Optional[str] = Header(None)):
     try:
         lang = "en" if accept_language and "en" in accept_language.lower() else "fr"
         explanation = await ai_service.explain_code(request.code, request.language, lang=lang)
@@ -132,7 +132,7 @@ class AdaptResponse(BaseModel):
     adapted_code: str
 
 @router.post("/adapt", response_model=AdaptResponse)
-async def adapt_snippet_code(request: AdaptRequest, accept_language: Optional[str] = Header(None)):
+async def adapt_snippet_code(request: AdaptRequest, current_user: models.User = Depends(get_current_user), accept_language: Optional[str] = Header(None)):
     try:
         lang = "en" if accept_language and "en" in accept_language.lower() else "fr"
         adapted = await ai_service.adapt_code(request.code, request.language, request.surrounding_code, lang=lang)
@@ -151,7 +151,7 @@ class TranslateResponse(BaseModel):
     tags: Optional[List[str]] = None
 
 @router.post("/translate", response_model=TranslateResponse)
-async def translate_snippet_code(request: TranslateRequest, accept_language: Optional[str] = Header(None)):
+async def translate_snippet_code(request: TranslateRequest, current_user: models.User = Depends(get_current_user), accept_language: Optional[str] = Header(None)):
     try:
         lang = "en" if accept_language and "en" in accept_language.lower() else "fr"
         result = await ai_service.translate_code(request.code, request.source_language, request.target_language, lang=lang)
