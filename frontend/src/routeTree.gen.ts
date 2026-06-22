@@ -22,9 +22,12 @@ import { Route as AppDashboardRouteImport } from './routes/_app.dashboard'
 import { Route as AppConstellationRouteImport } from './routes/_app.constellation'
 import { Route as AppCollectionsRouteImport } from './routes/_app.collections'
 import { Route as AppAssistantRouteImport } from './routes/_app.assistant'
+import { Route as AppAdminRouteImport } from './routes/_app.admin'
 import { Route as AppSnippetsIndexRouteImport } from './routes/_app.snippets.index'
+import { Route as AppAdminIndexRouteImport } from './routes/_app.admin.index'
 import { Route as AppSnippetsNewRouteImport } from './routes/_app.snippets.new'
 import { Route as AppSnippetsIdRouteImport } from './routes/_app.snippets.$id'
+import { Route as AppAdminUsersRouteImport } from './routes/_app.admin.users'
 
 const SignupRoute = SignupRouteImport.update({
   id: '/signup',
@@ -90,10 +93,20 @@ const AppAssistantRoute = AppAssistantRouteImport.update({
   path: '/assistant',
   getParentRoute: () => AppRoute,
 } as any)
+const AppAdminRoute = AppAdminRouteImport.update({
+  id: '/admin',
+  path: '/admin',
+  getParentRoute: () => AppRoute,
+} as any)
 const AppSnippetsIndexRoute = AppSnippetsIndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => AppSnippetsRoute,
+} as any)
+const AppAdminIndexRoute = AppAdminIndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => AppAdminRoute,
 } as any)
 const AppSnippetsNewRoute = AppSnippetsNewRouteImport.update({
   id: '/new',
@@ -105,11 +118,17 @@ const AppSnippetsIdRoute = AppSnippetsIdRouteImport.update({
   path: '/$id',
   getParentRoute: () => AppSnippetsRoute,
 } as any)
+const AppAdminUsersRoute = AppAdminUsersRouteImport.update({
+  id: '/users',
+  path: '/users',
+  getParentRoute: () => AppAdminRoute,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof AppIndexRoute
   '/auth': typeof AuthRoute
   '/signup': typeof SignupRoute
+  '/admin': typeof AppAdminRouteWithChildren
   '/assistant': typeof AppAssistantRoute
   '/collections': typeof AppCollectionsRoute
   '/constellation': typeof AppConstellationRoute
@@ -119,8 +138,10 @@ export interface FileRoutesByFullPath {
   '/settings': typeof AppSettingsRoute
   '/snippets': typeof AppSnippetsRouteWithChildren
   '/statistics': typeof AppStatisticsRoute
+  '/admin/users': typeof AppAdminUsersRoute
   '/snippets/$id': typeof AppSnippetsIdRoute
   '/snippets/new': typeof AppSnippetsNewRoute
+  '/admin/': typeof AppAdminIndexRoute
   '/snippets/': typeof AppSnippetsIndexRoute
 }
 export interface FileRoutesByTo {
@@ -135,8 +156,10 @@ export interface FileRoutesByTo {
   '/settings': typeof AppSettingsRoute
   '/statistics': typeof AppStatisticsRoute
   '/': typeof AppIndexRoute
+  '/admin/users': typeof AppAdminUsersRoute
   '/snippets/$id': typeof AppSnippetsIdRoute
   '/snippets/new': typeof AppSnippetsNewRoute
+  '/admin': typeof AppAdminIndexRoute
   '/snippets': typeof AppSnippetsIndexRoute
 }
 export interface FileRoutesById {
@@ -144,6 +167,7 @@ export interface FileRoutesById {
   '/_app': typeof AppRouteWithChildren
   '/auth': typeof AuthRoute
   '/signup': typeof SignupRoute
+  '/_app/admin': typeof AppAdminRouteWithChildren
   '/_app/assistant': typeof AppAssistantRoute
   '/_app/collections': typeof AppCollectionsRoute
   '/_app/constellation': typeof AppConstellationRoute
@@ -154,8 +178,10 @@ export interface FileRoutesById {
   '/_app/snippets': typeof AppSnippetsRouteWithChildren
   '/_app/statistics': typeof AppStatisticsRoute
   '/_app/': typeof AppIndexRoute
+  '/_app/admin/users': typeof AppAdminUsersRoute
   '/_app/snippets/$id': typeof AppSnippetsIdRoute
   '/_app/snippets/new': typeof AppSnippetsNewRoute
+  '/_app/admin/': typeof AppAdminIndexRoute
   '/_app/snippets/': typeof AppSnippetsIndexRoute
 }
 export interface FileRouteTypes {
@@ -164,6 +190,7 @@ export interface FileRouteTypes {
     | '/'
     | '/auth'
     | '/signup'
+    | '/admin'
     | '/assistant'
     | '/collections'
     | '/constellation'
@@ -173,8 +200,10 @@ export interface FileRouteTypes {
     | '/settings'
     | '/snippets'
     | '/statistics'
+    | '/admin/users'
     | '/snippets/$id'
     | '/snippets/new'
+    | '/admin/'
     | '/snippets/'
   fileRoutesByTo: FileRoutesByTo
   to:
@@ -189,14 +218,17 @@ export interface FileRouteTypes {
     | '/settings'
     | '/statistics'
     | '/'
+    | '/admin/users'
     | '/snippets/$id'
     | '/snippets/new'
+    | '/admin'
     | '/snippets'
   id:
     | '__root__'
     | '/_app'
     | '/auth'
     | '/signup'
+    | '/_app/admin'
     | '/_app/assistant'
     | '/_app/collections'
     | '/_app/constellation'
@@ -207,8 +239,10 @@ export interface FileRouteTypes {
     | '/_app/snippets'
     | '/_app/statistics'
     | '/_app/'
+    | '/_app/admin/users'
     | '/_app/snippets/$id'
     | '/_app/snippets/new'
+    | '/_app/admin/'
     | '/_app/snippets/'
   fileRoutesById: FileRoutesById
 }
@@ -311,12 +345,26 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AppAssistantRouteImport
       parentRoute: typeof AppRoute
     }
+    '/_app/admin': {
+      id: '/_app/admin'
+      path: '/admin'
+      fullPath: '/admin'
+      preLoaderRoute: typeof AppAdminRouteImport
+      parentRoute: typeof AppRoute
+    }
     '/_app/snippets/': {
       id: '/_app/snippets/'
       path: '/'
       fullPath: '/snippets/'
       preLoaderRoute: typeof AppSnippetsIndexRouteImport
       parentRoute: typeof AppSnippetsRoute
+    }
+    '/_app/admin/': {
+      id: '/_app/admin/'
+      path: '/'
+      fullPath: '/admin/'
+      preLoaderRoute: typeof AppAdminIndexRouteImport
+      parentRoute: typeof AppAdminRoute
     }
     '/_app/snippets/new': {
       id: '/_app/snippets/new'
@@ -332,8 +380,29 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AppSnippetsIdRouteImport
       parentRoute: typeof AppSnippetsRoute
     }
+    '/_app/admin/users': {
+      id: '/_app/admin/users'
+      path: '/users'
+      fullPath: '/admin/users'
+      preLoaderRoute: typeof AppAdminUsersRouteImport
+      parentRoute: typeof AppAdminRoute
+    }
   }
 }
+
+interface AppAdminRouteChildren {
+  AppAdminUsersRoute: typeof AppAdminUsersRoute
+  AppAdminIndexRoute: typeof AppAdminIndexRoute
+}
+
+const AppAdminRouteChildren: AppAdminRouteChildren = {
+  AppAdminUsersRoute: AppAdminUsersRoute,
+  AppAdminIndexRoute: AppAdminIndexRoute,
+}
+
+const AppAdminRouteWithChildren = AppAdminRoute._addFileChildren(
+  AppAdminRouteChildren,
+)
 
 interface AppSnippetsRouteChildren {
   AppSnippetsIdRoute: typeof AppSnippetsIdRoute
@@ -352,6 +421,7 @@ const AppSnippetsRouteWithChildren = AppSnippetsRoute._addFileChildren(
 )
 
 interface AppRouteChildren {
+  AppAdminRoute: typeof AppAdminRouteWithChildren
   AppAssistantRoute: typeof AppAssistantRoute
   AppCollectionsRoute: typeof AppCollectionsRoute
   AppConstellationRoute: typeof AppConstellationRoute
@@ -365,6 +435,7 @@ interface AppRouteChildren {
 }
 
 const AppRouteChildren: AppRouteChildren = {
+  AppAdminRoute: AppAdminRouteWithChildren,
   AppAssistantRoute: AppAssistantRoute,
   AppCollectionsRoute: AppCollectionsRoute,
   AppConstellationRoute: AppConstellationRoute,

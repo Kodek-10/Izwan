@@ -18,6 +18,7 @@ import {
   Loader2,
   Menu,
   Network,
+  Shield,
 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { IzwaLogo, IzwaWordmark } from "./izwan-logo";
@@ -48,12 +49,12 @@ export function AppShell({ children }: { children: React.ReactNode }) {
   const location = useLocation();
   const navigate = useNavigate();
   
-  const [user, setUser] = React.useState<{ username: string } | null>(null);
+  const [user, setUser] = React.useState<{ username: string; role?: string } | null>(null);
 
   React.useEffect(() => {
     const fetchUser = async () => {
       try {
-        const u = await api.get<{ username: string }>("/auth/me");
+        const u = await api.get<{ username: string; role?: string }>("/auth/me");
         setUser(u);
       } catch (e) {
         console.error("Failed to fetch user in shell", e);
@@ -79,6 +80,9 @@ export function AppShell({ children }: { children: React.ReactNode }) {
     { to: "/statistics", label: t("nav.statistics"), icon: BarChart3 },
     { to: "/export", label: t("nav.export"), icon: Download },
     { to: "/settings", label: t("nav.settings"), icon: Settings },
+    ...(user?.role === "ADMIN"
+      ? [{ to: "/admin", label: "Admin", icon: Shield }]
+      : []),
   ];
 
   const { theme, toggle } = useTheme();
