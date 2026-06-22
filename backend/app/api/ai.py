@@ -19,8 +19,13 @@ class EnrichResponse(BaseModel):
     tags: List[str]
     description: str
 
+class ChatMessage(BaseModel):
+    role: str  # "user" | "assistant"
+    content: str
+
 class ChatRequest(BaseModel):
     query: str
+    history: List[ChatMessage] = []
 
 class ChatResponse(BaseModel):
     answer: str
@@ -109,8 +114,9 @@ async def chat_with_assistant(
         results_with_score.sort(key=lambda x: x["score"], reverse=True)
         context_snippets = results_with_score[:5]
         
-        # 2. Appel au service IA avec le contexte
-        answer = await ai_service.chat_with_context(request.query, context_snippets, lang=lang)
+        # 2. Appel au service IA avec le contexte + l'historique de conversation
+        history = [{"role": m.role, "content": m.content} for m in request.history]
+        answer = await ai_service.chat_with_context(request.query, context_snippets, lang=lang, history=history)
         return {"answer": answer}
         
     except Exception as e:

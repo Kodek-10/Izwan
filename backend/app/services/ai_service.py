@@ -112,52 +112,57 @@ class AIService:
                 "description": f"Snippet {language} (AI Analysis unavailable)" if lang == "en" else f"Snippet {language} (Analyse IA indisponible)"
             }
 
-    async def chat_with_context(self, query: str, context_snippets: List[Dict[str, Any]], lang: str = "fr"):
+    async def chat_with_context(self, query: str, context_snippets: List[Dict[str, Any]], lang: str = "fr", history: List[Dict[str, Any]] = None):
         """
-        Répond à une question en utilisant des snippets comme contexte (RAG).
+        Répond à une question en s'appuyant sur les snippets pertinents (RAG) ET sur
+        l'historique de la conversation (mémoire conversationnelle). Le modèle est
+        toujours sollicité, même sans snippet pertinent (réponse générale).
         """
-        if not context_snippets:
-            if lang == "en":
-                return "I couldn't find any relevant snippets in your library to answer this question."
-            return "Je n'ai pas trouvé de snippets pertinents dans votre bibliothèque pour répondre à cette question."
+        from langchain_core.messages import SystemMessage, HumanMessage, AIMessage
 
-        context_text = "\n\n".join([
-            f"Snippet: {s['title']} ({s['language']})\nCode:\n{s['code']}\nDescription: {s['description']}"
-            for s in context_snippets
-        ])
-        context_window = self._select_context_window(query, context_text)
-        prepared_context = self._prepare_context(context_text, context_window)
+        history = history or []
+
+        if context_snippets:
+            context_text = "\n\n".join([
+                f"Snippet: {s['title']} ({s['language']})\nCode:\n{s['code']}\nDescription: {s['description']}"
+                for s in context_snippets
+            ])
+            context_window = self._select_context_window(query, context_text)
+            prepared_context = self._prepare_context(context_text, context_window)
+        else:
+            prepared_context = ""
 
         if lang == "en":
-            prompt_text = (
-                "You are Izwan, an expert development assistant. "
-                "Use the code snippets provided below to answer the user's question. "
-                "If the answer is not in the context, help the user as best as you can with your general knowledge, stating that it is not in their snippets.\n\n"
-                "YOUR SNIPPETS CONTEXT:\n"
-                "{context}\n\n"
-                "QUESTION: {query}\n\n"
-                "ANSWER (be concise and precise):"
+            system_text = (
+                "You are Izwan, an expert development assistant. Answer the user's questions "
+                "clearly and precisely, taking the conversation history into account. "
+                "If relevant code snippets from the user's library are provided below, rely on "
+                "them; otherwise answer from your general knowledge.\n\n"
+                "USER'S SNIPPETS CONTEXT:\n"
+                f"{prepared_context or 'No relevant snippet found.'}"
             )
         else:
-            prompt_text = (
-                "Tu es Izwa, un assistant expert en développement. "
-                "Utilise les extraits de code fournis ci-dessous pour répondre à la question de l'utilisateur. "
-                "Si la réponse n'est pas dans le contexte, aide l'utilisateur au mieux avec tes connaissances générales en précisant que ce n'est pas dans ses snippets.\n\n"
-                "CONTEXTE DE VOS SNIPPETS :\n"
-                "{context}\n\n"
-                "QUESTION : {query}\n\n"
-                "RÉPONSE (sois concis et précis) :"
+            system_text = (
+                "Tu es Izwan, un assistant expert en développement. Réponds aux questions de "
+                "l'utilisateur de façon claire et précise, en tenant compte de l'historique de "
+                "la conversation. Si des extraits de code pertinents de sa bibliothèque sont "
+                "fournis ci-dessous, appuie-toi dessus ; sinon, réponds avec tes connaissances "
+                "générales.\n\n"
+                "CONTEXTE DES SNIPPETS :\n"
+                f"{prepared_context or 'Aucun snippet pertinent trouvé.'}"
             )
 
-        prompt = PromptTemplate(
-            template=prompt_text,
-            input_variables=["context", "query"],
-        )
-
-        chain = prompt | self._get_model(query, prepared_context)
+        messages = [SystemMessage(content=system_text)]
+        for m in history[-10:]:
+            if m.get("role") == "assistant":
+                messages.append(AIMessage(content=m.get("content", "")))
+            else:
+                messages.append(HumanMessage(content=m.get("content", "")))
+        messages.append(HumanMessage(content=query))
 
         try:
-            result = await chain.ainvoke({"context": prepared_context, "query": query})
+            model = self._get_model(query, prepared_context)
+            result = await model.ainvoke(messages)
             return result.content
         except Exception as e:
             print(f"Erreur Chat IA: {e}")
