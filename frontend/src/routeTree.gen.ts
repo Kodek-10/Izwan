@@ -12,7 +12,7 @@ import { Route as rootRouteImport } from './routes/__root'
 import { Route as SignupRouteImport } from './routes/signup'
 import { Route as AuthRouteImport } from './routes/auth'
 import { Route as AppRouteImport } from './routes/_app'
-import { Route as AppIndexRouteImport } from './routes/_app.index'
+import { Route as IndexRouteImport } from './routes/index'
 import { Route as AppStatisticsRouteImport } from './routes/_app.statistics'
 import { Route as AppSnippetsRouteImport } from './routes/_app.snippets'
 import { Route as AppSettingsRouteImport } from './routes/_app.settings'
@@ -43,10 +43,10 @@ const AppRoute = AppRouteImport.update({
   id: '/_app',
   getParentRoute: () => rootRouteImport,
 } as any)
-const AppIndexRoute = AppIndexRouteImport.update({
+const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
-  getParentRoute: () => AppRoute,
+  getParentRoute: () => rootRouteImport,
 } as any)
 const AppStatisticsRoute = AppStatisticsRouteImport.update({
   id: '/statistics',
@@ -125,7 +125,7 @@ const AppAdminUsersRoute = AppAdminUsersRouteImport.update({
 } as any)
 
 export interface FileRoutesByFullPath {
-  '/': typeof AppIndexRoute
+  '/': typeof IndexRoute
   '/auth': typeof AuthRoute
   '/signup': typeof SignupRoute
   '/admin': typeof AppAdminRouteWithChildren
@@ -145,6 +145,7 @@ export interface FileRoutesByFullPath {
   '/snippets/': typeof AppSnippetsIndexRoute
 }
 export interface FileRoutesByTo {
+  '/': typeof IndexRoute
   '/auth': typeof AuthRoute
   '/signup': typeof SignupRoute
   '/assistant': typeof AppAssistantRoute
@@ -155,7 +156,6 @@ export interface FileRoutesByTo {
   '/favorites': typeof AppFavoritesRoute
   '/settings': typeof AppSettingsRoute
   '/statistics': typeof AppStatisticsRoute
-  '/': typeof AppIndexRoute
   '/admin/users': typeof AppAdminUsersRoute
   '/snippets/$id': typeof AppSnippetsIdRoute
   '/snippets/new': typeof AppSnippetsNewRoute
@@ -164,6 +164,7 @@ export interface FileRoutesByTo {
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
+  '/': typeof IndexRoute
   '/_app': typeof AppRouteWithChildren
   '/auth': typeof AuthRoute
   '/signup': typeof SignupRoute
@@ -177,7 +178,6 @@ export interface FileRoutesById {
   '/_app/settings': typeof AppSettingsRoute
   '/_app/snippets': typeof AppSnippetsRouteWithChildren
   '/_app/statistics': typeof AppStatisticsRoute
-  '/_app/': typeof AppIndexRoute
   '/_app/admin/users': typeof AppAdminUsersRoute
   '/_app/snippets/$id': typeof AppSnippetsIdRoute
   '/_app/snippets/new': typeof AppSnippetsNewRoute
@@ -207,6 +207,7 @@ export interface FileRouteTypes {
     | '/snippets/'
   fileRoutesByTo: FileRoutesByTo
   to:
+    | '/'
     | '/auth'
     | '/signup'
     | '/assistant'
@@ -217,7 +218,6 @@ export interface FileRouteTypes {
     | '/favorites'
     | '/settings'
     | '/statistics'
-    | '/'
     | '/admin/users'
     | '/snippets/$id'
     | '/snippets/new'
@@ -225,6 +225,7 @@ export interface FileRouteTypes {
     | '/snippets'
   id:
     | '__root__'
+    | '/'
     | '/_app'
     | '/auth'
     | '/signup'
@@ -238,7 +239,6 @@ export interface FileRouteTypes {
     | '/_app/settings'
     | '/_app/snippets'
     | '/_app/statistics'
-    | '/_app/'
     | '/_app/admin/users'
     | '/_app/snippets/$id'
     | '/_app/snippets/new'
@@ -247,6 +247,7 @@ export interface FileRouteTypes {
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
+  IndexRoute: typeof IndexRoute
   AppRoute: typeof AppRouteWithChildren
   AuthRoute: typeof AuthRoute
   SignupRoute: typeof SignupRoute
@@ -275,12 +276,12 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AppRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/_app/': {
-      id: '/_app/'
+    '/': {
+      id: '/'
       path: '/'
       fullPath: '/'
-      preLoaderRoute: typeof AppIndexRouteImport
-      parentRoute: typeof AppRoute
+      preLoaderRoute: typeof IndexRouteImport
+      parentRoute: typeof rootRouteImport
     }
     '/_app/statistics': {
       id: '/_app/statistics'
@@ -431,7 +432,6 @@ interface AppRouteChildren {
   AppSettingsRoute: typeof AppSettingsRoute
   AppSnippetsRoute: typeof AppSnippetsRouteWithChildren
   AppStatisticsRoute: typeof AppStatisticsRoute
-  AppIndexRoute: typeof AppIndexRoute
 }
 
 const AppRouteChildren: AppRouteChildren = {
@@ -445,12 +445,12 @@ const AppRouteChildren: AppRouteChildren = {
   AppSettingsRoute: AppSettingsRoute,
   AppSnippetsRoute: AppSnippetsRouteWithChildren,
   AppStatisticsRoute: AppStatisticsRoute,
-  AppIndexRoute: AppIndexRoute,
 }
 
 const AppRouteWithChildren = AppRoute._addFileChildren(AppRouteChildren)
 
 const rootRouteChildren: RootRouteChildren = {
+  IndexRoute: IndexRoute,
   AppRoute: AppRouteWithChildren,
   AuthRoute: AuthRoute,
   SignupRoute: SignupRoute,
