@@ -17,6 +17,27 @@ def _admin_count(db: Session) -> int:
     return db.query(models.User).filter(models.User.role == ADMIN).count()
 
 
+# Matrice des droits (source de vérité applicative, servie à l'écran « Rôles & permissions »).
+_CAPABILITIES = [
+    ("manage_own_content", "Gérer son propre contenu", {USER: True, ADMIN: True}),
+    ("manage_users", "Gérer les utilisateurs et leurs rôles", {USER: False, ADMIN: True}),
+    ("supervise_system", "Superviser l'IA & le système", {USER: False, ADMIN: True}),
+    ("view_audit", "Consulter l'audit", {USER: False, ADMIN: True}),
+]
+
+
+@router.get("/roles", response_model=schemas.RolesMatrix)
+def roles_matrix(admin: models.User = Depends(get_current_admin)):
+    """Matrice rôles x permissions (lecture seule), définie par l'application."""
+    return schemas.RolesMatrix(
+        roles=[USER, ADMIN],
+        capabilities=[
+            schemas.RoleCapability(key=key, label=label, roles=roles)
+            for key, label, roles in _CAPABILITIES
+        ],
+    )
+
+
 @router.get("/users", response_model=List[schemas.User])
 def list_users(
     db: Session = Depends(get_db),

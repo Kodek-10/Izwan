@@ -54,3 +54,19 @@ def test_admin_deletes_user(client, db):
     r = client.delete(f"{BASE}/admin/users/{alice.id}", headers=_auth(admin))
     assert r.status_code == 204
     assert db.query(models.User).filter(models.User.username == "alice").first() is None
+
+
+def test_roles_matrix_requires_admin(client, db):
+    token = _make(client, db, "bob", "pw1")  # USER
+    r = client.get(f"{BASE}/admin/roles", headers=_auth(token))
+    assert r.status_code == 403
+
+
+def test_admin_roles_matrix(client, db):
+    admin = _make(client, db, "boss", "pw1", role="ADMIN")
+    r = client.get(f"{BASE}/admin/roles", headers=_auth(admin))
+    assert r.status_code == 200
+    data = r.json()
+    assert data["roles"] == ["USER", "ADMIN"]
+    cap = next(c for c in data["capabilities"] if c["key"] == "manage_users")
+    assert cap["roles"]["ADMIN"] is True and cap["roles"]["USER"] is False
