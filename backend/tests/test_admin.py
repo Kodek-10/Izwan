@@ -70,3 +70,22 @@ def test_admin_roles_matrix(client, db):
     assert data["roles"] == ["USER", "ADMIN"]
     cap = next(c for c in data["capabilities"] if c["key"] == "manage_users")
     assert cap["roles"]["ADMIN"] is True and cap["roles"]["USER"] is False
+
+
+def test_ai_usage_requires_admin(client, db):
+    token = _make(client, db, "bob", "pw1")  # USER
+    r = client.get(f"{BASE}/admin/ai-usage", headers=_auth(token))
+    assert r.status_code == 403
+
+
+def test_ai_usage_counts(client, db):
+    admin = _make(client, db, "boss", "pw1", role="ADMIN")
+    db.add(models.AiUsage(feature="enrich", user_id=None))
+    db.add(models.AiUsage(feature="chat", user_id=None))
+    db.add(models.AiUsage(feature="chat", user_id=None))
+    db.commit()
+    r = client.get(f"{BASE}/admin/ai-usage?days=3650", headers=_auth(admin))
+    assert r.status_code == 200
+    data = r.json()
+    assert data["total"] == 3
+    assert data["by_feature"]["chat"] == 2

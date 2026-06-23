@@ -94,3 +94,13 @@ class Tag(Base):
     name = Column(String, unique=True, index=True, nullable=False)
 
     snippets = relationship("Snippet", secondary=snippet_tags, back_populates="tags")
+
+
+class AiUsage(Base):
+    """Journal des appels aux fonctions IA (pour les métriques admin)."""
+    __tablename__ = "ai_usage"
+
+    id = Column(Integer, primary_key=True, index=True)
+    feature = Column(String, index=True, nullable=False)  # enrich, explain, chat, adapt, translate
+    user_id = Column(Integer, ForeignKey("users.id", ondelete="SET NULL"), nullable=True)
+    created_at = Column(DateTime(timezone=True), server_default=func.now(), index=True)

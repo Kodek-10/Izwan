@@ -33,6 +33,11 @@ class RolesMatrix(BaseModel):
     roles: List[str]
     capabilities: List[RoleCapability]
 
+class AiUsageStats(BaseModel):
+    days: int
+    total: int
+    by_feature: Dict[str, int]
+
 class UserUpdate(BaseModel):
     username: Optional[str] = None
 
