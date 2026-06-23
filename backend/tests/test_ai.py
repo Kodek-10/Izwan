@@ -1,10 +1,27 @@
 from backend.app.services.ai_service import AIService
 
 
-def test_ai_enrichment(client):
+def _token(client, username="ai_user", password="pw"):
+    client.post("/api/v1/auth/register", json={"username": username, "password": password})
+    r = client.post("/api/v1/auth/login", data={"username": username, "password": password})
+    return r.json()["access_token"]
+
+
+def test_ai_enrich_requires_auth(client):
+    # Durcissement : les endpoints IA exigent désormais une authentification.
     response = client.post(
         "/api/v1/ai/enrich",
-        json={"code": "def hello(): pass", "language": "python"}
+        json={"code": "def hello(): pass", "language": "python"},
+    )
+    assert response.status_code == 401
+
+
+def test_ai_enrichment(client):
+    token = _token(client)
+    response = client.post(
+        "/api/v1/ai/enrich",
+        json={"code": "def hello(): pass", "language": "python"},
+        headers={"Authorization": f"Bearer {token}"},
     )
     assert response.status_code == 200
     data = response.json()

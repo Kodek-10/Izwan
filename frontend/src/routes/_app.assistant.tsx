@@ -47,7 +47,11 @@ function AssistantPage() {
     setIsLoading(true);
 
     try {
-      const res = await api.post<{ answer: string }>("/ai/chat", { query: userMessage.content });
+      const history = messages.map((m) => ({ role: m.role, content: m.content }));
+      const res = await api.post<{ answer: string }>("/ai/chat", {
+        query: userMessage.content,
+        history,
+      });
       
       const assistantMessage: Message = {
         role: "assistant",
