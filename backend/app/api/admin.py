@@ -113,3 +113,23 @@ def admin_stats(
         total_collections=db.query(models.Collection).count(),
         snippets_by_language=by_language,
     )
+
+
+@router.get("/ai-usage", response_model=schemas.AiUsageStats)
+def ai_usage_stats(
+    days: int = 30,
+    db: Session = Depends(get_db),
+    admin: models.User = Depends(get_current_admin),
+):
+    """Compteurs d'appels IA par fonction sur les N derniers jours."""
+    from datetime import datetime, timedelta, timezone
+
+    since = datetime.now(timezone.utc) - timedelta(days=days)
+    rows = (
+        db.query(models.AiUsage.feature, func.count(models.AiUsage.id))
+        .filter(models.AiUsage.created_at >= since)
+        .group_by(models.AiUsage.feature)
+        .all()
+    )
+    by_feature = {feature: count for feature, count in rows}
+    return schemas.AiUsageStats(days=days, total=sum(by_feature.values()), by_feature=by_feature)
