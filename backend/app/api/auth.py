@@ -6,6 +6,7 @@ from typing import Optional
 from ..core.database import get_db
 from ..core import security
 from .. import models, schemas
+from ..core.audit import record_audit
 
 router = APIRouter()
 
@@ -78,6 +79,7 @@ def login_for_access_token(
     lang = get_lang(accept_language)
     user = db.query(models.User).filter(models.User.username == form_data.username).first()
     if not user or not security.verify_password(form_data.password, user.hashed_password):
+        record_audit(db, "auth", "login_failed", actor=form_data.username)
         detail = "Incorrect username or password" if lang == "en" else "Nom d'utilisateur ou mot de passe incorrect"
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
@@ -89,6 +91,7 @@ def login_for_access_token(
     access_token = security.create_access_token(
         data={"sub": user.username, "role": user.role}, expires_delta=access_token_expires
     )
+    record_audit(db, "auth", "login", actor=user.username)
     return {"access_token": access_token, "token_type": "bearer"}
 
 @router.get("/github")
