@@ -24,6 +24,15 @@ class AdminStats(BaseModel):
     total_collections: int
     snippets_by_language: Dict[str, int]
 
+class RoleCapability(BaseModel):
+    key: str
+    label: str
+    roles: Dict[str, bool]
+
+class RolesMatrix(BaseModel):
+    roles: List[str]
+    capabilities: List[RoleCapability]
+
 class UserUpdate(BaseModel):
     username: Optional[str] = None
 
