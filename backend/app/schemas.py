@@ -38,6 +38,16 @@ class AiUsageStats(BaseModel):
     total: int
     by_feature: Dict[str, int]
 
+class AuditEntry(BaseModel):
+    id: int
+    category: str
+    action: str
+    actor: Optional[str] = None
+    target: Optional[str] = None
+    detail: Optional[str] = None
+    created_at: Optional[datetime] = None
+    model_config = ConfigDict(from_attributes=True)
+
 class UserUpdate(BaseModel):
     username: Optional[str] = None
 

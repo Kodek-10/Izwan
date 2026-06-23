@@ -104,3 +104,16 @@ class AiUsage(Base):
     feature = Column(String, index=True, nullable=False)  # enrich, explain, chat, adapt, translate
     user_id = Column(Integer, ForeignKey("users.id", ondelete="SET NULL"), nullable=True)
     created_at = Column(DateTime(timezone=True), server_default=func.now(), index=True)
+
+
+class AuditLog(Base):
+    """Journal d'audit des actions sensibles (sécurité / traçabilité)."""
+    __tablename__ = "audit_log"
+
+    id = Column(Integer, primary_key=True, index=True)
+    category = Column(String, index=True, nullable=False)  # admin | auth | system
+    action = Column(String, nullable=False)
+    actor = Column(String, index=True, nullable=True)   # username (instantané)
+    target = Column(String, nullable=True)
+    detail = Column(Text, nullable=True)
+    created_at = Column(DateTime(timezone=True), server_default=func.now(), index=True)

@@ -1,10 +1,11 @@
 from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.orm import Session
 from sqlalchemy import func
-from typing import List
+from typing import List, Optional
 
 from ..core.database import get_db
 from ..core.security import get_current_admin
+from ..core.audit import record_audit
 from .. import models, schemas
 
 router = APIRouter()
@@ -69,6 +70,7 @@ def update_user_role(
     user.role = payload.role
     db.commit()
     db.refresh(user)
+    record_audit(db, "admin", "role_change", actor=admin.username, target=user.username, detail=payload.role)
     return user
 
 
@@ -87,10 +89,12 @@ def delete_user(
     if user.role == ADMIN and _admin_count(db) <= 1:
         raise HTTPException(status_code=400, detail="Impossible de supprimer le dernier administrateur")
 
+    target_username = user.username
     db.query(models.Snippet).filter(models.Snippet.owner_id == user.id).delete(synchronize_session=False)
     db.query(models.Collection).filter(models.Collection.owner_id == user.id).delete(synchronize_session=False)
     db.delete(user)
     db.commit()
+    record_audit(db, "admin", "user_delete", actor=admin.username, target=target_username)
     return None
 
 
@@ -133,3 +137,21 @@ def ai_usage_stats(
     )
     by_feature = {feature: count for feature, count in rows}
     return schemas.AiUsageStats(days=days, total=sum(by_feature.values()), by_feature=by_feature)
+
+
+@router.get("/audit", response_model=List[schemas.AuditEntry])
+def audit_log(
+    category: Optional[str] = None,
+    days: int = 30,
+    limit: int = 100,
+    db: Session = Depends(get_db),
+    admin: models.User = Depends(get_current_admin),
+):
+    """Journal d'audit des actions sensibles (filtres : catégorie, période)."""
+    from datetime import datetime, timedelta, timezone
+
+    since = datetime.now(timezone.utc) - timedelta(days=days)
+    query = db.query(models.AuditLog).filter(models.AuditLog.created_at >= since)
+    if category:
+        query = query.filter(models.AuditLog.category == category)
+    return query.order_by(models.AuditLog.created_at.desc()).limit(limit).all()

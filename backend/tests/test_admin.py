@@ -89,3 +89,20 @@ def test_ai_usage_counts(client, db):
     data = r.json()
     assert data["total"] == 3
     assert data["by_feature"]["chat"] == 2
+
+
+def test_audit_requires_admin(client, db):
+    token = _make(client, db, "bob", "pw1")  # USER
+    r = client.get(f"{BASE}/admin/audit", headers=_auth(token))
+    assert r.status_code == 403
+
+
+def test_audit_records_role_change(client, db):
+    admin = _make(client, db, "boss", "pw1", role="ADMIN")
+    _make(client, db, "alice", "pw2")
+    alice = db.query(models.User).filter(models.User.username == "alice").first()
+    client.patch(f"{BASE}/admin/users/{alice.id}", json={"role": "ADMIN"}, headers=_auth(admin))
+    r = client.get(f"{BASE}/admin/audit?days=3650", headers=_auth(admin))
+    assert r.status_code == 200
+    events = r.json()
+    assert any(e["action"] == "role_change" and e["target"] == "alice" for e in events)
