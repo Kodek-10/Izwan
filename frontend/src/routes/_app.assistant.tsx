@@ -1,5 +1,5 @@
-import { createFileRoute } from "@tanstack/react-router";
-import { Sparkles, Send, User, Bot, Loader2, Trash2 } from "lucide-react";
+import { createFileRoute, useRouter } from "@tanstack/react-router";
+import { Sparkles, Send, User, Bot, Loader2, Trash2, ArrowLeft } from "lucide-react";
 import { useState, useRef, useEffect } from "react";
 import { useTranslation } from "react-i18next";
 import { Button } from "@/components/ui/button";
@@ -20,6 +20,7 @@ interface Message {
 
 function AssistantPage() {
   const { t } = useTranslation();
+  const router = useRouter();
   const [query, setQuery] = useState("");
   const [messages, setMessages] = useState<Message[]>([]);
   const [isLoading, setIsLoading] = useState(false);
@@ -76,6 +77,15 @@ function AssistantPage() {
     <div className="max-w-4xl mx-auto h-[calc(100vh-12rem)] flex flex-col">
       <div className="flex items-center justify-between mb-6">
         <div className="flex items-center gap-3">
+          <Button
+            variant="ghost"
+            size="icon"
+            onClick={() => router.history.back()}
+            aria-label="Retour"
+            className="shrink-0"
+          >
+            <ArrowLeft className="h-5 w-5" />
+          </Button>
           <div className="h-10 w-10 rounded-lg gradient-brand flex items-center justify-center shadow-lg">
             <Sparkles className="h-5 w-5 text-white" />
           </div>
