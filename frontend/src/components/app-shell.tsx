@@ -15,7 +15,6 @@ import {
   User,
   Settings,
   Shield,
-  Sparkles,
   Loader2,
 } from "lucide-react";
 import { motion } from "framer-motion";
@@ -38,6 +37,7 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "./ui/tooltip";
+import { FloatingAssistant } from "./floating-assistant";
 
 const navItems = [
   { to: "/dashboard", label: "Tableau de bord", icon: LayoutDashboard },
@@ -240,14 +240,8 @@ export function AppShell({ children }: { children: React.ReactNode }) {
         </nav>
       </TooltipProvider>
 
-      {/* Assistant flottant */}
-      <Link
-        to="/assistant"
-        className="glow fixed bottom-5 right-5 z-30 flex h-12 w-12 items-center justify-center rounded-full gradient-brand text-white shadow-lg transition-transform hover:scale-105"
-        aria-label="Assistant"
-      >
-        <Sparkles className="h-5 w-5" />
-      </Link>
+      {/* Assistant flottant (panneau coulissant depuis la droite) */}
+      <FloatingAssistant />
     </div>
   );
 }
