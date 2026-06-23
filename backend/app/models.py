@@ -31,6 +31,7 @@ class User(Base):
         default=UserRole.USER.value,
         server_default=UserRole.USER.value,
     )
+    created_at = Column(DateTime(timezone=True), server_default=func.now())
 
     snippets = relationship("Snippet", back_populates="owner")
     collections = relationship("Collection", back_populates="owner")

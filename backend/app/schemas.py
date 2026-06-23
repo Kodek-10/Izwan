@@ -11,6 +11,7 @@ class UserCreate(UserBase):
 class User(UserBase):
     id: int
     role: str = "USER"
+    created_at: Optional[datetime] = None
     model_config = ConfigDict(from_attributes=True)
 
 class RoleUpdate(BaseModel):
