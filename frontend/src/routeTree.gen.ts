@@ -11,8 +11,11 @@
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as SignupRouteImport } from './routes/signup'
 import { Route as AuthRouteImport } from './routes/auth'
+import { Route as AdminRouteImport } from './routes/admin'
 import { Route as AppRouteImport } from './routes/_app'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as AdminIndexRouteImport } from './routes/admin.index'
+import { Route as AdminUsersRouteImport } from './routes/admin.users'
 import { Route as AppStatisticsRouteImport } from './routes/_app.statistics'
 import { Route as AppSnippetsRouteImport } from './routes/_app.snippets'
 import { Route as AppSettingsRouteImport } from './routes/_app.settings'
@@ -22,12 +25,9 @@ import { Route as AppDashboardRouteImport } from './routes/_app.dashboard'
 import { Route as AppConstellationRouteImport } from './routes/_app.constellation'
 import { Route as AppCollectionsRouteImport } from './routes/_app.collections'
 import { Route as AppAssistantRouteImport } from './routes/_app.assistant'
-import { Route as AppAdminRouteImport } from './routes/_app.admin'
 import { Route as AppSnippetsIndexRouteImport } from './routes/_app.snippets.index'
-import { Route as AppAdminIndexRouteImport } from './routes/_app.admin.index'
 import { Route as AppSnippetsNewRouteImport } from './routes/_app.snippets.new'
 import { Route as AppSnippetsIdRouteImport } from './routes/_app.snippets.$id'
-import { Route as AppAdminUsersRouteImport } from './routes/_app.admin.users'
 
 const SignupRoute = SignupRouteImport.update({
   id: '/signup',
@@ -39,6 +39,11 @@ const AuthRoute = AuthRouteImport.update({
   path: '/auth',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AdminRoute = AdminRouteImport.update({
+  id: '/admin',
+  path: '/admin',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const AppRoute = AppRouteImport.update({
   id: '/_app',
   getParentRoute: () => rootRouteImport,
@@ -47,6 +52,16 @@ const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => rootRouteImport,
+} as any)
+const AdminIndexRoute = AdminIndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminUsersRoute = AdminUsersRouteImport.update({
+  id: '/users',
+  path: '/users',
+  getParentRoute: () => AdminRoute,
 } as any)
 const AppStatisticsRoute = AppStatisticsRouteImport.update({
   id: '/statistics',
@@ -93,20 +108,10 @@ const AppAssistantRoute = AppAssistantRouteImport.update({
   path: '/assistant',
   getParentRoute: () => AppRoute,
 } as any)
-const AppAdminRoute = AppAdminRouteImport.update({
-  id: '/admin',
-  path: '/admin',
-  getParentRoute: () => AppRoute,
-} as any)
 const AppSnippetsIndexRoute = AppSnippetsIndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => AppSnippetsRoute,
-} as any)
-const AppAdminIndexRoute = AppAdminIndexRouteImport.update({
-  id: '/',
-  path: '/',
-  getParentRoute: () => AppAdminRoute,
 } as any)
 const AppSnippetsNewRoute = AppSnippetsNewRouteImport.update({
   id: '/new',
@@ -118,17 +123,12 @@ const AppSnippetsIdRoute = AppSnippetsIdRouteImport.update({
   path: '/$id',
   getParentRoute: () => AppSnippetsRoute,
 } as any)
-const AppAdminUsersRoute = AppAdminUsersRouteImport.update({
-  id: '/users',
-  path: '/users',
-  getParentRoute: () => AppAdminRoute,
-} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/admin': typeof AdminRouteWithChildren
   '/auth': typeof AuthRoute
   '/signup': typeof SignupRoute
-  '/admin': typeof AppAdminRouteWithChildren
   '/assistant': typeof AppAssistantRoute
   '/collections': typeof AppCollectionsRoute
   '/constellation': typeof AppConstellationRoute
@@ -138,10 +138,10 @@ export interface FileRoutesByFullPath {
   '/settings': typeof AppSettingsRoute
   '/snippets': typeof AppSnippetsRouteWithChildren
   '/statistics': typeof AppStatisticsRoute
-  '/admin/users': typeof AppAdminUsersRoute
+  '/admin/users': typeof AdminUsersRoute
+  '/admin/': typeof AdminIndexRoute
   '/snippets/$id': typeof AppSnippetsIdRoute
   '/snippets/new': typeof AppSnippetsNewRoute
-  '/admin/': typeof AppAdminIndexRoute
   '/snippets/': typeof AppSnippetsIndexRoute
 }
 export interface FileRoutesByTo {
@@ -156,19 +156,19 @@ export interface FileRoutesByTo {
   '/favorites': typeof AppFavoritesRoute
   '/settings': typeof AppSettingsRoute
   '/statistics': typeof AppStatisticsRoute
-  '/admin/users': typeof AppAdminUsersRoute
+  '/admin/users': typeof AdminUsersRoute
+  '/admin': typeof AdminIndexRoute
   '/snippets/$id': typeof AppSnippetsIdRoute
   '/snippets/new': typeof AppSnippetsNewRoute
-  '/admin': typeof AppAdminIndexRoute
   '/snippets': typeof AppSnippetsIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/_app': typeof AppRouteWithChildren
+  '/admin': typeof AdminRouteWithChildren
   '/auth': typeof AuthRoute
   '/signup': typeof SignupRoute
-  '/_app/admin': typeof AppAdminRouteWithChildren
   '/_app/assistant': typeof AppAssistantRoute
   '/_app/collections': typeof AppCollectionsRoute
   '/_app/constellation': typeof AppConstellationRoute
@@ -178,19 +178,19 @@ export interface FileRoutesById {
   '/_app/settings': typeof AppSettingsRoute
   '/_app/snippets': typeof AppSnippetsRouteWithChildren
   '/_app/statistics': typeof AppStatisticsRoute
-  '/_app/admin/users': typeof AppAdminUsersRoute
+  '/admin/users': typeof AdminUsersRoute
+  '/admin/': typeof AdminIndexRoute
   '/_app/snippets/$id': typeof AppSnippetsIdRoute
   '/_app/snippets/new': typeof AppSnippetsNewRoute
-  '/_app/admin/': typeof AppAdminIndexRoute
   '/_app/snippets/': typeof AppSnippetsIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
+    | '/admin'
     | '/auth'
     | '/signup'
-    | '/admin'
     | '/assistant'
     | '/collections'
     | '/constellation'
@@ -201,9 +201,9 @@ export interface FileRouteTypes {
     | '/snippets'
     | '/statistics'
     | '/admin/users'
+    | '/admin/'
     | '/snippets/$id'
     | '/snippets/new'
-    | '/admin/'
     | '/snippets/'
   fileRoutesByTo: FileRoutesByTo
   to:
@@ -219,17 +219,17 @@ export interface FileRouteTypes {
     | '/settings'
     | '/statistics'
     | '/admin/users'
+    | '/admin'
     | '/snippets/$id'
     | '/snippets/new'
-    | '/admin'
     | '/snippets'
   id:
     | '__root__'
     | '/'
     | '/_app'
+    | '/admin'
     | '/auth'
     | '/signup'
-    | '/_app/admin'
     | '/_app/assistant'
     | '/_app/collections'
     | '/_app/constellation'
@@ -239,16 +239,17 @@ export interface FileRouteTypes {
     | '/_app/settings'
     | '/_app/snippets'
     | '/_app/statistics'
-    | '/_app/admin/users'
+    | '/admin/users'
+    | '/admin/'
     | '/_app/snippets/$id'
     | '/_app/snippets/new'
-    | '/_app/admin/'
     | '/_app/snippets/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AppRoute: typeof AppRouteWithChildren
+  AdminRoute: typeof AdminRouteWithChildren
   AuthRoute: typeof AuthRoute
   SignupRoute: typeof SignupRoute
 }
@@ -269,6 +270,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/admin': {
+      id: '/admin'
+      path: '/admin'
+      fullPath: '/admin'
+      preLoaderRoute: typeof AdminRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/_app': {
       id: '/_app'
       path: ''
@@ -282,6 +290,20 @@ declare module '@tanstack/react-router' {
       fullPath: '/'
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
+    }
+    '/admin/': {
+      id: '/admin/'
+      path: '/'
+      fullPath: '/admin/'
+      preLoaderRoute: typeof AdminIndexRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/users': {
+      id: '/admin/users'
+      path: '/users'
+      fullPath: '/admin/users'
+      preLoaderRoute: typeof AdminUsersRouteImport
+      parentRoute: typeof AdminRoute
     }
     '/_app/statistics': {
       id: '/_app/statistics'
@@ -346,26 +368,12 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AppAssistantRouteImport
       parentRoute: typeof AppRoute
     }
-    '/_app/admin': {
-      id: '/_app/admin'
-      path: '/admin'
-      fullPath: '/admin'
-      preLoaderRoute: typeof AppAdminRouteImport
-      parentRoute: typeof AppRoute
-    }
     '/_app/snippets/': {
       id: '/_app/snippets/'
       path: '/'
       fullPath: '/snippets/'
       preLoaderRoute: typeof AppSnippetsIndexRouteImport
       parentRoute: typeof AppSnippetsRoute
-    }
-    '/_app/admin/': {
-      id: '/_app/admin/'
-      path: '/'
-      fullPath: '/admin/'
-      preLoaderRoute: typeof AppAdminIndexRouteImport
-      parentRoute: typeof AppAdminRoute
     }
     '/_app/snippets/new': {
       id: '/_app/snippets/new'
@@ -381,29 +389,8 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AppSnippetsIdRouteImport
       parentRoute: typeof AppSnippetsRoute
     }
-    '/_app/admin/users': {
-      id: '/_app/admin/users'
-      path: '/users'
-      fullPath: '/admin/users'
-      preLoaderRoute: typeof AppAdminUsersRouteImport
-      parentRoute: typeof AppAdminRoute
-    }
   }
 }
-
-interface AppAdminRouteChildren {
-  AppAdminUsersRoute: typeof AppAdminUsersRoute
-  AppAdminIndexRoute: typeof AppAdminIndexRoute
-}
-
-const AppAdminRouteChildren: AppAdminRouteChildren = {
-  AppAdminUsersRoute: AppAdminUsersRoute,
-  AppAdminIndexRoute: AppAdminIndexRoute,
-}
-
-const AppAdminRouteWithChildren = AppAdminRoute._addFileChildren(
-  AppAdminRouteChildren,
-)
 
 interface AppSnippetsRouteChildren {
   AppSnippetsIdRoute: typeof AppSnippetsIdRoute
@@ -422,7 +409,6 @@ const AppSnippetsRouteWithChildren = AppSnippetsRoute._addFileChildren(
 )
 
 interface AppRouteChildren {
-  AppAdminRoute: typeof AppAdminRouteWithChildren
   AppAssistantRoute: typeof AppAssistantRoute
   AppCollectionsRoute: typeof AppCollectionsRoute
   AppConstellationRoute: typeof AppConstellationRoute
@@ -435,7 +421,6 @@ interface AppRouteChildren {
 }
 
 const AppRouteChildren: AppRouteChildren = {
-  AppAdminRoute: AppAdminRouteWithChildren,
   AppAssistantRoute: AppAssistantRoute,
   AppCollectionsRoute: AppCollectionsRoute,
   AppConstellationRoute: AppConstellationRoute,
@@ -449,9 +434,22 @@ const AppRouteChildren: AppRouteChildren = {
 
 const AppRouteWithChildren = AppRoute._addFileChildren(AppRouteChildren)
 
+interface AdminRouteChildren {
+  AdminUsersRoute: typeof AdminUsersRoute
+  AdminIndexRoute: typeof AdminIndexRoute
+}
+
+const AdminRouteChildren: AdminRouteChildren = {
+  AdminUsersRoute: AdminUsersRoute,
+  AdminIndexRoute: AdminIndexRoute,
+}
+
+const AdminRouteWithChildren = AdminRoute._addFileChildren(AdminRouteChildren)
+
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AppRoute: AppRouteWithChildren,
+  AdminRoute: AdminRouteWithChildren,
   AuthRoute: AuthRoute,
   SignupRoute: SignupRoute,
 }
