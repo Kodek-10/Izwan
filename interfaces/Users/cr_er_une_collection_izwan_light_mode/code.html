@@ -1,0 +1,307 @@
+<!DOCTYPE html>
+
+<html class="light" lang="fr"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Izwan - Créer une collection</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&amp;family=Poppins:wght@500;600;700&amp;family=Fira+Code:wght@450&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+          darkMode: "class",
+          theme: {
+            extend: {
+              "colors": {
+                      "on-primary-fixed-variant": "#683844",
+                      "on-secondary-fixed-variant": "#643b46",
+                      "on-primary-fixed": "#350e1a",
+                      "surface-container": "#f4eced",
+                      "inverse-surface": "#332f30",
+                      "on-tertiary": "#ffffff",
+                      "primary-fixed-dim": "#f7b5c3",
+                      "primary-container": "#552834",
+                      "outline": "#837376",
+                      "secondary-fixed-dim": "#f0b8c5",
+                      "on-background": "#1e1b1c",
+                      "on-secondary-fixed": "#31111b",
+                      "tertiary-container": "#393535",
+                      "on-error-container": "#93000a",
+                      "error-container": "#ffdad6",
+                      "secondary-container": "#ffc5d3",
+                      "on-secondary": "#ffffff",
+                      "tertiary-fixed-dim": "#ccc5c5",
+                      "surface-container-low": "#faf1f2",
+                      "outline-variant": "#d5c2c5",
+                      "on-surface": "#1e1b1c",
+                      "on-error": "#ffffff",
+                      "error": "#ba1a1a",
+                      "primary": "#3b131f",
+                      "surface": "#fff8f8",
+                      "on-primary-container": "#cc8e9c",
+                      "tertiary-fixed": "#e9e1e1",
+                      "surface-container-highest": "#e9e0e1",
+                      "surface-bright": "#fff8f8",
+                      "surface-variant": "#e9e0e1",
+                      "on-primary": "#ffffff",
+                      "inverse-on-surface": "#f7eff0",
+                      "primary-fixed": "#ffd9e0",
+                      "inverse-primary": "#f7b5c3",
+                      "on-tertiary-fixed": "#1e1b1b",
+                      "secondary": "#7e525e",
+                      "on-surface-variant": "#514346",
+                      "on-tertiary-container": "#a49d9d",
+                      "tertiary": "#232020",
+                      "surface-dim": "#e0d8d9",
+                      "on-tertiary-fixed-variant": "#4a4646",
+                      "surface-container-high": "#efe6e7",
+                      "on-secondary-container": "#7b4f5b",
+                      "background": "#fff8f8",
+                      "surface-tint": "#844f5c",
+                      "surface-container-lowest": "#ffffff",
+                      "secondary-fixed": "#ffd9e1"
+              },
+              "borderRadius": {
+                      "DEFAULT": "0.25rem",
+                      "lg": "0.5rem",
+                      "xl": "0.75rem",
+                      "full": "9999px"
+              },
+              "spacing": {
+                      "gutter": "24px",
+                      "sm": "8px",
+                      "lg": "24px",
+                      "xl": "40px",
+                      "md": "16px",
+                      "margin-desktop": "64px",
+                      "base": "4px",
+                      "xs": "4px",
+                      "margin-mobile": "16px"
+              },
+              "fontFamily": {
+                      "headline-lg": [
+                              "Poppins"
+                      ],
+                      "body-sm": [
+                              "Inter"
+                      ],
+                      "body-md": [
+                              "Inter"
+                      ],
+                      "label-caps": [
+                              "Inter"
+                      ],
+                      "headline-md": [
+                              "Poppins"
+                      ],
+                      "code-md": [
+                              "Fira Code"
+                      ],
+                      "display": [
+                              "Poppins"
+                      ],
+                      "headline-lg-mobile": [
+                              "Poppins"
+                      ],
+                      "body-lg": [
+                              "Inter"
+                      ]
+              },
+              "fontSize": {
+                      "headline-lg": [
+                              "32px",
+                              {
+                                      "lineHeight": "40px",
+                                      "fontWeight": "600"
+                              }
+                      ],
+                      "body-sm": [
+                              "14px",
+                              {
+                                      "lineHeight": "20px",
+                                      "fontWeight": "400"
+                              }
+                      ],
+                      "body-md": [
+                              "16px",
+                              {
+                                      "lineHeight": "24px",
+                                      "fontWeight": "400"
+                              }
+                      ],
+                      "label-caps": [
+                              "12px",
+                              {
+                                      "lineHeight": "16px",
+                                      "letterSpacing": "0.05em",
+                                      "fontWeight": "600"
+                              }
+                      ],
+                      "headline-md": [
+                              "24px",
+                              {
+                                      "lineHeight": "32px",
+                                      "fontWeight": "600"
+                              }
+                      ],
+                      "code-md": [
+                              "14px",
+                              {
+                                      "lineHeight": "22px",
+                                      "fontWeight": "450"
+                              }
+                      ],
+                      "display": [
+                              "48px",
+                              {
+                                      "lineHeight": "56px",
+                                      "letterSpacing": "-0.02em",
+                                      "fontWeight": "700"
+                              }
+                      ],
+                      "headline-lg-mobile": [
+                              "28px",
+                              {
+                                      "lineHeight": "36px",
+                                      "fontWeight": "600"
+                              }
+                      ],
+                      "body-lg": [
+                              "18px",
+                              {
+                                      "lineHeight": "28px",
+                                      "fontWeight": "400"
+                              }
+                      ]
+              }
+      },
+          },
+        }
+      </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .material-symbols-outlined.filled {
+            font-variation-settings: 'FILL' 1;
+        }
+        
+        /* Custom Scrollbar for icons list */
+        .icon-scroll::-webkit-scrollbar {
+            width: 6px;
+        }
+        .icon-scroll::-webkit-scrollbar-track {
+            background: transparent;
+        }
+        .icon-scroll::-webkit-scrollbar-thumb {
+            background-color: #d5c2c5;
+            border-radius: 10px;
+        }
+        
+        /* Modal Animation */
+        .modal-enter {
+            animation: modalEnter 0.3s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+        }
+        @keyframes modalEnter {
+            from {
+                opacity: 0;
+                transform: scale(0.95) translateY(10px);
+            }
+            to {
+                opacity: 1;
+                transform: scale(1) translateY(0);
+            }
+        }
+    </style>
+</head>
+<body class="bg-[#F7F4F4] text-on-surface font-body-md h-screen w-screen overflow-hidden flex relative">
+<!-- Background Screen Context -->
+<div class="absolute inset-0 z-0 opacity-40 blur-sm pointer-events-none">
+<img alt="Collections Screen Background" class="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDp40ErnhskRyBoPgRjS_kKBHv-RgAPXPLSvMpGTED56FVJIlH9IpEW-bH8QmIIV1dnB056GcbjGNahbK54949cel0l8L3aj1q-mAChMAxTC3rzOk3OwfNxvruOWv5VS2iOJko_o1JPd23EeCq9P5cZIOwYEIDrXMAZYuApIJC1ObFtydb-q6pCFaR6bTMC4luXFVI_INmOasxAiN5njhze3QMjhSE6ahdvx8A6rMfjeICDabVq740flN9_N1AeMT9uU0xaE9hUXKE"/>
+</div>
+<!-- Overlay Backdrop -->
+<div class="absolute inset-0 z-40 bg-surface/80 backdrop-blur-md flex items-center justify-center p-4">
+<!-- Modal Container -->
+<div class="modal-enter w-full max-w-md bg-surface-container-lowest border border-tertiary-fixed rounded-xl shadow-[0px_10px_30px_rgba(85,40,52,0.08)] flex flex-col relative z-50">
+<!-- Header -->
+<div class="px-lg py-md border-b border-tertiary-fixed flex justify-between items-center">
+<h2 class="font-headline-md text-headline-md text-primary">Créer une collection</h2>
+<button class="text-on-surface-variant hover:text-primary transition-colors focus:outline-none rounded-full p-1 hover:bg-surface-variant/50">
+<span class="material-symbols-outlined" data-icon="close">close</span>
+</button>
+</div>
+<!-- Form Body -->
+<div class="px-lg py-lg flex flex-col gap-lg overflow-y-auto">
+<!-- Field: Nom -->
+<div class="flex flex-col gap-xs">
+<label class="font-label-caps text-label-caps text-on-surface-variant uppercase" for="collection-name">Nom de la collection</label>
+<input class="w-full bg-surface-container-lowest border border-tertiary-fixed rounded-lg px-md py-sm font-body-md text-body-md text-on-surface placeholder:text-on-surface-variant/50 focus:border-primary-container focus:ring-1 focus:ring-primary-container focus:outline-none transition-all" id="collection-name" placeholder="Ex: Projets Q3" type="text"/>
+</div>
+<!-- Field: Description -->
+<div class="flex flex-col gap-xs">
+<label class="font-label-caps text-label-caps text-on-surface-variant uppercase" for="collection-desc">Description</label>
+<textarea class="w-full bg-surface-container-lowest border border-tertiary-fixed rounded-lg px-md py-sm font-body-md text-body-md text-on-surface placeholder:text-on-surface-variant/50 focus:border-primary-container focus:ring-1 focus:ring-primary-container focus:outline-none transition-all resize-none" id="collection-desc" placeholder="Brève description du contenu..." rows="3"></textarea>
+</div>
+<!-- Field: Icône -->
+<div class="flex flex-col gap-xs">
+<label class="font-label-caps text-label-caps text-on-surface-variant uppercase flex justify-between items-center">
+                        Choisir une icône
+                        <span class="text-on-surface-variant/60 lowercase font-body-sm text-body-sm">Optionnel</span>
+</label>
+<!-- Icon Grid -->
+<div class="grid grid-cols-6 gap-sm p-sm bg-surface-container/30 border border-tertiary-fixed/50 rounded-lg max-h-32 overflow-y-auto icon-scroll">
+<!-- Selected Icon -->
+<button class="aspect-square flex items-center justify-center rounded-lg bg-primary-container text-on-primary-container hover:bg-primary-container/90 transition-colors border border-primary-container">
+<span class="material-symbols-outlined" data-icon="folder_special">folder_special</span>
+</button>
+<!-- Unselected Icons -->
+<button class="aspect-square flex items-center justify-center rounded-lg bg-surface-container-lowest text-on-surface-variant border border-tertiary-fixed hover:border-primary-container/50 hover:text-primary transition-colors">
+<span class="material-symbols-outlined" data-icon="work">work</span>
+</button>
+<button class="aspect-square flex items-center justify-center rounded-lg bg-surface-container-lowest text-on-surface-variant border border-tertiary-fixed hover:border-primary-container/50 hover:text-primary transition-colors">
+<span class="material-symbols-outlined" data-icon="lightbulb">lightbulb</span>
+</button>
+<button class="aspect-square flex items-center justify-center rounded-lg bg-surface-container-lowest text-on-surface-variant border border-tertiary-fixed hover:border-primary-container/50 hover:text-primary transition-colors">
+<span class="material-symbols-outlined" data-icon="data_object">data_object</span>
+</button>
+<button class="aspect-square flex items-center justify-center rounded-lg bg-surface-container-lowest text-on-surface-variant border border-tertiary-fixed hover:border-primary-container/50 hover:text-primary transition-colors">
+<span class="material-symbols-outlined" data-icon="science">science</span>
+</button>
+<button class="aspect-square flex items-center justify-center rounded-lg bg-surface-container-lowest text-on-surface-variant border border-tertiary-fixed hover:border-primary-container/50 hover:text-primary transition-colors">
+<span class="material-symbols-outlined" data-icon="palette">palette</span>
+</button>
+<button class="aspect-square flex items-center justify-center rounded-lg bg-surface-container-lowest text-on-surface-variant border border-tertiary-fixed hover:border-primary-container/50 hover:text-primary transition-colors">
+<span class="material-symbols-outlined" data-icon="library_books">library_books</span>
+</button>
+<button class="aspect-square flex items-center justify-center rounded-lg bg-surface-container-lowest text-on-surface-variant border border-tertiary-fixed hover:border-primary-container/50 hover:text-primary transition-colors">
+<span class="material-symbols-outlined" data-icon="school">school</span>
+</button>
+<button class="aspect-square flex items-center justify-center rounded-lg bg-surface-container-lowest text-on-surface-variant border border-tertiary-fixed hover:border-primary-container/50 hover:text-primary transition-colors">
+<span class="material-symbols-outlined" data-icon="terminal">terminal</span>
+</button>
+<button class="aspect-square flex items-center justify-center rounded-lg bg-surface-container-lowest text-on-surface-variant border border-tertiary-fixed hover:border-primary-container/50 hover:text-primary transition-colors">
+<span class="material-symbols-outlined" data-icon="bug_report">bug_report</span>
+</button>
+<button class="aspect-square flex items-center justify-center rounded-lg bg-surface-container-lowest text-on-surface-variant border border-tertiary-fixed hover:border-primary-container/50 hover:text-primary transition-colors">
+<span class="material-symbols-outlined" data-icon="database">database</span>
+</button>
+<button class="aspect-square flex items-center justify-center rounded-lg bg-surface-container-lowest text-on-surface-variant border border-tertiary-fixed hover:border-primary-container/50 hover:text-primary transition-colors">
+<span class="material-symbols-outlined" data-icon="cloud">cloud</span>
+</button>
+</div>
+</div>
+</div>
+<!-- Footer Actions -->
+<div class="px-lg py-md border-t border-tertiary-fixed flex justify-end gap-md bg-surface-container/20 rounded-b-xl">
+<button class="px-md py-sm rounded-lg font-label-caps text-label-caps bg-transparent border border-outline-variant text-on-surface-variant hover:text-primary hover:border-primary transition-colors">
+                    Annuler
+                </button>
+<button class="px-md py-sm rounded-lg font-label-caps text-label-caps bg-primary-container text-on-primary-container border border-primary-container hover:bg-on-primary-fixed-variant transition-colors flex items-center gap-xs">
+<span class="material-symbols-outlined text-[18px]" data-icon="add">add</span>
+                    Créer
+                </button>
+</div>
+</div>
+</div>
+</body></html>

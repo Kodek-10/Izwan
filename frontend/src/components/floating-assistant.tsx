@@ -46,7 +46,7 @@ export function FloatingAssistant() {
     <>
       <button
         onClick={() => setOpen(true)}
-        className="glow fixed bottom-5 right-5 z-30 flex h-12 w-12 items-center justify-center rounded-full gradient-brand text-white shadow-lg transition-transform hover:scale-105"
+        className="glow fixed bottom-20 sm:bottom-5 right-5 z-30 flex h-12 w-12 items-center justify-center rounded-full gradient-brand text-white shadow-lg transition-transform hover:scale-105"
         aria-label="Assistant"
       >
         <Sparkles className="h-5 w-5" />

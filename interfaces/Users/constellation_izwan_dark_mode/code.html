@@ -1,0 +1,288 @@
+<!DOCTYPE html><html class="dark" lang="en"><head>
+<meta charset="utf-8">
+<meta content="width=device-width, initial-scale=1.0" name="viewport">
+<title>Izwan - Constellation</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "surface-bright": "#363a3b",
+                        "on-primary-fixed-variant": "#7e2a1b",
+                        "on-tertiary-container": "#00392e",
+                        "background": "#101415",
+                        "inverse-primary": "#9e412f",
+                        "surface-container-high": "#272a2c",
+                        "on-primary-container": "#611508",
+                        "primary-fixed": "#ffdad3",
+                        "tertiary-fixed": "#75f9d8",
+                        "on-tertiary": "#00382d",
+                        "on-surface": "#e0e3e5",
+                        "error": "#ffb4ab",
+                        "primary-container": "#e87a64",
+                        "on-secondary-fixed-variant": "#364765",
+                        "outline": "#a48b86",
+                        "secondary-container": "#364765",
+                        "on-error-container": "#ffdad6",
+                        "on-error": "#690005",
+                        "on-secondary-fixed": "#081b37",
+                        "on-background": "#e0e3e5",
+                        "surface-variant": "#323537",
+                        "surface-dim": "#101415",
+                        "surface-container": "#1d2022",
+                        "on-primary-fixed": "#3e0400",
+                        "primary": "#ffb4a5",
+                        "inverse-surface": "#e0e3e5",
+                        "primary-fixed-dim": "#ffb4a5",
+                        "secondary-fixed-dim": "#b6c7eb",
+                        "secondary-fixed": "#d6e3ff",
+                        "on-tertiary-fixed-variant": "#005142",
+                        "on-surface-variant": "#dcc0bb",
+                        "surface-container-low": "#191c1e",
+                        "on-tertiary-fixed": "#002019",
+                        "tertiary-container": "#00ad90",
+                        "error-container": "#93000a",
+                        "on-secondary-container": "#a4b6d9",
+                        "inverse-on-surface": "#2d3133",
+                        "on-primary": "#601407",
+                        "surface-tint": "#ffb4a5",
+                        "surface-container-highest": "#323537",
+                        "outline-variant": "#56423e",
+                        "surface-container-lowest": "#0b0f10",
+                        "secondary": "#b6c7eb",
+                        "tertiary-fixed-dim": "#55dcbc",
+                        "on-secondary": "#1f314d",
+                        "surface": "#101415",
+                        "tertiary": "#55dcbc"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.125rem",
+                        "lg": "0.25rem",
+                        "xl": "0.5rem",
+                        "full": "0.75rem"
+                    },
+                    "spacing": {
+                        "margin-desktop": "40px",
+                        "unit": "4px",
+                        "gutter": "24px",
+                        "container-max": "1440px",
+                        "margin-mobile": "16px"
+                    },
+                    "fontFamily": {
+                        "label-sm": ["JetBrains Mono"],
+                        "headline-lg": ["Montserrat"],
+                        "body-md": ["Inter"],
+                        "display-lg": ["Montserrat"],
+                        "headline-lg-mobile": ["Montserrat"],
+                        "code-snippet": ["JetBrains Mono"]
+                    },
+                    "fontSize": {
+                        "label-sm": ["12px", { "lineHeight": "16px", "letterSpacing": "0.05em", "fontWeight": "500" }],
+                        "headline-lg": ["32px", { "lineHeight": "40px", "fontWeight": "600" }],
+                        "body-md": ["16px", { "lineHeight": "24px", "fontWeight": "400" }],
+                        "display-lg": ["48px", { "lineHeight": "56px", "letterSpacing": "-0.02em", "fontWeight": "700" }],
+                        "headline-lg-mobile": ["24px", { "lineHeight": "32px", "fontWeight": "600" }],
+                        "code-snippet": ["14px", { "lineHeight": "20px", "fontWeight": "400" }]
+                    }
+                }
+            }
+        }
+    </script>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&amp;family=Montserrat:wght@400;600;700&amp;family=Inter:wght@400;500;600&amp;display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet">
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        
+        .constellation-node {
+            transition: all 0.3s ease;
+        }
+        .constellation-node:hover {
+            transform: scale(1.1);
+            z-index: 10;
+        }
+    </style>
+</head>
+<body class="bg-background text-on-background min-h-screen font-body-md overflow-hidden flex flex-col relative selection:bg-primary-container selection:text-on-primary-container">
+<!-- TopAppBar -->
+<header class="fixed top-0 w-full z-50 flex justify-between items-center px-margin-desktop h-16 bg-surface/80 backdrop-blur-md">
+<div class="flex items-center gap-4">
+<span class="font-headline-lg text-headline-lg text-primary font-bold tracking-tight">Izwan</span>
+</div>
+<!-- Search Bar (Centered per prompt) -->
+<div class="hidden md:flex flex-1 max-w-xl mx-auto absolute left-1/2 -translate-x-1/2 relative group">
+<div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+<span class="material-symbols-outlined text-on-surface-variant">search</span>
+</div>
+<input class="block w-full pl-10 pr-3 py-2 border border-surface-variant rounded-full leading-5 bg-surface-container-high/50 text-on-surface placeholder-on-surface-variant focus:outline-none focus:ring-1 focus:ring-primary focus:border-primary sm:text-sm transition-all focus:bg-surface-container-highest" placeholder="Search constellations, snippets, tags..." type="text">
+</div>
+<div class="flex items-center gap-4">
+<button class="p-2 text-on-surface-variant hover:bg-surface-bright/50 transition-colors rounded-full scale-95 active:scale-90 transition-transform">
+<span class="material-symbols-outlined" data-icon="notifications">notifications</span>
+</button>
+<div class="w-8 h-8 rounded-full bg-surface-container-highest overflow-hidden border border-outline-variant">
+<img alt="User avatar" class="w-full h-full object-cover" data-alt="A small, professional portrait photograph of a young man with dark hair, used as an avatar in a dark-themed UI. The lighting is subtle and moody, with a deep navy background. The overall tone is sleek, modern, and corporate." src="https://lh3.googleusercontent.com/aida-public/AB6AXuAZ5t7YhopB5kXUsZ1y3D5Uc-gf6xVmWnrSFO8Uh08176NhazN7uI1GuxWS3-SkgLn8Gxp1D-AkF_roDUpEiv888aF3ekoooG9H094JbFAC3K3_wQ5YwosZmRb6V-nRqBmNJ7dZoPB152UmYQSrgrM5HYUCvKrs2FrKpSBVA8Wn6mmFIj1W7wbO2vMa3w-diSIniC4dREF0JbRmUylqus9Z4yS8ylZrz6BMMVSebCUhMvmf-rr0Clplb9iLpcGRSTk3VFNz1zNvTik">
+</div>
+</div>
+</header>
+<!-- Main Canvas Area for Constellation -->
+<main class="flex-1 relative w-full h-screen pt-16 pb-24 overflow-hidden">
+<!-- Ambient Background Glows -->
+<div class="absolute inset-0 z-0 pointer-events-none">
+<div class="absolute top-1/4 left-1/4 w-[500px] h-[500px] bg-primary/5 rounded-full blur-[100px]"></div>
+<div class="absolute bottom-1/4 right-1/4 w-[400px] h-[400px] bg-tertiary/5 rounded-full blur-[100px]"></div>
+</div>
+<!-- Simulated Constellation Canvas -->
+<div class="absolute inset-0 z-10 w-full h-full" id="constellation-canvas">
+<!-- Nodes and Connections (Simulated for HTML output) -->
+<!-- Connection Lines -->
+<svg class="absolute inset-0 w-full h-full pointer-events-none opacity-20" xmlns="http://www.w3.org/2000/svg">
+<line class="text-on-surface-variant" stroke="currentColor" stroke-width="1" x1="20%" x2="40%" y1="30%" y2="50%"></line>
+<line class="text-on-surface-variant" stroke="currentColor" stroke-width="1" x1="40%" x2="60%" y1="50%" y2="20%"></line>
+<line class="text-on-surface-variant" stroke="currentColor" stroke-width="1" x1="40%" x2="30%" y1="50%" y2="70%"></line>
+<line class="text-on-surface-variant" stroke="currentColor" stroke-width="1" x1="60%" x2="75%" y1="20%" y2="45%"></line>
+<line class="text-on-surface-variant" stroke="currentColor" stroke-width="1" x1="75%" x2="65%" y1="45%" y2="75%"></line>
+<line class="text-on-surface-variant" stroke="currentColor" stroke-width="1" x1="30%" x2="50%" y1="70%" y2="80%"></line>
+<line class="text-on-surface-variant" stroke="currentColor" stroke-width="1" x1="50%" x2="65%" y1="80%" y2="75%"></line>
+</svg>
+<!-- Node: Central -->
+<div class="absolute top-[50%] left-[40%] -translate-x-1/2 -translate-y-1/2 constellation-node group cursor-pointer">
+<div class="w-16 h-16 rounded-full bg-surface-container border border-primary/30 flex items-center justify-center shadow-[0_0_20px_rgba(255,180,165,0.15)] relative">
+<div class="absolute inset-0 rounded-full border border-primary/50 animate-[ping_3s_ease-in-out_infinite]"></div>
+<span class="material-symbols-outlined text-primary text-3xl">hub</span>
+</div>
+<div class="absolute top-full mt-2 left-1/2 -translate-x-1/2 w-max text-center opacity-0 group-hover:opacity-100 transition-opacity">
+<p class="font-label-sm text-label-sm text-on-surface bg-surface-container-high px-2 py-1 rounded shadow-lg border border-outline-variant">Core Architecture</p>
+<p class="text-[10px] text-on-surface-variant mt-1">24 Snippets</p>
+</div>
+</div>
+<!-- Node: Authentication -->
+<div class="absolute top-[30%] left-[20%] -translate-x-1/2 -translate-y-1/2 constellation-node group cursor-pointer">
+<div class="w-12 h-12 rounded-full bg-surface-container-high border border-outline-variant flex items-center justify-center hover:border-tertiary transition-colors">
+<span class="material-symbols-outlined text-on-surface-variant group-hover:text-tertiary">lock</span>
+</div>
+<div class="absolute top-full mt-2 left-1/2 -translate-x-1/2 w-max text-center opacity-0 group-hover:opacity-100 transition-opacity">
+<p class="font-label-sm text-label-sm text-on-surface bg-surface-container px-2 py-1 rounded">Auth Module</p>
+</div>
+</div>
+<!-- Node: Data Models -->
+<div class="absolute top-[20%] left-[60%] -translate-x-1/2 -translate-y-1/2 constellation-node group cursor-pointer">
+<div class="w-14 h-14 rounded-full bg-surface-container-high border border-outline-variant flex items-center justify-center hover:border-primary transition-colors">
+<span class="material-symbols-outlined text-on-surface-variant group-hover:text-primary">database</span>
+</div>
+<div class="absolute top-full mt-2 left-1/2 -translate-x-1/2 w-max text-center opacity-0 group-hover:opacity-100 transition-opacity">
+<p class="font-label-sm text-label-sm text-on-surface bg-surface-container px-2 py-1 rounded">Data Models</p>
+</div>
+</div>
+<!-- Node: UI Components -->
+<div class="absolute top-[70%] left-[30%] -translate-x-1/2 -translate-y-1/2 constellation-node group cursor-pointer">
+<div class="w-10 h-10 rounded-full bg-surface-container-high border border-outline-variant flex items-center justify-center hover:border-secondary transition-colors">
+<span class="material-symbols-outlined text-on-surface-variant group-hover:text-secondary">widgets</span>
+</div>
+<div class="absolute top-full mt-2 left-1/2 -translate-x-1/2 w-max text-center opacity-0 group-hover:opacity-100 transition-opacity">
+<p class="font-label-sm text-label-sm text-on-surface bg-surface-container px-2 py-1 rounded">UI Kit</p>
+</div>
+</div>
+<!-- Node: API Endpoints -->
+<div class="absolute top-[45%] left-[75%] -translate-x-1/2 -translate-y-1/2 constellation-node group cursor-pointer">
+<div class="w-12 h-12 rounded-full bg-surface-container-high border border-outline-variant flex items-center justify-center hover:border-error transition-colors">
+<span class="material-symbols-outlined text-on-surface-variant group-hover:text-error">api</span>
+</div>
+<div class="absolute top-full mt-2 left-1/2 -translate-x-1/2 w-max text-center opacity-0 group-hover:opacity-100 transition-opacity">
+<p class="font-label-sm text-label-sm text-on-surface bg-surface-container px-2 py-1 rounded">Endpoints</p>
+</div>
+</div>
+<!-- Node: Utils -->
+<div class="absolute top-[80%] left-[50%] -translate-x-1/2 -translate-y-1/2 constellation-node group cursor-pointer">
+<div class="w-8 h-8 rounded-full bg-surface-container-highest border border-outline-variant flex items-center justify-center hover:border-on-surface transition-colors">
+<span class="material-symbols-outlined text-on-surface-variant text-sm group-hover:text-on-surface">build</span>
+</div>
+<div class="absolute top-full mt-2 left-1/2 -translate-x-1/2 w-max text-center opacity-0 group-hover:opacity-100 transition-opacity">
+<p class="font-label-sm text-label-sm text-on-surface bg-surface-container px-2 py-1 rounded text-[10px]">Utils</p>
+</div>
+</div>
+<!-- Node: State Mgt -->
+<div class="absolute top-[75%] left-[65%] -translate-x-1/2 -translate-y-1/2 constellation-node group cursor-pointer">
+<div class="w-10 h-10 rounded-full bg-surface-container-high border border-outline-variant flex items-center justify-center hover:border-tertiary transition-colors">
+<span class="material-symbols-outlined text-on-surface-variant group-hover:text-tertiary">account_tree</span>
+</div>
+<div class="absolute top-full mt-2 left-1/2 -translate-x-1/2 w-max text-center opacity-0 group-hover:opacity-100 transition-opacity">
+<p class="font-label-sm text-label-sm text-on-surface bg-surface-container px-2 py-1 rounded">State</p>
+</div>
+</div>
+</div>
+<!-- Controls Overlay -->
+<div class="absolute top-20 right-6 z-20 flex flex-col gap-2">
+<button class="w-10 h-10 rounded-full bg-surface-container-high border border-outline-variant flex items-center justify-center text-on-surface-variant hover:text-primary hover:border-primary transition-colors shadow-lg">
+<span class="material-symbols-outlined">zoom_in</span>
+</button>
+<button class="w-10 h-10 rounded-full bg-surface-container-high border border-outline-variant flex items-center justify-center text-on-surface-variant hover:text-primary hover:border-primary transition-colors shadow-lg">
+<span class="material-symbols-outlined">zoom_out</span>
+</button>
+<button class="w-10 h-10 rounded-full bg-surface-container-high border border-outline-variant flex items-center justify-center text-on-surface-variant hover:text-primary hover:border-primary transition-colors shadow-lg mt-4">
+<span class="material-symbols-outlined">filter_list</span>
+</button>
+</div>
+</main>
+<!-- SideNavBar (Assistant Orb) -->
+<div class="fixed bottom-24 right-10 z-40 flex flex-col items-end gap-4">
+<!-- Expanded Menu (Hidden by default, shown on hover/active in a real app, keeping visible for layout purposes as requested by "Bouton IA à droite. Structure identique à SCREEN_45") -->
+<div class="bg-surface-container-high shadow-xl rounded-xl w-48 flex flex-col p-4 gap-2 border border-outline-variant/30 mb-2">
+<div class="pb-2 border-b border-surface-variant mb-2">
+<h3 class="font-label-sm text-label-sm text-on-surface font-bold">Assistant</h3>
+<p class="text-[10px] text-on-surface-variant">Orbital Menu</p>
+</div>
+<button class="flex items-center gap-3 w-full text-left font-label-sm text-label-sm text-on-surface-variant hover:bg-surface-bright p-2 rounded transition-colors group">
+<span class="material-symbols-outlined text-lg group-hover:text-primary" data-icon="bar_chart">bar_chart</span>
+                Statistique
+            </button>
+<button class="flex items-center gap-3 w-full text-left font-label-sm text-label-sm text-on-surface-variant hover:bg-surface-bright p-2 rounded transition-colors group">
+<span class="material-symbols-outlined text-lg group-hover:text-primary" data-icon="ios_share">ios_share</span>
+                Exportations
+            </button>
+<button class="flex items-center gap-3 w-full text-left font-label-sm text-label-sm text-on-surface-variant hover:bg-surface-bright p-2 rounded transition-colors group">
+<span class="material-symbols-outlined text-lg group-hover:text-primary" data-icon="settings">settings</span>
+                Paramètres
+            </button>
+</div>
+<!-- Orb Button -->
+<button class="w-14 h-14 rounded-full bg-primary-container text-on-primary-container shadow-[0_0_30px_rgba(232,122,100,0.3)] flex items-center justify-center hover:scale-105 transition-transform border border-primary/50 relative overflow-hidden">
+<div class="absolute inset-0 bg-gradient-to-tr from-primary/20 to-transparent"></div>
+<span class="material-symbols-outlined text-2xl relative z-10">smart_toy</span>
+</button>
+</div>
+<!-- BottomNavBar (Dock) -->
+<nav class="fixed bottom-0 left-0 right-0 z-50 flex justify-center pb-6 pointer-events-none">
+<div class="bg-surface-container-highest/60 backdrop-blur-lg rounded-full mx-auto w-fit shadow-2xl shadow-surface-container-lowest border border-outline-variant/20 p-2 flex items-center gap-1 pointer-events-auto">
+<button class="flex items-center justify-center text-on-surface-variant p-3 hover:text-primary transition-colors rounded-full font-label-sm text-label-sm group">
+<span class="material-symbols-outlined" data-icon="dashboard">dashboard</span>
+<span class="hidden group-hover:inline ml-2 pr-1">Dashboard</span>
+</button>
+<button class="flex items-center justify-center text-on-surface-variant p-3 hover:text-primary transition-colors rounded-full font-label-sm text-label-sm group">
+<span class="material-symbols-outlined" data-icon="code">code</span>
+<span class="hidden group-hover:inline ml-2 pr-1">Snippets</span>
+</button>
+<button class="flex items-center justify-center text-on-surface-variant p-3 hover:text-primary transition-colors rounded-full font-label-sm text-label-sm group">
+<span class="material-symbols-outlined" data-icon="folder_special">folder_special</span>
+<span class="hidden group-hover:inline ml-2 pr-1">Collection</span>
+</button>
+<button class="flex items-center justify-center text-on-surface-variant p-3 hover:text-primary transition-colors rounded-full font-label-sm text-label-sm group">
+<span class="material-symbols-outlined" data-icon="favorite">favorite</span>
+<span class="hidden group-hover:inline ml-2 pr-1">Favoris</span>
+</button>
+<button class="flex items-center justify-center text-on-surface-variant p-3 hover:text-primary transition-colors rounded-full font-label-sm text-label-sm group">
+<span class="material-symbols-outlined" data-icon="groups">groups</span>
+<span class="hidden group-hover:inline ml-2 pr-1">Équipe</span>
+</button>
+<!-- Active State -->
+<button class="flex items-center gap-2 bg-primary-container text-on-primary-container rounded-full px-4 py-2 transition-all duration-300 font-label-sm text-label-sm shadow-inner shadow-on-primary-container/10">
+<span class="material-symbols-outlined" data-icon="auto_awesome" data-weight="fill" style="font-variation-settings: 'FILL' 1;">auto_awesome</span>
+<span>Constellation</span>
+</button>
+</div>
+</nav>
+</body></html>

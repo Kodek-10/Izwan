@@ -1,0 +1,22 @@
+# Izwan Redesign UX - Step 2
+This document contains the detailed structure for the Izwan app redesign, covering the landing page, admin back-office, and user application screens.
+
+## Design Principles
+- Language: French (UI text).
+- Default Mode: Dark.
+- Accent: Violet/Blue/Cyan gradient.
+- Typography: Poppins (Headings), Inter (Body), Fira Code (Mono).
+- Atmosphere: Technical & Premium.
+
+## Screen List
+1. Landing Page (/)
+2. Admin Dashboard (/admin)
+3. Admin Users Table & Detail
+4. Admin AI & System
+5. Admin Audit
+6. Admin Roles & Permissions
+7. User Settings & Profile
+8. User Dashboard
+9. AI Assistant (Floating Component)
+10. Onboarding Flow
+11. User App Shell (Framework)

@@ -1,0 +1,379 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="fr"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Paramètres - Izwan</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&amp;family=JetBrains+Mono:wght@400;500&amp;family=Montserrat:wght@600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "on-primary-container": "#611508",
+                    "surface-container-highest": "#323537",
+                    "surface": "#101415",
+                    "on-surface": "#e0e3e5",
+                    "inverse-surface": "#e0e3e5",
+                    "on-error": "#690005",
+                    "primary-fixed-dim": "#ffb4a5",
+                    "inverse-primary": "#9e412f",
+                    "secondary": "#b6c7eb",
+                    "on-primary-fixed": "#3e0400",
+                    "surface-bright": "#363a3b",
+                    "secondary-container": "#364765",
+                    "on-tertiary-container": "#00392e",
+                    "surface-container-low": "#191c1e",
+                    "outline-variant": "#56423e",
+                    "tertiary": "#55dcbc",
+                    "on-tertiary": "#00382d",
+                    "on-background": "#e0e3e5",
+                    "surface-variant": "#323537",
+                    "tertiary-fixed-dim": "#55dcbc",
+                    "secondary-fixed": "#d6e3ff",
+                    "secondary-fixed-dim": "#b6c7eb",
+                    "background": "#101415",
+                    "on-secondary-fixed-variant": "#364765",
+                    "tertiary-container": "#00ad90",
+                    "inverse-on-surface": "#2d3133",
+                    "error-container": "#93000a",
+                    "surface-tint": "#ffb4a5",
+                    "tertiary-fixed": "#75f9d8",
+                    "on-primary-fixed-variant": "#7e2a1b",
+                    "on-surface-variant": "#dcc0bb",
+                    "on-error-container": "#ffdad6",
+                    "surface-container-lowest": "#0b0f10",
+                    "primary-container": "#e87a64",
+                    "primary": "#ffb4a5",
+                    "on-tertiary-fixed-variant": "#005142",
+                    "outline": "#a48b86",
+                    "error": "#ffb4ab",
+                    "on-secondary-container": "#a4b6d9",
+                    "on-primary": "#601407",
+                    "surface-dim": "#101415",
+                    "surface-container-high": "#272a2c",
+                    "on-secondary": "#1f314d",
+                    "on-secondary-fixed": "#081b37",
+                    "on-tertiary-fixed": "#002019",
+                    "primary-fixed": "#ffdad3",
+                    "surface-container": "#1d2022"
+            },
+            "borderRadius": {
+                    "DEFAULT": "0.125rem",
+                    "lg": "0.25rem",
+                    "xl": "0.5rem",
+                    "full": "0.75rem"
+            },
+            "spacing": {
+                    "container-max": "1440px",
+                    "margin-desktop": "40px",
+                    "unit": "4px",
+                    "margin-mobile": "16px",
+                    "gutter": "24px"
+            },
+            "fontFamily": {
+                    "headline-lg": [
+                            "Montserrat"
+                    ],
+                    "body-md": [
+                            "Inter"
+                    ],
+                    "label-sm": [
+                            "JetBrains Mono"
+                    ],
+                    "headline-lg-mobile": [
+                            "Montserrat"
+                    ],
+                    "display-lg": [
+                            "Montserrat"
+                    ],
+                    "code-snippet": [
+                            "JetBrains Mono"
+                    ]
+            },
+            "fontSize": {
+                    "headline-lg": [
+                            "32px",
+                            {
+                                    "lineHeight": "40px",
+                                    "fontWeight": "600"
+                            }
+                    ],
+                    "body-md": [
+                            "16px",
+                            {
+                                    "lineHeight": "24px",
+                                    "fontWeight": "400"
+                            }
+                    ],
+                    "label-sm": [
+                            "12px",
+                            {
+                                    "lineHeight": "16px",
+                                    "letterSpacing": "0.05em",
+                                    "fontWeight": "500"
+                            }
+                    ],
+                    "headline-lg-mobile": [
+                            "24px",
+                            {
+                                    "lineHeight": "32px",
+                                    "fontWeight": "600"
+                            }
+                    ],
+                    "display-lg": [
+                            "48px",
+                            {
+                                    "lineHeight": "56px",
+                                    "letterSpacing": "-0.02em",
+                                    "fontWeight": "700"
+                            }
+                    ],
+                    "code-snippet": [
+                            "14px",
+                            {
+                                    "lineHeight": "20px",
+                                    "fontWeight": "400"
+                            }
+                    ]
+            }
+    },
+        },
+      }
+    </script>
+<style>
+        /* Ambient shadow for elevation */
+        .ambient-shadow {
+            box-shadow: 0 10px 40px -10px rgba(8, 16, 27, 0.4);
+        }
+        /* Custom scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: theme('colors.surface');
+        }
+        ::-webkit-scrollbar-thumb {
+            background: theme('colors.surface-container-highest');
+            border-radius: theme('borderRadius.full');
+        }
+    </style>
+</head>
+<body class="bg-surface text-on-surface font-body-md min-h-screen overflow-x-hidden selection:bg-primary-container selection:text-on-primary-container">
+<!-- TopAppBar -->
+<header class="bg-surface/80 backdrop-blur-md fixed top-0 w-full z-50 flex justify-between items-center px-margin-desktop h-16 border-b border-surface-container/50">
+<div class="flex items-center gap-gutter">
+<h1 class="font-headline-lg text-headline-lg text-primary font-bold tracking-tight">Izwan</h1>
+<div class="relative hidden md:block">
+<span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-on-surface-variant font-label-sm" data-icon="search">search</span>
+<input class="bg-surface-container-low border border-outline-variant rounded-full pl-10 pr-4 py-1.5 font-label-sm text-label-sm text-on-surface focus:outline-none focus:border-primary transition-colors w-64" placeholder="Rechercher..." type="text"/>
+</div>
+</div>
+<div class="flex items-center gap-4">
+<button class="p-2 rounded-full hover:bg-surface-bright/50 transition-colors scale-95 active:scale-90 transition-transform flex items-center justify-center">
+<span class="material-symbols-outlined text-primary" data-icon="notifications">notifications</span>
+</button>
+<div class="w-8 h-8 rounded-full overflow-hidden border border-surface-container-highest">
+<img alt="User avatar" class="w-full h-full object-cover" data-alt="A highly detailed close up portrait of a cyberpunk android with glowing neon accents in a dark, atmospheric futuristic cityscape, professional studio lighting, sharp focus, high contrast, 8k resolution, photorealistic style." src="https://lh3.googleusercontent.com/aida-public/AB6AXuAcLE5iL-LH1S2mjDQi0Gf8TMqDUKO6tlRgl1npMGCPeXVVagedXnNy9y2tA00HSDadpfwxeQAsoQSZDT0KPejDEIWIA4N-rYerCKGSdF2CzZBqY3YnyOidT7w7PVsE9qs7Ll99SILN3wpyJQPomoEfV00jKznvJfhmTbQRTEPyzd8JGl5pQvvypXESqhNxrbL7Ci_zJ0xO0xxC2-I_wBDsKJmE9oDdfWXMSHkcbwOFsdSJmMqTzzA-f38jnxaf51g9eB43xkm4pf0"/>
+</div>
+</div>
+</header>
+<!-- Main Content Canvas -->
+<main class="pt-24 pb-32 px-margin-mobile md:px-margin-desktop max-w-container-max mx-auto">
+<div class="mb-12">
+<h2 class="font-display-lg text-display-lg text-on-surface mb-2">Paramètres</h2>
+<p class="font-body-md text-body-md text-on-surface-variant">Gérez vos préférences utilisateur, thèmes et configurations d'API.</p>
+</div>
+<!-- Bento Grid Layout -->
+<div class="grid grid-cols-1 md:grid-cols-12 gap-gutter">
+<!-- Profile Section (Wide) -->
+<section class="md:col-span-8 bg-surface-container-low rounded-xl p-8 ambient-shadow border border-surface-bright/20 flex flex-col md:flex-row gap-8 items-start relative overflow-hidden group">
+<div class="absolute inset-0 bg-gradient-to-br from-primary-container/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none"></div>
+<div class="relative w-32 h-32 rounded-xl overflow-hidden border-2 border-surface-container-highest flex-shrink-0">
+<img alt="User Avatar" class="w-full h-full object-cover" data-alt="A highly detailed close up portrait of a cyberpunk android with glowing neon accents in a dark, atmospheric futuristic cityscape, professional studio lighting, sharp focus, high contrast, 8k resolution, photorealistic style." src="https://lh3.googleusercontent.com/aida-public/AB6AXuDaLTZjiAx3cRA6zYd2kOs1KoZK9BHU2hOqN14-Mp1turOMHh_Eynpb-WPfugoTBAbq-aIsYPrHg--EufwvEbruBVpSSz25cIvedXC71IDwK4qx__02dyygcuiQsOYZ9As2seX9i8J2OvphfkrembmAJ_oOOxx2h2b2uG8G91HUXG1t85-9MkmwCmuEHR3pyR3m87vbeZHh5hqXFTbbo15b9COlXrsi6fY_a4iL8yAag0O-wQqheFJneZ0xDWnIUI7HSLvOvrFUsME"/>
+<div class="absolute inset-0 bg-surface/50 opacity-0 hover:opacity-100 transition-opacity flex items-center justify-center cursor-pointer backdrop-blur-sm">
+<span class="material-symbols-outlined text-primary font-label-sm" data-icon="edit">edit</span>
+</div>
+</div>
+<div class="flex-grow w-full space-y-6">
+<div>
+<h3 class="font-headline-lg-mobile text-headline-lg-mobile text-on-surface mb-1">Profil Public</h3>
+<p class="font-body-md text-body-md text-on-surface-variant">Vos informations de base affichées aux autres membres de l'Équipe.</p>
+</div>
+<div class="space-y-4">
+<div class="flex flex-col gap-1">
+<label class="font-label-sm text-label-sm text-on-surface-variant uppercase tracking-wider">Nom d'affichage</label>
+<input class="bg-surface border border-outline-variant rounded-lg px-4 py-2 font-body-md text-body-md text-on-surface focus:outline-none focus:border-primary transition-colors focus:ring-1 focus:ring-primary/50" type="text" value="Alexandre"/>
+</div>
+<div class="flex flex-col gap-1">
+<label class="font-label-sm text-label-sm text-on-surface-variant uppercase tracking-wider">Adresse Email</label>
+<input class="bg-surface border border-outline-variant rounded-lg px-4 py-2 font-body-md text-body-md text-on-surface focus:outline-none focus:border-primary transition-colors focus:ring-1 focus:ring-primary/50" type="email" value="alexandre@izwan.dev"/>
+</div>
+</div>
+<div class="flex justify-end pt-4">
+<button class="bg-primary text-on-primary font-label-sm text-label-sm px-6 py-2 rounded-lg hover:bg-surface-tint transition-colors">Enregistrer</button>
+</div>
+</div>
+</section>
+<!-- Theme Selection (Square) -->
+<section class="md:col-span-4 bg-surface-container-low rounded-xl p-8 ambient-shadow border border-surface-bright/20 flex flex-col justify-between">
+<div>
+<h3 class="font-headline-lg-mobile text-headline-lg-mobile text-on-surface mb-1 flex items-center gap-2">
+<span class="material-symbols-outlined text-primary" data-icon="palette">palette</span>
+                        Apparence
+                    </h3>
+<p class="font-body-md text-body-md text-on-surface-variant mb-6">Personnalisez l'interface utilisateur.</p>
+</div>
+<div class="space-y-3">
+<label class="flex items-center justify-between p-4 rounded-lg border border-primary bg-primary/10 cursor-pointer transition-colors">
+<div class="flex items-center gap-3">
+<span class="material-symbols-outlined text-primary" data-icon="dark_mode" data-weight="fill" style="font-variation-settings: 'FILL' 1;">dark_mode</span>
+<span class="font-body-md text-body-md text-on-surface">Sombre (Actif)</span>
+</div>
+<div class="w-5 h-5 rounded-full border-2 border-primary flex items-center justify-center">
+<div class="w-2.5 h-2.5 bg-primary rounded-full"></div>
+</div>
+</label>
+<label class="flex items-center justify-between p-4 rounded-lg border border-outline-variant hover:border-on-surface-variant cursor-pointer transition-colors opacity-50">
+<div class="flex items-center gap-3">
+<span class="material-symbols-outlined text-on-surface-variant" data-icon="light_mode">light_mode</span>
+<span class="font-body-md text-body-md text-on-surface-variant">Clair</span>
+</div>
+<div class="w-5 h-5 rounded-full border-2 border-outline-variant"></div>
+</label>
+</div>
+</section>
+<!-- Editor Preferences (Square) -->
+<section class="md:col-span-6 bg-surface-container-low rounded-xl p-8 ambient-shadow border border-surface-bright/20">
+<h3 class="font-headline-lg-mobile text-headline-lg-mobile text-on-surface mb-1 flex items-center gap-2">
+<span class="material-symbols-outlined text-tertiary" data-icon="code">code</span>
+                    Préférences Éditeur
+                </h3>
+<p class="font-body-md text-body-md text-on-surface-variant mb-8">Configuration de l'environnement de code.</p>
+<div class="space-y-6">
+<div class="flex flex-col gap-3">
+<div class="flex justify-between items-center">
+<label class="font-label-sm text-label-sm text-on-surface-variant uppercase tracking-wider">Taille de police (px)</label>
+<span class="font-code-snippet text-code-snippet text-tertiary bg-surface px-2 py-1 rounded">14px</span>
+</div>
+<input class="w-full accent-tertiary h-1 bg-surface-container-highest rounded-lg appearance-none cursor-pointer" max="24" min="10" type="range" value="14"/>
+</div>
+<div class="flex flex-col gap-2">
+<label class="font-label-sm text-label-sm text-on-surface-variant uppercase tracking-wider">Taille de tabulation</label>
+<select class="bg-surface border border-outline-variant rounded-lg px-4 py-2 font-code-snippet text-code-snippet text-on-surface focus:outline-none focus:border-tertiary appearance-none w-full">
+<option value="2">2 espaces</option>
+<option selected="" value="4">4 espaces</option>
+<option value="8">8 espaces</option>
+</select>
+</div>
+<div class="pt-4 border-t border-surface-bright/30">
+<label class="flex items-center gap-3 cursor-pointer group">
+<div class="relative flex items-center justify-center">
+<input checked="" class="sr-only peer" type="checkbox"/>
+<div class="w-5 h-5 rounded border-2 border-outline-variant peer-checked:bg-tertiary peer-checked:border-tertiary transition-colors flex items-center justify-center">
+<span class="material-symbols-outlined text-surface-container-lowest text-[14px] opacity-0 peer-checked:opacity-100 transition-opacity" data-icon="check" data-weight="fill" style="font-variation-settings: 'FILL' 1;">check</span>
+</div>
+</div>
+<span class="font-body-md text-body-md text-on-surface group-hover:text-primary transition-colors">Activer les ligatures de police</span>
+</label>
+</div>
+</div>
+</section>
+<!-- API Keys (Wide) -->
+<section class="md:col-span-6 bg-surface-container-low rounded-xl p-8 ambient-shadow border border-surface-bright/20 flex flex-col">
+<div class="flex justify-between items-start mb-6">
+<div>
+<h3 class="font-headline-lg-mobile text-headline-lg-mobile text-on-surface mb-1 flex items-center gap-2">
+<span class="material-symbols-outlined text-primary" data-icon="key">key</span>
+                            Clés API
+                        </h3>
+<p class="font-body-md text-body-md text-on-surface-variant">Gérez l'accès à l'API Izwan Constellation.</p>
+</div>
+<button class="flex items-center gap-2 font-label-sm text-label-sm text-on-primary bg-primary px-4 py-2 rounded-lg hover:bg-surface-tint transition-colors">
+<span class="material-symbols-outlined text-[18px]" data-icon="add">add</span>
+                        Nouvelle
+                    </button>
+</div>
+<div class="flex-grow space-y-3">
+<div class="bg-surface rounded-lg p-4 flex items-center justify-between border border-surface-bright group hover:border-primary/50 transition-colors">
+<div>
+<div class="font-label-sm text-label-sm text-on-surface mb-1">Clé de Production Principale</div>
+<div class="font-code-snippet text-code-snippet text-on-surface-variant flex items-center gap-2">
+                                iz_prod_************************<span class="text-tertiary text-[10px] bg-tertiary/10 px-1.5 py-0.5 rounded">Dernier usage : hier</span>
+</div>
+</div>
+<div class="flex items-center gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
+<button class="p-2 hover:bg-surface-bright rounded-md text-on-surface-variant hover:text-primary transition-colors" title="Copier">
+<span class="material-symbols-outlined text-[18px]" data-icon="content_copy">content_copy</span>
+</button>
+<button class="p-2 hover:bg-error-container rounded-md text-on-surface-variant hover:text-error transition-colors" title="Révoquer">
+<span class="material-symbols-outlined text-[18px]" data-icon="delete">delete</span>
+</button>
+</div>
+</div>
+<div class="bg-surface rounded-lg p-4 flex items-center justify-between border border-surface-bright group hover:border-primary/50 transition-colors">
+<div>
+<div class="font-label-sm text-label-sm text-on-surface mb-1">Accès Développement Local</div>
+<div class="font-code-snippet text-code-snippet text-on-surface-variant flex items-center gap-2">
+                                iz_dev_************************
+                            </div>
+</div>
+<div class="flex items-center gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
+<button class="p-2 hover:bg-surface-bright rounded-md text-on-surface-variant hover:text-primary transition-colors" title="Copier">
+<span class="material-symbols-outlined text-[18px]" data-icon="content_copy">content_copy</span>
+</button>
+<button class="p-2 hover:bg-error-container rounded-md text-on-surface-variant hover:text-error transition-colors" title="Révoquer">
+<span class="material-symbols-outlined text-[18px]" data-icon="delete">delete</span>
+</button>
+</div>
+</div>
+</div>
+</section>
+</div>
+</main>
+<!-- SideNavBar (Orbital Menu) -->
+<nav class="bg-surface-container-high rounded-xl fixed bottom-24 right-10 w-48 shadow-xl flex flex-col p-4 gap-2 z-40 border border-surface-bright/30">
+<div class="flex items-center gap-3 mb-4 pb-4 border-b border-surface-bright/50">
+<div class="w-10 h-10 rounded-full overflow-hidden border border-primary/30 flex-shrink-0 relative">
+<img alt="AI Orb" class="w-full h-full object-cover" data-alt="A glowing, ethereal artificial intelligence orb floating in a dark, high-tech void. The orb emits a soft, pulsing coral and teal light. Intricate data particles swirl around it. Cinematic lighting, highly detailed, sci-fi aesthetic, 8k render." src="https://lh3.googleusercontent.com/aida-public/AB6AXuABPa5-rWLZF1AZeDflsPv5kfxUTOxDwmuiweD1FKnKVKcoju15pHzPIqJoxIo7DxWDi-ImhAYDln3lFscinWqwnRnL9mTCQb2aumJFzBHI112MP0FjE4t1NBuP5JE1EykSxkkmrj7ltVqVa3r0Q_gpoFy63DAhlbjRYLyYmOsIRe7ZWr9Cw7TjWrInNeIg3sXx-LVOLTTxIdJtFh4JaUl-hIQbhp_U9p5nrB5IzHTqA04UrNPPOSY7YYkHHlehGw0a-zWw8_Vi0P4"/>
+<div class="absolute inset-0 bg-primary/10 mix-blend-overlay"></div>
+</div>
+<div>
+<div class="font-label-sm text-label-sm font-bold text-on-surface">Assistant</div>
+<div class="font-label-sm text-[10px] text-on-surface-variant opacity-80">Orbital Menu</div>
+</div>
+</div>
+<ul class="flex flex-col gap-1 w-full">
+<li>
+<a class="flex items-center gap-3 p-2 rounded-lg text-on-surface-variant hover:bg-surface-bright transition-colors w-full font-label-sm text-label-sm" href="#">
+<span class="material-symbols-outlined text-[20px]" data-icon="bar_chart">bar_chart</span>
+                    Statistique
+                </a>
+</li>
+<li>
+<a class="flex items-center gap-3 p-2 rounded-lg text-on-surface-variant hover:bg-surface-bright transition-colors w-full font-label-sm text-label-sm" href="#">
+<span class="material-symbols-outlined text-[20px]" data-icon="ios_share">ios_share</span>
+                    Exportations
+                </a>
+</li>
+<li>
+<!-- Active Navigation State -->
+<a class="flex items-center gap-3 p-2 rounded-lg bg-surface-bright text-tertiary font-bold hover:bg-surface-bright transition-colors w-full font-label-sm text-label-sm relative overflow-hidden" href="#">
+<div class="absolute left-0 top-0 bottom-0 w-1 bg-tertiary rounded-r-full"></div>
+<span class="material-symbols-outlined text-[20px]" data-icon="settings">settings</span>
+                    Paramètres
+                </a>
+</li>
+</ul>
+</nav>
+<!-- The actual Orb trigger could be placed here, but instructions imply the menu is open or just rendering the menu itself as requested by SideNavBar params -->
+<div class="fixed bottom-8 right-10 z-50">
+<button class="w-14 h-14 rounded-full bg-surface-container-high border-2 border-surface-bright shadow-2xl flex items-center justify-center hover:scale-105 active:scale-95 transition-transform group relative overflow-hidden">
+<img alt="AI Orb Trigger" class="absolute inset-0 w-full h-full object-cover opacity-80 group-hover:opacity-100 transition-opacity" data-alt="A glowing, ethereal artificial intelligence orb floating in a dark, high-tech void. The orb emits a soft, pulsing coral and teal light. Intricate data particles swirl around it. Cinematic lighting, highly detailed, sci-fi aesthetic, 8k render." src="https://lh3.googleusercontent.com/aida-public/AB6AXuCDocuOa4cPsx01KTZSLHhb-NdqAx4zMmoBuSkh9F00pnOo5M5HieSqaaT6WOk89g8lqe9N6OlIQ1Ac-d2Pd6lsqrdHL9pQnz8SaGYocu6BnO_KXkgg42T7fqkVJBibR4QSrKegzxpM3XKG0hyoYx_t2S7p4324OxbSUF1WwPNu-mOMQ-D2jWqugwrxOA2AYLWGSPrSraLfgm1xyyazYP18tF1teanyqQxmhXWGZnz8w4qQ9yPLuOqKI6ABO8gxDqSpXZhUBQKcOHI"/>
+</button>
+</div>
+</body></html>

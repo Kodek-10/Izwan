@@ -1,0 +1,297 @@
+<!DOCTYPE html><html class="light" lang="en"><head>
+<meta charset="utf-8">
+<meta content="width=device-width, initial-scale=1.0" name="viewport">
+<title>Izwan - Projets Clients</title>
+<!-- Google Fonts -->
+<link href="https://fonts.googleapis.com" rel="preconnect">
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect">
+<link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@450&amp;family=Inter:wght@400;600&amp;family=Poppins:wght@600;700&amp;display=swap" rel="stylesheet">
+<!-- Material Symbols -->
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet">
+<!-- Tailwind CSS -->
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<!-- Tailwind Config from Brand Anchors -->
+<script id="tailwind-config">
+        tailwind.config = {
+          darkMode: "class",
+          theme: {
+            extend: {
+              "colors": {
+                      "on-primary-fixed-variant": "#683844",
+                      "on-secondary-fixed-variant": "#643b46",
+                      "on-primary-fixed": "#350e1a",
+                      "surface-container": "#f4eced",
+                      "inverse-surface": "#332f30",
+                      "on-tertiary": "#ffffff",
+                      "primary-fixed-dim": "#f7b5c3",
+                      "primary-container": "#552834",
+                      "outline": "#837376",
+                      "secondary-fixed-dim": "#f0b8c5",
+                      "on-background": "#1e1b1c",
+                      "on-secondary-fixed": "#31111b",
+                      "tertiary-container": "#393535",
+                      "on-error-container": "#93000a",
+                      "error-container": "#ffdad6",
+                      "secondary-container": "#ffc5d3",
+                      "on-secondary": "#ffffff",
+                      "tertiary-fixed-dim": "#ccc5c5",
+                      "surface-container-low": "#faf1f2",
+                      "outline-variant": "#d5c2c5",
+                      "on-surface": "#1e1b1c",
+                      "on-error": "#ffffff",
+                      "error": "#ba1a1a",
+                      "primary": "#3b131f",
+                      "surface": "#fff8f8",
+                      "on-primary-container": "#cc8e9c",
+                      "tertiary-fixed": "#e9e1e1",
+                      "surface-container-highest": "#e9e0e1",
+                      "surface-bright": "#fff8f8",
+                      "surface-variant": "#e9e0e1",
+                      "on-primary": "#ffffff",
+                      "inverse-on-surface": "#f7eff0",
+                      "primary-fixed": "#ffd9e0",
+                      "inverse-primary": "#f7b5c3",
+                      "on-tertiary-fixed": "#1e1b1b",
+                      "secondary": "#7e525e",
+                      "on-surface-variant": "#514346",
+                      "on-tertiary-container": "#a49d9d",
+                      "tertiary": "#232020",
+                      "surface-dim": "#e0d8d9",
+                      "on-tertiary-fixed-variant": "#4a4646",
+                      "surface-container-high": "#efe6e7",
+                      "on-secondary-container": "#7b4f5b",
+                      "background": "#fff8f8",
+                      "surface-tint": "#844f5c",
+                      "surface-container-lowest": "#ffffff",
+                      "secondary-fixed": "#ffd9e1"
+              },
+              "borderRadius": {
+                      "DEFAULT": "0.25rem",
+                      "lg": "0.5rem",
+                      "xl": "0.75rem",
+                      "full": "9999px"
+              },
+              "spacing": {
+                      "gutter": "24px",
+                      "sm": "8px",
+                      "lg": "24px",
+                      "xl": "40px",
+                      "md": "16px",
+                      "margin-desktop": "64px",
+                      "base": "4px",
+                      "xs": "4px",
+                      "margin-mobile": "16px"
+              },
+              "fontFamily": {
+                      "headline-lg": ["Poppins"],
+                      "body-sm": ["Inter"],
+                      "body-md": ["Inter"],
+                      "label-caps": ["Inter"],
+                      "headline-md": ["Poppins"],
+                      "code-md": ["Fira Code"],
+                      "display": ["Poppins"],
+                      "headline-lg-mobile": ["Poppins"],
+                      "body-lg": ["Inter"]
+              },
+              "fontSize": {
+                      "headline-lg": ["32px", { "lineHeight": "40px", "fontWeight": "600" }],
+                      "body-sm": ["14px", { "lineHeight": "20px", "fontWeight": "400" }],
+                      "body-md": ["16px", { "lineHeight": "24px", "fontWeight": "400" }],
+                      "label-caps": ["12px", { "lineHeight": "16px", "letterSpacing": "0.05em", "fontWeight": "600" }],
+                      "headline-md": ["24px", { "lineHeight": "32px", "fontWeight": "600" }],
+                      "code-md": ["14px", { "lineHeight": "22px", "fontWeight": "450" }],
+                      "display": ["48px", { "lineHeight": "56px", "letterSpacing": "-0.02em", "fontWeight": "700" }],
+                      "headline-lg-mobile": ["28px", { "lineHeight": "36px", "fontWeight": "600" }],
+                      "body-lg": ["18px", { "lineHeight": "28px", "fontWeight": "400" }]
+              }
+            }
+          }
+        }
+    </script>
+<style>
+        /* Custom scrollbar for code blocks */
+        pre::-webkit-scrollbar {
+            height: 6px;
+        }
+        pre::-webkit-scrollbar-track {
+            background: transparent;
+        }
+        pre::-webkit-scrollbar-thumb {
+            background-color: #d5c2c5;
+            border-radius: 10px;
+        }
+    </style>
+</head>
+<body class="bg-background min-h-screen text-on-background antialiased selection:bg-primary-container selection:text-on-primary-container flex flex-col">
+<!-- TopAppBar -->
+<header class="fixed top-0 w-full z-50 flex justify-between items-center px-margin-mobile md:px-margin-desktop h-16 bg-surface/80 backdrop-blur-md">
+<div class="flex items-center gap-lg">
+<span class="font-headline-lg-mobile md:font-headline-lg text-headline-lg-mobile md:text-headline-lg text-primary font-bold">Izwan</span>
+<!-- Search Bar (on_left as per JSON) -->
+<div class="hidden md:flex items-center bg-surface-container-lowest border border-surface-dim rounded-full px-4 py-2 w-64 focus-within:border-primary focus-within:ring-1 focus-within:ring-primary transition-all shadow-sm">
+<span class="material-symbols-outlined text-on-surface-variant text-sm mr-2">search</span>
+<input class="bg-transparent border-none outline-none focus:ring-0 text-body-sm font-body-sm w-full p-0 text-on-surface placeholder:text-on-surface-variant" placeholder="Search snippets..." type="text">
+</div>
+</div>
+<div class="flex items-center gap-md">
+<button class="p-2 text-on-surface-variant hover:bg-surface-bright/50 transition-colors rounded-full scale-95 active:scale-90 transition-transform">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 0;">notifications</span>
+</button>
+<div class="w-8 h-8 rounded-full overflow-hidden border border-surface-dim">
+<img alt="User avatar" class="w-full h-full object-cover" data-alt="A small, professional user avatar portrait featuring a minimalist wine-colored background and stark white text. The lighting is flat and modern, fitting perfectly into a corporate light-mode dashboard aesthetic." src="https://lh3.googleusercontent.com/aida-public/AB6AXuAQwUy6UAuNtbkL5B2R8X3b77tualwpscFjGh8J6Zi59ve8C-cnPfLeadthlaT0ZQPHgH6DYKlq6cWEkEVVwtOgCFR57N16GTaPP3DS2dvkPGP57ZYfzPOzVpfTarZHkeKz3ikTdvOd0sVLaLtxfJe7FjTB_tx7Fl5T7yMiQ-UEZ4c5ykNrX7yBNvrA906OZvWnOm89YBbHFAELk_mYD7cGZ_Y2J7wlI9bcTmD28Q-f2xmYYSIKwWis3NQM8Ncz2S1Y5xUFfRq6NPM">
+</div>
+</div>
+</header>
+<!-- Main Canvas -->
+<main class="flex-grow pt-24 pb-40 px-margin-mobile md:px-margin-desktop max-w-[1440px] mx-auto w-full">
+<!-- Header & Navigation -->
+<div class="mb-lg flex flex-col gap-sm">
+<button class="group flex items-center gap-xs w-fit text-on-surface-variant hover:text-primary transition-colors font-body-sm text-body-sm">
+<span class="material-symbols-outlined text-[18px] transition-transform group-hover:-translate-x-1">arrow_back</span>
+                Collections
+            </button>
+<div class="flex flex-col md:flex-row md:items-end justify-between gap-md">
+<div>
+<h1 class="font-display text-display text-on-background">Projets Clients</h1>
+<p class="font-body-md text-body-md text-on-surface-variant mt-2">12 Snippets • Last updated 2 hours ago</p>
+</div>
+<div class="flex gap-sm">
+<button class="px-4 py-2 rounded-[10px] bg-transparent border border-primary text-primary font-body-sm text-body-sm font-semibold hover:bg-surface-container-low transition-colors">
+                        Share
+                    </button>
+<button class="px-4 py-2 rounded-[10px] bg-primary text-on-primary font-body-sm text-body-sm font-semibold shadow-sm hover:bg-primary/90 transition-colors flex items-center gap-2">
+<span class="material-symbols-outlined text-[18px]">add</span>
+                        New Snippet
+                    </button>
+</div>
+</div>
+</div>
+<!-- Bento Grid of Snippets -->
+<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-lg">
+<!-- Snippet Card 1 -->
+<article class="bg-surface-container-lowest border border-surface-dim rounded-xl p-lg flex flex-col gap-md transition-all hover:border-outline hover:shadow-lg hover:shadow-[rgba(85,40,52,0.04)] group">
+<div class="flex justify-between items-start">
+<h2 class="font-headline-md text-headline-md text-on-background line-clamp-1">Auth Middleware</h2>
+<span class="bg-surface-container-high text-on-surface-variant font-label-caps text-label-caps px-3 py-1 rounded-full shrink-0">TypeScript</span>
+</div>
+<div class="bg-surface-container-low border border-surface-dim rounded-lg p-md flex-grow overflow-hidden relative">
+<pre class="font-code-md text-code-md text-on-surface-variant overflow-x-auto pb-2"><code>export const requireAuth = (req, res, next) =&gt; {
+  const token = req.headers.authorization;
+  if (!token) return res.status(401).send();
+  try {
+    verify(token);
+    next();
+  } catch (e) {
+    res.status(403).send();
+  }
+};</code></pre>
+<div class="absolute top-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity">
+<button class="p-1.5 bg-surface-container-lowest border border-surface-dim rounded-md text-on-surface-variant hover:text-primary shadow-sm">
+<span class="material-symbols-outlined text-[16px]">content_copy</span>
+</button>
+</div>
+</div>
+<div class="flex justify-between items-center mt-auto pt-2 border-t border-surface-container">
+<span class="font-body-sm text-body-sm text-on-surface-variant">Added Oct 12</span>
+<button class="text-on-surface-variant hover:text-primary transition-colors">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 0;">favorite</span>
+</button>
+</div>
+</article>
+<!-- Snippet Card 2 -->
+<article class="bg-surface-container-lowest border border-surface-dim rounded-xl p-lg flex flex-col gap-md transition-all hover:border-outline hover:shadow-lg hover:shadow-[rgba(85,40,52,0.04)] group">
+<div class="flex justify-between items-start">
+<h2 class="font-headline-md text-headline-md text-on-background line-clamp-1">Data Table CSS Grid</h2>
+<span class="bg-surface-container-high text-on-surface-variant font-label-caps text-label-caps px-3 py-1 rounded-full shrink-0">CSS</span>
+</div>
+<div class="bg-surface-container-low border border-surface-dim rounded-lg p-md flex-grow overflow-hidden relative">
+<pre class="font-code-md text-code-md text-on-surface-variant overflow-x-auto pb-2"><code>.data-table {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 16px;
+  border-collapse: collapse;
+}
+.data-table &gt; div {
+  padding: 12px;
+  border-bottom: 1px solid #e0d8d9;
+}</code></pre>
+<div class="absolute top-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity">
+<button class="p-1.5 bg-surface-container-lowest border border-surface-dim rounded-md text-on-surface-variant hover:text-primary shadow-sm">
+<span class="material-symbols-outlined text-[16px]">content_copy</span>
+</button>
+</div>
+</div>
+<div class="flex justify-between items-center mt-auto pt-2 border-t border-surface-container">
+<span class="font-body-sm text-body-sm text-on-surface-variant">Added Sep 28</span>
+<button class="text-on-surface-variant hover:text-primary transition-colors">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 0;">favorite</span>
+</button>
+</div>
+</article>
+<!-- Snippet Card 3 -->
+<article class="bg-surface-container-lowest border border-surface-dim rounded-xl p-lg flex flex-col gap-md transition-all hover:border-outline hover:shadow-lg hover:shadow-[rgba(85,40,52,0.04)] group">
+<div class="flex justify-between items-start">
+<h2 class="font-headline-md text-headline-md text-on-background line-clamp-1">API Fetch Wrapper</h2>
+<span class="bg-surface-container-high text-on-surface-variant font-label-caps text-label-caps px-3 py-1 rounded-full shrink-0">JavaScript</span>
+</div>
+<div class="bg-surface-container-low border border-surface-dim rounded-lg p-md flex-grow overflow-hidden relative">
+<pre class="font-code-md text-code-md text-on-surface-variant overflow-x-auto pb-2"><code>async function fetchApi(url, opts = {}) {
+  const res = await fetch(url, {
+    ...opts,
+    headers: { 'Content-Type': 'application/json' }
+  });
+  if (!res.ok) throw new Error(res.status);
+  return res.json();
+}</code></pre>
+<div class="absolute top-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity">
+<button class="p-1.5 bg-surface-container-lowest border border-surface-dim rounded-md text-on-surface-variant hover:text-primary shadow-sm">
+<span class="material-symbols-outlined text-[16px]">content_copy</span>
+</button>
+</div>
+</div>
+<div class="flex justify-between items-center mt-auto pt-2 border-t border-surface-container">
+<span class="font-body-sm text-body-sm text-on-surface-variant">Added Aug 05</span>
+<button class="text-primary hover:text-primary-container transition-colors">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">favorite</span>
+</button>
+</div>
+</article>
+</div>
+</main>
+<!-- BottomNavBar -->
+<nav class="fixed bottom-0 left-0 right-0 z-50 flex justify-center pb-6 md:hidden">
+<div class="bg-surface-container-highest/60 backdrop-blur-lg rounded-full mx-auto mb-8 w-fit shadow-2xl shadow-surface-container-lowest flex items-center p-2 gap-2 border border-surface-dim/50">
+<!-- Dashboard -->
+<a class="flex items-center justify-center text-on-surface-variant p-3 hover:text-primary transition-colors group" href="#">
+<span class="material-symbols-outlined group-hover:scale-110 transition-transform">dashboard</span>
+<span class="sr-only">Dashboard</span>
+</a>
+<!-- Snippets -->
+<a class="flex items-center justify-center text-on-surface-variant p-3 hover:text-primary transition-colors group" href="#">
+<span class="material-symbols-outlined group-hover:scale-110 transition-transform">code</span>
+<span class="sr-only">Snippets</span>
+</a>
+<!-- Collection (ACTIVE) -->
+<a class="flex items-center gap-2 bg-primary-container text-on-primary-container rounded-full px-4 py-2 transition-all duration-300 shadow-sm" href="#">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">folder_special</span>
+<span class="font-label-sm text-label-sm whitespace-nowrap">Collection</span>
+</a>
+<!-- Favoris -->
+<a class="flex items-center justify-center text-on-surface-variant p-3 hover:text-primary transition-colors group" href="#">
+<span class="material-symbols-outlined group-hover:scale-110 transition-transform">favorite</span>
+<span class="sr-only">Favoris</span>
+</a>
+<!-- Équipe -->
+<a class="flex items-center justify-center text-on-surface-variant p-3 hover:text-primary transition-colors group" href="#">
+<span class="material-symbols-outlined group-hover:scale-110 transition-transform">groups</span>
+<span class="sr-only">Équipe</span>
+</a>
+<!-- Constellation -->
+<a class="flex items-center justify-center text-on-surface-variant p-3 hover:text-primary transition-colors group" href="#">
+<span class="material-symbols-outlined group-hover:scale-110 transition-transform">auto_awesome</span>
+<span class="sr-only">Constellation</span>
+</a>
+</div>
+</nav>
+</body></html>
