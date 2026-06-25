@@ -27,7 +27,7 @@ const adminNav = [
   { to: "/admin/users", label: "Utilisateurs", icon: Users, done: true },
   { to: "/admin/snippets", label: "Snippets", icon: Code2, done: false },
   { to: "/admin/ia-systeme", label: "IA & Système", icon: Cpu, done: false },
-  { to: "/admin/audit", label: "Audit", icon: ScrollText, done: false },
+  { to: "/admin/audit", label: "Audit", icon: ScrollText, done: true },
   { to: "/admin/roles", label: "Rôles & permissions", icon: ShieldCheck, done: true },
 ];
 
