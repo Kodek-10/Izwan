@@ -17,6 +17,7 @@ import { Route as IndexRouteImport } from './routes/index'
 import { Route as AdminIndexRouteImport } from './routes/admin.index'
 import { Route as AdminUsersRouteImport } from './routes/admin.users'
 import { Route as AdminRolesRouteImport } from './routes/admin.roles'
+import { Route as AdminIaSystemeRouteImport } from './routes/admin.ia-systeme'
 import { Route as AdminAuditRouteImport } from './routes/admin.audit'
 import { Route as AppStatisticsRouteImport } from './routes/_app.statistics'
 import { Route as AppSnippetsRouteImport } from './routes/_app.snippets'
@@ -68,6 +69,11 @@ const AdminUsersRoute = AdminUsersRouteImport.update({
 const AdminRolesRoute = AdminRolesRouteImport.update({
   id: '/roles',
   path: '/roles',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminIaSystemeRoute = AdminIaSystemeRouteImport.update({
+  id: '/ia-systeme',
+  path: '/ia-systeme',
   getParentRoute: () => AdminRoute,
 } as any)
 const AdminAuditRoute = AdminAuditRouteImport.update({
@@ -151,6 +157,7 @@ export interface FileRoutesByFullPath {
   '/snippets': typeof AppSnippetsRouteWithChildren
   '/statistics': typeof AppStatisticsRoute
   '/admin/audit': typeof AdminAuditRoute
+  '/admin/ia-systeme': typeof AdminIaSystemeRoute
   '/admin/roles': typeof AdminRolesRoute
   '/admin/users': typeof AdminUsersRoute
   '/admin/': typeof AdminIndexRoute
@@ -171,6 +178,7 @@ export interface FileRoutesByTo {
   '/settings': typeof AppSettingsRoute
   '/statistics': typeof AppStatisticsRoute
   '/admin/audit': typeof AdminAuditRoute
+  '/admin/ia-systeme': typeof AdminIaSystemeRoute
   '/admin/roles': typeof AdminRolesRoute
   '/admin/users': typeof AdminUsersRoute
   '/admin': typeof AdminIndexRoute
@@ -195,6 +203,7 @@ export interface FileRoutesById {
   '/_app/snippets': typeof AppSnippetsRouteWithChildren
   '/_app/statistics': typeof AppStatisticsRoute
   '/admin/audit': typeof AdminAuditRoute
+  '/admin/ia-systeme': typeof AdminIaSystemeRoute
   '/admin/roles': typeof AdminRolesRoute
   '/admin/users': typeof AdminUsersRoute
   '/admin/': typeof AdminIndexRoute
@@ -219,6 +228,7 @@ export interface FileRouteTypes {
     | '/snippets'
     | '/statistics'
     | '/admin/audit'
+    | '/admin/ia-systeme'
     | '/admin/roles'
     | '/admin/users'
     | '/admin/'
@@ -239,6 +249,7 @@ export interface FileRouteTypes {
     | '/settings'
     | '/statistics'
     | '/admin/audit'
+    | '/admin/ia-systeme'
     | '/admin/roles'
     | '/admin/users'
     | '/admin'
@@ -262,6 +273,7 @@ export interface FileRouteTypes {
     | '/_app/snippets'
     | '/_app/statistics'
     | '/admin/audit'
+    | '/admin/ia-systeme'
     | '/admin/roles'
     | '/admin/users'
     | '/admin/'
@@ -334,6 +346,13 @@ declare module '@tanstack/react-router' {
       path: '/roles'
       fullPath: '/admin/roles'
       preLoaderRoute: typeof AdminRolesRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/ia-systeme': {
+      id: '/admin/ia-systeme'
+      path: '/ia-systeme'
+      fullPath: '/admin/ia-systeme'
+      preLoaderRoute: typeof AdminIaSystemeRouteImport
       parentRoute: typeof AdminRoute
     }
     '/admin/audit': {
@@ -474,6 +493,7 @@ const AppRouteWithChildren = AppRoute._addFileChildren(AppRouteChildren)
 
 interface AdminRouteChildren {
   AdminAuditRoute: typeof AdminAuditRoute
+  AdminIaSystemeRoute: typeof AdminIaSystemeRoute
   AdminRolesRoute: typeof AdminRolesRoute
   AdminUsersRoute: typeof AdminUsersRoute
   AdminIndexRoute: typeof AdminIndexRoute
@@ -481,6 +501,7 @@ interface AdminRouteChildren {
 
 const AdminRouteChildren: AdminRouteChildren = {
   AdminAuditRoute: AdminAuditRoute,
+  AdminIaSystemeRoute: AdminIaSystemeRoute,
   AdminRolesRoute: AdminRolesRoute,
   AdminUsersRoute: AdminUsersRoute,
   AdminIndexRoute: AdminIndexRoute,
