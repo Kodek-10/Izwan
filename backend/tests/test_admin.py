@@ -106,3 +106,22 @@ def test_audit_records_role_change(client, db):
     assert r.status_code == 200
     events = r.json()
     assert any(e["action"] == "role_change" and e["target"] == "alice" for e in events)
+
+
+def test_admin_snippets_requires_admin(client, db):
+    token = _make(client, db, "bob", "pw1")  # USER
+    r = client.get(f"{BASE}/admin/snippets", headers=_auth(token))
+    assert r.status_code == 403
+
+
+def test_admin_lists_snippets_metadata_only(client, db):
+    admin = _make(client, db, "boss", "pw1", role="ADMIN")
+    owner = db.query(models.User).filter(models.User.username == "boss").first()
+    db.add(models.Snippet(title="Mon secret", language="python", code="API_KEY=xyz", owner_id=owner.id))
+    db.commit()
+    r = client.get(f"{BASE}/admin/snippets", headers=_auth(admin))
+    assert r.status_code == 200
+    data = r.json()
+    assert any(s["title"] == "Mon secret" and s["language"] == "python" for s in data)
+    # Confidentialité : le code n'est jamais exposé.
+    assert all("code" not in s for s in data)
