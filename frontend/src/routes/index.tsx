@@ -94,11 +94,15 @@ function LandingPage() {
     if (!gl) return;
 
     function resize() {
-      if (!canvas) return;
-      if (canvas.width !== canvas.clientWidth || canvas.height !== canvas.clientHeight) {
-        canvas.width = canvas.clientWidth;
-        canvas.height = canvas.clientHeight;
+      if (!canvas || !gl) return;
+      const ratio = Math.min(window.devicePixelRatio || 1, 2);
+      const displayWidth = Math.floor(canvas.clientWidth * ratio);
+      const displayHeight = Math.floor(canvas.clientHeight * ratio);
+      if (canvas.width !== displayWidth || canvas.height !== displayHeight) {
+        canvas.width = displayWidth;
+        canvas.height = displayHeight;
       }
+      gl!.viewport(0, 0, canvas.width, canvas.height);
     }
     window.addEventListener("resize", resize);
     resize();
@@ -176,9 +180,11 @@ function LandingPage() {
       </nav>
 
       {/* Hero */}
-      <section id="hero" className="relative flex flex-col overflow-hidden bg-[#0A1525] text-white h-screen min-h-[600px]">
+      <section id="hero" className="relative flex flex-col overflow-hidden text-white h-screen min-h-[600px]">
         <canvas ref={canvasRef} className="absolute inset-0 w-full h-full z-0" />
-        <div className="relative z-10 w-full max-w-7xl mx-auto px-6 lg:px-8 pt-20 pb-24 md:pt-32 md:pb-40 flex-1 flex items-center">
+        {/* Overlay sémantique pour la lisibilité du texte sur le shader animé */}
+        <div className="absolute inset-0 z-[1] bg-gradient-to-t from-black/60 via-black/20 to-transparent pointer-events-none" />
+        <div className="relative z-10 w-full max-w-7xl mx-auto px-6 widescreen:px-8 pt-20 pb-24 md:pt-32 md:pb-40 flex-1 flex items-center">
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center w-full">
             {/* Left Column */}
             <div className="lg:col-span-6 flex flex-col gap-8">
