@@ -10,6 +10,7 @@ import {
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { api } from "@/lib/api-client";
+import { toast } from "sonner";
 import { useTranslation } from "react-i18next";
 import { motion } from "framer-motion";
 import { useEffect, useState, useMemo } from "react";
@@ -138,6 +139,28 @@ function Dashboard() {
 
   const chartData = [40, 65, 30, 85, 55, 45, 95];
 
+  const toggleFavorite = async (id: number, current: boolean) => {
+    try {
+      await api.put(`/snippets/${id}`, { is_favorite: !current });
+      setSnippets((prev) =>
+        prev.map((s) => (s.id === id ? { ...s, is_favorite: !current } : s))
+      );
+      toast.success(!current ? "Ajouté aux favoris" : "Retiré des favoris");
+      setStats((prevStats) =>
+        prevStats.map((stat) =>
+          stat.label === "favorites"
+            ? {
+                ...stat,
+                value: Math.max(0, !current ? stat.value + 1 : stat.value - 1),
+              }
+            : stat
+        )
+      );
+    } catch (e) {
+      toast.error("Erreur lors de la mise à jour du favori");
+    }
+  };
+
   if (isClientLoading) {
     return (
       <div className="flex flex-col items-center justify-center h-64 space-y-4">
@@ -182,7 +205,7 @@ function Dashboard() {
                 animate="show"
                 className="bg-card border border-border/50 rounded-xl p-6 relative overflow-hidden group shadow-sm hover:shadow-md transition-shadow"
               >
-                <div className="absolute top-0 right-0 p-4 opacity-5 group-hover:opacity-10 transition-opacity">
+                <div className="absolute top-0 right-0 p-4 opacity-15 group-hover:opacity-30 transition-opacity">
                   <Icon className="h-16 w-16 text-primary" />
                 </div>
                 <p className="text-sm uppercase tracking-wider text-muted-foreground font-semibold mb-2">
@@ -323,11 +346,9 @@ function Dashboard() {
           </div>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
             {snippets.length > 0 ? (
-              snippets.slice(0, 3).map((s) => {
-                const isFav = s.is_favorite;
-                return (
+              snippets.slice(0, 3).map((s) => (
+                <div key={s.id} className="relative">
                   <Link
-                    key={s.id}
                     to="/snippets/$id"
                     params={{ id: s.id.toString() }}
                     className="block"
@@ -340,9 +361,6 @@ function Dashboard() {
                             {s.language}
                           </span>
                         </div>
-                        {isFav && (
-                          <Star className="h-5 w-5 text-yellow-500 fill-yellow-500" />
-                        )}
                       </div>
                       <h4 className="text-lg font-semibold text-foreground mb-2 truncate group-hover:text-primary transition-colors">
                         {s.title}
@@ -354,8 +372,28 @@ function Dashboard() {
                       </div>
                     </div>
                   </Link>
-                );
-              })
+                  <button
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      toggleFavorite(s.id, s.is_favorite);
+                    }}
+                    className="absolute top-4 right-4 z-10 p-1.5 rounded-full hover:bg-accent transition-colors"
+                    aria-label={
+                      s.is_favorite
+                        ? "Retirer des favoris"
+                        : "Ajouter aux favoris"
+                    }
+                  >
+                    <Star
+                      className={`h-5 w-5 ${
+                        s.is_favorite
+                          ? "text-yellow-500 fill-yellow-500"
+                          : "text-muted-foreground"
+                      }`}
+                    />
+                  </button>
+                </div>
+              ))
             ) : (
               <div className="col-span-3 text-center text-muted-foreground py-8 border-2 border-dashed border-border rounded-xl">
                 {t("dashboard.no_snippets")}

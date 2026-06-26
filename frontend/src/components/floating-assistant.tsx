@@ -25,6 +25,19 @@ export function FloatingAssistant() {
     if (scrollRef.current) scrollRef.current.scrollTop = scrollRef.current.scrollHeight;
   }, [messages, isLoading]);
 
+  // Écouter les événements d'explication envoyés depuis d'autres pages
+  useEffect(() => {
+    const handleEvent = (event: Event) => {
+      const detail = (event as CustomEvent).detail;
+      if (detail?.explanation) {
+        setOpen(true);
+        setMessages((prev) => [...prev, { role: "assistant", content: detail.explanation }]);
+      }
+    };
+    window.addEventListener("assistant:explain", handleEvent);
+    return () => window.removeEventListener("assistant:explain", handleEvent);
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps
+
   const send = async (customQuery?: string) => {
     const text = (customQuery ?? query).trim();
     if (!text || isLoading) return;

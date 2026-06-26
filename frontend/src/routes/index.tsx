@@ -180,25 +180,25 @@ function LandingPage() {
       </nav>
 
       {/* Hero */}
-      <section id="hero" className="relative flex flex-col overflow-hidden text-white h-screen min-h-[600px]">
+      <section id="hero" className="relative flex flex-col overflow-hidden text-foreground h-screen min-h-[600px]">
         <canvas ref={canvasRef} className="absolute inset-0 w-full h-full z-0" />
-        {/* Overlay sémantique pour la lisibilité du texte sur le shader animé */}
-        <div className="absolute inset-0 z-[1] bg-gradient-to-t from-black/60 via-black/20 to-transparent pointer-events-none" />
+        {/* Overlay pour assurer lisibilité sur les deux thèmes */}
+        <div className="absolute inset-0 z-[1] bg-gradient-to-t from-background/80 via-background/30 to-transparent pointer-events-none" />
         <div className="relative z-10 w-full max-w-7xl mx-auto px-6 widescreen:px-8 pt-20 pb-24 md:pt-32 md:pb-40 flex-1 flex items-center">
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center w-full">
             {/* Left Column */}
             <div className="lg:col-span-6 flex flex-col gap-8">
               {/* Trust Badges */}
               <div className="flex flex-wrap items-center gap-3">
-                <span className="inline-flex items-center gap-1.5 bg-white/10 text-white border border-white/20 px-3 py-1 rounded-full text-xs font-semibold backdrop-blur-sm">
+                <span className="inline-flex items-center gap-1.5 bg-primary/15 text-primary-foreground border border-primary/25 px-3 py-1 rounded-full text-xs font-semibold backdrop-blur-sm">
                   <Zap className="h-3.5 w-3.5" />
                   Gratuit
                 </span>
-                <span className="inline-flex items-center gap-1.5 bg-white/10 text-white border border-white/20 px-3 py-1 rounded-full text-xs font-semibold backdrop-blur-sm">
+                <span className="inline-flex items-center gap-1.5 bg-primary/15 text-primary-foreground border border-primary/25 px-3 py-1 rounded-full text-xs font-semibold backdrop-blur-sm">
                   <Code2 className="h-3.5 w-3.5" />
                   Open source
                 </span>
-                <span className="inline-flex items-center gap-1.5 bg-white/10 text-white border border-white/20 px-3 py-1 rounded-full text-xs font-semibold backdrop-blur-sm">
+                <span className="inline-flex items-center gap-1.5 bg-primary/15 text-primary-foreground border border-primary/25 px-3 py-1 rounded-full text-xs font-semibold backdrop-blur-sm">
                   <WifiOff className="h-3.5 w-3.5" />
                   Fonctionne hors-ligne
                 </span>
@@ -206,9 +206,9 @@ function LandingPage() {
               {/* Headline */}
               <div className="flex flex-col gap-4">
                 <h1 className="font-display text-3xl md:text-5xl lg:text-6xl font-black tracking-tight leading-tight">
-                  Votre <span className="bg-gradient-to-r from-white to-white/80 bg-clip-text text-transparent">cerveau numérique</span> pour le code
+                  Votre <span className="text-primary">cerveau numérique</span> pour le code
                 </h1>
-                <p className="text-base md:text-lg text-white/80 max-w-2xl leading-relaxed">
+                <p className="text-base md:text-lg text-foreground/80 max-w-2xl leading-relaxed">
                   Capturez, retrouvez et réutilisez vos snippets grâce à l'IA — en local et en toute confidentialité. Un espace de travail fluide, conçu pour les développeurs exigeants.
                 </p>
               </div>
@@ -218,12 +218,12 @@ function LandingPage() {
                   <ExternalLink className="h-5 w-5" />
                   Télécharger pour Windows
                 </a>
-                <Link to="/signup" className="w-full sm:w-auto bg-white text-primary border border-primary/20 font-mono text-xs font-medium px-8 py-4 rounded-lg hover:bg-muted transition-all flex items-center justify-center gap-2 shadow-sm">
+                <Link to="/signup" className="w-full sm:w-auto bg-background text-primary border border-primary/20 font-mono text-xs font-medium px-8 py-4 rounded-lg hover:bg-muted transition-all flex items-center justify-center gap-2 shadow-sm">
                   Ouvrir l'app web
                   <ExternalLink className="h-4 w-4" />
                 </Link>
               </div>
-              <p className="text-xs text-white/60 font-mono">Version 2.4.0 • Nécessite Windows 10+ ou macOS 12+</p>
+              <p className="text-xs text-foreground/60 font-mono">Version 2.4.0 • Nécessite Windows 10+ ou macOS 12+</p>
             </div>
             {/* Right Column: Dashboard Visual */}
             <motion.div
@@ -233,7 +233,7 @@ function LandingPage() {
               transition={{ duration: 0.8, delay: 0.3, ease: "easeOut" }}
             >
               <div
-                className="glow-effect relative rounded-xl border border-primary/10 overflow-hidden bg-white shadow-2xl transition-transform duration-500 hover:scale-[1.02]"
+                className="glow-effect relative rounded-xl border border-primary/10 overflow-hidden bg-card shadow-2xl transition-transform duration-500 hover:scale-[1.02]"
                 style={{ transform: 'perspective(1000px) rotateY(-5deg) rotateX(2deg)' }}
                 onMouseEnter={(e) => { (e.currentTarget as HTMLDivElement).style.transform = 'perspective(1000px) rotateY(0deg) rotateX(0deg) scale(1.02)'; }}
                 onMouseLeave={(e) => { (e.currentTarget as HTMLDivElement).style.transform = 'perspective(1000px) rotateY(-5deg) rotateX(2deg)'; }}
@@ -262,7 +262,7 @@ function LandingPage() {
                     </div>
                   </div>
                   {/* Main Area */}
-                  <div className="flex-1 bg-white p-6 flex flex-col gap-4 relative overflow-hidden">
+                  <div className="flex-1 bg-background p-6 flex flex-col gap-4 relative overflow-hidden">
                     {/* Search Bar */}
                     <div className="h-10 w-full bg-muted rounded-lg border border-primary/20 flex items-center px-4 shadow-sm">
                       <Search className="h-4 w-4 text-muted-foreground mr-3" />
@@ -283,7 +283,7 @@ function LandingPage() {
                       </div>
                     </div>
                     {/* Hover Detail Widget */}
-                    <div className="absolute bottom-6 right-6 w-48 bg-white rounded-lg p-3 shadow-lg border border-primary/20">
+                    <div className="absolute bottom-6 right-6 w-48 bg-card rounded-lg p-3 shadow-lg border border-primary/20">
                       <div className="h-2 w-20 bg-primary/60 rounded mb-2" />
                       <div className="h-1.5 w-full bg-muted-foreground/30 rounded mb-1" />
                       <div className="h-1.5 w-4/5 bg-muted-foreground/30 rounded" />

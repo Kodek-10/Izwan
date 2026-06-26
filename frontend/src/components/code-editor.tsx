@@ -37,13 +37,6 @@ export function CodeEditor({
   );
 
   useEffect(() => {
-    const textarea = textareaRef.current;
-    if (!textarea || isFullscreen) return;
-    textarea.style.height = "auto";
-    textarea.style.height = `${Math.max(textarea.scrollHeight, minRows * 24)}px`;
-  }, [value, minRows, isFullscreen]);
-
-  useEffect(() => {
     if (!isFullscreen) return;
 
     const handleKeyDown = (event: KeyboardEvent) => {
@@ -107,13 +100,13 @@ export function CodeEditor({
       <div
         className={cn(
           "grid grid-cols-[auto_1fr] overflow-hidden",
-          isFullscreen && "h-[calc(100vh-5.25rem)]",
+          isFullscreen ? "h-[calc(100vh-5.25rem)]" : "h-[400px]",
         )}
       >
         <pre
           ref={lineNumbersRef}
           aria-hidden="true"
-          className="select-none overflow-hidden border-r border-border bg-background/40 px-2 py-3 text-right font-mono text-xs leading-6 text-muted-foreground"
+          className="select-none overflow-hidden h-full border-r border-border bg-background/40 px-2 py-3 text-right font-mono text-sm leading-6 text-muted-foreground"
         >
           {lineNumbers}
         </pre>
@@ -129,8 +122,7 @@ export function CodeEditor({
             spellCheck={false}
             className={cn(
               "block w-full resize-none overflow-auto bg-transparent py-3 pl-3 pr-3 font-mono text-sm leading-6 outline-none md:pr-24",
-              "min-h-[288px]",
-              isFullscreen ? "h-full" : "max-h-[70vh]",
+              "h-full",
               readOnly && "cursor-default",
             )}
           />

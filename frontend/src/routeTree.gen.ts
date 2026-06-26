@@ -24,9 +24,11 @@ import { Route as AppCollectionsRouteImport } from './routes/_app.collections'
 import { Route as AppAssistantRouteImport } from './routes/_app.assistant'
 import { Route as AppAdminRouteImport } from './routes/_app.admin'
 import { Route as AppSnippetsIndexRouteImport } from './routes/_app.snippets.index'
+import { Route as AppCollectionsIndexRouteImport } from './routes/_app.collections.index'
 import { Route as AppAdminIndexRouteImport } from './routes/_app.admin.index'
 import { Route as AppSnippetsNewRouteImport } from './routes/_app.snippets.new'
 import { Route as AppSnippetsIdRouteImport } from './routes/_app.snippets.$id'
+import { Route as AppCollectionsIdRouteImport } from './routes/_app.collections.$id'
 import { Route as AppAdminUsersRouteImport } from './routes/_app.admin.users'
 
 const SignupRoute = SignupRouteImport.update({
@@ -103,6 +105,11 @@ const AppSnippetsIndexRoute = AppSnippetsIndexRouteImport.update({
   path: '/',
   getParentRoute: () => AppSnippetsRoute,
 } as any)
+const AppCollectionsIndexRoute = AppCollectionsIndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => AppCollectionsRoute,
+} as any)
 const AppAdminIndexRoute = AppAdminIndexRouteImport.update({
   id: '/',
   path: '/',
@@ -118,6 +125,11 @@ const AppSnippetsIdRoute = AppSnippetsIdRouteImport.update({
   path: '/$id',
   getParentRoute: () => AppSnippetsRoute,
 } as any)
+const AppCollectionsIdRoute = AppCollectionsIdRouteImport.update({
+  id: '/$id',
+  path: '/$id',
+  getParentRoute: () => AppCollectionsRoute,
+} as any)
 const AppAdminUsersRoute = AppAdminUsersRouteImport.update({
   id: '/users',
   path: '/users',
@@ -130,7 +142,7 @@ export interface FileRoutesByFullPath {
   '/signup': typeof SignupRoute
   '/admin': typeof AppAdminRouteWithChildren
   '/assistant': typeof AppAssistantRoute
-  '/collections': typeof AppCollectionsRoute
+  '/collections': typeof AppCollectionsRouteWithChildren
   '/constellation': typeof AppConstellationRoute
   '/dashboard': typeof AppDashboardRoute
   '/export': typeof AppExportRoute
@@ -139,9 +151,11 @@ export interface FileRoutesByFullPath {
   '/snippets': typeof AppSnippetsRouteWithChildren
   '/statistics': typeof AppStatisticsRoute
   '/admin/users': typeof AppAdminUsersRoute
+  '/collections/$id': typeof AppCollectionsIdRoute
   '/snippets/$id': typeof AppSnippetsIdRoute
   '/snippets/new': typeof AppSnippetsNewRoute
   '/admin/': typeof AppAdminIndexRoute
+  '/collections/': typeof AppCollectionsIndexRoute
   '/snippets/': typeof AppSnippetsIndexRoute
 }
 export interface FileRoutesByTo {
@@ -149,7 +163,6 @@ export interface FileRoutesByTo {
   '/auth': typeof AuthRoute
   '/signup': typeof SignupRoute
   '/assistant': typeof AppAssistantRoute
-  '/collections': typeof AppCollectionsRoute
   '/constellation': typeof AppConstellationRoute
   '/dashboard': typeof AppDashboardRoute
   '/export': typeof AppExportRoute
@@ -157,9 +170,11 @@ export interface FileRoutesByTo {
   '/settings': typeof AppSettingsRoute
   '/statistics': typeof AppStatisticsRoute
   '/admin/users': typeof AppAdminUsersRoute
+  '/collections/$id': typeof AppCollectionsIdRoute
   '/snippets/$id': typeof AppSnippetsIdRoute
   '/snippets/new': typeof AppSnippetsNewRoute
   '/admin': typeof AppAdminIndexRoute
+  '/collections': typeof AppCollectionsIndexRoute
   '/snippets': typeof AppSnippetsIndexRoute
 }
 export interface FileRoutesById {
@@ -170,7 +185,7 @@ export interface FileRoutesById {
   '/signup': typeof SignupRoute
   '/_app/admin': typeof AppAdminRouteWithChildren
   '/_app/assistant': typeof AppAssistantRoute
-  '/_app/collections': typeof AppCollectionsRoute
+  '/_app/collections': typeof AppCollectionsRouteWithChildren
   '/_app/constellation': typeof AppConstellationRoute
   '/_app/dashboard': typeof AppDashboardRoute
   '/_app/export': typeof AppExportRoute
@@ -179,9 +194,11 @@ export interface FileRoutesById {
   '/_app/snippets': typeof AppSnippetsRouteWithChildren
   '/_app/statistics': typeof AppStatisticsRoute
   '/_app/admin/users': typeof AppAdminUsersRoute
+  '/_app/collections/$id': typeof AppCollectionsIdRoute
   '/_app/snippets/$id': typeof AppSnippetsIdRoute
   '/_app/snippets/new': typeof AppSnippetsNewRoute
   '/_app/admin/': typeof AppAdminIndexRoute
+  '/_app/collections/': typeof AppCollectionsIndexRoute
   '/_app/snippets/': typeof AppSnippetsIndexRoute
 }
 export interface FileRouteTypes {
@@ -201,9 +218,11 @@ export interface FileRouteTypes {
     | '/snippets'
     | '/statistics'
     | '/admin/users'
+    | '/collections/$id'
     | '/snippets/$id'
     | '/snippets/new'
     | '/admin/'
+    | '/collections/'
     | '/snippets/'
   fileRoutesByTo: FileRoutesByTo
   to:
@@ -211,7 +230,6 @@ export interface FileRouteTypes {
     | '/auth'
     | '/signup'
     | '/assistant'
-    | '/collections'
     | '/constellation'
     | '/dashboard'
     | '/export'
@@ -219,9 +237,11 @@ export interface FileRouteTypes {
     | '/settings'
     | '/statistics'
     | '/admin/users'
+    | '/collections/$id'
     | '/snippets/$id'
     | '/snippets/new'
     | '/admin'
+    | '/collections'
     | '/snippets'
   id:
     | '__root__'
@@ -240,9 +260,11 @@ export interface FileRouteTypes {
     | '/_app/snippets'
     | '/_app/statistics'
     | '/_app/admin/users'
+    | '/_app/collections/$id'
     | '/_app/snippets/$id'
     | '/_app/snippets/new'
     | '/_app/admin/'
+    | '/_app/collections/'
     | '/_app/snippets/'
   fileRoutesById: FileRoutesById
 }
@@ -360,6 +382,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AppSnippetsIndexRouteImport
       parentRoute: typeof AppSnippetsRoute
     }
+    '/_app/collections/': {
+      id: '/_app/collections/'
+      path: '/'
+      fullPath: '/collections/'
+      preLoaderRoute: typeof AppCollectionsIndexRouteImport
+      parentRoute: typeof AppCollectionsRoute
+    }
     '/_app/admin/': {
       id: '/_app/admin/'
       path: '/'
@@ -380,6 +409,13 @@ declare module '@tanstack/react-router' {
       fullPath: '/snippets/$id'
       preLoaderRoute: typeof AppSnippetsIdRouteImport
       parentRoute: typeof AppSnippetsRoute
+    }
+    '/_app/collections/$id': {
+      id: '/_app/collections/$id'
+      path: '/$id'
+      fullPath: '/collections/$id'
+      preLoaderRoute: typeof AppCollectionsIdRouteImport
+      parentRoute: typeof AppCollectionsRoute
     }
     '/_app/admin/users': {
       id: '/_app/admin/users'
@@ -405,6 +441,20 @@ const AppAdminRouteWithChildren = AppAdminRoute._addFileChildren(
   AppAdminRouteChildren,
 )
 
+interface AppCollectionsRouteChildren {
+  AppCollectionsIdRoute: typeof AppCollectionsIdRoute
+  AppCollectionsIndexRoute: typeof AppCollectionsIndexRoute
+}
+
+const AppCollectionsRouteChildren: AppCollectionsRouteChildren = {
+  AppCollectionsIdRoute: AppCollectionsIdRoute,
+  AppCollectionsIndexRoute: AppCollectionsIndexRoute,
+}
+
+const AppCollectionsRouteWithChildren = AppCollectionsRoute._addFileChildren(
+  AppCollectionsRouteChildren,
+)
+
 interface AppSnippetsRouteChildren {
   AppSnippetsIdRoute: typeof AppSnippetsIdRoute
   AppSnippetsNewRoute: typeof AppSnippetsNewRoute
@@ -424,7 +474,7 @@ const AppSnippetsRouteWithChildren = AppSnippetsRoute._addFileChildren(
 interface AppRouteChildren {
   AppAdminRoute: typeof AppAdminRouteWithChildren
   AppAssistantRoute: typeof AppAssistantRoute
-  AppCollectionsRoute: typeof AppCollectionsRoute
+  AppCollectionsRoute: typeof AppCollectionsRouteWithChildren
   AppConstellationRoute: typeof AppConstellationRoute
   AppDashboardRoute: typeof AppDashboardRoute
   AppExportRoute: typeof AppExportRoute
@@ -437,7 +487,7 @@ interface AppRouteChildren {
 const AppRouteChildren: AppRouteChildren = {
   AppAdminRoute: AppAdminRouteWithChildren,
   AppAssistantRoute: AppAssistantRoute,
-  AppCollectionsRoute: AppCollectionsRoute,
+  AppCollectionsRoute: AppCollectionsRouteWithChildren,
   AppConstellationRoute: AppConstellationRoute,
   AppDashboardRoute: AppDashboardRoute,
   AppExportRoute: AppExportRoute,
