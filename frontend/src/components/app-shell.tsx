@@ -111,7 +111,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
   const handleLogout = () => {
     api.logout();
     toast.success("Déconnecté");
-    navigate({ to: "/auth" });
+    navigate({ to: "/", replace: true });
   };
 
   return (

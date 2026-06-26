@@ -61,12 +61,15 @@ function CollectionDetailPage() {
   const router = useRouter();
 
   const [collection, setCollection] = useState<any>(data?.collection);
-  const [snippets, setSnippets] = useState<any[]>([]);
+  const [snippets, setSnippets] = useState<any[]>(data?.snippets || []);
   const [isLoading, setIsLoading] = useState(data?.needsClientFetch ?? true);
   const [shareLoading, setShareLoading] = useState(false);
 
+  // Keep local state in sync ONLY on initial mount / when collection id changes
+  // to prevent loader data from overwriting user triggered local mutations (e.g. favorite)
   useEffect(() => {
     if (!data) return;
+
     if (data.needsClientFetch) {
       let cancelled = false;
       const fetchCollection = async () => {
@@ -95,9 +98,10 @@ function CollectionDetailPage() {
       return () => {
         cancelled = true;
       };
-    } else {
+    }
+    // On initial SSR → client transition we might still need to set loading flag
+    if (data.collection) {
       setCollection(data.collection);
-      setSnippets(data.snippets || []);
       setIsLoading(false);
     }
   }, [data, id]);
@@ -117,8 +121,10 @@ function CollectionDetailPage() {
           s.id === snippetId ? { ...s, is_favorite: !current } : s
         )
       );
-    } catch {
-      toast.error("Erreur lors de la mise à jour");
+      toast.success("Favori mis à jour");
+    } catch (err) {
+      console.error("toggleFavorite error:", err);
+      toast.error("Erreur lors de la mise à jour du favori");
     }
   };
 
