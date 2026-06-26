@@ -1,36 +1,53 @@
-import { createFileRoute, useNavigate } from "@tanstack/react-router";
-import { Settings as SettingsIcon, Sparkles, Code, Keyboard, Save, Info, User, Lock, Loader2, Globe, Bell, Palette } from "lucide-react";
+import { createFileRoute } from "@tanstack/react-router";
 import { useState, useEffect } from "react";
-import { Label } from "@/components/ui/label";
-import { Switch } from "@/components/ui/switch";
 import {
-  Select, SelectContent, SelectItem, SelectTrigger, SelectValue,
-} from "@/components/ui/select";
+  Palette,
+  Code,
+  Key,
+  User,
+  Loader2,
+  Sun,
+  Moon,
+  Monitor,
+  Copy,
+  Trash2,
+  Plus,
+  Save,
+} from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { useTheme } from "@/components/theme-provider";
-import { api } from "@/lib/api-client";
 import { toast } from "sonner";
+import { useTheme } from "@/components/theme-provider";
 import { useTranslation } from "react-i18next";
-
-type PrivacySettings = {
-  air_gapped: boolean;
-  forced: boolean;
-  generation_provider: string;
-  embedding_provider: string;
-};
+import { api } from "@/lib/api-client";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { Switch } from "@/components/ui/switch";
+import { Slider } from "@/components/ui/slider";
 
 export const Route = createFileRoute("/_app/settings")({
-  head: ({ loaderData }: any) => ({ meta: [{ title: `${loaderData?.t?.('settings.title') || 'Paramètres'} — Izwan` }] }),
+  head: ({ loaderData }: any) => ({
+    meta: [
+      {
+        title: `${
+          loaderData?.t?.("settings.title") || "Paramètres"
+        } — Izwan`,
+      },
+    ],
+  }),
   loader: async () => {
-    // We can't use useTranslation here, but we can return the title key
-    // On server, we can't access localStorage for the auth token.
     if (typeof window === "undefined") {
       return { user: { username: "Utilisateur" }, needsClientFetch: true };
     }
-
     try {
-      const user = await api.get<{ username: string }>("/auth/me");
+      const user = await api.get<{ username: string; email?: string }>(
+        "/auth/me"
+      );
       return { user, needsClientFetch: false };
     } catch (e) {
       return { user: { username: "Utilisateur" }, needsClientFetch: false };
@@ -39,408 +56,387 @@ export const Route = createFileRoute("/_app/settings")({
   component: SettingsPage,
 });
 
+const LANGUAGES = [
+  { code: "fr", label: "Français" },
+  { code: "en", label: "English" },
+  { code: "es", label: "Español" },
+  { code: "de", label: "Deutsch" },
+];
+
+const TAB_SIZES = ["2", "4", "8"];
+
+const MOCK_API_KEYS = [
+  {
+    name: "Clé de Production Principale",
+    value: "iz_prod_************************",
+    lastUsed: "hier",
+    active: true,
+  },
+  {
+    name: "Accès Développement Local",
+    value: "iz_dev_************************",
+    lastUsed: "2 jours",
+    active: true,
+  },
+];
+
 function SettingsPage() {
   const { t, i18n } = useTranslation();
   const data = Route.useLoaderData();
-  
-  const tabs = [
-    { id: "general", label: t("settings.tabs.general"), icon: SettingsIcon },
-    { id: "profile", label: t("settings.tabs.profile"), icon: User },
-    { id: "ai", label: t("settings.tabs.ai"), icon: Sparkles },
-    { id: "editor", label: t("settings.tabs.editor"), icon: Code },
-    { id: "shortcuts", label: t("settings.tabs.shortcuts"), icon: Keyboard },
-    { id: "backup", label: t("settings.tabs.backup"), icon: Save },
-    { id: "about", label: t("settings.tabs.about"), icon: Info },
-  ];
+  const { theme, setTheme } = useTheme();
 
-  const [user, setUser] = useState(data?.user || { username: "Utilisateur" });
-  const initialUser = user;
-  
-  const [tab, setTab] = useState("general");
-  const { theme, toggle } = useTheme();
-  const navigate = useNavigate();
+  const [user, setUser] = useState(
+    data?.user || { username: "Utilisateur", email: "" }
+  );
+  const [isLoading, setIsLoading] = useState(false);
+  const [updatingProfile, setUpdatingProfile] = useState(false);
 
-  // Profile State
-  const [username, setUsername] = useState(initialUser.username);
-  const [isUpdatingProfile, setIsUpdatingProfile] = useState(false);
-  const [isClientLoading, setIsClientLoading] = useState(false);
-  
-  // Update username if initialUser changes
-  useEffect(() => {
-    if (initialUser.username) {
-      setUsername(initialUser.username);
-    }
-  }, [initialUser.username]);
+  const [fontSize, setFontSize] = useState(14);
+  const [tabSize, setTabSize] = useState("4");
+  const [ligatures, setLigatures] = useState(true);
 
   useEffect(() => {
-    // If the loader ran on server, we need to re-fetch on client where token is available
     if (data?.needsClientFetch) {
-      const fetchOnClient = async () => {
-        setIsClientLoading(true);
+      const fetch = async () => {
+        setIsLoading(true);
         try {
-          const u = await api.get<{ username: string }>("/auth/me");
+          const u = await api.get<{ username: string; email?: string }>(
+            "/auth/me"
+          );
           setUser(u);
-          setUsername(u.username);
-        } catch (e) {
-          console.error("Failed to fetch user profile on client", e);
+        } catch {
+          /* ignore */
         } finally {
-          setIsClientLoading(false);
+          setIsLoading(false);
         }
       };
-      fetchOnClient();
+      fetch();
     }
   }, [data?.needsClientFetch]);
-  
-  // Password State
-  const [currentPw, setCurrentPw] = useState("");
-  const [newPw, setNewPw] = useState("");
-  const [confirmPw, setConfirmPw] = useState("");
-  const [isChangingPw, setIsChangingPw] = useState(false);
-  const [privacy, setPrivacy] = useState<PrivacySettings | null>(null);
-  const [isUpdatingPrivacy, setIsUpdatingPrivacy] = useState(false);
 
-  useEffect(() => {
-    const fetchPrivacySettings = async () => {
-      try {
-        const settings = await api.get<PrivacySettings>("/ai/privacy");
-        setPrivacy(settings);
-      } catch (e) {
-        console.error("Failed to fetch privacy settings", e);
-      }
-    };
-    fetchPrivacySettings();
-  }, []);
+  const handleUpdateProfile = async () => {
+    setUpdatingProfile(true);
+    try {
+      await api.put("/auth/me", {
+        username: user.username,
+        email: user.email,
+      });
+      toast.success("Profil mis à jour");
+    } catch (err: any) {
+      toast.error(err.message || "Erreur");
+    } finally {
+      setUpdatingProfile(false);
+    }
+  };
 
-  if (isClientLoading) {
+  if (isLoading) {
     return (
       <div className="flex flex-col items-center justify-center h-64 space-y-4">
         <Loader2 className="h-8 w-8 animate-spin text-primary" />
-        <p className="text-sm text-muted-foreground">{t("common.loading")}</p>
+        <p className="text-sm text-muted-foreground">
+          {t("common.loading")}
+        </p>
       </div>
     );
   }
 
-  const handleUpdateProfile = async () => {
-    if (!username.trim()) return;
-    setIsUpdatingProfile(true);
-    try {
-      await api.put("/auth/me", { username });
-      toast.success(t("common.success"));
-    } catch (e: any) {
-      toast.error(e.message || t("common.error"));
-    } finally {
-      setIsUpdatingProfile(false);
-    }
-  };
-
-  const handleChangePassword = async () => {
-    if (!currentPw || !newPw) {
-      toast.error(t("settings.profile.fill_fields"));
-      return;
-    }
-    if (newPw !== confirmPw) {
-      toast.error(t("settings.profile.pw_mismatch"));
-      return;
-    }
-    setIsChangingPw(true);
-    try {
-      await api.post("/auth/change-password", { current_password: currentPw, new_password: newPw });
-      toast.success(t("common.success"));
-      setCurrentPw("");
-      setNewPw("");
-      setConfirmPw("");
-    } catch (e: any) {
-      toast.error(e.message || t("common.error"));
-    } finally {
-      setIsChangingPw(false);
-    }
-  };
-
-  const handleAirGappedChange = async (checked: boolean) => {
-    setIsUpdatingPrivacy(true);
-    try {
-      const settings = await api.put<PrivacySettings>("/ai/privacy", { air_gapped: checked });
-      setPrivacy(settings);
-      toast.success(t("common.success"));
-    } catch (e: any) {
-      toast.error(e.message || t("common.error"));
-    } finally {
-      setIsUpdatingPrivacy(false);
-    }
-  };
-
   return (
-    <div className="flex flex-col md:grid md:grid-cols-[220px_1fr] gap-6 max-w-5xl mx-auto">
-      <aside className="bg-card border border-border rounded-xl p-2 h-fit space-y-1 flex md:flex-col overflow-x-auto md:overflow-x-visible no-scrollbar">
-        {tabs.map((t) => {
-          const Icon = t.icon;
-          return (
+    <div className="space-y-8">
+      {/* Header */}
+      <div className="mb-12">
+        <h1 className="text-3xl md:text-4xl font-bold text-foreground mb-2">
+          Paramètres
+        </h1>
+        <p className="text-muted-foreground">
+          Gérez vos préférences utilisateur, thèmes et configurations d'API.
+        </p>
+      </div>
+
+      {/* Bento Grid */}
+      <div className="grid grid-cols-1 md:grid-cols-12 gap-6">
+        {/* Profile Section (Wide) */}
+        <section className="md:col-span-8 bg-card/80 backdrop-blur-xl border border-border rounded-xl p-6 md:p-8 flex flex-col md:flex-row gap-8 items-start relative overflow-hidden group shadow-sm">
+          <div className="absolute inset-0 bg-gradient-to-br from-primary/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none" />
+          <div className="relative w-24 h-24 md:w-32 md:h-32 rounded-xl overflow-hidden border-2 border-border flex-shrink-0 shadow-sm bg-muted flex items-center justify-center">
+            <User className="h-12 w-12 text-muted-foreground" />
+          </div>
+          <div className="flex-grow w-full space-y-6 relative">
+            <div>
+              <h3 className="font-semibold text-lg text-foreground mb-1">
+                Profil Public
+              </h3>
+              <p className="text-sm text-muted-foreground">
+                Vos informations de base affichées aux autres membres de l'Équipe.
+              </p>
+            </div>
+            <div className="space-y-4">
+              <div className="flex flex-col gap-1.5">
+                <label className="text-xs font-mono text-muted-foreground uppercase tracking-wider">
+                  Nom d'affichage
+                </label>
+                <Input
+                  value={user.username}
+                  onChange={(e) =>
+                    setUser((u) => ({ ...u, username: e.target.value }))
+                  }
+                  className="bg-background border-border"
+                />
+              </div>
+              <div className="flex flex-col gap-1.5">
+                <label className="text-xs font-mono text-muted-foreground uppercase tracking-wider">
+                  Adresse Email
+                </label>
+                <Input
+                  type="email"
+                  value={user.email || "alexandre@izwan.dev"}
+                  onChange={(e) =>
+                    setUser((u) => ({ ...u, email: e.target.value }))
+                  }
+                  className="bg-background border-border"
+                />
+              </div>
+            </div>
+            <div className="flex justify-end pt-2">
+              <Button
+                onClick={handleUpdateProfile}
+                disabled={updatingProfile}
+                className="bg-primary text-primary-foreground hover:bg-primary/90"
+              >
+                {updatingProfile && (
+                  <Loader2 className="h-4 w-4 animate-spin mr-2" />
+                )}
+                <Save className="h-4 w-4 mr-2" />
+                Enregistrer
+              </Button>
+            </div>
+          </div>
+        </section>
+
+        {/* Appearance (Square) */}
+        <section className="md:col-span-4 bg-card/80 backdrop-blur-xl border border-border rounded-xl p-6 md:p-8 flex flex-col shadow-sm">
+          <div>
+            <h3 className="font-semibold text-lg text-foreground mb-1 flex items-center gap-2">
+              <Palette className="h-5 w-5 text-primary" />
+              Apparence
+            </h3>
+            <p className="text-sm text-muted-foreground mb-6">
+              Personnalisez l'interface utilisateur.
+            </p>
+          </div>
+          <div className="space-y-3">
             <button
-              key={t.id}
-              onClick={() => setTab(t.id)}
-              className={`flex-shrink-0 md:w-full flex items-center gap-2.5 px-3 py-2 rounded-lg text-sm transition-colors ${
-                tab === t.id ? "bg-primary/15 text-primary font-medium" : "hover:bg-muted/50 text-muted-foreground"
+              onClick={() => setTheme("dark")}
+              className={`flex items-center w-full justify-between p-4 rounded-lg border transition-all ${
+                theme === "dark"
+                  ? "border-primary ring-1 ring-primary bg-primary/5"
+                  : "border-border hover:border-primary/50"
               }`}
-              suppressHydrationWarning
             >
-              <Icon className="h-4 w-4 shrink-0" />
-              <span className="whitespace-nowrap">{t.label}</span>
+              <div className="flex items-center gap-3">
+                <Moon className="h-5 w-5 text-foreground" />
+                <span className="text-sm font-medium">Sombre</span>
+              </div>
+              <div
+                className={`w-5 h-5 rounded-full border-2 flex items-center justify-center ${
+                  theme === "dark"
+                    ? "border-primary"
+                    : "border-muted-foreground/20"
+                }`}
+              >
+                {theme === "dark" && (
+                  <div className="w-2.5 h-2.5 bg-primary rounded-full" />
+                )}
+              </div>
             </button>
-          );
-        })}
-      </aside>
-
-      <div className="bg-card border border-border rounded-xl p-4 sm:p-6 min-h-[500px]">
-        <h2 className="font-display font-semibold text-lg sm:text-xl mb-6 flex items-center gap-2">
-          {(() => {
-            const t = tabs.find((x) => x.id === tab);
-            const Icon = t?.icon || SettingsIcon;
-            return <><Icon className="h-5 w-5 text-primary" /> {t?.label}</>;
-          })()}
-        </h2>
-
-        <div className="space-y-6">
-          {tab === "general" && (
-            <div className="space-y-6 animate-in fade-in slide-in-from-bottom-2 duration-300">
-              <div className="space-y-4">
-                <h3 className="text-xs font-semibold uppercase tracking-wider text-muted-foreground flex items-center gap-2">
-                  <Palette className="h-4 w-4" /> {t("settings.general.appearance")}
-                </h3>
-                <div className="flex flex-col sm:flex-row sm:items-center justify-between p-4 rounded-lg bg-muted/30 border border-border gap-4">
-                  <div className="space-y-0.5">
-                    <Label>{t("settings.general.theme")}</Label>
-                    <p className="text-xs text-muted-foreground">{t("settings.general.theme_desc")}</p>
-                  </div>
-                  <Select value={theme} onValueChange={() => toggle()}>
-                    <SelectTrigger className="w-full sm:w-40"><SelectValue /></SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="dark">{t("settings.general.dark")}</SelectItem>
-                      <SelectItem value="light">{t("settings.general.light")}</SelectItem>
-                    </SelectContent>
-                  </Select>
-                </div>
+            <button
+              onClick={() => setTheme("light")}
+              className={`flex items-center w-full justify-between p-4 rounded-lg border transition-all ${
+                theme === "light"
+                  ? "border-primary ring-1 ring-primary bg-primary/5"
+                  : "border-border hover:border-primary/50"
+              }`}
+            >
+              <div className="flex items-center gap-3">
+                <Sun className="h-5 w-5 text-foreground" />
+                <span className="text-sm font-medium">Clair</span>
               </div>
-
-              <div className="space-y-4">
-                <h3 className="text-xs font-semibold uppercase tracking-wider text-muted-foreground flex items-center gap-2">
-                  <Globe className="h-4 w-4" /> {t("settings.general.regional")}
-                </h3>
-                <div className="flex flex-col sm:flex-row sm:items-center justify-between p-4 rounded-lg bg-muted/30 border border-border gap-4">
-                  <div className="space-y-0.5">
-                    <Label>{t("settings.general.language")}</Label>
-                    <p className="text-xs text-muted-foreground">{t("settings.general.language_desc")}</p>
-                  </div>
-                  <Select value={i18n.language} onValueChange={(val) => i18n.changeLanguage(val)}>
-                    <SelectTrigger className="w-full sm:w-40"><SelectValue /></SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="fr">Français</SelectItem>
-                      <SelectItem value="en">English</SelectItem>
-                    </SelectContent>
-                  </Select>
-                </div>
+              <div
+                className={`w-5 h-5 rounded-full border-2 flex items-center justify-center ${
+                  theme === "light"
+                    ? "border-primary"
+                    : "border-muted-foreground/20"
+                }`}
+              >
+                {theme === "light" && (
+                  <div className="w-2.5 h-2.5 bg-primary rounded-full" />
+                )}
               </div>
+            </button>
+          </div>
+        </section>
 
-              <div className="space-y-4">
-                <h3 className="text-xs font-semibold uppercase tracking-wider text-muted-foreground flex items-center gap-2">
-                  <Bell className="h-4 w-4" /> {t("settings.general.notifications")}
-                </h3>
-                <div className="space-y-2">
-                  <div className="flex items-center justify-between p-4 rounded-lg bg-muted/30 border border-border">
-                    <Label className="text-sm">{t("settings.general.desktop_notif")}</Label>
-                    <Switch defaultChecked />
-                  </div>
-                  <div className="flex items-center justify-between p-4 rounded-lg bg-muted/30 border border-border">
-                    <Label className="text-sm">{t("settings.general.security_alerts")}</Label>
-                    <Switch defaultChecked />
-                  </div>
-                </div>
+        {/* Editor Preferences */}
+        <section className="md:col-span-6 bg-card/80 backdrop-blur-xl border border-border rounded-xl p-6 md:p-8 shadow-sm">
+          <h3 className="font-semibold text-lg text-foreground mb-1 flex items-center gap-2">
+            <Code className="h-5 w-5 text-tertiary" />
+            Préférences Éditeur
+          </h3>
+          <p className="text-sm text-muted-foreground mb-8">
+            Configuration de l'environnement de code.
+          </p>
+          <div className="space-y-6">
+            <div className="flex flex-col gap-3">
+              <div className="flex justify-between items-center">
+                <label className="text-xs font-mono text-muted-foreground uppercase tracking-wider">
+                  Taille de police (px)
+                </label>
+                <span className="font-mono text-xs text-tertiary bg-muted px-2 py-1 rounded">
+                  {fontSize}px
+                </span>
               </div>
+              <Slider
+                value={[fontSize]}
+                onValueChange={(v) => setFontSize(v[0])}
+                max={24}
+                min={10}
+                step={1}
+              />
             </div>
-          )}
-
-          {tab === "profile" && (
-            <div className="space-y-8 animate-in fade-in slide-in-from-bottom-2 duration-300">
-              <div className="space-y-4">
-                <h3 className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">{t("settings.profile.title")}</h3>
-                <div className="space-y-4 p-4 rounded-lg bg-muted/30 border border-border">
-                  <div className="space-y-2">
-                    <Label htmlFor="username">{t("settings.profile.username")}</Label>
-                    <Input 
-                      id="username" 
-                      value={username} 
-                      onChange={(e) => setUsername(e.target.value)} 
-                    />
-                  </div>
-                  <Button onClick={handleUpdateProfile} disabled={isUpdatingProfile || username === initialUser.username} className="w-full sm:w-auto gradient-brand text-white border-0">
-                    {isUpdatingProfile && <Loader2 className="h-4 w-4 animate-spin mr-2" />}
-                    {t("settings.profile.update_profile")}
-                  </Button>
-                </div>
-              </div>
-
-              <div className="space-y-4">
-                <h3 className="text-xs font-semibold uppercase tracking-wider text-muted-foreground flex items-center gap-2">
-                  <Lock className="h-4 w-4" /> {t("settings.profile.security")}
-                </h3>
-                <div className="space-y-4 p-4 rounded-lg bg-muted/30 border border-border">
-                  <div className="space-y-2">
-                    <Label htmlFor="current-pw">{t("settings.profile.current_pw")}</Label>
-                    <Input id="current-pw" type="password" value={currentPw} onChange={(e) => setCurrentPw(e.target.value)} />
-                  </div>
-                  <div className="space-y-2">
-                    <Label htmlFor="new-pw">{t("settings.profile.new_pw")}</Label>
-                    <Input id="new-pw" type="password" value={newPw} onChange={(e) => setNewPw(e.target.value)} />
-                  </div>
-                  <div className="space-y-2">
-                    <Label htmlFor="confirm-pw">{t("settings.profile.confirm_pw")}</Label>
-                    <Input id="confirm-pw" type="password" value={confirmPw} onChange={(e) => setConfirmPw(e.target.value)} />
-                  </div>
-                  <Button onClick={handleChangePassword} disabled={isChangingPw} variant="secondary" className="w-full">
-                    {isChangingPw && <Loader2 className="h-4 w-4 animate-spin mr-2" />}
-                    {t("settings.profile.change_pw")}
-                  </Button>
-                </div>
-              </div>
+            <div className="flex flex-col gap-2">
+              <label className="text-xs font-mono text-muted-foreground uppercase tracking-wider">
+                Taille de tabulation
+              </label>
+              <select
+                value={tabSize}
+                onChange={(e) => setTabSize(e.target.value)}
+                className="bg-background border border-border rounded-lg px-4 py-2 font-mono text-sm text-foreground focus:outline-none focus:border-primary appearance-none w-full shadow-sm"
+              >
+                {TAB_SIZES.map((s) => (
+                  <option key={s} value={s}>
+                    {s} espaces
+                  </option>
+                ))}
+              </select>
             </div>
-          )}
-
-          {tab === "ai" && (
-            <div className="space-y-6 animate-in fade-in duration-300">
-              <div className="p-4 rounded-lg bg-primary/5 border border-primary/10 space-y-3">
-                <div className="flex items-center gap-2 text-primary font-semibold text-sm">
-                  <Sparkles className="h-5 w-5" />
-                  {t("settings.ai.title")}
-                </div>
-                <p className="text-xs text-muted-foreground">{t("settings.ai.desc")}</p>
-              </div>
-              <div className="space-y-4">
-                <div className="flex items-center justify-between p-4 rounded-lg bg-muted/30 border border-border">
-                  <div className="space-y-0.5">
-                    <Label className="text-sm">{t("settings.ai.auto_tags")}</Label>
-                    <p className="hidden xs:block text-[10px] text-muted-foreground">{t("settings.ai.auto_tags_desc")}</p>
-                  </div>
-                  <Switch defaultChecked />
-                </div>
-                <div className="flex items-center justify-between p-4 rounded-lg bg-muted/30 border border-border">
-                  <div className="space-y-0.5">
-                    <Label className="text-sm">{t("settings.ai.high_perf")}</Label>
-                    <p className="hidden xs:block text-[10px] text-muted-foreground">{t("settings.ai.high_perf_desc")}</p>
-                  </div>
-                  <Switch />
-                </div>
-                <div className="flex items-center justify-between p-4 rounded-lg bg-muted/30 border border-border gap-4">
-                  <div className="space-y-0.5">
-                    <Label className="text-sm">{t("settings.ai.air_gapped")}</Label>
-                    <p className="hidden xs:block text-[10px] text-muted-foreground">
-                      {privacy?.forced ? t("settings.ai.air_gapped_forced") : t("settings.ai.air_gapped_desc")}
-                    </p>
-                    {privacy && (
-                      <p className="text-[10px] text-muted-foreground">
-                        {t("settings.ai.providers", {
-                          generation: privacy.generation_provider,
-                          embedding: privacy.embedding_provider,
-                        })}
-                      </p>
+            <div className="flex flex-col gap-2 mb-6">
+              <label className="text-xs font-mono text-muted-foreground uppercase tracking-wider">
+                Changer la langue
+              </label>
+              <Select
+                value={i18n.language}
+                onValueChange={(val) => i18n.changeLanguage(val)}
+              >
+                <SelectTrigger className="bg-background border-border">
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  {LANGUAGES.map((l) => (
+                    <SelectItem key={l.code} value={l.code}>
+                      {l.label}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+            <div className="pt-4 border-t border-border">
+              <label className="flex items-center gap-3 cursor-pointer group">
+                <div className="relative flex items-center justify-center">
+                  <input
+                    type="checkbox"
+                    checked={ligatures}
+                    onChange={(e) => setLigatures(e.target.checked)}
+                    className="sr-only peer"
+                  />
+                  <div className="w-5 h-5 rounded border-2 border-border peer-checked:bg-tertiary peer-checked:border-tertiary transition-colors flex items-center justify-center">
+                    {ligatures && (
+                      <svg
+                        className="w-3 h-3 text-white"
+                        fill="none"
+                        viewBox="0 0 24 24"
+                        stroke="currentColor"
+                        strokeWidth={3}
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          d="M5 13l4 4L19 7"
+                        />
+                      </svg>
                     )}
                   </div>
-                  <Switch
-                    checked={privacy?.air_gapped ?? false}
-                    disabled={!privacy || privacy.forced || isUpdatingPrivacy}
-                    onCheckedChange={handleAirGappedChange}
-                  />
                 </div>
-              </div>
+                <span className="text-sm text-foreground group-hover:text-primary transition-colors">
+                  Activer les ligatures de police
+                </span>
+              </label>
             </div>
-          )}
+          </div>
+        </section>
 
-          {tab === "editor" && (
-            <div className="space-y-6 animate-in fade-in duration-300">
-              <div className="space-y-4">
-                <div className="flex items-center justify-between p-4 rounded-lg bg-muted/30 border border-border">
-                  <Label className="text-sm">{t("settings.editor.line_numbers")}</Label>
-                  <Switch defaultChecked />
-                </div>
-                <div className="flex items-center justify-between p-4 rounded-lg bg-muted/30 border border-border">
-                  <Label className="text-sm">{t("settings.editor.auto_complete")}</Label>
-                  <Switch defaultChecked />
-                </div>
-                <div className="flex items-center justify-between p-4 rounded-lg bg-muted/30 border border-border">
-                  <Label className="text-sm">{t("settings.editor.font_size")}</Label>
-                  <Select defaultValue="14">
-                    <SelectTrigger className="w-24"><SelectValue /></SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="12">12px</SelectItem>
-                      <SelectItem value="14">14px</SelectItem>
-                      <SelectItem value="16">16px</SelectItem>
-                      <SelectItem value="18">18px</SelectItem>
-                    </SelectContent>
-                  </Select>
-                </div>
-              </div>
-            </div>
-          )}
-
-          {tab === "shortcuts" && (
-            <div className="space-y-3 animate-in fade-in duration-300">
-              {[
-                { label: t("settings.shortcuts.new_snippet"), keys: "Ctrl + N" },
-                { label: t("settings.shortcuts.global_search"), keys: "Ctrl + K" },
-                { label: t("settings.shortcuts.save"), keys: "Ctrl + S" },
-                { label: t("settings.shortcuts.open_assistant"), keys: "Ctrl + I" },
-              ].map((s) => (
-                <div key={s.label} className="flex items-center justify-between p-4 rounded-lg bg-muted/30 border border-border">
-                  <span className="text-sm">{s.label}</span>
-                  <kbd className="px-2 py-1 rounded bg-muted border border-border text-[10px] font-mono shrink-0">{s.keys}</kbd>
-                </div>
-              ))}
-            </div>
-          )}
-
-          {tab === "backup" && (
-            <div className="space-y-6 animate-in fade-in duration-300">
-              <div className="p-4 rounded-lg bg-amber-500/5 border border-amber-500/10 space-y-2">
-                <h3 className="text-amber-500 font-semibold flex items-center gap-2 text-sm">
-                  <Info className="h-4 w-4" /> {t("settings.backup.zone")}
-                </h3>
-                <p className="text-xs text-muted-foreground">{t("settings.backup.desc")}</p>
-              </div>
-              <div className="flex flex-col sm:flex-row gap-3">
-                <Button className="flex-1" variant="outline" onClick={() => navigate({ to: "/export" })}>
-                  <Download className="h-4 w-4 mr-2" /> {t("settings.backup.export")}
-                </Button>
-                <Button className="flex-1" variant="outline">
-                  <Save className="h-4 w-4 mr-2" /> {t("settings.backup.sync")}
-                </Button>
-              </div>
-            </div>
-          )}
-
-          {tab === "about" && (
-            <div className="space-y-6 animate-in fade-in duration-300 text-center py-4 sm:py-8">
-              <div className="flex flex-col items-center gap-4">
-                <div className="h-16 w-16 sm:h-20 sm:w-20 rounded-2xl gradient-brand flex items-center justify-center shadow-lg shadow-primary/20">
-                  <Code className="h-8 w-8 sm:h-10 sm:w-10 text-white" />
-                </div>
-                <div>
-                  <h3 className="text-xl sm:text-2xl font-display font-bold">Izwan</h3>
-                  <p className="text-xs sm:text-sm text-muted-foreground">{t("settings.about.version")} 1.2.0-beta</p>
-                </div>
-              </div>
-              <p className="max-w-md mx-auto text-xs sm:text-sm text-muted-foreground leading-relaxed">
-                {t("settings.about.desc")}
+        {/* API Keys */}
+        <section className="md:col-span-6 bg-card/80 backdrop-blur-xl border border-border rounded-xl p-6 md:p-8 flex flex-col shadow-sm">
+          <div className="flex justify-between items-start mb-6">
+            <div>
+              <h3 className="font-semibold text-lg text-foreground mb-1 flex items-center gap-2">
+                <Key className="h-5 w-5 text-primary" />
+                Clés API
+              </h3>
+              <p className="text-sm text-muted-foreground">
+                Gérez l'accès à l'API Izwan Constellation.
               </p>
-              <div className="pt-4 flex flex-wrap justify-center gap-4 text-[10px] sm:text-xs text-muted-foreground">
-                <a href="#" className="hover:text-primary underline">{t("settings.about.terms")}</a>
-                <a href="#" className="hover:text-primary underline">{t("settings.about.privacy")}</a>
-              </div>
             </div>
-          )}
-        </div>
+            <Button
+              onClick={() => toast.info("Création de clé API non implémentée")}
+              size="sm"
+            >
+              <Plus className="h-4 w-4 mr-2" />
+              Nouvelle
+            </Button>
+          </div>
+          <div className="flex-grow space-y-3">
+            {MOCK_API_KEYS.map((key, i) => (
+              <div
+                key={i}
+                className="bg-background rounded-lg p-4 flex items-center justify-between border border-border group hover:border-primary/50 transition-colors shadow-sm"
+              >
+                <div>
+                  <div className="text-xs font-semibold text-foreground mb-1">
+                    {key.name}
+                  </div>
+                  <div className="font-mono text-xs text-muted-foreground flex items-center gap-2">
+                    {key.value}
+                    <span className="text-tertiary bg-tertiary/10 px-1.5 py-0.5 rounded text-[10px]">
+                      Dernier usage : {key.lastUsed}
+                    </span>
+                  </div>
+                </div>
+                <div className="flex items-center gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
+                  <Button
+                    variant="ghost"
+                    size="icon"
+                    onClick={() => {
+                      navigator.clipboard.writeText(key.value);
+                      toast.success("Clé copiée");
+                    }}
+                    title="Copier"
+                  >
+                    <Copy className="h-4 w-4" />
+                  </Button>
+                  <Button
+                    variant="ghost"
+                    size="icon"
+                    onClick={() => toast.info("Révocation non implémentée")}
+                    className="hover:text-destructive"
+                    title="Révoquer"
+                  >
+                    <Trash2 className="h-4 w-4" />
+                  </Button>
+                </div>
+              </div>
+            ))}
+          </div>
+        </section>
       </div>
     </div>
   );
-}
-
-function Download(props: any) {
-  return <Save {...props} />
 }
