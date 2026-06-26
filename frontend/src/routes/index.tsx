@@ -9,6 +9,7 @@ import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { IzwaLogo, IzwaWordmark } from "@/components/izwan-logo";
 import { useTheme } from "@/components/theme-provider";
+import { useLandingAnimations } from "@/hooks/use-landing-animations";
 
 export const Route = createFileRoute("/")({
   head: () => ({
@@ -84,6 +85,7 @@ const staggerContainer = {
 function LandingPage() {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const { theme, toggle } = useTheme();
+  const { containerRef, heroRef, featuresRef, ctaRef } = useLandingAnimations();
   const isDark = theme === "dark";
   const fsSource = isDark ? fsSourceDark : fsSourceLight;
 
@@ -150,7 +152,7 @@ function LandingPage() {
   }, [theme]);
 
   return (
-    <div className="min-h-screen font-sans text-foreground">
+    <div ref={containerRef} className="min-h-screen font-sans text-foreground">
       {/* Sticky Nav */}
       <nav className="sticky top-0 z-50 w-full bg-background/80 backdrop-blur-xl border-b border-border/50 shadow-sm">
         <div className="max-w-7xl mx-auto px-6 lg:px-8 py-4 flex items-center justify-between">
@@ -180,7 +182,7 @@ function LandingPage() {
       </nav>
 
       {/* Hero */}
-      <section id="hero" className="relative flex flex-col overflow-hidden text-foreground h-screen min-h-[600px]">
+      <section ref={heroRef} id="hero" className="relative flex flex-col overflow-hidden text-foreground h-screen min-h-[600px]">
         <canvas ref={canvasRef} className="absolute inset-0 w-full h-full z-0" />
         {/* Overlay pour assurer lisibilité sur les deux thèmes */}
         <div className="absolute inset-0 z-[1] bg-gradient-to-t from-background/80 via-background/30 to-transparent pointer-events-none" />
@@ -190,43 +192,44 @@ function LandingPage() {
             <div className="lg:col-span-6 flex flex-col gap-8">
               {/* Trust Badges */}
               <div className="flex flex-wrap items-center gap-3">
-                <span className="inline-flex items-center gap-1.5 bg-primary/15 text-primary-foreground border border-primary/25 px-3 py-1 rounded-full text-xs font-semibold backdrop-blur-sm">
+                <span data-gsap='hero-badge' className="inline-flex items-center gap-1.5 bg-primary/15 text-primary-foreground border border-primary/25 px-3 py-1 rounded-full text-xs font-semibold backdrop-blur-sm">
                   <Zap className="h-3.5 w-3.5" />
                   Gratuit
                 </span>
-                <span className="inline-flex items-center gap-1.5 bg-primary/15 text-primary-foreground border border-primary/25 px-3 py-1 rounded-full text-xs font-semibold backdrop-blur-sm">
+                <span data-gsap='hero-badge' className="inline-flex items-center gap-1.5 bg-primary/15 text-primary-foreground border border-primary/25 px-3 py-1 rounded-full text-xs font-semibold backdrop-blur-sm">
                   <Code2 className="h-3.5 w-3.5" />
                   Open source
                 </span>
-                <span className="inline-flex items-center gap-1.5 bg-primary/15 text-primary-foreground border border-primary/25 px-3 py-1 rounded-full text-xs font-semibold backdrop-blur-sm">
+                <span data-gsap='hero-badge' className="inline-flex items-center gap-1.5 bg-primary/15 text-primary-foreground border border-primary/25 px-3 py-1 rounded-full text-xs font-semibold backdrop-blur-sm">
                   <WifiOff className="h-3.5 w-3.5" />
                   Fonctionne hors-ligne
                 </span>
               </div>
               {/* Headline */}
               <div className="flex flex-col gap-4">
-                <h1 className="font-display text-3xl md:text-5xl lg:text-6xl font-black tracking-tight leading-tight">
+                <h1 data-gsap='hero-title' className="font-display text-3xl md:text-5xl lg:text-6xl font-black tracking-tight leading-tight">
                   Votre <span className="text-primary">cerveau numérique</span> pour le code
                 </h1>
-                <p className="text-base md:text-lg text-foreground/80 max-w-2xl leading-relaxed">
+                <p data-gsap='hero-subtitle' className="text-base md:text-lg text-foreground/80 max-w-2xl leading-relaxed">
                   Capturez, retrouvez et réutilisez vos snippets grâce à l'IA — en local et en toute confidentialité. Un espace de travail fluide, conçu pour les développeurs exigeants.
                 </p>
               </div>
               {/* CTAs */}
               <div className="flex flex-col sm:flex-row items-center gap-4 pt-4">
-                <a href={GITHUB_RELEASES} target="_blank" rel="noreferrer" className="w-full sm:w-auto brand-gradient-bg text-white font-mono text-xs font-semibold px-8 py-4 rounded-lg hover:opacity-90 transition-all flex items-center justify-center gap-2 group shadow-lg">
+                <a data-gsap='hero-cta' href={GITHUB_RELEASES} target="_blank" rel="noreferrer" className="w-full sm:w-auto brand-gradient-bg text-white font-mono text-xs font-semibold px-8 py-4 rounded-lg hover:opacity-90 transition-all flex items-center justify-center gap-2 group shadow-lg">
                   <ExternalLink className="h-5 w-5" />
                   Télécharger pour Windows
                 </a>
-                <Link to="/signup" className="w-full sm:w-auto bg-background text-primary border border-primary/20 font-mono text-xs font-medium px-8 py-4 rounded-lg hover:bg-muted transition-all flex items-center justify-center gap-2 shadow-sm">
+                <Link data-gsap='hero-cta' to="/signup" className="w-full sm:w-auto bg-background text-primary border border-primary/20 font-mono text-xs font-medium px-8 py-4 rounded-lg hover:bg-muted transition-all flex items-center justify-center gap-2 shadow-sm">
                   Ouvrir l'app web
                   <ExternalLink className="h-4 w-4" />
                 </Link>
               </div>
-              <p className="text-xs text-foreground/60 font-mono">Version 2.4.0 • Nécessite Windows 10+ ou macOS 12+</p>
+              <p data-gsap='hero-version' className="text-xs text-foreground/60 font-mono">Version 2.4.0 • Nécessite Windows 10+ ou macOS 12+</p>
             </div>
             {/* Right Column: Dashboard Visual */}
             <motion.div
+              data-gsap='hero-visual'
               className="lg:col-span-6 relative hidden lg:block"
               initial={{ opacity: 0, x: 50 }}
               animate={{ opacity: 1, x: 0 }}
@@ -297,8 +300,9 @@ function LandingPage() {
       </section>
 
       {/* Features Grid (Bento Style) */}
-      <section id="features" className="w-full max-w-7xl mx-auto px-6 lg:px-8 py-24">
-        <motion.div 
+      <section ref={featuresRef} id="features" className="w-full max-w-7xl mx-auto px-6 lg:px-8 py-24">
+        <motion.div
+          data-gsap='features-title'
           className="text-center mb-16 space-y-4"
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
@@ -309,7 +313,8 @@ function LandingPage() {
           <p className="text-muted-foreground text-lg max-w-2xl mx-auto">Alimenté par une IA locale et conçu pour une organisation technique avancée.</p>
         </motion.div>
 
-        <motion.div 
+        <motion.div
+          data-gsap='features-grid'
           className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 auto-rows-auto"
           variants={staggerContainer}
           initial="hidden"
@@ -317,8 +322,9 @@ function LandingPage() {
           viewport={{ once: true, margin: "-50px" }}
         >
           {/* Feature 1: Snippet Management (Large) */}
-          <motion.div 
-            variants={fadeInUp} 
+          <motion.div
+            data-gsap='feature-card'
+            variants={fadeInUp}
             whileHover={{ y: -4, scale: 1.01, transition: { duration: 0.2 } }}
             className="lg:col-span-2 relative overflow-hidden rounded-2xl p-8 flex flex-col md:flex-row items-center gap-8 border border-border/50 bg-card/90 shadow-sm hover:shadow-md transition-shadow group"
           >
@@ -343,8 +349,9 @@ function LandingPage() {
           </motion.div>
 
           {/* Feature 2: Offline AI (Tall) */}
-          <motion.div 
-            variants={fadeInUp} 
+          <motion.div
+            data-gsap='feature-card'
+            variants={fadeInUp}
             whileHover={{ y: -4, scale: 1.01, transition: { duration: 0.2 } }}
             className="relative rounded-2xl p-8 flex flex-col border border-border/50 bg-card/90 shadow-sm hover:shadow-md transition-shadow group overflow-hidden row-span-1 md:row-span-2"
           >
@@ -367,8 +374,9 @@ function LandingPage() {
           </motion.div>
 
           {/* Feature 3: Search & Organization (Large) */}
-          <motion.div 
-            variants={fadeInUp} 
+          <motion.div
+            data-gsap='feature-card'
+            variants={fadeInUp}
             whileHover={{ y: -4, scale: 1.01, transition: { duration: 0.2 } }}
             className="lg:col-span-2 relative rounded-2xl p-8 flex flex-col md:flex-row gap-8 items-center border border-border/50 bg-card/90 shadow-sm hover:shadow-md transition-shadow group overflow-hidden"
           >
@@ -391,8 +399,9 @@ function LandingPage() {
           </motion.div>
 
           {/* Feature 4: Multi-surface */}
-          <motion.div 
-            variants={fadeInUp} 
+          <motion.div
+            data-gsap='feature-card'
+            variants={fadeInUp}
             whileHover={{ y: -4, scale: 1.01, transition: { duration: 0.2 } }}
             className="relative rounded-2xl p-8 border border-border/50 bg-card/90 shadow-sm hover:shadow-md transition-shadow group overflow-hidden"
           >
@@ -405,8 +414,9 @@ function LandingPage() {
           </motion.div>
 
           {/* Feature 5: Security */}
-          <motion.div 
-            variants={fadeInUp} 
+          <motion.div
+            data-gsap='feature-card'
+            variants={fadeInUp}
             whileHover={{ y: -4, scale: 1.01, transition: { duration: 0.2 } }}
             className="relative rounded-2xl p-8 border border-border/50 bg-card/90 shadow-sm hover:shadow-md transition-shadow group overflow-hidden"
           >
@@ -419,8 +429,9 @@ function LandingPage() {
           </motion.div>
 
           {/* Feature 6: Smart Tags (2 cols) */}
-          <motion.div 
-            variants={fadeInUp} 
+          <motion.div
+            data-gsap='feature-card'
+            variants={fadeInUp}
             whileHover={{ y: -4, scale: 1.01, transition: { duration: 0.2 } }}
             className="lg:col-span-2 relative rounded-2xl p-8 border border-border/50 bg-card/90 shadow-sm hover:shadow-md transition-shadow group overflow-hidden flex flex-col md:flex-row gap-8 items-center"
           >
@@ -448,9 +459,9 @@ function LandingPage() {
       </section>
 
       {/* CTA Section */}
-      <section className="relative overflow-hidden py-24 px-6">
+      <section ref={ctaRef} className="relative overflow-hidden py-24 px-6">
         <div className="absolute inset-0 bg-gradient-to-br from-primary/5 to-background z-0" />
-        <div className="max-w-3xl mx-auto relative z-10 text-center space-y-6 p-8 md:p-12 rounded-3xl border border-border/50 bg-card/90 shadow-2xl">
+        <div data-gsap='cta-content' className="max-w-3xl mx-auto relative z-10 text-center space-y-6 p-8 md:p-12 rounded-3xl border border-border/50 bg-card/90 shadow-2xl">
           <h2 className="text-3xl md:text-4xl font-bold text-foreground">Prêt à libérer votre productivité ?</h2>
           <p className="text-lg text-muted-foreground max-w-xl mx-auto">
             Rejoinez les développeurs qui organisent leur savoir-faire avec Izwan. Commencez gratuitement dès maintenant.
