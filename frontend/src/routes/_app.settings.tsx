@@ -3,15 +3,11 @@ import { useState, useEffect } from "react";
 import {
   Palette,
   Code,
-  Key,
   User,
   Loader2,
   Sun,
   Moon,
-  Monitor,
-  Copy,
-  Trash2,
-  Plus,
+  Lock,
   Save,
 } from "lucide-react";
 import { Input } from "@/components/ui/input";
@@ -65,20 +61,6 @@ const LANGUAGES = [
 
 const TAB_SIZES = ["2", "4", "8"];
 
-const MOCK_API_KEYS = [
-  {
-    name: "Clé de Production Principale",
-    value: "iz_prod_************************",
-    lastUsed: "hier",
-    active: true,
-  },
-  {
-    name: "Accès Développement Local",
-    value: "iz_dev_************************",
-    lastUsed: "2 jours",
-    active: true,
-  },
-];
 
 function SettingsPage() {
   const { t, i18n } = useTranslation();
@@ -94,6 +76,12 @@ function SettingsPage() {
   const [fontSize, setFontSize] = useState(14);
   const [tabSize, setTabSize] = useState("4");
   const [ligatures, setLigatures] = useState(true);
+
+  // Password
+  const [currentPw, setCurrentPw] = useState("");
+  const [newPw, setNewPw] = useState("");
+  const [confirmPw, setConfirmPw] = useState("");
+  const [isChangingPw, setIsChangingPw] = useState(false);
 
   useEffect(() => {
     if (data?.needsClientFetch) {
@@ -126,6 +114,36 @@ function SettingsPage() {
       toast.error(err.message || "Erreur");
     } finally {
       setUpdatingProfile(false);
+    }
+  };
+
+  const handleChangePassword = async () => {
+    if (newPw !== confirmPw) {
+      toast.error("Les mots de passe ne correspondent pas.");
+      return;
+    }
+    if (newPw.length < 6) {
+      toast.error(
+        "Le nouveau mot de passe doit contenir au moins 6 caractères."
+      );
+      return;
+    }
+    setIsChangingPw(true);
+    try {
+      await api.post("/auth/change-password", {
+        current_password: currentPw,
+        new_password: newPw,
+      });
+      setCurrentPw("");
+      setNewPw("");
+      setConfirmPw("");
+      toast.success("Mot de passe changé avec succès");
+    } catch (err: any) {
+      toast.error(
+        err.message || "Erreur lors du changement de mot de passe."
+      );
+    } finally {
+      setIsChangingPw(false);
     }
   };
 
@@ -373,67 +391,67 @@ function SettingsPage() {
           </div>
         </section>
 
-        {/* API Keys */}
+        {/* Password */}
         <section className="md:col-span-6 bg-card/80 backdrop-blur-xl border border-border rounded-xl p-6 md:p-8 flex flex-col shadow-sm">
-          <div className="flex justify-between items-start mb-6">
-            <div>
-              <h3 className="font-semibold text-lg text-foreground mb-1 flex items-center gap-2">
-                <Key className="h-5 w-5 text-primary" />
-                Clés API
-              </h3>
-              <p className="text-sm text-muted-foreground">
-                Gérez l'accès à l'API Izwan Constellation.
-              </p>
-            </div>
-            <Button
-              onClick={() => toast.info("Création de clé API non implémentée")}
-              size="sm"
-            >
-              <Plus className="h-4 w-4 mr-2" />
-              Nouvelle
-            </Button>
+          <div className="mb-6">
+            <h3 className="font-semibold text-lg text-foreground mb-1 flex items-center gap-2">
+              <Lock className="h-5 w-5 text-primary" />
+              Mot de passe
+            </h3>
+            <p className="text-sm text-muted-foreground">
+              Changez votre mot de passe pour sécuriser votre compte.
+            </p>
           </div>
-          <div className="flex-grow space-y-3">
-            {MOCK_API_KEYS.map((key, i) => (
-              <div
-                key={i}
-                className="bg-background rounded-lg p-4 flex items-center justify-between border border-border group hover:border-primary/50 transition-colors shadow-sm"
+          <div className="flex-grow space-y-4">
+            <div className="flex flex-col gap-1.5">
+              <label className="text-xs font-mono text-muted-foreground uppercase tracking-wider">
+                Mot de passe actuel
+              </label>
+              <Input
+                type="password"
+                value={currentPw}
+                onChange={(e) => setCurrentPw(e.target.value)}
+                className="bg-background border-border"
+                placeholder="••••••••"
+              />
+            </div>
+            <div className="flex flex-col gap-1.5">
+              <label className="text-xs font-mono text-muted-foreground uppercase tracking-wider">
+                Nouveau mot de passe
+              </label>
+              <Input
+                type="password"
+                value={newPw}
+                onChange={(e) => setNewPw(e.target.value)}
+                className="bg-background border-border"
+                placeholder="••••••••"
+              />
+            </div>
+            <div className="flex flex-col gap-1.5">
+              <label className="text-xs font-mono text-muted-foreground uppercase tracking-wider">
+                Confirmer le mot de passe
+              </label>
+              <Input
+                type="password"
+                value={confirmPw}
+                onChange={(e) => setConfirmPw(e.target.value)}
+                className="bg-background border-border"
+                placeholder="••••••••"
+              />
+            </div>
+            <div className="flex justify-end pt-2">
+              <Button
+                onClick={handleChangePassword}
+                disabled={isChangingPw}
+                className="bg-primary text-primary-foreground hover:bg-primary/90"
               >
-                <div>
-                  <div className="text-xs font-semibold text-foreground mb-1">
-                    {key.name}
-                  </div>
-                  <div className="font-mono text-xs text-muted-foreground flex items-center gap-2">
-                    {key.value}
-                    <span className="text-tertiary bg-tertiary/10 px-1.5 py-0.5 rounded text-[10px]">
-                      Dernier usage : {key.lastUsed}
-                    </span>
-                  </div>
-                </div>
-                <div className="flex items-center gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
-                  <Button
-                    variant="ghost"
-                    size="icon"
-                    onClick={() => {
-                      navigator.clipboard.writeText(key.value);
-                      toast.success("Clé copiée");
-                    }}
-                    title="Copier"
-                  >
-                    <Copy className="h-4 w-4" />
-                  </Button>
-                  <Button
-                    variant="ghost"
-                    size="icon"
-                    onClick={() => toast.info("Révocation non implémentée")}
-                    className="hover:text-destructive"
-                    title="Révoquer"
-                  >
-                    <Trash2 className="h-4 w-4" />
-                  </Button>
-                </div>
-              </div>
-            ))}
+                {isChangingPw && (
+                  <Loader2 className="h-4 w-4 animate-spin mr-2" />
+                )}
+                <Save className="h-4 w-4 mr-2" />
+                Enregistrer
+              </Button>
+            </div>
           </div>
         </section>
       </div>

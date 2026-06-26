@@ -16,6 +16,7 @@ import {
   Settings,
   Shield,
   Loader2,
+  Download,
 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { IzwaLogo, IzwaWordmark } from "./izwan-logo";
@@ -194,10 +195,10 @@ export function AppShell({ children }: { children: React.ReactNode }) {
                 <DropdownMenuLabel className="truncate">{user?.username || "Compte"}</DropdownMenuLabel>
                 <DropdownMenuSeparator />
                 <DropdownMenuItem onClick={() => navigate({ to: "/settings" })}>
-                  <User className="mr-2 h-4 w-4" /> Profil
-                </DropdownMenuItem>
-                <DropdownMenuItem onClick={() => navigate({ to: "/settings" })}>
                   <Settings className="mr-2 h-4 w-4" /> Paramètres
+                </DropdownMenuItem>
+                <DropdownMenuItem onClick={() => navigate({ to: "/export" })}>
+                  <Download className="mr-2 h-4 w-4" /> Exportations
                 </DropdownMenuItem>
                 {user?.role === "ADMIN" && (
                   <DropdownMenuItem onClick={() => navigate({ to: "/admin" })}>
