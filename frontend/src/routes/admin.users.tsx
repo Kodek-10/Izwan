@@ -25,7 +25,7 @@ import {
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
 
-export const Route = createFileRoute("/_app/admin/users")({
+export const Route = createFileRoute("/admin/users")({
   component: AdminUsers,
 });
 

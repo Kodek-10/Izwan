@@ -53,6 +53,16 @@ function AuthPage() {
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
 
+  // Un ADMIN atterrit dans son espace admin, un USER dans l'app.
+  const redirectByRole = async () => {
+    try {
+      const me = await api.get<{ role?: string }>("/auth/me");
+      navigate({ to: me.role === "ADMIN" ? "/admin" : "/dashboard" });
+    } catch {
+      navigate({ to: "/dashboard" });
+    }
+  };
+
   // Redirect if already logged in
   useEffect(() => {
     if (!api.isAuthenticated()) {
@@ -66,7 +76,7 @@ function AuthPage() {
       return;
     }
 
-    navigate({ to: "/dashboard" });
+    redirectByRole();
   }, [navigate]);
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -80,7 +90,7 @@ function AuthPage() {
         window.location.assign(extensionRedirectUrl);
         return;
       }
-      navigate({ to: "/dashboard" });
+      await redirectByRole();
     } catch (error: any) {
       toast.error(error.message || t("auth.invalid_credentials"));
     } finally {
