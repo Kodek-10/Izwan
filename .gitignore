@@ -30,3 +30,8 @@ snippets.db
 # Fichiers de travail locaux (non versionnés)
 CLAUDE.md
 docs/design/
+# Fichiers env (au cas où ils seraient créés à la racine ou ailleurs)
+.env
+.env.local
+**/.env
+**/.env.local

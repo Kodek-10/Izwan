@@ -1,0 +1,329 @@
+<!DOCTYPE html>
+
+<html class="light" lang="fr"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Admin AI &amp; System - Izwan</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500&amp;family=Inter:wght@400;600&amp;family=Poppins:wght@500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "secondary-container": "#ffc5d3",
+                        "on-tertiary-container": "#a49d9d",
+                        "surface-bright": "#fff8f8",
+                        "inverse-primary": "#f7b5c3",
+                        "secondary": "#7e525e",
+                        "on-primary-fixed": "#350e1a",
+                        "primary-fixed-dim": "#f7b5c3",
+                        "on-secondary-fixed-variant": "#643b46",
+                        "tertiary-container": "#393535",
+                        "tertiary-fixed-dim": "#ccc5c5",
+                        "secondary-fixed": "#ffd9e1",
+                        "secondary-fixed-dim": "#f0b8c5",
+                        "background": "#fff8f8",
+                        "surface-variant": "#e9e0e1",
+                        "surface-container-low": "#faf1f2",
+                        "outline-variant": "#d5c2c5",
+                        "tertiary": "#232020",
+                        "on-tertiary": "#ffffff",
+                        "on-background": "#1e1b1c",
+                        "inverse-surface": "#332f30",
+                        "on-error": "#ffffff",
+                        "surface-container-highest": "#e9e0e1",
+                        "surface": "#fff8f8",
+                        "on-surface": "#1e1b1c",
+                        "on-primary-container": "#cc8e9c",
+                        "on-secondary-fixed": "#31111b",
+                        "on-secondary-container": "#7b4f5b",
+                        "on-primary": "#ffffff",
+                        "surface-dim": "#e0d8d9",
+                        "surface-container-high": "#efe6e7",
+                        "on-secondary": "#ffffff",
+                        "surface-container": "#f4eced",
+                        "primary-fixed": "#ffd9e0",
+                        "on-tertiary-fixed": "#1e1b1b",
+                        "on-surface-variant": "#514346",
+                        "on-error-container": "#93000a",
+                        "surface-tint": "#844f5c",
+                        "tertiary-fixed": "#e9e1e1",
+                        "on-primary-fixed-variant": "#683844",
+                        "inverse-on-surface": "#f7eff0",
+                        "error-container": "#ffdad6",
+                        "outline": "#837376",
+                        "error": "#ba1a1a",
+                        "primary": "#3b131f",
+                        "on-tertiary-fixed-variant": "#4a4646",
+                        "primary-container": "#552834",
+                        "surface-container-lowest": "#ffffff"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    "spacing": {
+                        "xs": "4px",
+                        "lg": "24px",
+                        "gutter": "24px",
+                        "md": "16px",
+                        "sm": "8px",
+                        "margin-desktop": "64px",
+                        "base": "4px",
+                        "xl": "40px",
+                        "margin-mobile": "16px"
+                    },
+                    "fontFamily": {
+                        "headline-lg-mobile": ["Poppins"],
+                        "headline-md": ["Poppins"],
+                        "display": ["Poppins"],
+                        "label-caps": ["Inter"],
+                        "body-sm": ["Inter"],
+                        "code-md": ["Fira Code"],
+                        "body-lg": ["Inter"],
+                        "headline-lg": ["Poppins"],
+                        "body-md": ["Inter"]
+                    },
+                    "fontSize": {
+                        "headline-lg-mobile": ["28px", {"lineHeight": "36px", "fontWeight": "600"}],
+                        "headline-md": ["24px", {"lineHeight": "32px", "fontWeight": "600"}],
+                        "display": ["48px", {"lineHeight": "56px", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                        "label-caps": ["12px", {"lineHeight": "16px", "letterSpacing": "0.05em", "fontWeight": "600"}],
+                        "body-sm": ["14px", {"lineHeight": "20px", "fontWeight": "400"}],
+                        "code-md": ["14px", {"lineHeight": "22px", "fontWeight": "450"}],
+                        "body-lg": ["18px", {"lineHeight": "28px", "fontWeight": "400"}],
+                        "headline-lg": ["32px", {"lineHeight": "40px", "fontWeight": "600"}],
+                        "body-md": ["16px", {"lineHeight": "24px", "fontWeight": "400"}]
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+<body class="bg-surface font-body-md text-on-surface flex min-h-screen">
+<!-- SideNavBar -->
+<nav class="h-screen w-64 fixed left-0 top-0 border-r border-outline-variant bg-surface-container-lowest flex flex-col p-md gap-sm hidden md:flex transition-all duration-200 ease-in-out z-40">
+<div class="mb-lg px-sm">
+<h1 class="font-headline-md text-headline-md text-primary">Izwan Admin</h1>
+<p class="font-body-sm text-body-sm text-on-surface-variant">System Management</p>
+</div>
+<div class="flex-1 overflow-y-auto flex flex-col gap-xs">
+<a class="flex items-center gap-sm px-sm py-xs text-on-surface-variant hover:text-primary hover:bg-surface-container rounded-lg transition-colors group" href="#">
+<span class="material-symbols-outlined text-outline group-hover:text-primary">dashboard</span>
+<span class="font-label-caps text-label-caps">Admin Dashboard</span>
+</a>
+<a class="flex items-center gap-sm px-sm py-xs text-on-surface-variant hover:text-primary hover:bg-surface-container rounded-lg transition-colors group" href="#">
+<span class="material-symbols-outlined text-outline group-hover:text-primary">group</span>
+<span class="font-label-caps text-label-caps">Gestion des Utilisateurs</span>
+</a>
+<a class="flex items-center gap-sm px-sm py-xs text-on-surface-variant hover:text-primary hover:bg-surface-container rounded-lg transition-colors group" href="#">
+<span class="material-symbols-outlined text-outline group-hover:text-primary">code</span>
+<span class="font-label-caps text-label-caps">Gestion des Snippets</span>
+</a>
+<a class="flex items-center gap-sm px-sm py-xs bg-secondary-container text-on-secondary-container font-semibold rounded-lg transition-colors group" href="#">
+<span class="material-symbols-outlined text-on-secondary-container" style="font-variation-settings: 'FILL' 1;">memory</span>
+<span class="font-label-caps text-label-caps">Admin AI &amp; System</span>
+</a>
+<a class="flex items-center gap-sm px-sm py-xs text-on-surface-variant hover:text-primary hover:bg-surface-container rounded-lg transition-colors group" href="#">
+<span class="material-symbols-outlined text-outline group-hover:text-primary">analytics</span>
+<span class="font-label-caps text-label-caps">Admin Audit</span>
+</a>
+<a class="flex items-center gap-sm px-sm py-xs text-on-surface-variant hover:text-primary hover:bg-surface-container rounded-lg transition-colors group" href="#">
+<span class="material-symbols-outlined text-outline group-hover:text-primary">verified_user</span>
+<span class="font-label-caps text-label-caps">Admin Roles &amp; Permissions</span>
+</a>
+</div>
+<div class="mt-auto border-t border-outline-variant pt-sm flex flex-col gap-xs">
+<a class="flex items-center gap-sm px-sm py-xs text-on-surface-variant hover:text-primary hover:bg-surface-container rounded-lg transition-colors group" href="#">
+<span class="material-symbols-outlined text-outline group-hover:text-primary">help</span>
+<span class="font-label-caps text-label-caps">Support</span>
+</a>
+<a class="flex items-center gap-sm px-sm py-xs text-on-surface-variant hover:text-primary hover:bg-surface-container rounded-lg transition-colors group" href="#">
+<span class="material-symbols-outlined text-outline group-hover:text-primary">logout</span>
+<span class="font-label-caps text-label-caps">Sign Out</span>
+</a>
+</div>
+</nav>
+<!-- Main Content Canvas -->
+<main class="flex-1 md:ml-64 flex flex-col min-h-screen bg-background">
+<!-- TopNavBar (Mobile mainly, but provides header structure) -->
+<header class="docked full-width top-0 border-b border-outline-variant bg-surface flex justify-between items-center w-full px-margin-mobile md:px-margin-desktop h-16 sticky z-30">
+<div class="flex items-center gap-sm md:hidden">
+<button class="text-on-surface-variant p-sm hover:bg-surface-container-low rounded-full active:scale-95 duration-150 transition-colors">
+<span class="material-symbols-outlined">menu</span>
+</button>
+<span class="text-headline-md font-headline-md font-bold text-primary">Izwan</span>
+</div>
+<div class="hidden md:flex items-center gap-sm flex-1 max-w-xl mx-auto">
+<div class="relative w-full">
+<span class="material-symbols-outlined absolute left-sm top-1/2 -translate-y-1/2 text-outline">search</span>
+<input class="w-full pl-[36px] pr-sm py-xs bg-surface-container-low border border-outline-variant rounded-full text-body-sm font-body-sm focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary transition-colors" placeholder="Rechercher des paramètres..." type="text"/>
+</div>
+</div>
+<div class="flex items-center gap-sm">
+<button class="text-on-surface-variant p-sm hover:bg-surface-container-low rounded-full active:scale-95 duration-150 transition-colors">
+<span class="material-symbols-outlined">notifications</span>
+</button>
+<button class="text-on-surface-variant p-sm hover:bg-surface-container-low rounded-full active:scale-95 duration-150 transition-colors hidden md:block">
+<span class="material-symbols-outlined">settings</span>
+</button>
+<img alt="Admin profile avatar" class="w-8 h-8 rounded-full border border-outline-variant object-cover ml-sm" data-alt="A clean, professional headshot of a corporate administrator in a light, modern office setting. The lighting is soft and high-key, complementing the white smoke and wine corporate aesthetic. Minimalist background." src="https://lh3.googleusercontent.com/aida-public/AB6AXuAP5Gbt7V5-5H7D4FAZTUYwD_4xdQ9YYEnJswqz1hCUz0R_eft7SiJ2y_bQHJP0VjxMQYKgmbzBZ4F-FqBknxx9LVpkvbtX-X5iQcTFhSnakIhfVB7piwbQldS3PbqZ_HaiWNu7vHBFoabYe1jK5GbMba_XizeA1-paEgj2Q-_CNLZu_w2_gC0qUZWTkRKNiCnIs_PJxpx_d1mZNu9K0_cblhN5s2bFgxLdsCE4TkldzFUJhyOQdmYdXxjlzpXkoHC2YCwN-rreF2Y"/>
+</div>
+</header>
+<div class="flex-1 p-margin-mobile md:p-margin-desktop overflow-y-auto">
+<div class="mb-lg">
+<h2 class="font-headline-lg text-headline-lg text-primary mb-xs">Configuration AI &amp; Système</h2>
+<p class="font-body-md text-body-md text-on-surface-variant">Gérez les modèles de langage, les intégrations d'API et surveillez la santé du système.</p>
+</div>
+<!-- Bento Grid Layout -->
+<div class="grid grid-cols-1 md:grid-cols-12 gap-gutter">
+<!-- 1. Configuration des LLM (Spans 8 cols on desktop) -->
+<section class="md:col-span-8 bg-surface-container-lowest border border-outline-variant rounded-lg p-lg shadow-sm">
+<div class="flex items-center gap-sm mb-md border-b border-outline-variant pb-sm">
+<span class="material-symbols-outlined text-primary">model_training</span>
+<h3 class="font-headline-md text-headline-md text-on-surface">Configuration des Modèles LLM</h3>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-2 gap-md">
+<div class="space-y-sm">
+<label class="block font-label-caps text-label-caps text-on-surface-variant uppercase">Modèle Principal</label>
+<select class="w-full bg-surface border border-outline-variant rounded-md px-sm py-xs text-body-sm font-body-sm focus:border-primary focus:ring-1 focus:ring-primary">
+<option>GPT-4 Turbo</option>
+<option>Claude 3 Opus</option>
+<option>Llama 3 (Self-hosted)</option>
+</select>
+</div>
+<div class="space-y-sm">
+<label class="block font-label-caps text-label-caps text-on-surface-variant uppercase">Modèle de Secours (Fallback)</label>
+<select class="w-full bg-surface border border-outline-variant rounded-md px-sm py-xs text-body-sm font-body-sm focus:border-primary focus:ring-1 focus:ring-primary">
+<option>GPT-3.5 Turbo</option>
+<option>Claude 3 Sonnet</option>
+<option>Aucun</option>
+</select>
+</div>
+</div>
+<div class="mt-md space-y-md">
+<div class="space-y-sm">
+<div class="flex justify-between items-center">
+<label class="font-label-caps text-label-caps text-on-surface-variant uppercase">Température (<span id="temp-val">0.7</span>)</label>
+</div>
+<input class="w-full accent-primary" max="2" min="0" oninput="document.getElementById('temp-val').textContent=this.value" step="0.1" type="range" value="0.7"/>
+<p class="font-body-sm text-body-sm text-outline text-xs">Contrôle la créativité vs précision des réponses.</p>
+</div>
+<div class="space-y-sm">
+<label class="block font-label-caps text-label-caps text-on-surface-variant uppercase">Max Tokens de Réponse</label>
+<input class="w-full bg-surface border border-outline-variant rounded-md px-sm py-xs text-code-md font-code-md focus:border-primary focus:ring-1 focus:ring-primary" type="number" value="2048"/>
+</div>
+</div>
+<div class="mt-lg flex justify-end">
+<button class="bg-primary text-on-primary font-label-caps text-label-caps px-md py-xs rounded-[10px] hover:bg-surface-tint transition-colors">Enregistrer les paramètres</button>
+</div>
+</section>
+<!-- 3. Santé du Système (Spans 4 cols on desktop) -->
+<section class="md:col-span-4 bg-surface-container-lowest border border-outline-variant rounded-lg p-lg shadow-sm flex flex-col">
+<div class="flex items-center gap-sm mb-md border-b border-outline-variant pb-sm">
+<span class="material-symbols-outlined text-primary">monitor_heart</span>
+<h3 class="font-headline-md text-headline-md text-on-surface">Santé du Système</h3>
+</div>
+<div class="flex-1 space-y-md">
+<div class="bg-surface-container-low p-sm rounded-md border border-outline-variant">
+<div class="flex justify-between items-center mb-xs">
+<span class="font-label-caps text-label-caps text-on-surface-variant">Limites de Débit API</span>
+<span class="font-code-md text-code-md text-primary font-medium">85%</span>
+</div>
+<div class="w-full bg-surface-variant rounded-full h-1.5">
+<div class="bg-primary h-1.5 rounded-full" style="width: 85%"></div>
+</div>
+<p class="text-xs text-outline mt-1 font-body-sm">425/500 req par minute</p>
+</div>
+<div class="bg-surface-container-low p-sm rounded-md border border-outline-variant">
+<div class="flex justify-between items-center mb-xs">
+<span class="font-label-caps text-label-caps text-on-surface-variant">Consommation Tokens (Mois)</span>
+<span class="font-code-md text-code-md text-primary font-medium">1.2M</span>
+</div>
+<div class="w-full bg-surface-variant rounded-full h-1.5">
+<div class="bg-surface-tint h-1.5 rounded-full" style="width: 45%"></div>
+</div>
+<p class="text-xs text-outline mt-1 font-body-sm">Budget restant: 1.8M tokens</p>
+</div>
+<div class="flex items-center justify-between p-sm bg-surface-bright border border-outline-variant rounded-md">
+<div class="flex items-center gap-sm">
+<div class="w-2 h-2 rounded-full bg-green-500"></div>
+<span class="font-body-sm text-body-sm text-on-surface">Statut Pinecone</span>
+</div>
+<span class="font-label-caps text-label-caps text-green-600 bg-green-100 px-2 py-1 rounded-full">Opérationnel</span>
+</div>
+</div>
+</section>
+<!-- 2. Intégrations de Services (Spans 6 cols) -->
+<section class="md:col-span-6 bg-surface-container-lowest border border-outline-variant rounded-lg p-lg shadow-sm">
+<div class="flex items-center gap-sm mb-md border-b border-outline-variant pb-sm">
+<span class="material-symbols-outlined text-primary">api</span>
+<h3 class="font-headline-md text-headline-md text-on-surface">Intégrations de Services</h3>
+</div>
+<div class="space-y-md">
+<div class="space-y-xs">
+<label class="block font-label-caps text-label-caps text-on-surface-variant uppercase">Clé API OpenAI</label>
+<div class="flex gap-sm">
+<input class="flex-1 bg-surface border border-outline-variant rounded-md px-sm py-xs text-code-md font-code-md focus:border-primary focus:ring-1 focus:ring-primary text-outline" readonly="" type="password" value="sk-xxxxxxxxxxxxxxxxxxxxxxxx"/>
+<button class="bg-secondary-container text-on-secondary-container px-sm py-xs rounded-md border border-outline-variant hover:bg-surface-container-high transition-colors font-label-caps text-label-caps">Mettre à jour</button>
+</div>
+</div>
+<div class="space-y-xs">
+<label class="block font-label-caps text-label-caps text-on-surface-variant uppercase">Clé API Pinecone (Vector DB)</label>
+<div class="flex gap-sm">
+<input class="flex-1 bg-surface border border-outline-variant rounded-md px-sm py-xs text-code-md font-code-md focus:border-primary focus:ring-1 focus:ring-primary text-outline" readonly="" type="password" value="xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx"/>
+<button class="bg-secondary-container text-on-secondary-container px-sm py-xs rounded-md border border-outline-variant hover:bg-surface-container-high transition-colors font-label-caps text-label-caps">Mettre à jour</button>
+</div>
+</div>
+<div class="space-y-xs">
+<label class="block font-label-caps text-label-caps text-on-surface-variant uppercase">URL Base OpenAI (Proxy)</label>
+<input class="w-full bg-surface border border-outline-variant rounded-md px-sm py-xs text-code-md font-code-md focus:border-primary focus:ring-1 focus:ring-primary" placeholder="https://api.openai.com/v1" type="text"/>
+</div>
+</div>
+</section>
+<!-- 4. Paramètres de Sécurité (Spans 6 cols) -->
+<section class="md:col-span-6 bg-surface-container-lowest border border-outline-variant rounded-lg p-lg shadow-sm">
+<div class="flex items-center gap-sm mb-md border-b border-outline-variant pb-sm">
+<span class="material-symbols-outlined text-primary">security</span>
+<h3 class="font-headline-md text-headline-md text-on-surface">Paramètres de Sécurité</h3>
+</div>
+<div class="space-y-md">
+<div class="flex items-center justify-between p-sm bg-surface-container-low border border-outline-variant rounded-md">
+<div>
+<h4 class="font-body-md text-body-md font-medium text-on-surface">Stricte Modération du Contenu</h4>
+<p class="font-body-sm text-body-sm text-outline text-xs mt-1">Filtre les prompts agressifs ou non conformes avant l'envoi au LLM.</p>
+</div>
+<label class="relative inline-flex items-center cursor-pointer">
+<input checked="" class="sr-only peer" type="checkbox"/>
+<div class="w-11 h-6 bg-surface-variant rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-0.5 after:left-[2px] after:bg-white after:border-outline-variant after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-primary"></div>
+</label>
+</div>
+<div class="flex items-center justify-between p-sm bg-surface-container-low border border-outline-variant rounded-md">
+<div>
+<h4 class="font-body-md text-body-md font-medium text-on-surface">Anonymisation des Données PII</h4>
+<p class="font-body-sm text-body-sm text-outline text-xs mt-1">Masque les emails et numéros dans les logs système.</p>
+</div>
+<label class="relative inline-flex items-center cursor-pointer">
+<input checked="" class="sr-only peer" type="checkbox"/>
+<div class="w-11 h-6 bg-surface-variant rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-0.5 after:left-[2px] after:bg-white after:border-outline-variant after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-primary"></div>
+</label>
+</div>
+<div class="space-y-xs mt-sm">
+<label class="block font-label-caps text-label-caps text-on-surface-variant uppercase">Délai d'Expiration de Session (Minutes)</label>
+<input class="w-full bg-surface border border-outline-variant rounded-md px-sm py-xs text-code-md font-code-md focus:border-primary focus:ring-1 focus:ring-primary max-w-[150px]" type="number" value="30"/>
+</div>
+</div>
+</section>
+</div>
+<footer class="mt-xl pt-lg border-t border-outline-variant text-center md:text-left">
+<p class="font-body-sm text-body-sm text-outline">© 2024 Izwan Administration. V1.4.2</p>
+</footer>
+</div>
+</main>
+</body></html>

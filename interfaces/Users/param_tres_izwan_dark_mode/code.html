@@ -1,0 +1,336 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="fr"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Paramètres - Izwan</title>
+<!-- Google Fonts & Material Symbols -->
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&amp;family=JetBrains+Mono:wght@400;500&amp;family=Montserrat:wght@600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<!-- Tailwind CSS -->
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<!-- Theme Configuration -->
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "surface-bright": "#363a3b",
+                        "on-primary-fixed-variant": "#7e2a1b",
+                        "on-tertiary-container": "#00392e",
+                        "background": "#101415",
+                        "inverse-primary": "#9e412f",
+                        "surface-container-high": "#272a2c",
+                        "on-primary-container": "#611508",
+                        "primary-fixed": "#ffdad3",
+                        "tertiary-fixed": "#75f9d8",
+                        "on-tertiary": "#00382d",
+                        "on-surface": "#e0e3e5",
+                        "error": "#ffb4ab",
+                        "primary-container": "#e87a64",
+                        "on-secondary-fixed-variant": "#364765",
+                        "outline": "#a48b86",
+                        "secondary-container": "#364765",
+                        "on-error-container": "#ffdad6",
+                        "on-error": "#690005",
+                        "on-secondary-fixed": "#081b37",
+                        "on-background": "#e0e3e5",
+                        "surface-variant": "#323537",
+                        "surface-dim": "#101415",
+                        "surface-container": "#1d2022",
+                        "on-primary-fixed": "#3e0400",
+                        "primary": "#ffb4a5",
+                        "inverse-surface": "#e0e3e5",
+                        "primary-fixed-dim": "#ffb4a5",
+                        "secondary-fixed-dim": "#b6c7eb",
+                        "secondary-fixed": "#d6e3ff",
+                        "on-tertiary-fixed-variant": "#005142",
+                        "on-surface-variant": "#dcc0bb",
+                        "surface-container-low": "#191c1e",
+                        "on-tertiary-fixed": "#002019",
+                        "tertiary-container": "#00ad90",
+                        "error-container": "#93000a",
+                        "on-secondary-container": "#a4b6d9",
+                        "inverse-on-surface": "#2d3133",
+                        "on-primary": "#601407",
+                        "surface-tint": "#ffb4a5",
+                        "surface-container-highest": "#323537",
+                        "outline-variant": "#56423e",
+                        "surface-container-lowest": "#0b0f10",
+                        "secondary": "#b6c7eb",
+                        "tertiary-fixed-dim": "#55dcbc",
+                        "on-secondary": "#1f314d",
+                        "surface": "#101415",
+                        "tertiary": "#55dcbc"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.125rem",
+                        "lg": "0.25rem",
+                        "xl": "0.5rem",
+                        "full": "0.75rem"
+                    },
+                    "spacing": {
+                        "margin-desktop": "40px",
+                        "unit": "4px",
+                        "gutter": "24px",
+                        "container-max": "1440px",
+                        "margin-mobile": "16px"
+                    },
+                    "fontFamily": {
+                        "label-sm": ["JetBrains Mono"],
+                        "headline-lg": ["Montserrat"],
+                        "body-md": ["Inter"],
+                        "display-lg": ["Montserrat"],
+                        "headline-lg-mobile": ["Montserrat"],
+                        "code-snippet": ["JetBrains Mono"]
+                    },
+                    "fontSize": {
+                        "label-sm": ["12px", { "lineHeight": "16px", "letterSpacing": "0.05em", "fontWeight": "500" }],
+                        "headline-lg": ["32px", { "lineHeight": "40px", "fontWeight": "600" }],
+                        "body-md": ["16px", { "lineHeight": "24px", "fontWeight": "400" }],
+                        "display-lg": ["48px", { "lineHeight": "56px", "letterSpacing": "-0.02em", "fontWeight": "700" }],
+                        "headline-lg-mobile": ["24px", { "lineHeight": "32px", "fontWeight": "600" }],
+                        "code-snippet": ["14px", { "lineHeight": "20px", "fontWeight": "400" }]
+                    }
+                }
+            }
+        }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .material-symbols-outlined.fill {
+            font-variation-settings: 'FILL' 1, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+    </style>
+</head>
+<body class="bg-background text-on-background font-body-md min-h-screen flex flex-col antialiased selection:bg-primary/30 selection:text-primary">
+<!-- TopAppBar -->
+<header class="fixed top-0 w-full z-50 flex justify-between items-center px-margin-mobile md:px-margin-desktop h-16 bg-surface/80 backdrop-blur-md">
+<div class="flex items-center gap-4">
+<span class="font-headline-lg-mobile md:font-headline-lg text-headline-lg-mobile md:text-headline-lg text-primary font-bold tracking-tight">Izwan</span>
+<div class="hidden md:flex items-center bg-surface-container-high rounded-full px-4 py-1.5 border border-surface-container-highest focus-within:border-primary/50 transition-colors">
+<span class="material-symbols-outlined text-on-surface-variant text-sm mr-2" data-icon="search">search</span>
+<input class="bg-transparent border-none text-sm text-on-surface focus:ring-0 placeholder:text-on-surface-variant/50 w-48 font-body-md" placeholder="Rechercher..." type="text"/>
+</div>
+</div>
+<div class="flex items-center gap-4">
+<button class="w-10 h-10 rounded-full flex items-center justify-center text-on-surface-variant hover:bg-surface-bright/50 transition-colors scale-95 active:scale-90">
+<span class="material-symbols-outlined" data-icon="notifications">notifications</span>
+</button>
+<div class="relative group">
+<button class="w-10 h-10 rounded-full overflow-hidden border border-surface-container-highest hover:border-primary/50 transition-colors focus:outline-none">
+<img alt="User avatar" class="w-full h-full object-cover" data-alt="A macro shot of a sleek, dark metallic sphere with glowing coral accents, set against a deep navy background. The lighting is dramatic and studio-quality, creating sharp reflections and a premium, high-tech aesthetic." src="https://lh3.googleusercontent.com/aida-public/AB6AXuDh8-HHOSJ6jmWt5bzTsl4ib-Nn-X3epfVjX0Wo522VbpgivUTYiM0AlGSongj2B0t4nOZ6uyoVSs9BCqf_uVEreFfbE9QfJJ8LkYyfVcRP-l7rg45MOh-e-Q4kTdEJ0Grii1dROol6Th5XQfPljOQGYEx_SoxxPLfqfZnPbSUBTF8Z1KXiwcCLKj2xusmgrqZUeGam1bfqSl2nTv8JPzweaqbBGUhSMciutrVu74Q6o3Qd_iN9Rx86AeOowzXBeUKO6Y5k0We3YEk"/>
+</button>
+<!-- Profile Dropdown (Hover/Focus implied) -->
+<div class="absolute right-0 mt-2 w-48 bg-surface-container-high backdrop-blur-xl border border-surface-container-highest rounded-xl shadow-2xl opacity-0 group-hover:opacity-100 invisible group-hover:visible transition-all duration-200 transform origin-top-right">
+<div class="p-2 flex flex-col gap-1 font-label-sm text-label-sm">
+<a class="flex items-center gap-2 px-3 py-2 text-on-surface-variant hover:text-primary hover:bg-surface-bright/50 rounded-lg transition-colors" href="#">
+<span class="material-symbols-outlined text-[18px]" data-icon="bar_chart">bar_chart</span> Statistiques
+                        </a>
+<a class="flex items-center gap-2 px-3 py-2 text-primary bg-primary-container/10 rounded-lg transition-colors" href="#">
+<span class="material-symbols-outlined text-[18px] fill" data-icon="settings">settings</span> Paramètres
+                        </a>
+<div class="h-[1px] w-full bg-surface-container-highest my-1"></div>
+<a class="flex items-center gap-2 px-3 py-2 text-error hover:bg-error/10 rounded-lg transition-colors" href="#">
+<span class="material-symbols-outlined text-[18px]" data-icon="logout">logout</span> Déconnexion
+                        </a>
+</div>
+</div>
+</div>
+</div>
+</header>
+<!-- Main Canvas -->
+<main class="flex-grow pt-24 pb-32 px-margin-mobile md:px-margin-desktop w-full max-w-[1000px] mx-auto">
+<div class="mb-12">
+<h1 class="font-display-lg text-display-lg text-on-surface mb-2">Paramètres</h1>
+<p class="text-on-surface-variant font-body-md text-body-md">Gérez vos préférences, votre profil et vos accès API.</p>
+</div>
+<!-- Bento Grid Layout for Settings -->
+<div class="grid grid-cols-1 md:grid-cols-12 gap-gutter">
+<!-- Profil Section (Spans 8 columns on desktop) -->
+<section class="md:col-span-8 bg-surface-container rounded-xl p-8 flex flex-col gap-6 relative overflow-hidden group">
+<!-- Subtle gradient accent -->
+<div class="absolute top-0 right-0 w-64 h-64 bg-primary/5 rounded-full blur-3xl -translate-y-1/2 translate-x-1/4 group-hover:bg-primary/10 transition-colors duration-700 pointer-events-none"></div>
+<h2 class="font-headline-lg-mobile text-headline-lg-mobile text-on-surface flex items-center gap-2">
+<span class="material-symbols-outlined text-primary" data-icon="person">person</span>
+                    Profil Utilisateur
+                </h2>
+<div class="flex items-start gap-6">
+<div class="w-24 h-24 rounded-full overflow-hidden border-2 border-surface-container-highest relative group/avatar cursor-pointer">
+<img alt="Avatar" class="w-full h-full object-cover" data-alt="A minimalist profile avatar placeholder featuring an abstract, geometric human silhouette in deep blues and bright coral tones, styled with a sleek, flat-design aesthetic." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBjMxhx3adioGcWS-0HKXV6YXKj1GWicwAbiOXt_GFmOcNgt2RM6-Z-3fQUq2lFBM3IdiKE4YjQpnO0fs-BZVVlEHW6FbLm-50ZYUOW3BBL0v8bCAj0PsA-Wq2qggCvCT8hNyYvqMU637uR5cPakqnEWzMju9Yw6bWU75G_1zg2OlswpTuvSvlZhcQASQ0l-k0io27YzUj1r_Jw0yChTwlrf67VBu2iw3o27B6OZ1M7iQHI1VpvYkNTRSzdYTNvvr1N78u3V4YptGs"/>
+<div class="absolute inset-0 bg-background/60 flex items-center justify-center opacity-0 group-hover/avatar:opacity-100 transition-opacity">
+<span class="material-symbols-outlined text-on-surface" data-icon="edit">edit</span>
+</div>
+</div>
+<div class="flex-grow flex flex-col gap-4 w-full">
+<div>
+<label class="block font-label-sm text-label-sm text-on-surface-variant mb-1 uppercase tracking-wider">Nom complet</label>
+<input class="w-full bg-surface-container-highest border border-outline-variant rounded-lg px-4 py-2 text-on-surface focus:border-primary focus:ring-1 focus:ring-primary transition-all font-body-md" type="text" value="Jean Dupont"/>
+</div>
+<div>
+<label class="block font-label-sm text-label-sm text-on-surface-variant mb-1 uppercase tracking-wider">Adresse Email</label>
+<input class="w-full bg-surface-container-highest border border-outline-variant rounded-lg px-4 py-2 text-on-surface focus:border-primary focus:ring-1 focus:ring-primary transition-all font-body-md" readonly="" type="email" value="jean.dupont@example.com"/>
+<p class="text-[12px] text-on-surface-variant/60 mt-1">L'email ne peut être modifié que via le support.</p>
+</div>
+</div>
+</div>
+<div class="flex justify-end mt-4">
+<button class="bg-primary text-on-primary font-label-sm text-label-sm px-6 py-2.5 rounded-lg hover:bg-primary/90 transition-colors">Enregistrer les modifications</button>
+</div>
+</section>
+<!-- Préférences Éditeur (Spans 4 columns) -->
+<section class="md:col-span-4 bg-surface-container rounded-xl p-8 flex flex-col gap-6">
+<h2 class="font-headline-lg-mobile text-headline-lg-mobile text-on-surface flex items-center gap-2">
+<span class="material-symbols-outlined text-primary" data-icon="tune">tune</span>
+                    Éditeur
+                </h2>
+<div class="flex flex-col gap-5">
+<div>
+<label class="block font-label-sm text-label-sm text-on-surface-variant mb-2 uppercase tracking-wider">Thème de l'interface</label>
+<div class="flex bg-surface-container-highest rounded-lg p-1 border border-outline-variant">
+<button class="flex-1 flex items-center justify-center gap-2 py-1.5 rounded text-on-surface-variant hover:text-on-surface transition-colors font-label-sm text-label-sm">
+<span class="material-symbols-outlined text-[16px]" data-icon="light_mode">light_mode</span> Clair
+                            </button>
+<button class="flex-1 flex items-center justify-center gap-2 py-1.5 rounded bg-surface text-primary shadow-sm font-label-sm text-label-sm">
+<span class="material-symbols-outlined text-[16px] fill" data-icon="dark_mode">dark_mode</span> Sombre
+                            </button>
+</div>
+</div>
+<div>
+<label class="block font-label-sm text-label-sm text-on-surface-variant mb-2 uppercase tracking-wider">Langue de l'interface</label>
+<div class="relative">
+<select class="w-full bg-surface-container-highest border border-outline-variant rounded-lg px-4 py-2 text-on-surface appearance-none focus:border-primary focus:ring-1 focus:ring-primary transition-all font-body-md">
+<option selected="" value="fr">Français</option>
+<option value="en">English</option>
+<option value="es">Español</option>
+</select>
+<span class="material-symbols-outlined absolute right-3 top-1/2 -translate-y-1/2 text-on-surface-variant pointer-events-none" data-icon="expand_more">expand_more</span>
+</div>
+</div>
+</div>
+</section>
+<!-- Clés API Section (Spans full width, 12 columns) -->
+<section class="md:col-span-12 bg-surface-container rounded-xl p-8 flex flex-col gap-6">
+<div class="flex items-center justify-between">
+<h2 class="font-headline-lg-mobile text-headline-lg-mobile text-on-surface flex items-center gap-2">
+<span class="material-symbols-outlined text-primary" data-icon="key">key</span>
+                        Clés d'API
+                    </h2>
+<button class="border border-primary text-primary hover:bg-primary/10 font-label-sm text-label-sm px-4 py-2 rounded-lg transition-colors flex items-center gap-2">
+<span class="material-symbols-outlined text-[18px]" data-icon="add">add</span> Nouvelle Clé
+                    </button>
+</div>
+<p class="text-on-surface-variant font-body-md text-body-md max-w-2xl">Ces clés permettent d'authentifier vos requêtes vers l'API Izwan. Ne les partagez jamais publiquement. Si une clé est compromise, révoquez-la immédiatement.</p>
+<div class="mt-4 flex flex-col gap-3">
+<!-- API Key Item -->
+<div class="flex items-center justify-between bg-surface-container-highest border border-outline-variant/50 rounded-lg p-4 group hover:border-outline-variant transition-colors">
+<div class="flex items-center gap-4">
+<div class="w-10 h-10 rounded-full bg-surface-bright flex items-center justify-center text-primary">
+<span class="material-symbols-outlined" data-icon="lock">lock</span>
+</div>
+<div>
+<h3 class="font-label-sm text-label-sm text-on-surface">Clé Production Principale</h3>
+<div class="flex items-center gap-2 mt-1">
+<code class="font-code-snippet text-code-snippet text-on-surface-variant bg-surface px-2 py-0.5 rounded">iz_prod_*********************8a9f</code>
+<button class="text-on-surface-variant hover:text-primary transition-colors" title="Copier">
+<span class="material-symbols-outlined text-[16px]" data-icon="content_copy">content_copy</span>
+</button>
+</div>
+</div>
+</div>
+<div class="flex items-center gap-4 text-on-surface-variant font-label-sm text-label-sm">
+<span class="hidden sm:inline">Créée le 12/10/2023</span>
+<button class="text-error hover:bg-error/10 p-2 rounded transition-colors" title="Révoquer">
+<span class="material-symbols-outlined text-[20px]" data-icon="delete">delete</span>
+</button>
+</div>
+</div>
+<!-- API Key Item -->
+<div class="flex items-center justify-between bg-surface-container-highest border border-outline-variant/50 rounded-lg p-4 group hover:border-outline-variant transition-colors opacity-70">
+<div class="flex items-center gap-4">
+<div class="w-10 h-10 rounded-full bg-surface-bright flex items-center justify-center text-on-surface-variant">
+<span class="material-symbols-outlined" data-icon="science">science</span>
+</div>
+<div>
+<h3 class="font-label-sm text-label-sm text-on-surface">Clé de Test Globale</h3>
+<div class="flex items-center gap-2 mt-1">
+<code class="font-code-snippet text-code-snippet text-on-surface-variant bg-surface px-2 py-0.5 rounded">iz_test_*********************3b2c</code>
+<button class="text-on-surface-variant hover:text-primary transition-colors" title="Copier">
+<span class="material-symbols-outlined text-[16px]" data-icon="content_copy">content_copy</span>
+</button>
+</div>
+</div>
+</div>
+<div class="flex items-center gap-4 text-on-surface-variant font-label-sm text-label-sm">
+<span class="hidden sm:inline">Créée le 05/11/2023</span>
+<button class="text-error hover:bg-error/10 p-2 rounded transition-colors" title="Révoquer">
+<span class="material-symbols-outlined text-[20px]" data-icon="delete">delete</span>
+</button>
+</div>
+</div>
+</div>
+</section>
+</div>
+</main>
+<!-- BottomNavBar (Dock Flottant, none active as 'Paramètres' is not here) -->
+<nav class="fixed bottom-0 left-0 right-0 z-50 flex justify-center pb-6 md:pb-8 pointer-events-none">
+<div class="bg-surface-container-highest/60 backdrop-blur-lg rounded-full mx-auto w-fit shadow-2xl shadow-surface-container-lowest p-2 flex items-center gap-1 border border-surface-container-highest/50 pointer-events-auto">
+<a class="flex flex-col items-center justify-center text-on-surface-variant p-3 hover:text-primary transition-colors group w-16" href="#">
+<span class="material-symbols-outlined group-hover:-translate-y-1 transition-transform duration-300" data-icon="dashboard">dashboard</span>
+<span class="font-label-sm text-[10px] leading-tight opacity-0 group-hover:opacity-100 transition-opacity absolute bottom-1">Dashboard</span>
+</a>
+<a class="flex flex-col items-center justify-center text-on-surface-variant p-3 hover:text-primary transition-colors group w-16" href="#">
+<span class="material-symbols-outlined group-hover:-translate-y-1 transition-transform duration-300" data-icon="code">code</span>
+<span class="font-label-sm text-[10px] leading-tight opacity-0 group-hover:opacity-100 transition-opacity absolute bottom-1">Snippets</span>
+</a>
+<a class="flex flex-col items-center justify-center text-on-surface-variant p-3 hover:text-primary transition-colors group w-16" href="#">
+<span class="material-symbols-outlined group-hover:-translate-y-1 transition-transform duration-300" data-icon="folder_special">folder_special</span>
+<span class="font-label-sm text-[10px] leading-tight opacity-0 group-hover:opacity-100 transition-opacity absolute bottom-1">Collection</span>
+</a>
+<a class="flex flex-col items-center justify-center text-on-surface-variant p-3 hover:text-primary transition-colors group w-16" href="#">
+<span class="material-symbols-outlined group-hover:-translate-y-1 transition-transform duration-300" data-icon="favorite">favorite</span>
+<span class="font-label-sm text-[10px] leading-tight opacity-0 group-hover:opacity-100 transition-opacity absolute bottom-1">Favoris</span>
+</a>
+<a class="flex flex-col items-center justify-center text-on-surface-variant p-3 hover:text-primary transition-colors group w-16" href="#">
+<span class="material-symbols-outlined group-hover:-translate-y-1 transition-transform duration-300" data-icon="groups">groups</span>
+<span class="font-label-sm text-[10px] leading-tight opacity-0 group-hover:opacity-100 transition-opacity absolute bottom-1">Équipe</span>
+</a>
+<a class="flex flex-col items-center justify-center text-on-surface-variant p-3 hover:text-primary transition-colors group w-16 relative" href="#">
+<span class="absolute top-2 right-4 w-2 h-2 bg-tertiary rounded-full animate-pulse"></span>
+<span class="material-symbols-outlined group-hover:-translate-y-1 transition-transform duration-300" data-icon="auto_awesome">auto_awesome</span>
+<span class="font-label-sm text-[10px] leading-tight opacity-0 group-hover:opacity-100 transition-opacity absolute bottom-1">Constellation</span>
+</a>
+</div>
+</nav>
+<!-- SideNavBar (Right AI/Assistant Menu - Active: Paramètres) -->
+<aside class="bg-surface-container-high rounded-xl fixed bottom-24 right-10 w-48 shadow-xl flex flex-col p-4 gap-2 z-40 border border-surface-container-highest transition-transform hover:-translate-y-1 duration-300">
+<!-- Header Orb -->
+<div class="flex items-center gap-3 mb-2 px-2">
+<div class="w-8 h-8 rounded-full bg-gradient-to-tr from-tertiary to-primary animate-pulse shadow-[0_0_15px_rgba(85,220,188,0.3)]"></div>
+<div>
+<h4 class="font-label-sm text-label-sm text-on-surface m-0 leading-tight">Assistant</h4>
+<span class="text-[10px] text-on-surface-variant">Orbital Menu</span>
+</div>
+</div>
+<div class="h-[1px] w-full bg-surface-container-highest mb-2"></div>
+<a class="flex items-center gap-3 px-3 py-2 rounded-lg text-on-surface-variant hover:bg-surface-bright transition-colors font-label-sm text-label-sm group" href="#">
+<span class="material-symbols-outlined text-[20px] group-hover:text-tertiary transition-colors" data-icon="bar_chart">bar_chart</span>
+            Statistique
+        </a>
+<a class="flex items-center gap-3 px-3 py-2 rounded-lg text-on-surface-variant hover:bg-surface-bright transition-colors font-label-sm text-label-sm group" href="#">
+<span class="material-symbols-outlined text-[20px] group-hover:text-tertiary transition-colors" data-icon="ios_share">ios_share</span>
+            Exportations
+        </a>
+<!-- Active Item in SideNavBar -->
+<a class="flex items-center gap-3 px-3 py-2 rounded-lg bg-surface-bright/50 text-tertiary font-bold font-label-sm text-label-sm border-l-2 border-tertiary" href="#">
+<span class="material-symbols-outlined text-[20px] fill" data-icon="settings">settings</span>
+            Paramètres
+        </a>
+</aside>
+</body></html>

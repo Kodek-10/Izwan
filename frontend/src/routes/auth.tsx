@@ -106,7 +106,7 @@ function AuthPage() {
         <div className="absolute -bottom-24 -right-24 w-96 h-96 bg-primary/10 rounded-full blur-3xl" />
       </div>
 
-      <div className="w-full max-w-[400px] space-y-8 animate-in fade-in zoom-in duration-500">
+      <div className="w-full max-w-md mx-auto px-4 sm:px-0 space-y-8 animate-in fade-in zoom-in duration-500">
         <div className="flex flex-col items-center text-center space-y-2">
           <div className="h-16 w-16 rounded-2xl gradient-brand flex items-center justify-center shadow-xl shadow-primary/20 mb-2 transition-transform hover:rotate-6">
             <IzwaLogo className="h-10 w-10 text-white" />

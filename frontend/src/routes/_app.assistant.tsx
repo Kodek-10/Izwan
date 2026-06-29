@@ -74,7 +74,7 @@ function AssistantPage() {
   };
 
   return (
-    <div className="max-w-4xl mx-auto h-[calc(100vh-12rem)] flex flex-col">
+    <div className="max-w-4xl mx-auto h-[calc(100dvh-10rem)] sm:h-[calc(100dvh-12rem)] flex flex-col">
       <div className="flex items-center justify-between mb-6">
         <div className="flex items-center gap-3">
           <Button

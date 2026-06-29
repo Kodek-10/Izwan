@@ -1,0 +1,237 @@
+<!DOCTYPE html><html class="light" lang="fr"><head>
+<meta charset="utf-8">
+<meta content="width=device-width, initial-scale=1.0" name="viewport">
+<title>Izwan - Assistant AI</title>
+<!-- Tailwind CSS -->
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<!-- Tailwind Configuration (Provided) -->
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "on-primary-fixed-variant": "#683844",
+                        "on-secondary-fixed-variant": "#643b46",
+                        "on-primary-fixed": "#350e1a",
+                        "surface-container": "#f4eced",
+                        "inverse-surface": "#332f30",
+                        "on-tertiary": "#ffffff",
+                        "primary-fixed-dim": "#f7b5c3",
+                        "primary-container": "#552834",
+                        "outline": "#837376",
+                        "secondary-fixed-dim": "#f0b8c5",
+                        "on-background": "#1e1b1c",
+                        "on-secondary-fixed": "#31111b",
+                        "tertiary-container": "#393535",
+                        "on-error-container": "#93000a",
+                        "error-container": "#ffdad6",
+                        "secondary-container": "#ffc5d3",
+                        "on-secondary": "#ffffff",
+                        "tertiary-fixed-dim": "#ccc5c5",
+                        "surface-container-low": "#faf1f2",
+                        "outline-variant": "#d5c2c5",
+                        "on-surface": "#1e1b1c",
+                        "on-error": "#ffffff",
+                        "error": "#ba1a1a",
+                        "primary": "#3b131f",
+                        "surface": "#fff8f8",
+                        "on-primary-container": "#cc8e9c",
+                        "tertiary-fixed": "#e9e1e1",
+                        "surface-container-highest": "#e9e0e1",
+                        "surface-bright": "#fff8f8",
+                        "surface-variant": "#e9e0e1",
+                        "on-primary": "#ffffff",
+                        "inverse-on-surface": "#f7eff0",
+                        "primary-fixed": "#ffd9e0",
+                        "inverse-primary": "#f7b5c3",
+                        "on-tertiary-fixed": "#1e1b1b",
+                        "secondary": "#7e525e",
+                        "on-surface-variant": "#514346",
+                        "on-tertiary-container": "#a49d9d",
+                        "tertiary": "#232020",
+                        "surface-dim": "#e0d8d9",
+                        "on-tertiary-fixed-variant": "#4a4646",
+                        "surface-container-high": "#efe6e7",
+                        "on-secondary-container": "#7b4f5b",
+                        "background": "#fff8f8",
+                        "surface-tint": "#844f5c",
+                        "surface-container-lowest": "#ffffff",
+                        "secondary-fixed": "#ffd9e1"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    "spacing": {
+                        "gutter": "24px",
+                        "sm": "8px",
+                        "lg": "24px",
+                        "xl": "40px",
+                        "md": "16px",
+                        "margin-desktop": "64px",
+                        "base": "4px",
+                        "xs": "4px",
+                        "margin-mobile": "16px"
+                    },
+                    "fontFamily": {
+                        "headline-lg": ["Poppins"],
+                        "body-sm": ["Inter"],
+                        "body-md": ["Inter"],
+                        "label-caps": ["Inter"],
+                        "headline-md": ["Poppins"],
+                        "code-md": ["Fira Code"],
+                        "display": ["Poppins"],
+                        "headline-lg-mobile": ["Poppins"],
+                        "body-lg": ["Inter"]
+                    },
+                    "fontSize": {
+                        "headline-lg": ["32px", {"lineHeight": "40px", "fontWeight": "600"}],
+                        "body-sm": ["14px", {"lineHeight": "20px", "fontWeight": "400"}],
+                        "body-md": ["16px", {"lineHeight": "24px", "fontWeight": "400"}],
+                        "label-caps": ["12px", {"lineHeight": "16px", "letterSpacing": "0.05em", "fontWeight": "600"}],
+                        "headline-md": ["24px", {"lineHeight": "32px", "fontWeight": "600"}],
+                        "code-md": ["14px", {"lineHeight": "22px", "fontWeight": "450"}],
+                        "display": ["48px", {"lineHeight": "56px", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                        "headline-lg-mobile": ["28px", {"lineHeight": "36px", "fontWeight": "600"}],
+                        "body-lg": ["18px", {"lineHeight": "28px", "fontWeight": "400"}]
+                    }
+                }
+            }
+        }
+    </script>
+<!-- Google Fonts -->
+<link href="https://fonts.googleapis.com" rel="preconnect">
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect">
+<link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500&amp;family=Inter:wght@400;600&amp;family=Poppins:wght@500;600;700&amp;display=swap" rel="stylesheet">
+<!-- Material Symbols -->
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet">
+<style>
+        body {
+            background-color: #F7F4F4; /* White Smoke Base */
+            background-image: 
+                radial-gradient(circle at 100% 0%, rgba(240,184,197,0.15) 0%, transparent 25%),
+                radial-gradient(circle at 0% 100%, rgba(204,142,156,0.1) 0%, transparent 25%);
+            background-attachment: fixed;
+        }
+        
+        /* Custom Scrollbar for the chat area */
+        .chat-scroll::-webkit-scrollbar {
+            width: 6px;
+        }
+        .chat-scroll::-webkit-scrollbar-track {
+            background: transparent;
+        }
+        .chat-scroll::-webkit-scrollbar-thumb {
+            background-color: #d5c2c5;
+            border-radius: 20px;
+        }
+        
+        .glass-panel {
+            box-shadow: 0px 10px 40px rgba(85, 40, 52, 0.12);
+        }
+    </style>
+</head>
+<body class="h-screen w-full overflow-hidden flex font-body-md text-body-md text-on-surface antialiased relative">
+<!-- Blurred Background Context (Simulating the main app behind the overlay) -->
+<div class="absolute inset-0 z-0 opacity-40 grayscale-[20%] blur-sm pointer-events-none flex flex-col p-margin-desktop gap-lg">
+<!-- Mock Content -->
+<div class="w-full h-16 bg-surface border border-outline-variant rounded-lg"></div>
+<div class="flex gap-lg h-full">
+<div class="w-1/4 h-full bg-surface border border-outline-variant rounded-lg"></div>
+<div class="w-3/4 h-full bg-surface border border-outline-variant rounded-lg"></div>
+</div>
+</div>
+<!-- Main Container -->
+<main class="relative z-10 w-full h-full p-4 md:p-margin-desktop pointer-events-none">
+<!-- Floating Assistant Panel -->
+<div class="absolute bottom-4 right-4 md:bottom-10 md:right-10 w-[calc(100%-2rem)] md:w-[440px] h-[calc(100dvh-2rem)] md:h-[680px] max-h-[800px] flex flex-col bg-surface/85 backdrop-blur-xl border border-outline-variant rounded-[24px] overflow-hidden glass-panel pointer-events-auto transform transition-all duration-500 origin-bottom-right">
+<!-- Header -->
+<header class="flex items-center justify-between p-lg border-b border-surface-dim bg-surface/50">
+<div class="flex items-center gap-md">
+<div class="relative w-10 h-10 rounded-full overflow-hidden bg-primary-container flex items-center justify-center shrink-0">
+<img class="w-full h-full object-cover" data-alt="A highly detailed, abstract minimalist 3D rendering of an orb glowing with a soft, ethereal wine-red light. The orb is set against a pristine white studio background. The lighting is high-key and soft, creating a premium, modern light-mode tech aesthetic. The mood is calm, intelligent, and focused." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBllSMSuXxS-9DM8B6oyY6WFKExLQY9ait0cn0WOPkpmo_B2apHNvKXTPN-QOVF5HiXwH6o4mfQ1tz_Naq_W4mOsNer0juiI8FsTuRzfXPk7WRcvwg-6rx2qQyyDJA3L0XAp9NvrIcnhehO_-auEzaq5hoAtM-7qTxMlsZa9Bj8vrUTnBf5vf4T8pAf2wYDG6oVfz_N81U-9zmDawcUEFvdcu-g9xmssLQ631C_qwtXLf9Mti3WBZy1R3VpxV4x0VFABXqLPIbaYcc">
+<!-- Fallback icon if image fails -->
+<span class="material-symbols-outlined absolute text-on-primary-container" style="font-variation-settings: 'FILL' 1;">auto_awesome</span>
+</div>
+<div>
+<h2 class="font-headline-md text-headline-md text-on-surface leading-tight tracking-tight">Assistant</h2>
+<span class="font-label-caps text-label-caps text-on-surface-variant uppercase tracking-widest">Izwan AI</span>
+</div>
+</div>
+<button class="p-2 rounded-full hover:bg-surface-dim text-on-surface-variant transition-colors group">
+<span class="material-symbols-outlined group-hover:text-primary transition-colors">close</span>
+</button>
+</header>
+<!-- Chat Area -->
+<div class="flex-1 overflow-y-auto chat-scroll p-lg flex flex-col gap-lg bg-gradient-to-b from-transparent to-surface-container-lowest/30">
+<!-- AI Greeting -->
+<div class="flex gap-md max-w-[90%]">
+<div class="w-8 h-8 rounded-full bg-primary-container/20 flex items-center justify-center shrink-0 mt-1 border border-primary-container/10">
+<span class="material-symbols-outlined text-primary text-[18px]">temp_preferences_custom</span>
+</div>
+<div class="flex flex-col gap-2">
+<div class="bg-surface-container-lowest border border-outline-variant rounded-2xl rounded-tl-sm p-md shadow-sm">
+<p class="font-body-md text-body-md text-on-surface">Bonjour ! Comment puis-je vous aider aujourd'hui avec votre code ou vos données ?</p>
+</div>
+</div>
+</div>
+<!-- Suggested Actions (Bento Grid Style) -->
+<div class="mt-4 flex flex-col gap-sm">
+<span class="font-label-caps text-label-caps text-on-surface-variant mb-2">Suggestions</span>
+<div class="grid grid-cols-1 gap-sm">
+<!-- Suggestion 1 -->
+<button class="group relative flex flex-col items-start text-left p-md bg-surface border border-outline-variant rounded-xl hover:border-primary hover:bg-surface-bright transition-all duration-300 shadow-sm hover:shadow-md">
+<div class="flex items-center gap-2 mb-2">
+<div class="w-6 h-6 rounded-full bg-secondary-container flex items-center justify-center text-on-secondary-container group-hover:bg-primary group-hover:text-on-primary transition-colors">
+<span class="material-symbols-outlined text-[14px]">code</span>
+</div>
+<span class="font-body-sm text-body-sm text-on-surface font-semibold group-hover:text-primary transition-colors">Optimise mon dernier snippet</span>
+</div>
+<p class="font-body-sm text-body-sm text-on-surface-variant opacity-80 text-xs">Analyse et améliore la performance du code sélectionné.</p>
+</button>
+<!-- Suggestion 2 -->
+<button class="group relative flex flex-col items-start text-left p-md bg-surface border border-outline-variant rounded-xl hover:border-primary hover:bg-surface-bright transition-all duration-300 shadow-sm hover:shadow-md">
+<div class="flex items-center gap-2 mb-2">
+<div class="w-6 h-6 rounded-full bg-secondary-container flex items-center justify-center text-on-secondary-container group-hover:bg-primary group-hover:text-on-primary transition-colors">
+<span class="material-symbols-outlined text-[14px]">lightbulb</span>
+</div>
+<span class="font-body-sm text-body-sm text-on-surface font-semibold group-hover:text-primary transition-colors">Explique ce code</span>
+</div>
+<p class="font-body-sm text-body-sm text-on-surface-variant opacity-80 text-xs">Génère une documentation claire pour le bloc actif.</p>
+</button>
+</div>
+</div>
+<!-- Spacer to push input down if content is short -->
+<div class="flex-1"></div>
+</div>
+<!-- Input Area -->
+<div class="p-lg bg-surface/90 backdrop-blur-md border-t border-surface-dim">
+<div class="relative flex items-end gap-2 bg-surface-container-lowest border border-outline-variant rounded-xl p-2 focus-within:border-primary focus-within:ring-2 focus-within:ring-primary/20 transition-all shadow-sm">
+<textarea class="w-full bg-transparent border-none focus:ring-0 resize-none font-body-md text-body-md text-on-surface placeholder-on-surface-variant/50 py-2 pl-2 chat-scroll max-h-[120px]" placeholder="Demandez à l'assistant..." rows="1" style="min-height: 40px;"></textarea>
+<div class="flex gap-1 shrink-0 pb-1">
+<button class="p-2 rounded-lg text-on-surface-variant hover:bg-surface-dim hover:text-primary transition-colors">
+<span class="material-symbols-outlined text-[20px]">attach_file</span>
+</button>
+<button class="p-2 rounded-lg bg-primary text-on-primary shadow-sm hover:bg-primary-container hover:shadow-md transition-all">
+<span class="material-symbols-outlined text-[20px] ml-0.5" style="font-variation-settings: 'FILL' 1;">send</span>
+</button>
+</div>
+</div>
+<div class="text-center mt-3">
+<span class="font-body-sm text-[11px] text-on-surface-variant/60">L'IA peut faire des erreurs. Vérifiez les informations.</span>
+</div>
+</div>
+</div>
+</main>
+<!-- Trigger Button (Representing the orb that was clicked) -->
+<div class="fixed bottom-4 right-4 md:bottom-10 md:right-10 z-0 pointer-events-none opacity-0">
+<!-- Kept in DOM structurally but hidden since panel is open -->
+<button class="w-14 h-14 rounded-full bg-primary text-on-primary shadow-xl flex items-center justify-center">
+<span class="material-symbols-outlined">spark</span>
+</button>
+</div>
+</body></html>

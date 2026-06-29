@@ -1,0 +1,242 @@
+<!DOCTYPE html><html class="" lang="fr"><head>
+<meta charset="utf-8">
+<meta content="width=device-width, initial-scale=1.0" name="viewport">
+<title>Collections - Izwan</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com" rel="preconnect">
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400&amp;family=JetBrains+Mono:wght@400;500&amp;family=Montserrat:wght@600;700&amp;display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet">
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "surface-variant": "#E4D1D4",
+                        "surface-dim": "#D7C4C8",
+                        "outline-variant": "#D0B9BD",
+                        "on-primary-container": "#F7F4F4",
+                        "tertiary-fixed-dim": "#4A6E77",
+                        "tertiary-container": "#2A4D55",
+                        "surface-container-low": "#F2E2E5",
+                        "tertiary-fixed": "#62868F",
+                        "primary-fixed-dim": "#C38B9B",
+                        "on-tertiary-fixed": "#F7F4F4",
+                        "on-tertiary": "#F7F4F4",
+                        "on-primary-fixed-variant": "#F7F4F4",
+                        "surface-tint": "#552834",
+                        "inverse-on-surface": "#F7F4F4",
+                        "on-tertiary-fixed-variant": "#F7F4F4",
+                        "on-surface": "#2D161C",
+                        "error": "#BA1A1A",
+                        "secondary": "#7D5260",
+                        "surface-container": "#EDE1E3",
+                        "on-secondary-container": "#F7F4F4",
+                        "outline": "#857376",
+                        "inverse-surface": "#2D161C",
+                        "primary-fixed": "#DF9EB0",
+                        "secondary-fixed-dim": "#CBA1AE",
+                        "on-surface-variant": "#534346",
+                        "on-secondary-fixed-variant": "#F7F4F4",
+                        "surface-container-lowest": "#FFFFFF",
+                        "primary-container": "#552834",
+                        "on-primary-fixed": "#2D161C",
+                        "surface-container-highest": "#DFD3D5",
+                        "secondary-fixed": "#E8B8C6",
+                        "on-primary": "#F7F4F4",
+                        "on-error": "#FFFFFF",
+                        "surface-container-high": "#E7D8DB",
+                        "inverse-primary": "#F7F4F4",
+                        "secondary-container": "#4A2F3B",
+                        "on-error-container": "#410002",
+                        "on-secondary": "#F7F4F4",
+                        "on-tertiary-container": "#F7F4F4",
+                        "primary": "#552834",
+                        "background": "#F7F4F4",
+                        "on-background": "#2D161C",
+                        "error-container": "#FFDAD6",
+                        "surface-bright": "#F7F4F4",
+                        "on-secondary-fixed": "#2D161C",
+                        "tertiary": "#3A5D65",
+                        "surface": "#F7F4F4"
+                    },
+                    borderRadius: {
+                        "DEFAULT": "0.125rem",
+                        "lg": "0.25rem",
+                        "xl": "0.5rem",
+                        "full": "0.75rem"
+                    },
+                    spacing: {
+                        "container-max": "1440px",
+                        "margin-desktop": "40px",
+                        "unit": "4px",
+                        "margin-mobile": "16px",
+                        "gutter": "24px"
+                    },
+                    fontFamily: {
+                        "headline-lg": ["Montserrat", "sans-serif"],
+                        "body-md": ["Inter", "sans-serif"],
+                        "label-sm": ["JetBrains Mono", "monospace"],
+                        "headline-lg-mobile": ["Montserrat", "sans-serif"],
+                        "display-lg": ["Montserrat", "sans-serif"],
+                        "code-snippet": ["JetBrains Mono", "monospace"]
+                    },
+                    fontSize: {
+                        "headline-lg": ["32px", { "lineHeight": "40px", "fontWeight": "600" }],
+                        "body-md": ["16px", { "lineHeight": "24px", "fontWeight": "400" }],
+                        "label-sm": ["12px", { "lineHeight": "16px", "letterSpacing": "0.05em", "fontWeight": "500" }],
+                        "headline-lg-mobile": ["24px", { "lineHeight": "32px", "fontWeight": "600" }],
+                        "display-lg": ["48px", { "lineHeight": "56px", "letterSpacing": "-0.02em", "fontWeight": "700" }],
+                        "code-snippet": ["14px", { "lineHeight": "20px", "fontWeight": "400" }]
+                    }
+                }
+            }
+        }
+    </script>
+<style>
+        body {
+            background-color: theme('colors.background');
+            color: theme('colors.on-background');
+        }
+    </style>
+</head>
+<body class="min-h-screen pb-32">
+<!-- TopAppBar -->
+<header class="fixed top-0 w-full z-50 flex justify-between items-center px-margin-mobile md:px-margin-desktop h-16 bg-surface/80 backdrop-blur-md bg-surface-container/50 backdrop-blur-xl shadow-sm">
+<div class="flex items-center gap-4"><div class="font-headline-lg-mobile md:font-headline-lg text-headline-lg-mobile md:text-headline-lg text-primary font-bold tracking-tight">Izwan</div></div>
+<div class="font-headline-lg-mobile md:font-headline-lg text-headline-lg-mobile md:text-headline-lg text-primary font-bold tracking-tight"><button class="material-symbols-outlined text-primary hover:bg-surface-bright/50 transition-colors p-2 rounded-full scale-95 active:scale-90 transition-transform">search</button></div>
+<div class="flex items-center gap-4">
+<button class="material-symbols-outlined text-primary hover:bg-surface-bright/50 transition-colors p-2 rounded-full scale-95 active:scale-90 transition-transform">notifications</button>
+<div class="relative group">
+<button class="flex items-center gap-2">
+<img alt="User avatar" class="w-8 h-8 rounded-full border border-surface-bright object-cover" data-alt="A small, circular user profile avatar showing a high-contrast, moody portrait of a professional against a dark blue background." src="https://lh3.googleusercontent.com/aida-public/AB6AXuD8lRNdl8v25Tv3vqKY30C0EQMcC8EeMwLuXE2ZZb6nvuFglRyAnxAoZtTy2ZSh5OK8gKHjVb66Vtz-q_YYOn268bAbxG8JtQzHwhUBQ5dLZJxHt7PqidaXo7xXUUTdr4n7USK9yicLXeJBpgEDw77DprZdNIr6m3ULNWQGkqoEmXfJkBCsukrd-hgX2U3o3bL2P5YLiJQSqd2b_1RsvKeDVMBLVpiLN3VxDEz4EjWKqs2lH15kPVbPyCLlsKL9e2947jZYM5jTL00">
+</button>
+<!-- Dropdown Menu -->
+<div class="absolute right-0 mt-2 w-48 bg-surface-container-high rounded-xl shadow-lg border border-surface-variant hidden group-hover:block z-50">
+<a class="flex items-center gap-3 p-3 text-on-surface hover:bg-surface-bright transition-colors first:rounded-t-xl" href="#">
+<span class="material-symbols-outlined text-[20px]">bar_chart</span>
+<span class="font-label-sm text-label-sm">Statistiques</span>
+</a>
+<a class="flex items-center gap-3 p-3 text-on-surface hover:bg-surface-bright transition-colors" href="#">
+<span class="material-symbols-outlined text-[20px]">ios_share</span>
+<span class="font-label-sm text-label-sm">Exportations</span>
+</a>
+<a class="flex items-center gap-3 p-3 text-on-surface hover:bg-surface-bright transition-colors last:rounded-b-xl" href="#">
+<span class="material-symbols-outlined text-[20px]">settings</span>
+<span class="font-label-sm text-label-sm">Paramètres</span>
+</a>
+</div>
+</div>
+</div>
+</header>
+<!-- Main Canvas -->
+<main class="pt-24 px-margin-mobile md:px-margin-desktop max-w-container-max mx-auto">
+<!-- Header Actions -->
+<div class="flex flex-col md:flex-row md:justify-between md:items-end gap-6 mb-12">
+<div>
+<h1 class="font-display-lg text-display-lg text-on-surface mb-2">Collections</h1>
+<p class="font-body-md text-body-md text-on-surface-variant">Gérez vos dossiers et organisez vos snippets de code.</p>
+</div>
+<button class="bg-primary-container text-on-primary-container font-label-sm text-label-sm px-6 py-3 rounded-DEFAULT hover:opacity-90 transition-opacity flex items-center gap-2 w-fit shadow-md">
+<span class="material-symbols-outlined text-[18px]">add</span>
+                Créer une collection
+            </button>
+</div>
+<!-- Collections Grid (Bento Style) -->
+<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-gutter">
+<!-- Card 1: Work -->
+<div class="bg-surface-container-high rounded-xl p-6 flex flex-col gap-8 hover:bg-surface-bright transition-colors cursor-pointer group shadow-sm border border-surface-variant/50">
+<div class="flex justify-between items-start">
+<div class="w-12 h-12 rounded-lg bg-surface-container flex items-center justify-center text-primary group-hover:bg-primary-container group-hover:text-on-primary-container transition-colors shadow-sm">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">work</span>
+</div>
+<button class="material-symbols-outlined text-on-surface-variant hover:text-on-surface">more_vert</button>
+</div>
+<div>
+<h3 class="font-headline-lg-mobile text-headline-lg-mobile text-on-surface mb-1">Projets Clients</h3>
+<div class="flex items-center gap-3">
+<span class="font-label-sm text-label-sm bg-surface-variant text-on-surface px-2 py-1 rounded">142 snippets</span>
+<span class="font-body-md text-body-md text-on-surface-variant text-[12px]">Mis à jour: Aujourd'hui</span>
+</div>
+</div>
+</div>
+<!-- Card 2: Code -->
+<div class="bg-surface-container-high rounded-xl p-6 flex flex-col gap-8 hover:bg-surface-bright transition-colors cursor-pointer group shadow-sm border border-surface-variant/50">
+<div class="flex justify-between items-start">
+<div class="w-12 h-12 rounded-lg bg-surface-container flex items-center justify-center text-tertiary group-hover:bg-tertiary-container group-hover:text-on-tertiary-container transition-colors shadow-sm">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">code</span>
+</div>
+<button class="material-symbols-outlined text-on-surface-variant hover:text-on-surface">more_vert</button>
+</div>
+<div>
+<h3 class="font-headline-lg-mobile text-headline-lg-mobile text-on-surface mb-1">Composants UI</h3>
+<div class="flex items-center gap-3">
+<span class="font-label-sm text-label-sm bg-surface-variant text-on-surface px-2 py-1 rounded">89 snippets</span>
+<span class="font-body-md text-body-md text-on-surface-variant text-[12px]">Mis à jour: 12 Mai</span>
+</div>
+</div>
+</div>
+<!-- Card 3: Personal -->
+<div class="bg-surface-container-high rounded-xl p-6 flex flex-col gap-8 hover:bg-surface-bright transition-colors cursor-pointer group shadow-sm border border-surface-variant/50">
+<div class="flex justify-between items-start">
+<div class="w-12 h-12 rounded-lg bg-surface-container flex items-center justify-center text-secondary group-hover:bg-secondary-container group-hover:text-on-secondary-container transition-colors shadow-sm">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">person</span>
+</div>
+<button class="material-symbols-outlined text-on-surface-variant hover:text-on-surface">more_vert</button>
+</div>
+<div>
+<h3 class="font-headline-lg-mobile text-headline-lg-mobile text-on-surface mb-1">Scripts Perso</h3>
+<div class="flex items-center gap-3">
+<span class="font-label-sm text-label-sm bg-surface-variant text-on-surface px-2 py-1 rounded">24 snippets</span>
+<span class="font-body-md text-body-md text-on-surface-variant text-[12px]">Mis à jour: 05 Mai</span>
+</div>
+</div>
+</div>
+<!-- Card 4: Default Folder -->
+<div class="bg-surface-container-high rounded-xl p-6 flex flex-col gap-8 hover:bg-surface-bright transition-colors cursor-pointer group shadow-sm border border-surface-variant/50">
+<div class="flex justify-between items-start">
+<div class="w-12 h-12 rounded-lg bg-surface-container flex items-center justify-center text-outline group-hover:bg-outline-variant group-hover:text-on-surface transition-colors shadow-sm">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">folder</span>
+</div>
+<button class="material-symbols-outlined text-on-surface-variant hover:text-on-surface">more_vert</button>
+</div>
+<div>
+<h3 class="font-headline-lg-mobile text-headline-lg-mobile text-on-surface mb-1">Archive 2023</h3>
+<div class="flex items-center gap-3">
+<span class="font-label-sm text-label-sm bg-surface-variant text-on-surface px-2 py-1 rounded">312 snippets</span>
+<span class="font-body-md text-body-md text-on-surface-variant text-[12px]">Mis à jour: 01 Jan</span>
+</div>
+</div>
+</div>
+</div>
+</main>
+<!-- BottomNavBar (Mobile & Desktop Dock) -->
+<nav class="fixed bottom-0 left-0 right-0 z-50 flex justify-center pb-6">
+<div class="bg-surface-container-highest/80 backdrop-blur-lg shadow-xl border border-surface-variant/30 rounded-full mx-auto mb-8 w-fit flex items-center px-2 py-2 gap-1">
+<a class="flex items-center justify-center text-on-surface-variant p-3 hover:text-primary transition-colors group" href="#">
+<span class="material-symbols-outlined group-active:scale-90 transition-transform">dashboard</span>
+</a>
+<a class="flex items-center justify-center text-on-surface-variant p-3 hover:text-primary transition-colors group" href="#">
+<span class="material-symbols-outlined group-active:scale-90 transition-transform">code</span>
+</a>
+<!-- Active State: Collection -->
+<a class="flex items-center gap-2 bg-primary-container text-on-primary-container rounded-full px-4 py-2 transition-all duration-300 shadow-md" href="#">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">folder_special</span>
+<span class="font-label-sm text-label-sm hidden sm:block">Collection</span>
+</a>
+<a class="flex items-center justify-center text-on-surface-variant p-3 hover:text-primary transition-colors group" href="#">
+<span class="material-symbols-outlined group-active:scale-90 transition-transform">favorite</span>
+</a>
+<a class="flex items-center justify-center text-on-surface-variant p-3 hover:text-primary transition-colors group" href="#">
+<span class="material-symbols-outlined group-active:scale-90 transition-transform">groups</span>
+</a>
+<a class="flex items-center justify-center text-on-surface-variant p-3 hover:text-primary transition-colors group" href="#">
+<span class="material-symbols-outlined group-active:scale-90 transition-transform">auto_awesome</span>
+</a>
+</div>
+</nav>
+
+
+<button class="fixed bottom-8 right-8 w-16 h-16 bg-primary-container text-on-primary-container rounded-full shadow-xl flex items-center justify-center hover:scale-110 transition-transform z-50 border border-surface-variant/30 backdrop-blur-md"><span class="material-symbols-outlined text-[32px]" style="font-variation-settings: 'FILL' 1;">auto_awesome</span></button></body></html>

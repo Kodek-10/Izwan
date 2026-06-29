@@ -1,5 +1,18 @@
 import { createFileRoute, Link, useRouter } from "@tanstack/react-router";
-import { Plus, Search, Star, MoreVertical, Code2, Edit, Share2, Trash2, X, Loader2, FolderOpen } from "lucide-react";
+import {
+  Plus,
+  Search,
+  Star,
+  MoreVertical,
+  Code2,
+  Share2,
+  Trash2,
+  X,
+  Loader2,
+  FolderOpen,
+  Filter,
+  Copy,
+} from "lucide-react";
 import { useState, useEffect } from "react";
 import { useTranslation } from "react-i18next";
 import { languages } from "@/lib/mock-data";
@@ -37,11 +50,12 @@ const snippetsSearchSchema = z.object({
 
 export const Route = createFileRoute("/_app/snippets/")({
   validateSearch: snippetsSearchSchema,
-  head: ({ loaderData }: any) => ({ meta: [{ title: `${loaderData?.collectionName || "Snippets"} — Izwan` }] }),
+  head: ({ loaderData }: any) => ({
+    meta: [{ title: `${loaderData?.collectionName || "Snippets"} — Izwan` }],
+  }),
   loader: async ({ search }: any) => {
     const { collection } = (search || {}) as { collection?: number };
 
-    // On server, we can't access localStorage for the auth token.
     if (typeof window === "undefined") {
       return { initialSnippets: [], collectionName: null, needsClientFetch: true };
     }
@@ -75,23 +89,22 @@ export const Route = createFileRoute("/_app/snippets/")({
       return { initialSnippets: [], collectionName: null, needsClientFetch: false };
     }
   },
-  component: SnippetsPage,
+ component: SnippetsPage,
 });
 
 const container = {
-// ... (rest of animation configs)
   hidden: { opacity: 0 },
   show: {
     opacity: 1,
     transition: {
-      staggerChildren: 0.05
-    }
-  }
+      staggerChildren: 0.05,
+    },
+  },
 };
 
 const item = {
-  hidden: { opacity: 0, x: -10 },
-  show: { opacity: 1, x: 0 }
+  hidden: { opacity: 0, y: 10 },
+  show: { opacity: 1, y: 0 },
 };
 
 function SnippetsPage() {
@@ -105,14 +118,12 @@ function SnippetsPage() {
   const [collectionName, setCollectionName] = useState<string | null>(data?.collectionName || null);
   const [isLoading, setIsLoading] = useState(data?.needsClientFetch ?? true);
 
-  // Collections for assignment dialog
   const [collections, setCollections] = useState<any[]>([]);
   const [assignDialogOpen, setAssignDialogOpen] = useState(false);
   const [assignSnippet, setAssignSnippet] = useState<any>(null);
   const [assignColId, setAssignColId] = useState<string>("none");
   const [isAssigning, setIsAssigning] = useState(false);
 
-  // Fetch or sync snippets whenever the collection filter or loader data changes
   useEffect(() => {
     if (!data) return;
 
@@ -161,21 +172,12 @@ function SnippetsPage() {
     }
   }, [data, collection]);
 
-  // Load collections for the assignment dialog
   useEffect(() => {
-    api.get<any[]>("/collections/")
+    api
+      .get<any[]>("/collections/")
       .then(setCollections)
       .catch(() => {});
   }, []);
-
-  if (isLoading) {
-    return (
-      <div className="flex flex-col items-center justify-center h-64 space-y-4">
-        <Loader2 className="h-8 w-8 animate-spin text-primary" />
-        <p className="text-sm text-muted-foreground">{t("snippets.loading")}</p>
-      </div>
-    );
-  }
 
   const filtered = snippets.filter((s) => {
     const matchesQ = !q || s.title.toLowerCase().includes(q.toLowerCase());
@@ -189,7 +191,9 @@ function SnippetsPage() {
       setSnippets((prev) =>
         prev.map((s) => (s.id === id ? { ...s, is_favorite: !current } : s))
       );
-      toast.success(!current ? t("snippets.add_favorite") : t("snippets.remove_favorite"));
+      toast.success(
+        !current ? t("snippets.add_favorite") : t("snippets.remove_favorite")
+      );
     } catch (e) {
       toast.error(t("snippets.update_error"));
     }
@@ -204,6 +208,11 @@ function SnippetsPage() {
     } catch (e) {
       toast.error(t("snippets.delete_error"));
     }
+  };
+
+  const copySnippet = (code: string) => {
+    navigator.clipboard.writeText(code);
+    toast.success(t("snippets.copy_link") || "Code copié !");
   };
 
   const shareSnippet = (s: any) => {
@@ -222,7 +231,8 @@ function SnippetsPage() {
     if (!assignSnippet) return;
     setIsAssigning(true);
     try {
-      const newColId = assignColId === "none" ? null : parseInt(assignColId);
+      const newColId =
+        assignColId === "none" ? null : parseInt(assignColId);
       await api.put(`/snippets/${assignSnippet.id}`, { collection_id: newColId });
       setSnippets((prev) =>
         prev.map((s) =>
@@ -242,133 +252,237 @@ function SnippetsPage() {
     }
   };
 
+  const [showFilters, setShowFilters] = useState(false);
+
+  if (isLoading) {
+    return (
+      <div className="flex flex-col items-center justify-center h-64 space-y-4">
+        <Loader2 className="h-8 w-8 animate-spin text-primary" />
+        <p className="text-sm text-muted-foreground">{t("snippets.loading")}</p>
+      </div>
+    );
+  }
+
   return (
-    <div className="space-y-4">
-      <div className="flex items-center justify-between gap-3">
-        <div className="flex items-center gap-3 min-w-0">
-          <h2 className="font-display font-semibold text-2xl truncate">
+    <div className="space-y-6">
+      {/* Page Header */}
+      <div className="flex flex-col md:flex-row md:items-end justify-between gap-6">
+        <div>
+          <h1 className="font-display text-3xl md:text-4xl font-bold text-foreground mb-2">
             {collection ? t("snippets.title") : t("snippets.all_snippets")}
-          </h2>
-          {collection && (
-            <div className="inline-flex items-center gap-1.5 px-2 py-1 rounded-full bg-primary/10 text-primary text-xs font-medium animate-in fade-in zoom-in duration-300">
-              <span>{t("snippets.collection_label")}{collectionName || t("collections.unknown")}</span>
-              <Link to="/snippets" className="hover:text-primary/70 transition-colors">
-                <X className="h-3 w-3" />
-              </Link>
-            </div>
-          )}
+          </h1>
+          <p className="text-muted-foreground max-w-2xl">
+            Gérez et organisez vos morceaux de code réutilisables.
+            Filtrez par langage ou par tag pour retrouver rapidement vos solutions.
+          </p>
         </div>
-        <Link to="/snippets/new">
-          <Button className="gradient-brand text-white border-0 hover:opacity-90 shrink-0">
-            <Plus className="h-4 w-4 mr-2" /> {t("snippets.new")}
+        <div className="flex items-center gap-3">
+          <Button
+            variant="outline"
+            className="flex items-center gap-2"
+            onClick={() => setShowFilters(!showFilters)}
+          >
+            <Filter className="h-4 w-4" />
+            Filtrer
           </Button>
-        </Link>
-      </div>
-
-      <div className="bg-card border border-border rounded-xl p-4 space-y-3">
-        <div className="relative">
-          <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-          <Input
-            value={q}
-            onChange={(e) => setQ(e.target.value)}
-            placeholder={t("snippets.search_placeholder")}
-            className="pl-9"
-          />
-        </div>
-        <div className="flex flex-col sm:flex-row gap-2">
-          <Select value={lang} onValueChange={setLang}>
-            <SelectTrigger className="w-full sm:w-44"><SelectValue placeholder={t("common.all_languages")} /></SelectTrigger>
-            <SelectContent>
-              <SelectItem value="all">{t("common.all_languages")}</SelectItem>
-              {languages.map((l) => <SelectItem key={l} value={l}>{l}</SelectItem>)}
-            </SelectContent>
-          </Select>
-          <Select defaultValue="all">
-            <SelectTrigger className="w-full sm:w-40"><SelectValue placeholder={t("common.all_tags")} /></SelectTrigger>
-            <SelectContent>
-              <SelectItem value="all">{t("common.all_tags")}</SelectItem>
-            </SelectContent>
-          </Select>
+          <Button
+            className="bg-primary text-primary-foreground hover:bg-primary/90 flex items-center gap-2"
+            onClick={() => window.dispatchEvent(new CustomEvent("snippet:new"))}
+          >
+            <Plus className="h-4 w-4" /> {t("snippets.new")}
+          </Button>
         </div>
       </div>
 
-      <motion.div 
-        variants={container}
-        initial="hidden"
-        animate="show"
-        className="bg-card border border-border rounded-xl divide-y divide-border overflow-hidden"
-      >
-        {filtered.map((s) => (
-          <motion.div variants={item} key={s.id} className="relative group">
-            <Link
-              to="/snippets/$id"
-              params={{ id: s.id.toString() }}
-              className="flex items-center gap-3 p-4 hover:bg-muted/40 transition-colors"
-            >
-              <div className="h-10 w-10 rounded-lg gradient-brand flex items-center justify-center shrink-0 transition-transform group-hover:scale-110">
-                <Code2 className="h-4 w-4 text-white" />
-              </div>
-              <div className="flex-1 min-w-0 pr-16 sm:pr-20">
-                <p className="font-medium truncate text-sm sm:text-base">{s.title}</p>
-                <p className="text-xs text-muted-foreground truncate">
-                  <span className="font-semibold text-primary/80">{s.language}</span>
-                  <span className="mx-1">·</span>
-                  <span>{s.tags.slice(0, 2).join(", ")}{s.tags.length > 2 ? "..." : ""}</span>
-                </p>
-              </div>
-              <span className="text-xs text-muted-foreground shrink-0 hidden md:inline">
-                {s.dateObj.toLocaleDateString(i18n.language === 'fr' ? 'fr-FR' : 'en-US')}
-              </span>
-            </Link>
-            <div className="absolute right-2 sm:right-4 top-1/2 -translate-y-1/2 flex items-center gap-0.5 sm:gap-1">
-              <Button
-                variant="ghost"
-                size="icon"
-                className={`h-8 w-8 ${s.is_favorite ? "text-amber-400 hover:text-amber-500" : "text-muted-foreground"}`}
-                onClick={(e) => {
-                  e.preventDefault();
-                  e.stopPropagation();
-                  toggleFavorite(s.id, s.is_favorite);
-                }}
-              >
-                <Star className={`h-4 w-4 ${s.is_favorite ? "fill-current" : ""}`} />
-              </Button>
-              <DropdownMenu>
-                <DropdownMenuTrigger asChild>
-                  <Button
-                    variant="ghost"
-                    size="icon"
-                    className="h-8 w-8 text-muted-foreground"
-                    onClick={(e) => e.stopPropagation()}
-                  >
-                    <MoreVertical className="h-4 w-4" />
-                  </Button>
-                </DropdownMenuTrigger>
-                <DropdownMenuContent align="end">
-                  <DropdownMenuItem onClick={() => openAssignDialog(s)}>
-                    <FolderOpen className="mr-2 h-4 w-4" />
-                    <span>{t("snippets.assign_collection")}</span>
-                  </DropdownMenuItem>
-                  <DropdownMenuItem onClick={() => shareSnippet(s)}>
-                    <Share2 className="mr-2 h-4 w-4" />
-                    <span>{t("common.share")}</span>
-                  </DropdownMenuItem>
-                  <DropdownMenuItem 
-                    className="text-destructive focus:text-destructive"
-                    onClick={() => deleteSnippet(s.id)}
-                  >
-                    <Trash2 className="mr-2 h-4 w-4" />
-                    <span>{t("common.delete")}</span>
-                  </DropdownMenuItem>
-                </DropdownMenuContent>
-              </DropdownMenu>
-            </div>
-          </motion.div>
+      {/* Filters / Tabs */}
+      <div className="flex overflow-x-auto pb-4 gap-2 scrollbar-hide border-b border-border">
+        <button
+          onClick={() => setLang("all")}
+          className={`px-4 py-2 rounded-t-lg border-b-2 font-body-md whitespace-nowrap transition-colors ${
+            lang === "all"
+              ? "border-primary text-primary font-medium"
+              : "border-transparent text-muted-foreground hover:text-foreground hover:bg-muted/50"
+          }`}
+        >
+          Tous les snippets
+        </button>
+        {languages.slice(0, 5).map((language) => (
+          <button
+            key={language}
+            onClick={() => setLang(language === lang ? "all" : language)}
+            className={`px-4 py-2 rounded-t-lg border-b-2 font-body-md whitespace-nowrap transition-colors ${
+              lang === language
+                ? "border-primary text-primary font-medium"
+                : "border-transparent text-muted-foreground hover:text-foreground hover:bg-muted/50"
+            }`}
+          >
+            {language}
+          </button>
         ))}
-        {filtered.length === 0 && (
-          <div className="p-12 text-center text-muted-foreground text-sm">{t("snippets.no_results")}</div>
-        )}
-      </motion.div>
+      </div>
+
+      {/* Search */}
+      {showFilters && (
+        <div className="bg-card border border-border rounded-xl p-4 space-y-3 animate-in fade-in slide-in-from-top-2 duration-300">
+          <div className="relative">
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+            <Input
+              value={q}
+              onChange={(e) => setQ(e.target.value)}
+              placeholder={t("snippets.search_placeholder")}
+              className="pl-9"
+            />
+          </div>
+          <div className="flex flex-col sm:flex-row gap-2">
+            <Select value={lang} onValueChange={setLang}>
+              <SelectTrigger className="w-full sm:w-44">
+                <SelectValue placeholder={t("common.all_languages")} />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="all">{t("common.all_languages")}</SelectItem>
+                {languages.map((l) => (
+                  <SelectItem key={l} value={l}>
+                    {l}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+            <Select defaultValue="all">
+              <SelectTrigger className="w-full sm:w-40">
+                <SelectValue placeholder={t("common.all_tags")} />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="all">{t("common.all_tags")}</SelectItem>
+              </SelectContent>
+            </Select>
+          </div>
+        </div>
+      )}
+
+      {/* Bento Grid үлээр Grid */}
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 auto-rows-min">
+        {filtered.map((s, index) => {
+          return (
+            <motion.div
+              key={s.id}
+              variants={item}
+              initial="hidden"
+              animate="show"
+              className={`bg-card rounded-xl border border-border hover:border-primary/50 transition-colors overflow-hidden flex flex-col group ${
+                index === 0 ? "lg:col-span-2" : ""
+              } ${index === 3 ? "md:col-span-2 lg:col-span-2" : ""}`}
+            >
+              <Link
+                to="/snippets/$id"
+                params={{ id: s.id.toString() }}
+                className="block flex-1 flex flex-col"
+              >
+                {/* Card Header */}
+                <div className="p-4 border-b border-border flex justify-between items-start">
+                  <div className="min-w-0">
+                    <div className="flex items-center gap-2 mb-1.5">
+                      <span className="font-mono text-xs font-medium px-2 py-0.5 rounded bg-muted text-primary">
+                        {s.language}
+                      </span>
+                      <h3 className="font-semibold text-foreground truncate">
+                        {s.title}
+                      </h3>
+                    </div>
+                    <p className="text-sm text-muted-foreground line-clamp-1">
+                      {s.tags.slice(0, 3).join(", ")}
+                    </p>
+                  </div>
+                </div>
+
+                {/* Code Block */}
+                <div className="bg-muted p-3 flex-1 overflow-x-auto min-h-[60px]">
+                  <pre className="font-mono text-xs text-muted-foreground whitespace-pre-wrap break-all">
+                    <code>{(s.code || s.content || "").slice(0, 300)}</code>
+                  </pre>
+                </div>
+              </Link>
+
+              {/* Card Footer */}
+              <div className="p-3 border-t border-border flex justify-between items-center bg-card">
+                <div className="flex gap-2 flex-wrap">
+                  {s.tags.slice(0, 3).map((tag: string) => (
+                    <span
+                      key={tag}
+                      className="text-xs bg-muted text-muted-foreground border border-border/50 px-2 py-1 rounded"
+                    >
+                      {tag}
+                    </span>
+                  ))}
+                </div>
+                <div className="flex items-center gap-2">
+                  <button
+                    onClick={(e) => {
+                      e.preventDefault();
+                      e.stopPropagation();
+                      copySnippet(s.code || s.content || "");
+                    }}
+                    className="p-1.5 rounded-full hover:bg-muted text-muted-foreground hover:text-foreground transition-colors opacity-0 group-hover:opacity-100"
+                    title="Copier le code"
+                  >
+                    <Copy className="h-4 w-4" />
+                  </button>
+                  <button
+                    onClick={(e) => {
+                      e.preventDefault();
+                      e.stopPropagation();
+                      toggleFavorite(s.id, s.is_favorite);
+                    }}
+                    className={`p-1.5 rounded-full transition-colors ${
+                      s.is_favorite
+                        ? "text-yellow-500 hover:text-yellow-600"
+                        : "text-muted-foreground hover:text-foreground"
+                    }`}
+                  >
+                    <Star
+                      className={`h-5 w-5 ${
+                        s.is_favorite ? "fill-current" : ""
+                      }`}
+                    />
+                  </button>
+                  <DropdownMenu>
+                    <DropdownMenuTrigger asChild>
+                      <button
+                        onClick={(e) => e.stopPropagation()}
+                        className="p-1.5 rounded-full hover:bg-muted text-muted-foreground hover:text-foreground transition-colors"
+                      >
+                        <MoreVertical className="h-4 w-4" />
+                      </button>
+                    </DropdownMenuTrigger>
+                    <DropdownMenuContent align="end">
+                      <DropdownMenuItem onClick={() => openAssignDialog(s)}>
+                        <FolderOpen className="mr-2 h-4 w-4" />
+                        <span>{t("snippets.assign_collection")}</span>
+                      </DropdownMenuItem>
+                      <DropdownMenuItem onClick={() => shareSnippet(s)}>
+                        <Share2 className="mr-2 h-4 w-4" />
+                        <span>{t("common.share")}</span>
+                      </DropdownMenuItem>
+                      <DropdownMenuItem
+                        className="text-destructive focus:text-destructive"
+                        onClick={() => deleteSnippet(s.id)}
+                      >
+                        <Trash2 className="mr-2 h-4 w-4" />
+                        <span>{t("common.delete")}</span>
+                      </DropdownMenuItem>
+                    </DropdownMenuContent>
+                  </DropdownMenu>
+                </div>
+              </div>
+            </motion.div>
+          );
+        })}
+      </div>
+
+      {filtered.length === 0 && (
+        <div className="p-12 text-center text-muted-foreground text-sm border-2 border-dashed border-border rounded-xl">
+          {t("snippets.no_results")}
+        </div>
+      )}
 
       {/* Dialog: Assign snippet to collection */}
       <Dialog open={assignDialogOpen} onOpenChange={setAssignDialogOpen}>
@@ -385,19 +499,34 @@ function SnippetsPage() {
                 <SelectValue placeholder={t("snippets.form.no_collection")} />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="none">{t("snippets.form.no_collection")}</SelectItem>
+                <SelectItem value="none">
+                  {t("snippets.form.no_collection")}
+                </SelectItem>
                 {collections.map((c) => (
-                  <SelectItem key={c.id} value={c.id.toString()}>{c.name}</SelectItem>
+                  <SelectItem key={c.id} value={c.id.toString()}>
+                    {c.name}
+                  </SelectItem>
                 ))}
               </SelectContent>
             </Select>
           </div>
           <DialogFooter className="flex-col-reverse sm:flex-row gap-2">
-            <Button variant="outline" className="w-full sm:w-auto" onClick={() => setAssignDialogOpen(false)} disabled={isAssigning}>
+            <Button
+              variant="outline"
+              className="w-full sm:w-auto"
+              onClick={() => setAssignDialogOpen(false)}
+              disabled={isAssigning}
+            >
               {t("common.cancel")}
             </Button>
-            <Button className="w-full sm:w-auto gradient-brand text-white border-0" onClick={handleAssignCollection} disabled={isAssigning}>
-              {isAssigning && <Loader2 className="h-4 w-4 animate-spin mr-2" />}
+            <Button
+              className="w-full sm:w-auto bg-primary text-primary-foreground hover:bg-primary/90"
+              onClick={handleAssignCollection}
+              disabled={isAssigning}
+            >
+              {isAssigning && (
+                <Loader2 className="h-4 w-4 animate-spin mr-2" />
+              )}
               {t("common.save")}
             </Button>
           </DialogFooter>

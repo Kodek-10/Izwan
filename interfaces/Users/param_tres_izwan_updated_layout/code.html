@@ -1,0 +1,350 @@
+<!DOCTYPE html><html lang="fr"><head>
+<meta charset="utf-8">
+<meta content="width=device-width, initial-scale=1.0" name="viewport">
+<title>Paramètres - Izwan</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&amp;family=JetBrains+Mono:wght@400;500&amp;family=Montserrat:wght@600;700&amp;display=swap" rel="stylesheet">
+<script id="tailwind-config">
+      tailwind.config = {
+        theme: {
+          extend: {
+            "colors": {
+                    "surface": "#f7f4f4",
+                    "surface-variant": "#ebe8e8",
+                    "surface-container-lowest": "#ffffff",
+                    "surface-container-low": "#ffffff",
+                    "surface-container": "#f0eded",
+                    "surface-container-high": "#e8e5e5",
+                    "surface-container-highest": "#dfdcdd",
+                    "surface-bright": "#ffffff",
+                    "surface-dim": "#dcd9da",
+                    "on-surface": "#1a1a1a",
+                    "on-surface-variant": "#4a4a4a",
+                    "primary": "#552834",
+                    "on-primary": "#ffffff",
+                    "primary-container": "#854b5a",
+                    "on-primary-container": "#ffffff",
+                    "outline": "#8a8a8a",
+                    "outline-variant": "#cacaca",
+                    "tertiary": "#8c4a5d",
+                    "on-tertiary": "#ffffff",
+                    "error": "#ba1a1a",
+                    "on-error": "#ffffff",
+                    "error-container": "#ffdad6",
+                    "on-error-container": "#410002"
+            },
+            "borderRadius": {
+                    "DEFAULT": "0.125rem",
+                    "lg": "0.25rem",
+                    "xl": "0.5rem",
+                    "full": "0.75rem"
+            },
+            "spacing": {
+                    "container-max": "1440px",
+                    "margin-desktop": "40px",
+                    "unit": "4px",
+                    "margin-mobile": "16px",
+                    "gutter": "24px"
+            },
+            "fontFamily": {
+                    "headline-lg": [
+                            "Montserrat"
+                    ],
+                    "body-md": [
+                            "Inter"
+                    ],
+                    "label-sm": [
+                            "JetBrains Mono"
+                    ],
+                    "headline-lg-mobile": [
+                            "Montserrat"
+                    ],
+                    "display-lg": [
+                            "Montserrat"
+                    ],
+                    "code-snippet": [
+                            "JetBrains Mono"
+                    ]
+            },
+            "fontSize": {
+                    "headline-lg": [
+                            "32px",
+                            {
+                                    "lineHeight": "40px",
+                                    "fontWeight": "600"
+                            }
+                    ],
+                    "body-md": [
+                            "16px",
+                            {
+                                    "lineHeight": "24px",
+                                    "fontWeight": "400"
+                            }
+                    ],
+                    "label-sm": [
+                            "12px",
+                            {
+                                    "lineHeight": "16px",
+                                    "letterSpacing": "0.05em",
+                                    "fontWeight": "500"
+                            }
+                    ],
+                    "headline-lg-mobile": [
+                            "24px",
+                            {
+                                    "lineHeight": "32px",
+                                    "fontWeight": "600"
+                            }
+                    ],
+                    "display-lg": [
+                            "48px",
+                            {
+                                    "lineHeight": "56px",
+                                    "letterSpacing": "-0.02em",
+                                    "fontWeight": "700"
+                            }
+                    ],
+                    "code-snippet": [
+                            "14px",
+                            {
+                                    "lineHeight": "20px",
+                                    "fontWeight": "400"
+                            }
+                    ]
+            }
+    },
+        },
+      }
+    </script>
+<style>
+        /* Ambient shadow for elevation */
+        .ambient-shadow {
+            box-shadow: 0 10px 40px -10px rgba(8, 16, 27, 0.1);
+        }
+        /* Custom scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: theme('colors.surface');
+        }
+        ::-webkit-scrollbar-thumb {
+            background: theme('colors.surface-container-highest');
+            border-radius: theme('borderRadius.full');
+        }
+    </style>
+</head>
+<body class="bg-surface text-on-surface font-body-md min-h-screen overflow-x-hidden selection:bg-primary-container selection:text-on-primary-container">
+<!-- TopAppBar -->
+<header class="bg-surface/80 backdrop-blur-md fixed top-0 w-full z-50 flex justify-between items-center px-margin-desktop h-16 border-b border-surface-container/50"><div class="flex items-center w-full max-w-container-max mx-auto justify-between">
+<div class="flex items-center">
+<h1 class="font-headline-lg text-headline-lg text-primary font-bold tracking-tight">Izwan</h1>
+</div>
+<div class="relative flex-grow max-w-md mx-auto">
+<span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-on-surface-variant font-label-sm">search</span>
+<input class="bg-surface-container-low border border-outline-variant rounded-full pl-10 pr-4 py-1.5 font-label-sm text-label-sm text-on-surface focus:outline-none focus:border-primary transition-colors w-full shadow-sm" placeholder="Rechercher..." type="text">
+</div>
+<div class="flex items-center gap-4"><button class="p-2 rounded-full hover:bg-surface-variant transition-colors flex items-center justify-center"><span class="material-symbols-outlined text-primary">notifications</span></button><div class="relative group"><button class="flex items-center gap-2 p-1 rounded-full hover:bg-surface-variant transition-colors"><div class="w-8 h-8 rounded-full overflow-hidden border border-surface-container-highest"><img alt="User avatar" class="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAcLE5iL-LH1S2mjDQi0Gf8TMqDUKO6tlRgl1npMGCPeXVVagedXnNy9y2tA00HSDadpfwxeQAsoQSZDT0KPejDEIWIA4N-rYerCKGSdF2CzZBqY3YnyOidT7w7PVsE9qs7Ll99SILN3wpyJQPomoEfV00jKznvJfhmTbQRTEPyzd8JGl5pQvvypXESqhNxrbL7Ci_zJ0xO0xxC2-I_wBDsKJmE9oDdfWXMSHkcbwOFsdSJmMqTzzA-f38jnxaf51g9eB43xkm4pf0"></div><span class="material-symbols-outlined text-on-surface-variant text-[18px]">expand_more</span></button><div class="absolute right-0 mt-2 w-48 bg-surface-container-low border border-outline-variant rounded-xl shadow-lg opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 z-50 overflow-hidden"><a href="#" class="flex items-center gap-3 px-4 py-3 text-body-md text-on-surface hover:bg-primary/5 hover:text-primary transition-colors"><span class="material-symbols-outlined text-[20px]">monitoring</span>Statistiques</a><a href="#" class="flex items-center gap-3 px-4 py-3 text-body-md text-on-surface hover:bg-primary/5 hover:text-primary transition-colors"><span class="material-symbols-outlined text-[20px]">settings</span>Paramètres</a><div class="border-t border-outline-variant"></div><a href="#" class="flex items-center gap-3 px-4 py-3 text-body-md text-error hover:bg-error-container transition-colors"><span class="material-symbols-outlined text-[20px]">logout</span>Déconnexion</a></div></div></div>
+</div></header>
+<!-- Main Content Canvas -->
+<main class="pt-24 pb-32 px-margin-mobile md:px-margin-desktop max-w-container-max mx-auto">
+<div class="mb-12">
+<h2 class="font-display-lg text-display-lg text-on-surface mb-2">Paramètres</h2>
+<p class="font-body-md text-body-md text-on-surface-variant">Gérez vos préférences utilisateur, thèmes et configurations d'API.</p>
+</div>
+<!-- Bento Grid Layout -->
+<div class="grid grid-cols-1 md:grid-cols-12 gap-gutter">
+<!-- Profile Section (Wide) -->
+<section class="md:col-span-8 bg-surface-container-low rounded-xl p-8 ambient-shadow border border-surface-variant flex flex-col md:flex-row gap-8 items-start relative overflow-hidden group">
+<div class="absolute inset-0 bg-gradient-to-br from-primary/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none"></div>
+<div class="relative w-32 h-32 rounded-xl overflow-hidden border-2 border-surface-container-highest flex-shrink-0 shadow-sm">
+<img alt="User Avatar" class="w-full h-full object-cover" data-alt="A highly detailed close up portrait of a cyberpunk android with glowing neon accents in a dark, atmospheric futuristic cityscape, professional studio lighting, sharp focus, high contrast, 8k resolution, photorealistic style." src="https://lh3.googleusercontent.com/aida-public/AB6AXuDaLTZjiAx3cRA6zYd2kOs1KoZK9BHU2hOqN14-Mp1turOMHh_Eynpb-WPfugoTBAbq-aIsYPrHg--EufwvEbruBVpSSz25cIvedXC71IDwK4qx__02dyygcuiQsOYZ9As2seX9i8J2OvphfkrembmAJ_oOOxx2h2b2uG8G91HUXG1t85-9MkmwCmuEHR3pyR3m87vbeZHh5hqXFTbbo15b9COlXrsi6fY_a4iL8yAag0O-wQqheFJneZ0xDWnIUI7HSLvOvrFUsME">
+<div class="absolute inset-0 bg-surface/50 opacity-0 hover:opacity-100 transition-opacity flex items-center justify-center cursor-pointer backdrop-blur-sm">
+<span class="material-symbols-outlined text-primary font-label-sm" data-icon="edit">edit</span>
+</div>
+</div>
+<div class="flex-grow w-full space-y-6">
+<div>
+<h3 class="font-headline-lg-mobile text-headline-lg-mobile text-on-surface mb-1">Profil Public</h3>
+<p class="font-body-md text-body-md text-on-surface-variant">Vos informations de base affichées aux autres membres de l'Équipe.</p>
+</div>
+<div class="space-y-4">
+<div class="flex flex-col gap-1">
+<label class="font-label-sm text-label-sm text-on-surface-variant uppercase tracking-wider">Nom d'affichage</label>
+<input class="bg-surface border border-outline-variant rounded-lg px-4 py-2 font-body-md text-body-md text-on-surface focus:outline-none focus:border-primary transition-colors focus:ring-1 focus:ring-primary/50 shadow-sm" type="text" value="Alexandre">
+</div>
+<div class="flex flex-col gap-1">
+<label class="font-label-sm text-label-sm text-on-surface-variant uppercase tracking-wider">Adresse Email</label>
+<input class="bg-surface border border-outline-variant rounded-lg px-4 py-2 font-body-md text-body-md text-on-surface focus:outline-none focus:border-primary transition-colors focus:ring-1 focus:ring-primary/50 shadow-sm" type="email" value="alexandre@izwan.dev">
+</div>
+</div>
+<div class="flex justify-end pt-4">
+<button class="bg-primary text-on-primary font-label-sm text-label-sm px-6 py-2 rounded-lg hover:bg-primary-container transition-colors shadow-sm">Enregistrer</button>
+</div>
+</div>
+</section>
+<!-- Theme Selection (Square) -->
+<section class="md:col-span-4 bg-surface-container-low rounded-xl p-8 ambient-shadow border border-surface-variant flex flex-col justify-between">
+<div>
+<h3 class="font-headline-lg-mobile text-headline-lg-mobile text-on-surface mb-1 flex items-center gap-2">
+<span class="material-symbols-outlined text-primary" data-icon="palette">palette</span>
+                        Apparence
+                    </h3>
+<p class="font-body-md text-body-md text-on-surface-variant mb-6">Personnalisez l'interface utilisateur.</p>
+</div>
+<div class="space-y-3">
+<label class="flex items-center justify-between p-4 rounded-lg border border-outline-variant hover:border-on-surface-variant cursor-pointer transition-colors opacity-50">
+<div class="flex items-center gap-3">
+<span class="material-symbols-outlined text-on-surface-variant" data-icon="dark_mode">dark_mode</span>
+<span class="font-body-md text-body-md text-on-surface-variant">Sombre</span>
+</div>
+<div class="w-5 h-5 rounded-full border-2 border-outline-variant"></div>
+</label>
+<label class="flex items-center justify-between p-4 rounded-lg border border-primary bg-primary/5 cursor-pointer transition-colors">
+<div class="flex items-center gap-3">
+<span class="material-symbols-outlined text-primary" data-icon="light_mode" data-weight="fill" style="font-variation-settings: 'FILL' 1;">light_mode</span>
+<span class="font-body-md text-body-md text-on-surface">Clair (Actif)</span>
+</div>
+<div class="w-5 h-5 rounded-full border-2 border-primary flex items-center justify-center">
+<div class="w-2.5 h-2.5 bg-primary rounded-full"></div>
+</div>
+</label>
+</div>
+</section>
+<!-- Editor Preferences (Square) -->
+<section class="md:col-span-6 bg-surface-container-low rounded-xl p-8 ambient-shadow border border-surface-variant">
+<h3 class="font-headline-lg-mobile text-headline-lg-mobile text-on-surface mb-1 flex items-center gap-2">
+<span class="material-symbols-outlined text-tertiary" data-icon="code">code</span>
+                    Préférences Éditeur
+                </h3>
+<p class="font-body-md text-body-md text-on-surface-variant mb-8">Configuration de l'environnement de code.</p>
+<div class="space-y-6">
+<div class="flex flex-col gap-3">
+<div class="flex justify-between items-center">
+<label class="font-label-sm text-label-sm text-on-surface-variant uppercase tracking-wider">Taille de police (px)</label>
+<span class="font-code-snippet text-code-snippet text-tertiary bg-surface-variant px-2 py-1 rounded">14px</span>
+</div>
+<input class="w-full accent-tertiary h-1 bg-surface-container-highest rounded-lg appearance-none cursor-pointer" max="24" min="10" type="range" value="14">
+</div>
+<div class="flex flex-col gap-2">
+<label class="font-label-sm text-label-sm text-on-surface-variant uppercase tracking-wider">Taille de tabulation</label>
+<select class="bg-surface border border-outline-variant rounded-lg px-4 py-2 font-code-snippet text-code-snippet text-on-surface focus:outline-none focus:border-tertiary appearance-none w-full shadow-sm">
+<option value="2">2 espaces</option>
+<option selected="" value="4">4 espaces</option>
+<option value="8">8 espaces</option>
+</select>
+</div>
+<div class="flex flex-col gap-2 mb-6">
+<label class="font-label-sm text-label-sm text-on-surface-variant uppercase tracking-wider">Changer la langue</label>
+<div class="relative">
+<select class="bg-surface border border-outline-variant rounded-lg px-4 py-2 font-body-md text-body-md text-on-surface focus:outline-none focus:border-tertiary appearance-none w-full shadow-sm">
+<option selected="" value="fr">Français</option>
+<option value="en">English</option>
+<option value="es">Español</option>
+<option value="de">Deutsch</option>
+</select>
+<span class="material-symbols-outlined absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none text-on-surface-variant">expand_more</span>
+</div>
+</div><div class="pt-4 border-t border-surface-variant">
+<label class="flex items-center gap-3 cursor-pointer group">
+<div class="relative flex items-center justify-center">
+<input checked="" class="sr-only peer" type="checkbox">
+<div class="w-5 h-5 rounded border-2 border-outline-variant peer-checked:bg-tertiary peer-checked:border-tertiary transition-colors flex items-center justify-center">
+<span class="material-symbols-outlined text-white text-[14px] opacity-0 peer-checked:opacity-100 transition-opacity" data-icon="check" data-weight="fill" style="font-variation-settings: 'FILL' 1;">check</span>
+</div>
+</div>
+<span class="font-body-md text-body-md text-on-surface group-hover:text-primary transition-colors">Activer les ligatures de police</span>
+</label>
+</div>
+</div>
+</section>
+<!-- API Keys (Wide) -->
+<section class="md:col-span-6 bg-surface-container-low rounded-xl p-8 ambient-shadow border border-surface-variant flex flex-col">
+<div class="flex justify-between items-start mb-6">
+<div>
+<h3 class="font-headline-lg-mobile text-headline-lg-mobile text-on-surface mb-1 flex items-center gap-2">
+<span class="material-symbols-outlined text-primary" data-icon="key">key</span>
+                            Clés API
+                        </h3>
+<p class="font-body-md text-body-md text-on-surface-variant">Gérez l'accès à l'API Izwan Constellation.</p>
+</div>
+<button class="flex items-center gap-2 font-label-sm text-label-sm text-on-primary bg-primary px-4 py-2 rounded-lg hover:bg-primary-container transition-colors shadow-sm">
+<span class="material-symbols-outlined text-[18px]" data-icon="add">add</span>
+                        Nouvelle
+                    </button>
+</div>
+<div class="flex-grow space-y-3">
+<div class="bg-surface rounded-lg p-4 flex items-center justify-between border border-surface-variant group hover:border-primary/50 transition-colors shadow-sm">
+<div>
+<div class="font-label-sm text-label-sm text-on-surface mb-1">Clé de Production Principale</div>
+<div class="font-code-snippet text-code-snippet text-on-surface-variant flex items-center gap-2">
+                                iz_prod_************************<span class="text-tertiary text-[10px] bg-tertiary/10 px-1.5 py-0.5 rounded">Dernier usage : hier</span>
+</div>
+</div>
+<div class="flex items-center gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
+<button class="p-2 hover:bg-surface-variant rounded-md text-on-surface-variant hover:text-primary transition-colors" title="Copier">
+<span class="material-symbols-outlined text-[18px]" data-icon="content_copy">content_copy</span>
+</button>
+<button class="p-2 hover:bg-error-container rounded-md text-on-surface-variant hover:text-error transition-colors" title="Révoquer">
+<span class="material-symbols-outlined text-[18px]" data-icon="delete">delete</span>
+</button>
+</div>
+</div>
+<div class="bg-surface rounded-lg p-4 flex items-center justify-between border border-surface-variant group hover:border-primary/50 transition-colors shadow-sm">
+<div>
+<div class="font-label-sm text-label-sm text-on-surface mb-1">Accès Développement Local</div>
+<div class="font-code-snippet text-code-snippet text-on-surface-variant flex items-center gap-2">
+                                iz_dev_************************
+                            </div>
+</div>
+<div class="flex items-center gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
+<button class="p-2 hover:bg-surface-variant rounded-md text-on-surface-variant hover:text-primary transition-colors" title="Copier">
+<span class="material-symbols-outlined text-[18px]" data-icon="content_copy">content_copy</span>
+</button>
+<button class="p-2 hover:bg-error-container rounded-md text-on-surface-variant hover:text-error transition-colors" title="Révoquer">
+<span class="material-symbols-outlined text-[18px]" data-icon="delete">delete</span>
+</button>
+</div>
+</div>
+</div>
+</section>
+</div>
+</main>
+<!-- Floating Bottom Navigation Dock -->
+<nav class="fixed bottom-8 left-1/2 -translate-x-1/2 z-50">
+<div class="bg-surface/80 backdrop-blur-md border border-surface-variant rounded-full px-6 py-3 flex items-center gap-8 ambient-shadow">
+<a class="flex flex-col items-center gap-1 text-on-surface-variant hover:text-primary transition-colors" href="#">
+<span class="material-symbols-outlined">dashboard</span>
+<span class="text-[10px] font-label-sm uppercase tracking-wider">Dashboard</span>
+</a>
+<a class="flex flex-col items-center gap-1 text-on-surface-variant hover:text-primary transition-colors" href="#">
+<span class="material-symbols-outlined">code</span>
+<span class="text-[10px] font-label-sm uppercase tracking-wider">Snippets</span>
+</a>
+<a class="flex flex-col items-center gap-1 text-on-surface-variant hover:text-primary transition-colors" href="#">
+<span class="material-symbols-outlined">folder_open</span>
+<span class="text-[10px] font-label-sm uppercase tracking-wider">Collection</span>
+</a>
+<a class="flex flex-col items-center gap-1 text-on-surface-variant hover:text-primary transition-colors" href="#">
+<span class="material-symbols-outlined">favorite</span>
+<span class="text-[10px] font-label-sm uppercase tracking-wider">Favoris</span>
+</a>
+<a class="flex flex-col items-center gap-1 text-on-surface-variant hover:text-primary transition-colors" href="#">
+<span class="material-symbols-outlined">group</span>
+<span class="text-[10px] font-label-sm uppercase tracking-wider">Équipe</span>
+</a>
+<a class="flex flex-col items-center gap-1 text-on-surface-variant hover:text-primary transition-colors" href="#">
+<span class="material-symbols-outlined">auto_awesome</span>
+<span class="text-[10px] font-label-sm uppercase tracking-wider">Constellation</span>
+</a>
+
+
+</div>
+</nav>
+<!-- Floating AI Assistant Button -->
+<button class="fixed bottom-8 right-8 z-50 w-14 h-14 bg-primary text-on-primary rounded-full flex items-center justify-center shadow-lg hover:bg-primary-container transition-all active:scale-95">
+<span class="material-symbols-outlined text-[28px]">smart_toy</span>
+</button>
+
+</body></html>

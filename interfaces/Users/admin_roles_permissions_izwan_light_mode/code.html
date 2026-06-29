@@ -1,0 +1,387 @@
+<!DOCTYPE html>
+
+<html class="light" lang="fr"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Izwan Admin - Roles &amp; Permissions</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@500;600;700&amp;family=Inter:wght@400;500;600&amp;family=Fira+Code:wght@450&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "secondary-container": "#ffc5d3",
+                    "on-tertiary-container": "#a49d9d",
+                    "surface-bright": "#fff8f8",
+                    "inverse-primary": "#f7b5c3",
+                    "secondary": "#7e525e",
+                    "on-primary-fixed": "#350e1a",
+                    "primary-fixed-dim": "#f7b5c3",
+                    "on-secondary-fixed-variant": "#643b46",
+                    "tertiary-container": "#393535",
+                    "tertiary-fixed-dim": "#ccc5c5",
+                    "secondary-fixed": "#ffd9e1",
+                    "secondary-fixed-dim": "#f0b8c5",
+                    "background": "#fff8f8",
+                    "surface-variant": "#e9e0e1",
+                    "surface-container-low": "#faf1f2",
+                    "outline-variant": "#d5c2c5",
+                    "tertiary": "#232020",
+                    "on-tertiary": "#ffffff",
+                    "on-background": "#1e1b1c",
+                    "inverse-surface": "#332f30",
+                    "on-error": "#ffffff",
+                    "surface-container-highest": "#e9e0e1",
+                    "surface": "#fff8f8",
+                    "on-surface": "#1e1b1c",
+                    "on-primary-container": "#cc8e9c",
+                    "on-secondary-fixed": "#31111b",
+                    "on-secondary-container": "#7b4f5b",
+                    "on-primary": "#ffffff",
+                    "surface-dim": "#e0d8d9",
+                    "surface-container-high": "#efe6e7",
+                    "on-secondary": "#ffffff",
+                    "surface-container": "#f4eced",
+                    "primary-fixed": "#ffd9e0",
+                    "on-tertiary-fixed": "#1e1b1b",
+                    "on-surface-variant": "#514346",
+                    "on-error-container": "#93000a",
+                    "surface-tint": "#844f5c",
+                    "tertiary-fixed": "#e9e1e1",
+                    "on-primary-fixed-variant": "#683844",
+                    "inverse-on-surface": "#f7eff0",
+                    "error-container": "#ffdad6",
+                    "outline": "#837376",
+                    "error": "#ba1a1a",
+                    "primary": "#3b131f",
+                    "on-tertiary-fixed-variant": "#4a4646",
+                    "primary-container": "#552834",
+                    "surface-container-lowest": "#ffffff"
+            },
+            "borderRadius": {
+                    "DEFAULT": "0.25rem",
+                    "lg": "0.5rem",
+                    "xl": "0.75rem",
+                    "full": "9999px"
+            },
+            "spacing": {
+                    "xs": "4px",
+                    "lg": "24px",
+                    "gutter": "24px",
+                    "md": "16px",
+                    "sm": "8px",
+                    "margin-desktop": "64px",
+                    "base": "4px",
+                    "xl": "40px",
+                    "margin-mobile": "16px"
+            },
+            "fontFamily": {
+                    "headline-lg-mobile": [
+                            "Poppins"
+                    ],
+                    "headline-md": [
+                            "Poppins"
+                    ],
+                    "display": [
+                            "Poppins"
+                    ],
+                    "label-caps": [
+                            "Inter"
+                    ],
+                    "body-sm": [
+                            "Inter"
+                    ],
+                    "code-md": [
+                            "Fira Code"
+                    ],
+                    "body-lg": [
+                            "Inter"
+                    ],
+                    "headline-lg": [
+                            "Poppins"
+                    ],
+                    "body-md": [
+                            "Inter"
+                    ]
+            },
+            "fontSize": {
+                    "headline-lg-mobile": [
+                            "28px",
+                            {
+                                    "lineHeight": "36px",
+                                    "fontWeight": "600"
+                            }
+                    ],
+                    "headline-md": [
+                            "24px",
+                            {
+                                    "lineHeight": "32px",
+                                    "fontWeight": "600"
+                            }
+                    ],
+                    "display": [
+                            "48px",
+                            {
+                                    "lineHeight": "56px",
+                                    "letterSpacing": "-0.02em",
+                                    "fontWeight": "700"
+                            }
+                    ],
+                    "label-caps": [
+                            "12px",
+                            {
+                                    "lineHeight": "16px",
+                                    "letterSpacing": "0.05em",
+                                    "fontWeight": "600"
+                            }
+                    ],
+                    "body-sm": [
+                            "14px",
+                            {
+                                    "lineHeight": "20px",
+                                    "fontWeight": "400"
+                            }
+                    ],
+                    "code-md": [
+                            "14px",
+                            {
+                                    "lineHeight": "22px",
+                                    "fontWeight": "450"
+                            }
+                    ],
+                    "body-lg": [
+                            "18px",
+                            {
+                                    "lineHeight": "28px",
+                                    "fontWeight": "400"
+                            }
+                    ],
+                    "headline-lg": [
+                            "32px",
+                            {
+                                    "lineHeight": "40px",
+                                    "fontWeight": "600"
+                            }
+                    ],
+                    "body-md": [
+                            "16px",
+                            {
+                                    "lineHeight": "24px",
+                                    "fontWeight": "400"
+                            }
+                    ]
+            }
+    },
+        },
+      }
+    </script>
+<style>
+        body {
+            background-color: #F7F4F4; /* White Smoke */
+            color: #1e1b1c; /* on-surface */
+        }
+    </style>
+</head>
+<body class="flex min-h-screen bg-background text-on-background font-body-md">
+<!-- SideNavBar -->
+<aside class="hidden md:flex bg-surface-container-lowest dark:bg-tertiary text-primary dark:text-primary-fixed h-screen w-64 fixed left-0 top-0 border-r border-outline-variant dark:border-tertiary-container flex-col p-md gap-sm z-50">
+<div class="mb-lg px-sm pt-sm">
+<h1 class="font-headline-md text-headline-md text-primary dark:text-primary-fixed">Izwan Admin</h1>
+<p class="font-body-sm text-body-sm text-on-surface-variant">System Management</p>
+</div>
+<nav class="flex-1 flex flex-col gap-sm overflow-y-auto">
+<a class="flex items-center gap-md px-sm py-sm rounded-lg text-on-surface-variant dark:text-on-tertiary-container hover:text-primary dark:hover:text-primary-fixed hover:bg-surface-container dark:hover:bg-tertiary-container transition-all duration-200 ease-in-out" href="#">
+<span class="material-symbols-outlined" data-icon="dashboard">dashboard</span>
+<span class="font-label-caps text-label-caps">Admin Dashboard</span>
+</a>
+<a class="flex items-center gap-md px-sm py-sm rounded-lg text-on-surface-variant dark:text-on-tertiary-container hover:text-primary dark:hover:text-primary-fixed hover:bg-surface-container dark:hover:bg-tertiary-container transition-all duration-200 ease-in-out" href="#">
+<span class="material-symbols-outlined" data-icon="group">group</span>
+<span class="font-label-caps text-label-caps">Gestion des Utilisateurs</span>
+</a>
+<a class="flex items-center gap-md px-sm py-sm rounded-lg text-on-surface-variant dark:text-on-tertiary-container hover:text-primary dark:hover:text-primary-fixed hover:bg-surface-container dark:hover:bg-tertiary-container transition-all duration-200 ease-in-out" href="#">
+<span class="material-symbols-outlined" data-icon="code">code</span>
+<span class="font-label-caps text-label-caps">Gestion des Snippets</span>
+</a>
+<a class="flex items-center gap-md px-sm py-sm rounded-lg text-on-surface-variant dark:text-on-tertiary-container hover:text-primary dark:hover:text-primary-fixed hover:bg-surface-container dark:hover:bg-tertiary-container transition-all duration-200 ease-in-out" href="#">
+<span class="material-symbols-outlined" data-icon="memory">memory</span>
+<span class="font-label-caps text-label-caps">Admin AI &amp; System</span>
+</a>
+<a class="flex items-center gap-md px-sm py-sm rounded-lg text-on-surface-variant dark:text-on-tertiary-container hover:text-primary dark:hover:text-primary-fixed hover:bg-surface-container dark:hover:bg-tertiary-container transition-all duration-200 ease-in-out" href="#">
+<span class="material-symbols-outlined" data-icon="analytics">analytics</span>
+<span class="font-label-caps text-label-caps">Admin Audit</span>
+</a>
+<a class="flex items-center gap-md px-sm py-sm bg-secondary-container dark:bg-primary-container text-on-secondary-container dark:text-on-primary-container font-semibold rounded-lg transition-all duration-200 ease-in-out" href="#">
+<span class="material-symbols-outlined" data-icon="verified_user">verified_user</span>
+<span class="font-label-caps text-label-caps">Admin Roles &amp; Permissions</span>
+</a>
+</nav>
+<div class="mt-auto pt-md border-t border-outline-variant flex flex-col gap-sm">
+<a class="flex items-center gap-md px-sm py-sm rounded-lg text-on-surface-variant hover:text-primary hover:bg-surface-container transition-all duration-200 ease-in-out" href="#">
+<span class="material-symbols-outlined" data-icon="help">help</span>
+<span class="font-label-caps text-label-caps">Support</span>
+</a>
+<a class="flex items-center gap-md px-sm py-sm rounded-lg text-on-surface-variant hover:text-primary hover:bg-surface-container transition-all duration-200 ease-in-out" href="#">
+<span class="material-symbols-outlined" data-icon="logout">logout</span>
+<span class="font-label-caps text-label-caps">Sign Out</span>
+</a>
+</div>
+</aside>
+<!-- Main Content -->
+<main class="flex-1 md:ml-64 p-margin-mobile md:p-margin-desktop bg-background min-h-screen">
+<!-- TopAppBar (Mobile) -->
+<header class="md:hidden flex justify-between items-center w-full px-md h-16 bg-surface border-b border-outline-variant mb-lg sticky top-0 z-40">
+<span class="text-headline-md font-headline-md font-bold text-primary">Izwan</span>
+<button class="text-primary p-2">
+<span class="material-symbols-outlined" data-icon="menu">menu</span>
+</button>
+</header>
+<!-- Page Header -->
+<div class="flex flex-col md:flex-row md:items-center justify-between mb-xl gap-md">
+<div>
+<h2 class="font-headline-lg text-headline-lg-mobile md:text-headline-lg text-primary-container">Rôles &amp; Permissions</h2>
+<p class="font-body-md text-body-md text-on-surface-variant mt-sm">Gérez les accès et les habilitations des utilisateurs du système.</p>
+</div>
+<button class="bg-primary-container text-on-primary hover:bg-surface-tint transition-colors rounded-lg px-lg py-sm font-label-caps text-label-caps flex items-center gap-sm self-start md:self-auto shadow-sm">
+<span class="material-symbols-outlined" data-icon="add">add</span>
+                NOUVEAU RÔLE
+            </button>
+</div>
+<!-- Layout Grid -->
+<div class="grid grid-cols-1 lg:grid-cols-12 gap-lg">
+<!-- Roles List (Left Col) -->
+<div class="lg:col-span-4 flex flex-col gap-md">
+<div class="bg-surface border border-outline-variant rounded-lg p-md">
+<h3 class="font-headline-md text-headline-md text-primary mb-md">Rôles Existants</h3>
+<div class="flex flex-col gap-sm">
+<!-- Role Item Active -->
+<div class="p-md rounded-lg border border-primary bg-surface-container-low cursor-pointer transition-colors relative">
+<div class="flex justify-between items-start mb-sm">
+<h4 class="font-label-caps text-label-caps text-primary-container font-bold">Admin</h4>
+<span class="bg-primary-container text-on-primary px-2 py-1 rounded-full font-label-caps text-[10px]">3 users</span>
+</div>
+<p class="font-body-sm text-body-sm text-on-surface-variant">Accès complet à toutes les fonctionnalités du système, incluant la configuration de l'IA et l'audit.</p>
+</div>
+<!-- Role Item -->
+<div class="p-md rounded-lg border border-outline-variant bg-surface hover:border-primary-container hover:bg-surface-container-lowest cursor-pointer transition-colors">
+<div class="flex justify-between items-start mb-sm">
+<h4 class="font-label-caps text-label-caps text-on-surface font-semibold">Éditeur</h4>
+<span class="bg-surface-variant text-on-surface px-2 py-1 rounded-full font-label-caps text-[10px]">12 users</span>
+</div>
+<p class="font-body-sm text-body-sm text-on-surface-variant">Peut créer, modifier et supprimer des snippets, mais ne peut pas modifier la configuration globale.</p>
+</div>
+<!-- Role Item -->
+<div class="p-md rounded-lg border border-outline-variant bg-surface hover:border-primary-container hover:bg-surface-container-lowest cursor-pointer transition-colors">
+<div class="flex justify-between items-start mb-sm">
+<h4 class="font-label-caps text-label-caps text-on-surface font-semibold">Lecteur</h4>
+<span class="bg-surface-variant text-on-surface px-2 py-1 rounded-full font-label-caps text-[10px]">45 users</span>
+</div>
+<p class="font-body-sm text-body-sm text-on-surface-variant">Accès en lecture seule aux tableaux de bord et aux snippets validés.</p>
+</div>
+<!-- Role Item -->
+<div class="p-md rounded-lg border border-outline-variant bg-surface hover:border-primary-container hover:bg-surface-container-lowest cursor-pointer transition-colors">
+<div class="flex justify-between items-start mb-sm">
+<h4 class="font-label-caps text-label-caps text-on-surface font-semibold">AI Specialist</h4>
+<span class="bg-surface-variant text-on-surface px-2 py-1 rounded-full font-label-caps text-[10px]">2 users</span>
+</div>
+<p class="font-body-sm text-body-sm text-on-surface-variant">Gestion exclusive des modèles IA, des prompts systèmes et consultation des logs spécifiques.</p>
+</div>
+</div>
+</div>
+</div>
+<!-- Permissions Matrix (Right Col) -->
+<div class="lg:col-span-8 flex flex-col gap-md">
+<div class="bg-surface border border-outline-variant rounded-lg p-lg flex-1">
+<div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-lg pb-md border-b border-outline-variant gap-md">
+<div>
+<h3 class="font-headline-md text-headline-md text-primary">Détails : Admin</h3>
+<p class="font-body-sm text-body-sm text-on-surface-variant mt-xs">Modifiez les permissions pour ce rôle. Les changements sont appliqués immédiatement.</p>
+</div>
+<div class="flex gap-sm">
+<button class="bg-transparent border border-primary text-primary hover:bg-surface-container-low transition-colors rounded-lg px-md py-sm font-label-caps text-label-caps">DUPLIQUER</button>
+<button class="bg-primary-container text-on-primary hover:bg-surface-tint transition-colors rounded-lg px-md py-sm font-label-caps text-label-caps shadow-sm">SAUVEGARDER</button>
+</div>
+</div>
+<!-- Permissions Categories -->
+<div class="space-y-lg">
+<!-- Category: Dashboard -->
+<div>
+<h4 class="font-label-caps text-label-caps text-on-surface-variant mb-md uppercase tracking-wider">Dashboard &amp; Analytique</h4>
+<div class="grid grid-cols-1 md:grid-cols-2 gap-sm">
+<label class="flex items-center gap-md p-sm hover:bg-surface-container rounded-lg cursor-pointer transition-colors">
+<input checked="" class="form-checkbox text-primary-container rounded border-outline-variant focus:ring-primary-container h-5 w-5" type="checkbox"/>
+<span class="font-body-sm text-body-sm text-on-surface">Voir les statistiques globales</span>
+</label>
+<label class="flex items-center gap-md p-sm hover:bg-surface-container rounded-lg cursor-pointer transition-colors">
+<input checked="" class="form-checkbox text-primary-container rounded border-outline-variant focus:ring-primary-container h-5 w-5" type="checkbox"/>
+<span class="font-body-sm text-body-sm text-on-surface">Exporter les rapports</span>
+</label>
+</div>
+</div>
+<!-- Category: Snippets -->
+<div>
+<h4 class="font-label-caps text-label-caps text-on-surface-variant mb-md uppercase tracking-wider">Gestion des Snippets</h4>
+<div class="grid grid-cols-1 md:grid-cols-2 gap-sm">
+<label class="flex items-center gap-md p-sm hover:bg-surface-container rounded-lg cursor-pointer transition-colors">
+<input checked="" class="form-checkbox text-primary-container rounded border-outline-variant focus:ring-primary-container h-5 w-5" type="checkbox"/>
+<span class="font-body-sm text-body-sm text-on-surface">Lecture seule</span>
+</label>
+<label class="flex items-center gap-md p-sm hover:bg-surface-container rounded-lg cursor-pointer transition-colors">
+<input checked="" class="form-checkbox text-primary-container rounded border-outline-variant focus:ring-primary-container h-5 w-5" type="checkbox"/>
+<span class="font-body-sm text-body-sm text-on-surface">Création et Édition</span>
+</label>
+<label class="flex items-center gap-md p-sm hover:bg-surface-container rounded-lg cursor-pointer transition-colors">
+<input checked="" class="form-checkbox text-primary-container rounded border-outline-variant focus:ring-primary-container h-5 w-5" type="checkbox"/>
+<span class="font-body-sm text-body-sm text-on-surface">Suppression définitive</span>
+</label>
+<label class="flex items-center gap-md p-sm hover:bg-surface-container rounded-lg cursor-pointer transition-colors">
+<input checked="" class="form-checkbox text-primary-container rounded border-outline-variant focus:ring-primary-container h-5 w-5" type="checkbox"/>
+<span class="font-body-sm text-body-sm text-on-surface">Approbation (Workflow)</span>
+</label>
+</div>
+</div>
+<!-- Category: AI System -->
+<div>
+<h4 class="font-label-caps text-label-caps text-on-surface-variant mb-md uppercase tracking-wider">Système IA</h4>
+<div class="grid grid-cols-1 md:grid-cols-2 gap-sm">
+<label class="flex items-center gap-md p-sm hover:bg-surface-container rounded-lg cursor-pointer transition-colors">
+<input checked="" class="form-checkbox text-primary-container rounded border-outline-variant focus:ring-primary-container h-5 w-5" type="checkbox"/>
+<span class="font-body-sm text-body-sm text-on-surface">Utiliser les outils IA</span>
+</label>
+<label class="flex items-center gap-md p-sm hover:bg-surface-container rounded-lg cursor-pointer transition-colors">
+<input checked="" class="form-checkbox text-primary-container rounded border-outline-variant focus:ring-primary-container h-5 w-5" type="checkbox"/>
+<span class="font-body-sm text-body-sm text-on-surface">Modifier la configuration IA</span>
+</label>
+<label class="flex items-center gap-md p-sm hover:bg-surface-container rounded-lg cursor-pointer transition-colors">
+<input checked="" class="form-checkbox text-primary-container rounded border-outline-variant focus:ring-primary-container h-5 w-5" type="checkbox"/>
+<span class="font-body-sm text-body-sm text-on-surface">Accéder aux logs de requêtes IA</span>
+</label>
+</div>
+</div>
+<!-- Category: Admin -->
+<div>
+<h4 class="font-label-caps text-label-caps text-on-surface-variant mb-md uppercase tracking-wider">Administration Générale</h4>
+<div class="grid grid-cols-1 md:grid-cols-2 gap-sm">
+<label class="flex items-center gap-md p-sm hover:bg-surface-container rounded-lg cursor-pointer transition-colors">
+<input checked="" class="form-checkbox text-primary-container rounded border-outline-variant focus:ring-primary-container h-5 w-5" type="checkbox"/>
+<span class="font-body-sm text-body-sm text-on-surface">Gestion des utilisateurs</span>
+</label>
+<label class="flex items-center gap-md p-sm hover:bg-surface-container rounded-lg cursor-pointer transition-colors">
+<input checked="" class="form-checkbox text-primary-container rounded border-outline-variant focus:ring-primary-container h-5 w-5" type="checkbox"/>
+<span class="font-body-sm text-body-sm text-on-surface">Modification des Rôles &amp; Permissions</span>
+</label>
+<label class="flex items-center gap-md p-sm hover:bg-surface-container rounded-lg cursor-pointer transition-colors">
+<input checked="" class="form-checkbox text-primary-container rounded border-outline-variant focus:ring-primary-container h-5 w-5" type="checkbox"/>
+<span class="font-body-sm text-body-sm text-on-surface">Accès aux logs d'audit complets</span>
+</label>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</main>
+</body></html>

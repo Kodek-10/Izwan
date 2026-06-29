@@ -1,0 +1,439 @@
+<!DOCTYPE html><html class="dark" lang="fr"><head>
+<meta charset="utf-8">
+<meta content="width=device-width, initial-scale=1.0" name="viewport">
+<title>Izwan Admin - Tableau de bord</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&amp;family=Poppins:wght@600;700;900&amp;family=Fira+Code:wght@400;500&amp;display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet">
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "on-secondary-fixed": "#001a42",
+                        "tertiary-container": "#009eb9",
+                        "error-container": "#93000a",
+                        "on-error-container": "#ffdad6",
+                        "secondary-container": "#0566d9",
+                        "on-secondary": "#002e6a",
+                        "tertiary-fixed-dim": "#4cd7f6",
+                        "outline-variant": "#494454",
+                        "surface-container-low": "#131b2e",
+                        "on-surface": "#dae2fd",
+                        "error": "#ffb4ab",
+                        "on-error": "#690005",
+                        "on-primary-fixed-variant": "#5516be",
+                        "on-secondary-fixed-variant": "#004395",
+                        "on-primary-fixed": "#23005c",
+                        "surface-container": "#171f33",
+                        "inverse-surface": "#dae2fd",
+                        "on-tertiary": "#003640",
+                        "primary-fixed-dim": "#d0bcff",
+                        "primary-container": "#a078ff",
+                        "outline": "#958ea0",
+                        "on-background": "#dae2fd",
+                        "secondary-fixed-dim": "#adc6ff",
+                        "secondary": "#adc6ff",
+                        "on-surface-variant": "#cbc3d7",
+                        "on-tertiary-container": "#002f38",
+                        "surface-dim": "#0b1326",
+                        "tertiary": "#4cd7f6",
+                        "on-tertiary-fixed-variant": "#004e5c",
+                        "surface-container-high": "#222a3d",
+                        "on-secondary-container": "#e6ecff",
+                        "background": "#0b1326",
+                        "surface-tint": "#d0bcff",
+                        "surface-container-lowest": "#060e20",
+                        "secondary-fixed": "#d8e2ff",
+                        "primary": "#d0bcff",
+                        "on-primary-container": "#340080",
+                        "surface": "#0b1326",
+                        "surface-container-highest": "#2d3449",
+                        "tertiary-fixed": "#acedff",
+                        "surface-bright": "#31394d",
+                        "on-primary": "#3c0091",
+                        "inverse-on-surface": "#283044",
+                        "surface-variant": "#2d3449",
+                        "primary-fixed": "#e9ddff",
+                        "inverse-primary": "#6d3bd7",
+                        "on-tertiary-fixed": "#001f26"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    "spacing": {
+                        "container-max": "1440px",
+                        "gutter": "24px",
+                        "unit": "4px",
+                        "margin-mobile": "16px",
+                        "sidebar-width": "280px"
+                    },
+                    "fontFamily": {
+                        "code-block": ["Fira Code"],
+                        "label-sm": ["Inter"],
+                        "display-lg-mobile": ["Poppins"],
+                        "display-lg": ["Poppins"],
+                        "headline-md": ["Poppins"],
+                        "body-md": ["Inter"],
+                        "body-lg": ["Inter"]
+                    },
+                    "fontSize": {
+                        "code-block": ["14px", { "lineHeight": "1.7", "fontWeight": "400" }],
+                        "label-sm": ["13px", { "lineHeight": "1.4", "letterSpacing": "0.01em", "fontWeight": "500" }],
+                        "display-lg-mobile": ["32px", { "lineHeight": "1.2", "fontWeight": "600" }],
+                        "display-lg": ["48px", { "lineHeight": "1.2", "letterSpacing": "-0.02em", "fontWeight": "600" }],
+                        "headline-md": ["24px", { "lineHeight": "1.3", "fontWeight": "600" }],
+                        "body-md": ["16px", { "lineHeight": "1.5", "fontWeight": "400" }],
+                        "body-lg": ["18px", { "lineHeight": "1.6", "fontWeight": "400" }]
+                    }
+                }
+            }
+        }
+    </script>
+<style>
+        body { background-color: theme('colors.background'); color: theme('colors.on-background'); }
+        .glass-card {
+            background-color: rgba(30, 41, 59, 0.6);
+            backdrop-filter: blur(10px);
+            border-top: 1px solid rgba(255,255,255,0.1);
+            border-left: 1px solid rgba(255,255,255,0.05);
+            border-right: 1px solid rgba(0,0,0,0.2);
+            border-bottom: 1px solid rgba(0,0,0,0.2);
+        }
+        .glow-active {
+            box-shadow: 0 0 20px rgba(139, 92, 246, 0.15);
+        }
+        .kpi-gradient {
+            background: linear-gradient(135deg, rgba(139,92,246,0.1) 0%, rgba(6,14,32,0) 100%);
+        }
+    </style>
+</head>
+<body class="font-body-md text-body-md antialiased overflow-x-hidden flex h-screen">
+<!-- SideNavBar -->
+<nav class="bg-surface-container-low border-r border-outline-variant/20 fixed left-0 top-0 h-full flex flex-col z-40 w-sidebar-width transition-all duration-200 ease-in-out hidden md:flex">
+<div class="p-6">
+<div class="flex items-center gap-3 mb-8">
+<div class="w-10 h-10 rounded-lg bg-gradient-to-br from-primary-container to-secondary-container flex items-center justify-center">
+<span class="material-symbols-outlined text-on-primary-container">admin_panel_settings</span>
+</div>
+<div>
+<h1 class="font-headline-md text-headline-md font-black text-primary">Izwan Admin</h1>
+<p class="font-label-sm text-label-sm text-on-surface-variant">System Control</p>
+</div>
+</div>
+<div class="space-y-1 mt-6">
+<!-- Active Nav Item -->
+<a class="flex items-center gap-3 bg-secondary-container/20 text-primary border-l-4 border-primary px-4 py-3 rounded-r-lg glow-active" href="#">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">dashboard</span>
+<span class="font-label-sm text-label-sm">Tableau de bord</span>
+</a>
+<!-- Inactive Nav Items -->
+<a class="flex items-center gap-3 text-on-surface-variant px-4 py-3 hover:bg-surface-container-high hover:text-on-surface rounded-r-lg transition-colors border-l-4 border-transparent" href="#">
+<span class="material-symbols-outlined">group</span>
+<span class="font-label-sm text-label-sm">Utilisateurs</span>
+</a>
+<a class="flex items-center gap-3 text-on-surface-variant px-4 py-3 hover:bg-surface-container-high hover:text-on-surface rounded-r-lg transition-colors border-l-4 border-transparent" href="#">
+<span class="material-symbols-outlined">memory</span>
+<span class="font-label-sm text-label-sm">IA &amp; Système</span>
+</a>
+<a class="flex items-center gap-3 text-on-surface-variant px-4 py-3 hover:bg-surface-container-high hover:text-on-surface rounded-r-lg transition-colors border-l-4 border-transparent" href="#">
+<span class="material-symbols-outlined">history</span>
+<span class="font-label-sm text-label-sm">Audit</span>
+</a>
+<a class="flex items-center gap-3 text-on-surface-variant px-4 py-3 hover:bg-surface-container-high hover:text-on-surface rounded-r-lg transition-colors border-l-4 border-transparent" href="#">
+<span class="material-symbols-outlined">shield_person</span>
+<span class="font-label-sm text-label-sm">Rôles</span>
+</a>
+</div>
+</div>
+<div class="mt-auto p-6 space-y-1 border-t border-outline-variant/20">
+<a class="flex items-center gap-3 text-on-surface-variant px-4 py-3 hover:bg-surface-container-high hover:text-on-surface rounded-r-lg transition-colors border-l-4 border-transparent" href="#">
+<span class="material-symbols-outlined">settings</span>
+<span class="font-label-sm text-label-sm">Paramètres globaux</span>
+</a>
+<a class="flex items-center gap-3 text-on-surface-variant px-4 py-3 hover:bg-surface-container-high hover:text-on-surface rounded-r-lg transition-colors border-l-4 border-transparent" href="#">
+<span class="material-symbols-outlined">logout</span>
+<span class="font-label-sm text-label-sm">Déconnexion</span>
+</a>
+</div>
+</nav>
+<!-- Main Content Canvas -->
+<main class="flex-1 flex flex-col ml-0 md:ml-sidebar-width h-screen overflow-y-auto">
+<!-- TopNavBar Admin -->
+<header class="bg-surface-container-lowest border-b border-outline-variant/50 shadow-sm flex justify-between items-center h-16 w-full px-6 sticky top-0 z-30">
+<div class="flex items-center gap-4">
+<button class="md:hidden text-on-surface-variant hover:bg-surface-container-high rounded-full p-2 transition-colors">
+<span class="material-symbols-outlined">menu</span>
+</button>
+<h2 class="font-headline-md text-headline-md font-bold text-tertiary">Tableau de bord</h2>
+</div>
+<div class="flex items-center gap-4">
+<div class="hidden md:flex bg-surface-container-high rounded-lg p-1 border border-outline-variant/30">
+<button class="px-3 py-1 font-label-sm text-label-sm rounded-md text-on-surface-variant hover:text-on-surface transition-colors">7 j</button>
+<button class="px-3 py-1 font-label-sm text-label-sm bg-primary/20 text-primary rounded-md shadow-sm">30 j</button>
+<button class="px-3 py-1 font-label-sm text-label-sm rounded-md text-on-surface-variant hover:text-on-surface transition-colors">90 j</button>
+</div>
+<div class="h-6 w-px bg-outline-variant/30 hidden md:block"></div>
+<div class="flex items-center gap-2">
+<button aria-label="language" class="text-on-surface-variant hover:bg-surface-container-high rounded-full p-2 transition-colors Active: opacity-80">
+<span class="material-symbols-outlined">language</span>
+</button>
+<button aria-label="dark_mode" class="text-on-surface-variant hover:bg-surface-container-high rounded-full p-2 transition-colors Active: opacity-80">
+<span class="material-symbols-outlined">dark_mode</span>
+</button>
+<button aria-label="notifications" class="text-on-surface-variant hover:bg-surface-container-high rounded-full p-2 transition-colors Active: opacity-80 relative">
+<span class="material-symbols-outlined">notifications</span>
+<span class="absolute top-1 right-1 w-2 h-2 bg-error rounded-full"></span>
+</button>
+</div>
+<img class="w-8 h-8 rounded-full border border-outline-variant/50 object-cover ml-2" data-alt="A futuristic, polished 3D avatar of a system administrator in a sleek dark gray and violet high-tech suit. The lighting is dramatic, with rim lights highlighting the contours of the suit against a pure black background. Professional, high-end corporate AI aesthetic." src="https://lh3.googleusercontent.com/aida-public/AB6AXuCxiPFGvpLomSkf0FNwbXnlSQ0wp7XnankfaVhLdMZNzx_71wHAQ2BBmCVzPbYQC53M__ibD-31qq9_sSmywJT_SjNAdqdhO8kd1fkei05Bc-7UKASXfcn9sGyPX6J4Tf7thELYkdBDnUwugl6ilMXNQFo3g8j7aspQr3r1cf6FdJkw_stTRQBWwnRlC3VSYYNIGidHCvm9azyBZ6_8rGXuC874DGnytfNIErcmhabPT7lduPjt7d1Wlq0RyZMM0WXSTLV9MEbQBl4">
+</div>
+</header>
+<!-- Dashboard Content -->
+<div class="p-gutter max-w-container-max mx-auto w-full space-y-6">
+<!-- KPI Row -->
+<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+<!-- Card 1 -->
+<div class="glass-card rounded-xl p-5 flex flex-col justify-between kpi-gradient relative overflow-hidden group">
+<div class="flex justify-between items-start mb-4 relative z-10">
+<div>
+<p class="font-label-sm text-label-sm text-on-surface-variant mb-1 uppercase tracking-wider">Utilisateurs Actifs</p>
+<h3 class="font-headline-md text-headline-md text-on-surface">1,248</h3>
+</div>
+<div class="p-2 bg-primary/10 rounded-lg text-primary">
+<span class="material-symbols-outlined">group</span>
+</div>
+</div>
+<div class="flex items-center gap-2 relative z-10">
+<span class="text-tertiary-fixed-dim font-label-sm flex items-center"><span class="material-symbols-outlined text-[16px]">arrow_upward</span> 12.5%</span>
+<span class="text-on-surface-variant font-label-sm text-xs">vs mois prec.</span>
+</div>
+<!-- Abstract Sparkline Background -->
+<div class="absolute bottom-0 left-0 right-0 h-16 opacity-30 group-hover:opacity-50 transition-opacity">
+<svg class="w-full h-full" preserveAspectRatio="none" viewBox="0 0 100 30">
+<path d="M0,30 L0,20 Q10,15 20,25 T40,15 T60,20 T80,5 T100,10 L100,30 Z" fill="url(#grad1)"></path>
+<defs>
+<linearGradient id="grad1" x1="0" x2="0" y1="0" y2="1">
+<stop offset="0%" stop-color="#d0bcff" stop-opacity="0.8"></stop>
+<stop offset="100%" stop-color="#d0bcff" stop-opacity="0"></stop>
+</linearGradient>
+</defs>
+</svg>
+</div>
+</div>
+<!-- Card 2 -->
+<div class="glass-card rounded-xl p-5 flex flex-col justify-between kpi-gradient relative overflow-hidden group">
+<div class="flex justify-between items-start mb-4 relative z-10">
+<div>
+<p class="font-label-sm text-label-sm text-on-surface-variant mb-1 uppercase tracking-wider">Snippets Créés</p>
+<h3 class="font-headline-md text-headline-md text-on-surface">8,592</h3>
+</div>
+<div class="p-2 bg-primary/10 rounded-lg text-primary">
+<span class="material-symbols-outlined">code</span>
+</div>
+</div>
+<div class="flex items-center gap-2 relative z-10">
+<span class="text-tertiary-fixed-dim font-label-sm flex items-center"><span class="material-symbols-outlined text-[16px]">arrow_upward</span> 8.2%</span>
+<span class="text-on-surface-variant font-label-sm text-xs">vs mois prec.</span>
+</div>
+</div>
+<!-- Card 3 -->
+<div class="glass-card rounded-xl p-5 flex flex-col justify-between kpi-gradient relative overflow-hidden group">
+<div class="flex justify-between items-start mb-4 relative z-10">
+<div>
+<p class="font-label-sm text-label-sm text-on-surface-variant mb-1 uppercase tracking-wider">Collections</p>
+<h3 class="font-headline-md text-headline-md text-on-surface">432</h3>
+</div>
+<div class="p-2 bg-primary/10 rounded-lg text-primary">
+<span class="material-symbols-outlined">folder_special</span>
+</div>
+</div>
+<div class="flex items-center gap-2 relative z-10">
+<span class="text-on-surface-variant font-label-sm flex items-center"><span class="material-symbols-outlined text-[16px]">trending_flat</span> 0.0%</span>
+<span class="text-on-surface-variant font-label-sm text-xs">vs mois prec.</span>
+</div>
+</div>
+<!-- Card 4 -->
+<div class="glass-card rounded-xl p-5 flex flex-col justify-between kpi-gradient relative overflow-hidden group">
+<div class="flex justify-between items-start mb-4 relative z-10">
+<div>
+<p class="font-label-sm text-label-sm text-on-surface-variant mb-1 uppercase tracking-wider">Appels IA (30j)</p>
+<h3 class="font-headline-md text-headline-md text-on-surface">142k</h3>
+</div>
+<div class="p-2 bg-tertiary-container/20 rounded-lg text-tertiary-fixed-dim">
+<span class="material-symbols-outlined">neurology</span>
+</div>
+</div>
+<div class="flex items-center gap-2 relative z-10">
+<span class="text-tertiary-fixed-dim font-label-sm flex items-center"><span class="material-symbols-outlined text-[16px]">arrow_upward</span> 24.8%</span>
+<span class="text-on-surface-variant font-label-sm text-xs">vs mois prec.</span>
+</div>
+</div>
+</div>
+<!-- Main Bento Grid Area -->
+<div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+<!-- Left Column: Charts (Span 2) -->
+<div class="lg:col-span-2 space-y-6">
+<!-- Line Chart Card -->
+<div class="glass-card rounded-xl p-6 h-[340px] flex flex-col">
+<div class="flex justify-between items-center mb-6">
+<h3 class="font-label-sm text-label-sm text-on-surface uppercase tracking-wider">Croissance du Système</h3>
+<button class="text-on-surface-variant hover:text-on-surface">
+<span class="material-symbols-outlined text-[20px]">more_vert</span>
+</button>
+</div>
+<!-- Placeholder for Chart -->
+<div class="flex-1 bg-surface-container-lowest/50 rounded-lg border border-outline-variant/10 flex items-center justify-center relative overflow-hidden">
+<div class="absolute inset-0 bg-[radial-gradient(ellipse_at_center,_var(--tw-gradient-stops))] from-primary/5 via-background to-background"></div>
+<div class="text-on-surface-variant flex flex-col items-center gap-2 z-10">
+<span class="material-symbols-outlined text-4xl opacity-50">show_chart</span>
+<span class="font-label-sm">Graphique d'évolution des requêtes</span>
+</div>
+</div>
+</div>
+<!-- Bar Chart Card -->
+<div class="glass-card rounded-xl p-6 h-[280px] flex flex-col">
+<div class="flex justify-between items-center mb-6">
+<h3 class="font-label-sm text-label-sm text-on-surface uppercase tracking-wider">Snippets par Langage</h3>
+<div class="flex gap-2">
+<span class="px-2 py-1 rounded bg-primary/10 text-primary text-[10px] font-bold">PYTHON</span>
+<span class="px-2 py-1 rounded bg-primary/10 text-primary text-[10px] font-bold">JS</span>
+<span class="px-2 py-1 rounded bg-primary/10 text-primary text-[10px] font-bold">RUST</span>
+</div>
+</div>
+<!-- Placeholder for Bar Chart -->
+<div class="flex-1 flex items-end gap-2 px-4 pb-2">
+<div class="w-full bg-surface-container-high rounded-t-md h-[80%] hover:bg-primary/40 transition-colors relative group"><div class="absolute -top-6 left-1/2 -translate-x-1/2 text-[10px] text-on-surface opacity-0 group-hover:opacity-100 transition-opacity">80%</div></div>
+<div class="w-full bg-surface-container-high rounded-t-md h-[60%] hover:bg-primary/40 transition-colors relative group"><div class="absolute -top-6 left-1/2 -translate-x-1/2 text-[10px] text-on-surface opacity-0 group-hover:opacity-100 transition-opacity">60%</div></div>
+<div class="w-full bg-surface-container-high rounded-t-md h-[45%] hover:bg-primary/40 transition-colors relative group"><div class="absolute -top-6 left-1/2 -translate-x-1/2 text-[10px] text-on-surface opacity-0 group-hover:opacity-100 transition-opacity">45%</div></div>
+<div class="w-full bg-surface-container-high rounded-t-md h-[30%] hover:bg-primary/40 transition-colors relative group"><div class="absolute -top-6 left-1/2 -translate-x-1/2 text-[10px] text-on-surface opacity-0 group-hover:opacity-100 transition-opacity">30%</div></div>
+<div class="w-full bg-surface-container-high rounded-t-md h-[95%] hover:bg-primary/40 transition-colors relative group bg-primary/20 border-t-2 border-primary"><div class="absolute -top-6 left-1/2 -translate-x-1/2 text-[10px] text-primary opacity-0 group-hover:opacity-100 transition-opacity">95%</div></div>
+<div class="w-full bg-surface-container-high rounded-t-md h-[50%] hover:bg-primary/40 transition-colors relative group"><div class="absolute -top-6 left-1/2 -translate-x-1/2 text-[10px] text-on-surface opacity-0 group-hover:opacity-100 transition-opacity">50%</div></div>
+</div>
+<div class="flex justify-between px-4 text-[10px] text-on-surface-variant font-code-block mt-2">
+<span>Py</span><span>Js</span><span>Ts</span><span>Go</span><span>Rs</span><span>C++</span>
+</div>
+</div>
+</div>
+<!-- Right Column (Span 1) -->
+<div class="space-y-6">
+<!-- System Status Card -->
+<div class="glass-card rounded-xl p-6">
+<h3 class="font-label-sm text-label-sm text-on-surface uppercase tracking-wider mb-4">État du Système</h3>
+<div class="space-y-3">
+<div class="flex justify-between items-center p-3 bg-surface-container-lowest rounded-lg border border-outline-variant/20">
+<div class="flex items-center gap-3">
+<span class="material-symbols-outlined text-tertiary text-[18px]">cloud</span>
+<span class="font-code-block text-[13px] text-on-surface">API Groq</span>
+</div>
+<span class="px-2 py-1 rounded-full bg-tertiary/10 text-tertiary-fixed-dim text-[10px] font-bold border border-tertiary/20 flex items-center gap-1">
+<div class="w-1.5 h-1.5 rounded-full bg-tertiary animate-pulse"></div> Actif
+                                </span>
+</div>
+<div class="flex justify-between items-center p-3 bg-surface-container-lowest rounded-lg border border-outline-variant/20">
+<div class="flex items-center gap-3">
+<span class="material-symbols-outlined text-primary text-[18px]">terminal</span>
+<span class="font-code-block text-[13px] text-on-surface">Ollama Local</span>
+</div>
+<span class="px-2 py-1 rounded-full bg-primary/10 text-primary text-[10px] font-bold border border-primary/20">
+                                    Disponible
+                                </span>
+</div>
+<div class="flex justify-between items-center p-3 bg-surface-container-lowest rounded-lg border border-outline-variant/20">
+<div class="flex items-center gap-3">
+<span class="material-symbols-outlined text-secondary text-[18px]">database</span>
+<span class="font-code-block text-[13px] text-on-surface">Base de données</span>
+</div>
+<span class="px-2 py-1 rounded-full bg-secondary/10 text-secondary text-[10px] font-bold border border-secondary/20">
+                                    OK (12ms)
+                                </span>
+</div>
+</div>
+</div>
+<!-- Donut Chart Card -->
+<div class="glass-card rounded-xl p-6">
+<h3 class="font-label-sm text-label-sm text-on-surface uppercase tracking-wider mb-4">Utilisation de l'IA</h3>
+<div class="flex flex-col items-center">
+<!-- CSS Donut Placeholder -->
+<div class="relative w-40 h-40 rounded-full flex items-center justify-center mb-6" style="background: conic-gradient(#d0bcff 0% 45%, #4cd7f6 45% 75%, #adc6ff 75% 90%, #2d3449 90% 100%);">
+<div class="w-24 h-24 bg-surface-container-low rounded-full border border-outline-variant/20 flex items-center justify-center flex-col shadow-inner">
+<span class="font-headline-md text-headline-md text-on-surface">142k</span>
+<span class="text-[10px] text-on-surface-variant font-code-block">Req. totales</span>
+</div>
+</div>
+<!-- Legend -->
+<div class="w-full space-y-2">
+<div class="flex justify-between items-center text-[12px]">
+<div class="flex items-center gap-2"><div class="w-2 h-2 rounded-full bg-primary"></div><span class="text-on-surface-variant">Enrichissement</span></div>
+<span class="font-code-block text-on-surface">45%</span>
+</div>
+<div class="flex justify-between items-center text-[12px]">
+<div class="flex items-center gap-2"><div class="w-2 h-2 rounded-full bg-tertiary"></div><span class="text-on-surface-variant">Explication</span></div>
+<span class="font-code-block text-on-surface">30%</span>
+</div>
+<div class="flex justify-between items-center text-[12px]">
+<div class="flex items-center gap-2"><div class="w-2 h-2 rounded-full bg-secondary"></div><span class="text-on-surface-variant">Traduction</span></div>
+<span class="font-code-block text-on-surface">15%</span>
+</div>
+<div class="flex justify-between items-center text-[12px]">
+<div class="flex items-center gap-2"><div class="w-2 h-2 rounded-full bg-surface-variant"></div><span class="text-on-surface-variant">Chat Interactif</span></div>
+<span class="font-code-block text-on-surface">10%</span>
+</div>
+</div>
+</div>
+</div>
+<!-- Recent Activity Compact -->
+<div class="glass-card rounded-xl p-6">
+<div class="flex justify-between items-center mb-4">
+<h3 class="font-label-sm text-label-sm text-on-surface uppercase tracking-wider">Activité Récente</h3>
+<a class="text-[12px] text-primary hover:underline" href="#">Voir tout</a>
+</div>
+<div class="space-y-4">
+<div class="flex gap-3">
+<div class="mt-1 w-2 h-2 rounded-full bg-error-container shrink-0"></div>
+<div>
+<p class="text-[13px] text-on-surface">Alerte : Pic de latence API Groq</p>
+<p class="text-[11px] text-on-surface-variant font-code-block">Il y a 12 min</p>
+</div>
+</div>
+<div class="flex gap-3">
+<div class="mt-1 w-2 h-2 rounded-full bg-tertiary shrink-0"></div>
+<div>
+<p class="text-[13px] text-on-surface">Nouveau modèle ajouté : <span class="text-tertiary font-code-block text-[11px]">llama3-8b-instruct</span></p>
+<p class="text-[11px] text-on-surface-variant font-code-block">Il y a 2 h</p>
+</div>
+</div>
+<div class="flex gap-3">
+<div class="mt-1 w-2 h-2 rounded-full bg-outline-variant shrink-0"></div>
+<div>
+<p class="text-[13px] text-on-surface">Backup automatique de la BDD réussi</p>
+<p class="text-[11px] text-on-surface-variant font-code-block">Il y a 5 h</p>
+</div>
+</div>
+<div class="flex gap-3">
+<div class="mt-1 w-2 h-2 rounded-full bg-primary shrink-0"></div>
+<div>
+<p class="text-[13px] text-on-surface">Inscription : <span class="font-code-block text-[11px]">dev_ops@company.com</span></p>
+<p class="text-[11px] text-on-surface-variant font-code-block">Hier, 14:32</p>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<!-- Footer Admin Context -->
+<footer class="w-full py-6 mt-8 border-t border-outline-variant/20 flex flex-col md:flex-row justify-between items-center text-[12px] text-on-surface-variant">
+<div>© 2024 Izwan Admin Console. Build v2.4.1</div>
+<div class="flex gap-4 mt-2 md:mt-0">
+<a class="hover:text-primary transition-colors" href="#">Documentation API</a>
+<a class="hover:text-primary transition-colors" href="#">Support Technique</a>
+</div>
+</footer>
+</div>
+</main>
+</body></html>
