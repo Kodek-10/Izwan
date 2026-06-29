@@ -25,10 +25,10 @@ export const Route = createFileRoute("/admin")({
 const adminNav = [
   { to: "/admin", label: "Tableau de bord", icon: LayoutDashboard, exact: true, done: true },
   { to: "/admin/users", label: "Utilisateurs", icon: Users, done: true },
-  { to: "/admin/snippets", label: "Snippets", icon: Code2, done: false },
-  { to: "/admin/ia-systeme", label: "IA & Système", icon: Cpu, done: false },
-  { to: "/admin/audit", label: "Audit", icon: ScrollText, done: false },
-  { to: "/admin/roles", label: "Rôles & permissions", icon: ShieldCheck, done: false },
+  { to: "/admin/snippets", label: "Snippets", icon: Code2, done: true },
+  { to: "/admin/ia-systeme", label: "IA & Système", icon: Cpu, done: true },
+  { to: "/admin/audit", label: "Audit", icon: ScrollText, done: true },
+  { to: "/admin/roles", label: "Rôles & permissions", icon: ShieldCheck, done: true },
 ];
 
 function AdminLayout() {

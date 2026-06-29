@@ -5,7 +5,7 @@ import {
   ShieldCheck, Check, ExternalLink, Mail, Terminal, Laptop,
   ArrowRight, Download, Sun, Moon
 } from "lucide-react";
-import { motion } from "framer-motion";
+import { motion, type Variants } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { IzwaLogo, IzwaWordmark } from "@/components/izwan-logo";
 import { useTheme } from "@/components/theme-provider";
@@ -69,12 +69,12 @@ void main() {
 const GITHUB_RELEASES = "https://github.com/Kodek-10/Izwan/releases";
 
 /* Framer Motion variants */
-const fadeInUp = {
+const fadeInUp: Variants = {
   hidden: { opacity: 0, y: 24 },
   visible: { opacity: 1, y: 0, transition: { duration: 0.5, ease: "easeOut" } },
 };
 
-const staggerContainer = {
+const staggerContainer: Variants = {
   hidden: { opacity: 0 },
   visible: {
     opacity: 1,

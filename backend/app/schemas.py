@@ -123,3 +123,12 @@ class PaginatedSnippet(BaseModel):
     skip: int
     limit: int
     items: List[Snippet]
+
+class AdminSnippet(BaseModel):
+    """Métadonnées d'un snippet pour l'admin — JAMAIS le code (confidentialité)."""
+    id: int
+    title: str
+    language: str
+    owner: Optional[str] = None
+    tags: List[str] = []
+    created_at: Optional[datetime] = None

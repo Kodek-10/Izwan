@@ -155,3 +155,31 @@ def audit_log(
     if category:
         query = query.filter(models.AuditLog.category == category)
     return query.order_by(models.AuditLog.created_at.desc()).limit(limit).all()
+
+
+@router.get("/snippets", response_model=List[schemas.AdminSnippet])
+def list_snippets(db: Session = Depends(get_db), admin: models.User = Depends(get_current_admin)):
+    """Liste les métadonnées de TOUS les snippets (jamais le code — confidentialité)."""
+    rows = db.query(models.Snippet).order_by(models.Snippet.created_at.desc()).all()
+    return [
+        schemas.AdminSnippet(
+            id=s.id,
+            title=s.title,
+            language=s.language,
+            owner=s.owner.username if s.owner else None,
+            tags=[t.name for t in s.tags],
+            created_at=s.created_at,
+        )
+        for s in rows
+    ]
+
+
+@router.delete("/snippets/{snippet_id}", status_code=status.HTTP_204_NO_CONTENT)
+def delete_snippet(snippet_id: int, db: Session = Depends(get_db), admin: models.User = Depends(get_current_admin)):
+    """Supprime n'importe quel snippet (modération)."""
+    snippet = db.query(models.Snippet).filter(models.Snippet.id == snippet_id).first()
+    if snippet is None:
+        raise HTTPException(status_code=404, detail="Snippet introuvable")
+    db.delete(snippet)
+    db.commit()
+    return None
