@@ -348,7 +348,7 @@ function ConstellationView() {
         });
 
       nodeGroup.style("opacity", (n: any) => {
-        const isConnected = graphData.links.some(
+        const isConnected = graphData?.links.some(
           (l: any) =>
             (l.source.id === d.id && l.target.id === n.id) ||
             (l.target.id === d.id && l.source.id === n.id)
