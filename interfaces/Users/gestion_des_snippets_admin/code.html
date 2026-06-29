@@ -1,0 +1,381 @@
+<!DOCTYPE html>
+
+<html class="h-full" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Izwan Admin - Snippets Management</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&amp;family=Poppins:wght@500;600;700&amp;family=Fira+Code:wght@450&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "inverse-surface": "#332f30",
+                        "tertiary": "#232020",
+                        "error": "#ba1a1a",
+                        "surface-container-low": "#faf1f2",
+                        "surface-variant": "#e9e0e1",
+                        "surface-bright": "#fff8f8",
+                        "on-background": "#1e1b1c",
+                        "background": "#fff8f8",
+                        "on-secondary": "#ffffff",
+                        "on-primary-container": "#cc8e9c",
+                        "on-surface-variant": "#514346",
+                        "primary-fixed": "#ffd9e0",
+                        "secondary-container": "#ffc5d3",
+                        "on-secondary-fixed": "#31111b",
+                        "inverse-on-surface": "#f7eff0",
+                        "surface-container-high": "#efe6e7",
+                        "primary-fixed-dim": "#f7b5c3",
+                        "primary-container": "#552834",
+                        "on-secondary-container": "#7b4f5b",
+                        "on-primary-fixed": "#350e1a",
+                        "on-primary": "#ffffff",
+                        "secondary-fixed": "#ffd9e1",
+                        "on-tertiary-container": "#a49d9d",
+                        "tertiary-container": "#393535",
+                        "surface-container": "#f4eced",
+                        "outline": "#837376",
+                        "on-error": "#ffffff",
+                        "tertiary-fixed": "#e9e1e1",
+                        "surface-dim": "#e0d8d9",
+                        "surface-container-lowest": "#ffffff",
+                        "primary": "#3b131f",
+                        "secondary": "#7e525e",
+                        "secondary-fixed-dim": "#f0b8c5",
+                        "outline-variant": "#d5c2c5",
+                        "on-tertiary-fixed": "#1e1b1b",
+                        "surface": "#fff8f8",
+                        "tertiary-fixed-dim": "#ccc5c5",
+                        "surface-tint": "#844f5c",
+                        "on-error-container": "#93000a",
+                        "on-tertiary": "#ffffff",
+                        "on-tertiary-fixed-variant": "#4a4646",
+                        "error-container": "#ffdad6",
+                        "on-primary-fixed-variant": "#683844",
+                        "on-secondary-fixed-variant": "#643b46",
+                        "on-surface": "#1e1b1c",
+                        "inverse-primary": "#f7b5c3",
+                        "surface-container-highest": "#e9e0e1"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    "spacing": {
+                        "margin-desktop": "64px",
+                        "xl": "40px",
+                        "md": "16px",
+                        "gutter": "24px",
+                        "margin-mobile": "16px",
+                        "sm": "8px",
+                        "lg": "24px",
+                        "xs": "4px",
+                        "base": "4px"
+                    },
+                    "fontFamily": {
+                        "headline-lg-mobile": ["Poppins"],
+                        "code-md": ["Fira Code"],
+                        "body-sm": ["Inter"],
+                        "body-md": ["Inter"],
+                        "body-lg": ["Inter"],
+                        "label-caps": ["Inter"],
+                        "display": ["Poppins"],
+                        "headline-lg": ["Poppins"],
+                        "headline-md": ["Poppins"]
+                    },
+                    "fontSize": {
+                        "headline-lg-mobile": ["28px", { "lineHeight": "36px", "fontWeight": "600" }],
+                        "code-md": ["14px", { "lineHeight": "22px", "fontWeight": "450" }],
+                        "body-sm": ["14px", { "lineHeight": "20px", "fontWeight": "400" }],
+                        "body-md": ["16px", { "lineHeight": "24px", "fontWeight": "400" }],
+                        "body-lg": ["18px", { "lineHeight": "28px", "fontWeight": "400" }],
+                        "label-caps": ["12px", { "lineHeight": "16px", "letterSpacing": "0.05em", "fontWeight": "600" }],
+                        "display": ["48px", { "lineHeight": "56px", "letterSpacing": "-0.02em", "fontWeight": "700" }],
+                        "headline-lg": ["32px", { "lineHeight": "40px", "fontWeight": "600" }],
+                        "headline-md": ["24px", { "lineHeight": "32px", "fontWeight": "600" }]
+                    }
+                }
+            }
+        }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .material-symbols-outlined.fill {
+            font-variation-settings: 'FILL' 1, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        /* Hide scrollbar for Chrome, Safari and Opera */
+        .no-scrollbar::-webkit-scrollbar {
+            display: none;
+        }
+        /* Hide scrollbar for IE, Edge and Firefox */
+        .no-scrollbar {
+            -ms-overflow-style: none;  /* IE and Edge */
+            scrollbar-width: none;  /* Firefox */
+        }
+    </style>
+</head>
+<body class="bg-[#F7F4F4] text-on-surface h-full flex overflow-hidden">
+<!-- SideNavBar (WEB) -->
+<nav class="hidden md:flex flex-col h-screen w-64 left-0 top-0 bg-surface-container-lowest border-r border-tertiary">
+<div class="p-lg border-b border-surface-variant flex items-center gap-3">
+<div class="w-10 h-10 rounded-full bg-primary flex items-center justify-center text-on-primary font-bold">
+<span class="material-symbols-outlined">terminal</span>
+</div>
+<div>
+<div class="font-headline-md text-headline-md text-primary">Izwan Admin</div>
+<div class="font-body-sm text-body-sm text-on-surface-variant">Technical Suite</div>
+</div>
+</div>
+<div class="flex-1 overflow-y-auto no-scrollbar py-sm">
+<a class="flex items-center gap-3 px-lg py-sm text-on-surface-variant hover:bg-surface-container-low transition-colors duration-200 ease-in-out font-label-caps text-label-caps" href="#">
+<span class="material-symbols-outlined">dashboard</span>
+                Dashboard
+            </a>
+<a class="flex items-center gap-3 px-lg py-sm text-on-surface-variant hover:bg-surface-container-low transition-colors duration-200 ease-in-out font-label-caps text-label-caps" href="#">
+<span class="material-symbols-outlined">monitor_heart</span>
+                System Health
+            </a>
+<a class="flex items-center gap-3 px-lg py-sm text-on-surface-variant hover:bg-surface-container-low transition-colors duration-200 ease-in-out font-label-caps text-label-caps" href="#">
+<span class="material-symbols-outlined">group</span>
+                User Management
+            </a>
+<a class="flex items-center gap-3 px-lg py-sm text-primary border-r-2 border-primary font-bold hover:bg-surface-container-low transition-colors duration-200 ease-in-out font-label-caps text-label-caps bg-surface-container-low" href="#">
+<span class="material-symbols-outlined fill">terminal</span>
+                Log Viewer
+            </a>
+<a class="flex items-center gap-3 px-lg py-sm text-on-surface-variant hover:bg-surface-container-low transition-colors duration-200 ease-in-out font-label-caps text-label-caps" href="#">
+<span class="material-symbols-outlined">dns</span>
+                Cloud Resources
+            </a>
+<a class="flex items-center gap-3 px-lg py-sm text-on-surface-variant hover:bg-surface-container-low transition-colors duration-200 ease-in-out font-label-caps text-label-caps" href="#">
+<span class="material-symbols-outlined">verified_user</span>
+                Security Audit
+            </a>
+</div>
+<div class="border-t border-surface-variant p-sm">
+<a class="flex items-center gap-3 px-lg py-sm text-on-surface-variant hover:bg-surface-container-low transition-colors duration-200 ease-in-out font-label-caps text-label-caps" href="#">
+<span class="material-symbols-outlined">support_agent</span>
+                Support
+            </a>
+<a class="flex items-center gap-3 px-lg py-sm text-on-surface-variant hover:bg-surface-container-low transition-colors duration-200 ease-in-out font-label-caps text-label-caps" href="#">
+<span class="material-symbols-outlined">logout</span>
+                Sign Out
+            </a>
+</div>
+</nav>
+<!-- Main Content Area -->
+<div class="flex-1 flex flex-col h-screen overflow-hidden">
+<!-- TopNavBar (MOBILE & WEB) -->
+<header class="bg-surface flex justify-between items-center px-lg py-sm w-full sticky top-0 z-50 border-b border-tertiary">
+<div class="flex items-center gap-4">
+<button class="md:hidden text-primary cursor-pointer active:opacity-80">
+<span class="material-symbols-outlined">menu</span>
+</button>
+<div class="md:hidden font-headline-md text-headline-md text-primary font-bold">Izwan Admin</div>
+<!-- Search Bar (Web) -->
+<div class="hidden md:flex relative w-96">
+<span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-on-surface-variant text-[20px]">search</span>
+<input class="w-full bg-[#FFFFFF] border border-[#E0D8D8] rounded font-body-sm text-body-sm py-2 pl-10 pr-4 focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary/20 transition-all" placeholder="Search snippets, tags, or authors..." type="text"/>
+</div>
+</div>
+<div class="flex items-center gap-4">
+<button class="text-on-surface-variant hover:bg-surface-container-low p-2 rounded-full transition-colors cursor-pointer active:opacity-80">
+<span class="material-symbols-outlined">settings</span>
+</button>
+<button class="text-on-surface-variant hover:bg-surface-container-low p-2 rounded-full transition-colors cursor-pointer active:opacity-80">
+<span class="material-symbols-outlined">help_outline</span>
+</button>
+<img alt="Administrator Profile" class="w-8 h-8 rounded-full border border-tertiary object-cover" data-alt="A small, professional circular profile picture of an administrator in a technical light-mode dashboard. Clean white background, subtle corporate aesthetic, sharp and high contrast." src="https://lh3.googleusercontent.com/aida-public/AB6AXuAWV2sr5EmwMNj79mfVB14Rv5DMzp61-465Q308T5P0pP1OxBvlgJbtmbyo5Sq5nHDBNXkNENCaC7oD02n8m3Z6pDpFeSqIwBOPsdodCRiuXf_p9-HDDX9XWNYlFy1390UC9TGa_LUs9jsn0HPYXbVtI85OSV2q5uaC290P1GGwDNyswS9oks5xugR9yFoHbCSwhWaX_V_Eh7L3YiwlDQDFbz_OEwyxPzu4jb6CMOdSA_J7OaNeZcAhi8H0oL6CZfyU9tQ9WuYEVNM"/>
+</div>
+</header>
+<!-- Search Bar (Mobile Only) -->
+<div class="md:hidden p-md bg-surface border-b border-tertiary">
+<div class="relative w-full">
+<span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-on-surface-variant text-[20px]">search</span>
+<input class="w-full bg-[#FFFFFF] border border-[#E0D8D8] rounded font-body-sm text-body-sm py-2 pl-10 pr-4 focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary/20 transition-all" placeholder="Search snippets..." type="text"/>
+</div>
+</div>
+<!-- Canvas -->
+<main class="flex-1 overflow-y-auto p-md md:p-margin-desktop bg-[#F7F4F4]">
+<!-- Page Header & Actions -->
+<div class="flex flex-col md:flex-row justify-between items-start md:items-end mb-lg gap-4">
+<div>
+<h1 class="font-headline-lg-mobile md:font-headline-lg text-headline-lg-mobile md:text-headline-lg text-primary mb-1">Snippet Repository</h1>
+<p class="font-body-sm text-body-sm text-on-surface-variant">Manage, review, and curate central code assets.</p>
+</div>
+<div class="flex gap-3 w-full md:w-auto">
+<button class="flex-1 md:flex-none px-4 py-2 bg-transparent border border-primary text-primary rounded-lg font-body-sm text-body-sm font-semibold hover:bg-surface-container-low transition-colors flex items-center justify-center gap-2">
+<span class="material-symbols-outlined text-[18px]">filter_list</span>
+                        Filter
+                    </button>
+<button class="flex-1 md:flex-none px-4 py-2 bg-primary text-on-primary rounded-lg font-body-sm text-body-sm font-semibold hover:bg-primary/90 transition-colors shadow-[0px_10px_30px_rgba(85,40,52,0.08)] flex items-center justify-center gap-2">
+<span class="material-symbols-outlined text-[18px]">add</span>
+                        New Snippet
+                    </button>
+</div>
+</div>
+<!-- Bento Grid Layout -->
+<div class="grid grid-cols-1 lg:grid-cols-12 gap-gutter">
+<!-- Stats Overview -->
+<div class="lg:col-span-12 grid grid-cols-2 md:grid-cols-4 gap-md mb-md">
+<div class="bg-[#FFFFFF] border border-[#E0D8D8] rounded p-md flex flex-col justify-center">
+<div class="font-label-caps text-label-caps text-on-surface-variant uppercase mb-1">Total Snippets</div>
+<div class="font-headline-md text-headline-md text-primary font-bold">1,492</div>
+</div>
+<div class="bg-[#FFFFFF] border border-[#E0D8D8] rounded p-md flex flex-col justify-center">
+<div class="font-label-caps text-label-caps text-on-surface-variant uppercase mb-1">Pending Review</div>
+<div class="font-headline-md text-headline-md text-[#ba1a1a] font-bold">34</div>
+</div>
+<div class="bg-[#FFFFFF] border border-[#E0D8D8] rounded p-md flex flex-col justify-center">
+<div class="font-label-caps text-label-caps text-on-surface-variant uppercase mb-1">Most Used Lang</div>
+<div class="font-headline-md text-headline-md text-primary font-bold">TypeScript</div>
+</div>
+<div class="bg-[#FFFFFF] border border-[#E0D8D8] rounded p-md flex flex-col justify-center">
+<div class="font-label-caps text-label-caps text-on-surface-variant uppercase mb-1">API Calls (24h)</div>
+<div class="font-headline-md text-headline-md text-primary font-bold font-code-md text-code-md">84,021</div>
+</div>
+</div>
+<!-- Main Data Table Area -->
+<div class="lg:col-span-12 bg-[#FFFFFF] border border-[#E0D8D8] rounded overflow-hidden">
+<div class="overflow-x-auto">
+<table class="w-full text-left border-collapse">
+<thead>
+<tr class="bg-[#F0EDED] border-b border-[#E0D8D8]">
+<th class="p-4 font-label-caps text-label-caps text-on-surface-variant uppercase whitespace-nowrap w-1/3">Snippet Details</th>
+<th class="p-4 font-label-caps text-label-caps text-on-surface-variant uppercase whitespace-nowrap">Language/Tags</th>
+<th class="p-4 font-label-caps text-label-caps text-on-surface-variant uppercase whitespace-nowrap text-right">Usage</th>
+<th class="p-4 font-label-caps text-label-caps text-on-surface-variant uppercase whitespace-nowrap text-right">Actions</th>
+</tr>
+</thead>
+<tbody class="font-body-sm text-body-sm">
+<!-- Row 1 -->
+<tr class="border-b border-[#E0D8D8] hover:bg-surface-container-lowest transition-colors group">
+<td class="p-4">
+<div class="flex flex-col">
+<span class="font-semibold text-primary mb-1">Auth_JWT_Validate</span>
+<div class="flex items-center gap-2 text-on-surface-variant text-xs">
+<span class="material-symbols-outlined text-[14px]">person</span>
+<span>j.doe@izwan.admin</span>
+<span class="text-[#E0D8D8]">•</span>
+<span>2h ago</span>
+</div>
+</div>
+</td>
+<td class="p-4">
+<div class="flex flex-wrap gap-2">
+<span class="px-2 py-1 bg-surface-variant text-on-surface rounded-full text-xs font-code-md">TypeScript</span>
+<span class="px-2 py-1 bg-[#F7F4F4] border border-[#E0D8D8] text-on-surface-variant rounded-full text-xs">Security</span>
+</div>
+</td>
+<td class="p-4 text-right font-code-md text-code-md text-on-surface">1,204</td>
+<td class="p-4 text-right">
+<div class="flex items-center justify-end gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
+<button class="text-primary hover:bg-primary/10 p-1.5 rounded transition-colors" title="Review">
+<span class="material-symbols-outlined text-[18px]">visibility</span>
+</button>
+<button class="text-primary hover:bg-primary/10 p-1.5 rounded transition-colors" title="Promote to Core">
+<span class="material-symbols-outlined text-[18px]">arrow_upward</span>
+</button>
+<button class="text-error hover:bg-error/10 p-1.5 rounded transition-colors" title="Delete">
+<span class="material-symbols-outlined text-[18px]">delete</span>
+</button>
+</div>
+</td>
+</tr>
+<!-- Row 2 -->
+<tr class="border-b border-[#E0D8D8] hover:bg-surface-container-lowest transition-colors group">
+<td class="p-4">
+<div class="flex flex-col">
+<span class="font-semibold text-primary mb-1 flex items-center gap-2">
+                                                DB_Conn_Pool_Optimizer
+                                                <span class="w-2 h-2 rounded-full bg-[#ba1a1a] block" title="Pending Review"></span>
+</span>
+<div class="flex items-center gap-2 text-on-surface-variant text-xs">
+<span class="material-symbols-outlined text-[14px]">person</span>
+<span>s.smith@izwan.admin</span>
+<span class="text-[#E0D8D8]">•</span>
+<span>Oct 12</span>
+</div>
+</div>
+</td>
+<td class="p-4">
+<div class="flex flex-wrap gap-2">
+<span class="px-2 py-1 bg-surface-variant text-on-surface rounded-full text-xs font-code-md">Go</span>
+<span class="px-2 py-1 bg-[#F7F4F4] border border-[#E0D8D8] text-on-surface-variant rounded-full text-xs">Database</span>
+<span class="px-2 py-1 bg-[#F7F4F4] border border-[#E0D8D8] text-on-surface-variant rounded-full text-xs">Performance</span>
+</div>
+</td>
+<td class="p-4 text-right font-code-md text-code-md text-on-surface">45</td>
+<td class="p-4 text-right">
+<div class="flex items-center justify-end gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
+<button class="text-primary hover:bg-primary/10 p-1.5 rounded transition-colors" title="Review">
+<span class="material-symbols-outlined text-[18px]">visibility</span>
+</button>
+<button class="text-primary hover:bg-primary/10 p-1.5 rounded transition-colors" title="Promote to Core">
+<span class="material-symbols-outlined text-[18px]">arrow_upward</span>
+</button>
+<button class="text-error hover:bg-error/10 p-1.5 rounded transition-colors" title="Delete">
+<span class="material-symbols-outlined text-[18px]">delete</span>
+</button>
+</div>
+</td>
+</tr>
+<!-- Row 3 -->
+<tr class="border-b border-[#E0D8D8] hover:bg-surface-container-lowest transition-colors group">
+<td class="p-4">
+<div class="flex flex-col">
+<span class="font-semibold text-primary mb-1">React_DataGrid_Virtualizer</span>
+<div class="flex items-center gap-2 text-on-surface-variant text-xs">
+<span class="material-symbols-outlined text-[14px]">person</span>
+<span>a.lee@izwan.admin</span>
+<span class="text-[#E0D8D8]">•</span>
+<span>Oct 10</span>
+</div>
+</div>
+</td>
+<td class="p-4">
+<div class="flex flex-wrap gap-2">
+<span class="px-2 py-1 bg-surface-variant text-on-surface rounded-full text-xs font-code-md">TSX</span>
+<span class="px-2 py-1 bg-[#F7F4F4] border border-[#E0D8D8] text-on-surface-variant rounded-full text-xs">UI</span>
+</div>
+</td>
+<td class="p-4 text-right font-code-md text-code-md text-on-surface">8,932</td>
+<td class="p-4 text-right">
+<div class="flex items-center justify-end gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
+<button class="text-primary hover:bg-primary/10 p-1.5 rounded transition-colors" title="Review">
+<span class="material-symbols-outlined text-[18px]">visibility</span>
+</button>
+<button class="text-primary hover:bg-primary/10 p-1.5 rounded transition-colors" title="Promote to Core">
+<span class="material-symbols-outlined text-[18px]">arrow_upward</span>
+</button>
+<button class="text-error hover:bg-error/10 p-1.5 rounded transition-colors" title="Delete">
+<span class="material-symbols-outlined text-[18px]">delete</span>
+</button>
+</div>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+<!-- Pagination -->
+<div class="p-4 border-t border-[#E0D8D8] flex items-center justify-between text-on-surface-variant text-sm">
+<span>Showing 1-3 of 1,492</span>
+<div class="flex gap-1">
+<button class="p-1 hover:bg-surface-container-low rounded disabled:opacity-50"><span class="material-symbols-outlined">chevron_left</span></button>
+<button class="p-1 hover:bg-surface-container-low rounded"><span class="material-symbols-outlined">chevron_right</span></button>
+</div>
+</div>
+</div>
+</div>
+</main>
+</div>
+</body></html>

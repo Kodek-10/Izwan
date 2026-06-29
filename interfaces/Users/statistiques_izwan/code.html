@@ -1,0 +1,295 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="fr"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Statistiques et Analytique</title>
+<!-- Google Fonts -->
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&amp;family=JetBrains+Mono:wght@400;500&amp;family=Montserrat:wght@600;700&amp;display=swap" rel="stylesheet"/>
+<!-- Material Symbols -->
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<!-- Tailwind CSS -->
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .material-symbols-outlined.filled {
+            font-variation-settings: 'FILL' 1;
+        }
+        
+        /* Ambient Background Blur */
+        .ambient-glow {
+            position: absolute;
+            width: 60vw;
+            height: 60vh;
+            background: radial-gradient(circle, rgba(232,122,100,0.05) 0%, rgba(16,20,21,0) 70%);
+            top: -20%;
+            left: -10%;
+            pointer-events: none;
+            z-index: 0;
+        }
+        
+        /* Custom scrollbar for bento cards if needed */
+        .custom-scrollbar::-webkit-scrollbar {
+            width: 4px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-track {
+            background: transparent;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+            background: #323537;
+            border-radius: 4px;
+        }
+    </style>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "on-primary-container": "#611508",
+                        "surface-container-highest": "#323537",
+                        "surface": "#101415",
+                        "on-surface": "#e0e3e5",
+                        "inverse-surface": "#e0e3e5",
+                        "on-error": "#690005",
+                        "primary-fixed-dim": "#ffb4a5",
+                        "inverse-primary": "#9e412f",
+                        "secondary": "#b6c7eb",
+                        "on-primary-fixed": "#3e0400",
+                        "surface-bright": "#363a3b",
+                        "secondary-container": "#364765",
+                        "on-tertiary-container": "#00392e",
+                        "surface-container-low": "#191c1e",
+                        "outline-variant": "#56423e",
+                        "tertiary": "#55dcbc",
+                        "on-tertiary": "#00382d",
+                        "on-background": "#e0e3e5",
+                        "surface-variant": "#323537",
+                        "tertiary-fixed-dim": "#55dcbc",
+                        "secondary-fixed": "#d6e3ff",
+                        "secondary-fixed-dim": "#b6c7eb",
+                        "background": "#101415",
+                        "on-secondary-fixed-variant": "#364765",
+                        "tertiary-container": "#00ad90",
+                        "inverse-on-surface": "#2d3133",
+                        "error-container": "#93000a",
+                        "surface-tint": "#ffb4a5",
+                        "tertiary-fixed": "#75f9d8",
+                        "on-primary-fixed-variant": "#7e2a1b",
+                        "on-surface-variant": "#dcc0bb",
+                        "on-error-container": "#ffdad6",
+                        "surface-container-lowest": "#0b0f10",
+                        "primary-container": "#e87a64",
+                        "primary": "#ffb4a5",
+                        "on-tertiary-fixed-variant": "#005142",
+                        "outline": "#a48b86",
+                        "error": "#ffb4ab",
+                        "on-secondary-container": "#a4b6d9",
+                        "on-primary": "#601407",
+                        "surface-dim": "#101415",
+                        "surface-container-high": "#272a2c",
+                        "on-secondary": "#1f314d",
+                        "on-secondary-fixed": "#081b37",
+                        "on-tertiary-fixed": "#002019",
+                        "primary-fixed": "#ffdad3",
+                        "surface-container": "#1d2022"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.125rem",
+                        "lg": "0.25rem",
+                        "xl": "0.5rem",
+                        "full": "0.75rem"
+                    },
+                    "spacing": {
+                        "container-max": "1440px",
+                        "margin-desktop": "40px",
+                        "unit": "4px",
+                        "margin-mobile": "16px",
+                        "gutter": "24px"
+                    },
+                    "fontFamily": {
+                        "headline-lg": ["Montserrat"],
+                        "body-md": ["Inter"],
+                        "label-sm": ["JetBrains Mono"],
+                        "headline-lg-mobile": ["Montserrat"],
+                        "display-lg": ["Montserrat"],
+                        "code-snippet": ["JetBrains Mono"]
+                    },
+                    "fontSize": {
+                        "headline-lg": ["32px", { "lineHeight": "40px", "fontWeight": "600" }],
+                        "body-md": ["16px", { "lineHeight": "24px", "fontWeight": "400" }],
+                        "label-sm": ["12px", { "lineHeight": "16px", "letterSpacing": "0.05em", "fontWeight": "500" }],
+                        "headline-lg-mobile": ["24px", { "lineHeight": "32px", "fontWeight": "600" }],
+                        "display-lg": ["48px", { "lineHeight": "56px", "letterSpacing": "-0.02em", "fontWeight": "700" }],
+                        "code-snippet": ["14px", { "lineHeight": "20px", "fontWeight": "400" }]
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+<body class="bg-surface text-on-surface font-body-md min-h-screen overflow-x-hidden relative selection:bg-primary-container selection:text-on-primary-container">
+<!-- Ambient Glow Effect -->
+<div class="ambient-glow"></div>
+<main class="relative z-10 w-full max-w-container-max mx-auto px-margin-mobile md:px-margin-desktop py-12">
+<!-- Header Section -->
+<header class="flex flex-col md:flex-row justify-between items-start md:items-end mb-12 gap-6 border-b border-surface-container-highest pb-6">
+<div>
+<h1 class="font-headline-lg-mobile md:font-headline-lg text-headline-lg-mobile md:text-headline-lg text-primary tracking-tight mb-2">Performances</h1>
+<p class="font-body-md text-body-md text-on-surface-variant max-w-2xl">Aperçu analytique de l'utilisation, des langages dominants et de l'impact sur la productivité globale de l'équipe.</p>
+</div>
+<!-- Time Range Selector (Segmented Control) -->
+<div class="flex items-center bg-surface-container-high rounded-full p-1 border border-surface-container-highest">
+<button class="px-5 py-2 rounded-full font-label-sm text-label-sm text-on-surface-variant hover:text-on-surface transition-colors">7j</button>
+<button class="px-5 py-2 rounded-full font-label-sm text-label-sm bg-primary-container text-on-primary-container shadow-sm transition-colors">30j</button>
+<button class="px-5 py-2 rounded-full font-label-sm text-label-sm text-on-surface-variant hover:text-on-surface transition-colors">90j</button>
+</div>
+</header>
+<!-- Bento Grid Layout -->
+<div class="grid grid-cols-1 md:grid-cols-12 gap-gutter">
+<!-- Usage Frequency (Large Chart Card) -->
+<div class="col-span-1 md:col-span-8 bg-surface-container rounded-xl p-8 border border-surface-container-high relative overflow-hidden flex flex-col group">
+<div class="flex justify-between items-start mb-8">
+<div>
+<h2 class="font-body-md text-body-md font-semibold text-on-surface mb-1">Fréquence d'utilisation</h2>
+<p class="font-label-sm text-label-sm text-on-surface-variant">Requêtes traitées par jour</p>
+</div>
+<div class="bg-surface-container-high p-2 rounded-lg border border-surface-container-highest text-tertiary">
+<span class="material-symbols-outlined" data-icon="monitoring">monitoring</span>
+</div>
+</div>
+<!-- CSS Based Bar Chart Representation -->
+<div class="flex-grow flex items-end justify-between gap-2 mt-4 pt-8 h-48 border-b border-surface-container-highest pb-2">
+<!-- Bars -->
+<div class="w-full bg-primary-container/20 hover:bg-primary-container/40 transition-colors rounded-t-sm h-[30%] relative group-hover:h-[35%] duration-500 ease-out"></div>
+<div class="w-full bg-primary-container/30 hover:bg-primary-container/50 transition-colors rounded-t-sm h-[45%] relative group-hover:h-[50%] duration-500 ease-out delay-75"></div>
+<div class="w-full bg-primary hover:bg-primary/80 transition-colors rounded-t-sm h-[85%] relative shadow-[0_0_15px_rgba(255,180,165,0.2)] group-hover:h-[90%] duration-500 ease-out delay-100"></div>
+<div class="w-full bg-primary-container/40 hover:bg-primary-container/60 transition-colors rounded-t-sm h-[60%] relative group-hover:h-[65%] duration-500 ease-out delay-150"></div>
+<div class="w-full bg-primary-container/20 hover:bg-primary-container/40 transition-colors rounded-t-sm h-[25%] relative group-hover:h-[30%] duration-500 ease-out delay-200"></div>
+<div class="w-full bg-primary-container/50 hover:bg-primary-container/70 transition-colors rounded-t-sm h-[75%] relative group-hover:h-[80%] duration-500 ease-out delay-300"></div>
+<div class="w-full bg-primary-container hover:bg-primary transition-colors rounded-t-sm h-[95%] relative shadow-[0_0_20px_rgba(232,122,100,0.3)] group-hover:h-[100%] duration-500 ease-out delay-500"></div>
+</div>
+<div class="flex justify-between mt-3 px-2">
+<span class="font-label-sm text-label-sm text-surface-container-highest">Lun</span>
+<span class="font-label-sm text-label-sm text-surface-container-highest">Mar</span>
+<span class="font-label-sm text-label-sm text-surface-container-highest">Mer</span>
+<span class="font-label-sm text-label-sm text-surface-container-highest">Jeu</span>
+<span class="font-label-sm text-label-sm text-surface-container-highest">Ven</span>
+<span class="font-label-sm text-label-sm text-surface-container-highest">Sam</span>
+<span class="font-label-sm text-label-sm text-on-surface-variant font-bold">Dim</span>
+</div>
+</div>
+<!-- Most Used Languages (List Card) -->
+<div class="col-span-1 md:col-span-4 bg-surface-container rounded-xl p-8 border border-surface-container-high flex flex-col">
+<div class="flex justify-between items-start mb-6">
+<div>
+<h2 class="font-body-md text-body-md font-semibold text-on-surface mb-1">Langages</h2>
+<p class="font-label-sm text-label-sm text-on-surface-variant">Top 3 générés</p>
+</div>
+<span class="material-symbols-outlined text-on-surface-variant" data-icon="terminal">terminal</span>
+</div>
+<div class="flex flex-col gap-6 flex-grow justify-center">
+<!-- Lang Item -->
+<div>
+<div class="flex justify-between mb-2">
+<span class="font-code-snippet text-code-snippet text-secondary">TypeScript</span>
+<span class="font-label-sm text-label-sm text-on-surface">45%</span>
+</div>
+<div class="w-full bg-surface-container-highest rounded-full h-1.5">
+<div class="bg-secondary h-1.5 rounded-full" style="width: 45%"></div>
+</div>
+</div>
+<!-- Lang Item -->
+<div>
+<div class="flex justify-between mb-2">
+<span class="font-code-snippet text-code-snippet text-tertiary">Python</span>
+<span class="font-label-sm text-label-sm text-on-surface">32%</span>
+</div>
+<div class="w-full bg-surface-container-highest rounded-full h-1.5">
+<div class="bg-tertiary h-1.5 rounded-full" style="width: 32%"></div>
+</div>
+</div>
+<!-- Lang Item -->
+<div>
+<div class="flex justify-between mb-2">
+<span class="font-code-snippet text-code-snippet text-primary">Go</span>
+<span class="font-label-sm text-label-sm text-on-surface">18%</span>
+</div>
+<div class="w-full bg-surface-container-highest rounded-full h-1.5">
+<div class="bg-primary h-1.5 rounded-full" style="width: 18%"></div>
+</div>
+</div>
+</div>
+</div>
+<!-- Productivity Growth (Highlight Card) -->
+<div class="col-span-1 md:col-span-12 bg-surface-container-low rounded-xl p-8 border border-surface-container flex flex-col md:flex-row items-center justify-between gap-8">
+<div class="flex-1">
+<div class="flex items-center gap-3 mb-2">
+<div class="bg-tertiary-container/20 p-2 rounded-full">
+<span class="material-symbols-outlined text-tertiary" data-icon="trending_up">trending_up</span>
+</div>
+<h2 class="font-body-md text-body-md font-semibold text-on-surface">Croissance de la Productivité</h2>
+</div>
+<p class="font-body-md text-body-md text-on-surface-variant max-w-md">Temps moyen économisé par développeur sur la période sélectionnée grâce à la complétion intelligente.</p>
+</div>
+<div class="flex items-end gap-4 shrink-0">
+<div class="flex flex-col items-end">
+<span class="font-display-lg text-display-lg text-tertiary">+24%</span>
+<span class="font-label-sm text-label-sm text-tertiary/70 mt-1">vs période précédente</span>
+</div>
+<!-- Small Sparkline SVG placeholder -->
+<div class="w-24 h-12 opacity-80">
+<svg class="w-full h-full stroke-tertiary fill-none stroke-2" preserveaspectratio="none" viewbox="0 0 100 30">
+<path d="M0,25 Q10,20 20,25 T40,15 T60,20 T80,5 T100,10"></path>
+</svg>
+</div>
+</div>
+</div>
+</div>
+</main>
+<!-- Shared Component: SideNavBar (Orbital Menu) -->
+<!-- Represents the expanded state of the Orbital Menu as requested by the JSON logic -->
+<div class="fixed bottom-24 right-10 z-50 flex items-end gap-4">
+<!-- The Floating Expansion Menu -->
+<nav class="bg-surface-container-high rounded-xl w-48 shadow-xl flex flex-col p-4 gap-2 border border-surface-container-highest relative transform transition-all duration-300 origin-bottom-right">
+<!-- Header from JSON -->
+<div class="flex items-center gap-3 mb-4 pb-4 border-b border-surface-container-highest/50">
+<div class="w-8 h-8 rounded-full bg-secondary-container flex items-center justify-center overflow-hidden border border-secondary/30">
+<img alt="AI Orb" class="w-full h-full object-cover opacity-80 mix-blend-screen" data-alt="A highly detailed, sleek artificial intelligence orb avatar. Glowing cyan and deep blue inner light core, encased in dark translucent glass. Futuristic, clean, minimalist lighting against a dark background." src="https://lh3.googleusercontent.com/aida-public/AB6AXuCXzhRIzp3joYvmjnTuOUg5qdu6C8LmgglFhXU9xATXbyOOhlP9EObMr-R2mzi75WeeaMl7IhyU7JYf6v0uf_KsIMatAttCLlhPW0UuOSdmEqoRoaqvjdSKJPimdgpQE2G28iexoC1WNjY-Cgs0RnWhaKp7Eq_gONTmlnYFzzsrv4JWQwRnl2HBcolUdjPT2P5M_Pph20Eo-Q7WUCI3UPrYHDabkrHRklQOaeed7l_q3Z27GTTxGKnjTgCts5TU9Z61HnLE_LD6Ddc"/>
+</div>
+<div>
+<h3 class="font-body-md text-body-md font-semibold text-on-surface text-sm">Assistant</h3>
+<p class="font-label-sm text-label-sm text-on-surface-variant text-[10px]">Orbital Menu</p>
+</div>
+</div>
+<!-- Tabs from JSON -->
+<!-- Active Tab: Statistique -->
+<a class="flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-surface-bright transition-colors group" href="#">
+<span class="material-symbols-outlined text-tertiary filled text-[20px]" data-icon="bar_chart">bar_chart</span>
+<span class="font-label-sm text-label-sm text-tertiary font-bold">Statistique</span>
+</a>
+<!-- Inactive Tab: Exportations -->
+<a class="flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-surface-bright transition-colors group" href="#">
+<span class="material-symbols-outlined text-on-surface-variant group-hover:text-on-surface transition-colors text-[20px]" data-icon="ios_share">ios_share</span>
+<span class="font-label-sm text-label-sm text-on-surface-variant group-hover:text-on-surface transition-colors">Exportations</span>
+</a>
+<!-- Inactive Tab: Paramètres -->
+<a class="flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-surface-bright transition-colors group" href="#">
+<span class="material-symbols-outlined text-on-surface-variant group-hover:text-on-surface transition-colors text-[20px]" data-icon="settings">settings</span>
+<span class="font-label-sm text-label-sm text-on-surface-variant group-hover:text-on-surface transition-colors">Paramètres</span>
+</a>
+<!-- Decorative connection line to orb -->
+<div class="absolute -right-5 bottom-4 w-5 h-px bg-surface-container-highest"></div>
+</nav>
+<!-- The Orb Trigger (Static representation for layout completeness) -->
+<button class="w-14 h-14 rounded-full bg-surface-container-highest border border-surface-container shadow-2xl flex items-center justify-center hover:bg-surface-bright transition-all group relative">
+<div class="absolute inset-0 rounded-full bg-tertiary/10 blur-md group-hover:bg-tertiary/20 transition-all"></div>
+<span class="material-symbols-outlined text-on-surface group-hover:text-tertiary transition-colors relative z-10" data-icon="close">close</span>
+</button>
+</div>
+</body></html>

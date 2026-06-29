@@ -1,0 +1,292 @@
+<!DOCTYPE html><html lang="fr"><head>
+<meta charset="utf-8">
+<meta content="width=device-width, initial-scale=1.0" name="viewport">
+<title>Izwan - Snippets</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@600;700&amp;family=Inter:wght@400&amp;family=JetBrains+Mono:wght@400;500&amp;display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500&amp;display=swap" rel="stylesheet">
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "background": "#F7F4F4",
+                        "on-background": "#201A1B",
+                        "surface": "#FFFFFF",
+                        "on-surface": "#201A1B",
+                        "surface-variant": "#F4DDDF",
+                        "on-surface-variant": "#524345",
+                        "primary": "#552834",
+                        "on-primary": "#FFFFFF",
+                        "primary-container": "#FFD9E2",
+                        "on-primary-container": "#3E001D",
+                        "secondary": "#76565B",
+                        "on-secondary": "#FFFFFF",
+                        "secondary-container": "#FFD9E2",
+                        "on-secondary-container": "#2C1519",
+                        "surface-container-lowest": "#FFFFFF",
+                        "surface-container-low": "#F7F2F2",
+                        "surface-container": "#F1ECEC",
+                        "surface-container-high": "#EBE6E6",
+                        "surface-container-highest": "#E5E0E0",
+                        "outline": "#857375",
+                        "outline-variant": "#D7C1C3",
+                        "surface-bright": "#F7F4F4",
+                        "surface-dim": "#D8D6D6",
+                        "error": "#BA1A1A",
+                        "on-error": "#FFFFFF",
+                        "error-container": "#FFDAD6",
+                        "on-error-container": "#410002"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.125rem",
+                        "lg": "0.25rem",
+                        "xl": "0.5rem",
+                        "full": "0.75rem"
+                    },
+                    "spacing": {
+                        "container-max": "1440px",
+                        "margin-desktop": "40px",
+                        "unit": "4px",
+                        "margin-mobile": "16px",
+                        "gutter": "24px"
+                    },
+                    "fontFamily": {
+                        "headline-lg": ["Montserrat"],
+                        "body-md": ["Inter"],
+                        "label-sm": ["JetBrains Mono"],
+                        "headline-lg-mobile": ["Montserrat"],
+                        "display-lg": ["Montserrat"],
+                        "code-snippet": ["JetBrains Mono"]
+                    },
+                    "fontSize": {
+                        "headline-lg": ["32px", {"lineHeight": "40px", "fontWeight": "600"}],
+                        "body-md": ["16px", {"lineHeight": "24px", "fontWeight": "400"}],
+                        "label-sm": ["12px", {"lineHeight": "16px", "letterSpacing": "0.05em", "fontWeight": "500"}],
+                        "headline-lg-mobile": ["24px", {"lineHeight": "32px", "fontWeight": "600"}],
+                        "display-lg": ["48px", {"lineHeight": "56px", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                        "code-snippet": ["14px", {"lineHeight": "20px", "fontWeight": "400"}]
+                    }
+                }
+            }
+        }
+    </script>
+<style>
+        .fira-code { font-family: 'Fira Code', monospace; }
+        .glass-panel {
+            background: rgba(255, 255, 255, 0.7);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid rgba(85, 40, 52, 0.1);
+        }
+        .code-keyword { color: #552834; font-weight: 500; }
+        .code-string { color: #2C7A7B; }
+        .code-comment { color: #718096; font-style: italic; }
+        .code-function { color: #2B6CB0; }
+        
+        /* Ambient Background Tone */
+        body {
+            background-color: #F7F4F4;
+            background-image: radial-gradient(circle at 15% 50%, rgba(85, 40, 52, 0.03), transparent 25%),
+                              radial-gradient(circle at 85% 30%, rgba(118, 86, 91, 0.03), transparent 25%);
+        }
+    </style>
+</head>
+<body class="bg-background text-on-background font-body-md min-h-screen overflow-hidden selection:bg-primary-container selection:text-on-primary-container">
+<!-- TopAppBar -->
+<header class="fixed top-0 w-full z-50 flex justify-between items-center px-margin-desktop h-16 bg-surface/80 backdrop-blur-md border-b border-outline-variant/30">
+<div class="flex items-center gap-4">
+<span class="font-headline-lg text-headline-lg text-primary font-bold tracking-tight">Izwan</span>
+</div><div class="relative hidden sm:block flex-1 max-w-md mx-auto"><span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-on-surface-variant text-sm">search</span><input class="bg-surface border border-outline-variant rounded-full pl-9 pr-4 py-1.5 text-sm focus:border-primary focus:ring-1 focus:ring-primary transition-all outline-none w-full" placeholder="Rechercher..." type="text"></div>
+<div class="flex items-center gap-4">
+<button class="scale-95 active:scale-90 transition-transform text-on-surface-variant hover:text-primary p-2 rounded-full hover:bg-surface-container-high">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">notifications</span>
+</button>
+<div class="relative group">
+<button class="flex items-center focus:outline-none">
+<img alt="User avatar" class="w-8 h-8 rounded-full object-cover border border-outline-variant" data-alt="A small circular avatar portrait of a modern professional user, well-lit with soft high-key studio lighting against a clean minimal background. Premium corporate dark aesthetic with subtle warm coral accents." src="https://lh3.googleusercontent.com/aida-public/AB6AXuA_2wW4MeYYvo1unuKJ2YIKsGVsPGzea5pPHdSggLMBvFInNV4STuIVTLQIPxz4EJyE19ZsnDzqHqJSHUSaYfFilbtU5Trn0pNMR6p_8OfO3UjSVHYNKTAp1pRquK9w5SBG_Ag1PdOXiqWwuP391bV5ISaG01xVX5zeix2J8rmNmg31z8-5tdQ0R2aJiXw7P4zA-yg9vhVmbCd_CgI5peokXAi2FyeHd2JGN0RF5l5N9p9hYQ_wJNBQrq_hu9gkvvy80oNigsF3-CY">
+</button>
+<div class="absolute right-0 mt-2 w-48 bg-surface rounded-xl shadow-lg border border-outline-variant/30 py-2 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 z-50">
+<a class="flex items-center gap-3 px-4 py-2 text-on-surface hover:bg-surface-container-high hover:text-primary transition-colors font-label-sm text-sm" href="#">
+<span class="material-symbols-outlined text-[18px]">bar_chart</span> Statistiques
+        </a>
+<a class="flex items-center gap-3 px-4 py-2 text-on-surface hover:bg-surface-container-high hover:text-primary transition-colors font-label-sm text-sm" href="#">
+<span class="material-symbols-outlined text-[18px]">ios_share</span> Exportations
+        </a>
+<a class="flex items-center gap-3 px-4 py-2 text-on-surface hover:bg-surface-container-high hover:text-primary transition-colors font-label-sm text-sm" href="#">
+<span class="material-symbols-outlined text-[18px]">settings</span> Paramètres
+        </a>
+</div>
+</div>
+</div>
+</header>
+<!-- Main Layout -->
+<main class="pt-24 pb-28 px-margin-mobile md:px-margin-desktop max-w-[1440px] mx-auto h-screen flex gap-gutter">
+<!-- Left Panel: Snippet List -->
+<aside class="w-full md:w-1/3 lg:w-1/4 h-full flex flex-col gap-4">
+<!-- Actions & Filters -->
+<div class="flex flex-col gap-4">
+<button class="w-full bg-primary text-on-primary font-label-sm text-label-sm py-3 px-4 rounded-lg flex items-center justify-center gap-2 hover:brightness-110 transition-all shadow-md active:scale-95">
+<span class="material-symbols-outlined text-sm">add</span>
+                    Nouveau snippet
+                </button>
+<div class="flex gap-2 overflow-x-auto pb-2 scrollbar-hide">
+<button class="bg-primary-container text-on-primary-container border border-primary-container font-label-sm text-label-sm px-3 py-1.5 rounded-full whitespace-nowrap">Tous</button>
+<button class="bg-surface border border-outline-variant text-on-surface-variant hover:border-primary/50 font-label-sm text-label-sm px-3 py-1.5 rounded-full whitespace-nowrap transition-colors">Python</button>
+<button class="bg-surface border border-outline-variant text-on-surface-variant hover:border-primary/50 font-label-sm text-label-sm px-3 py-1.5 rounded-full whitespace-nowrap transition-colors">JavaScript</button>
+<button class="bg-surface border border-outline-variant text-on-surface-variant hover:border-primary/50 font-label-sm text-label-sm px-3 py-1.5 rounded-full whitespace-nowrap transition-colors">Go</button>
+</div>
+</div>
+<!-- List -->
+<div class="flex-1 overflow-y-auto pr-2 space-y-2 custom-scrollbar">
+<!-- Snippet Item (Active) -->
+<div class="bg-surface-container border-l-2 border-primary p-4 rounded-r-lg cursor-pointer hover:bg-surface-container-high transition-colors group">
+<div class="flex justify-between items-start mb-2">
+<h3 class="font-label-sm text-label-sm text-on-surface group-hover:text-primary transition-colors">auth_middleware.py</h3>
+<span class="material-symbols-outlined text-on-surface-variant text-[16px]">code</span>
+</div>
+<p class="text-xs text-on-surface-variant mb-3 line-clamp-2">Implementation of JWT authentication middleware with refresh token rotation.</p>
+<div class="flex justify-between items-center text-[10px] text-on-surface-variant/70 font-label-sm">
+<span class="">Python</span>
+<span class="">Il y a 2h</span>
+</div>
+</div>
+<!-- Snippet Item -->
+<div class="bg-surface p-4 rounded-lg cursor-pointer hover:bg-surface-container transition-colors border border-outline-variant/30 hover:border-outline-variant group">
+<div class="flex justify-between items-start mb-2">
+<h3 class="font-label-sm text-label-sm text-on-surface group-hover:text-primary transition-colors">useDebounce.js</h3>
+<span class="material-symbols-outlined text-on-surface-variant text-[16px]">javascript</span>
+</div>
+<p class="text-xs text-on-surface-variant mb-3 line-clamp-2">Custom React hook for debouncing rapid state changes or API calls.</p>
+<div class="flex justify-between items-center text-[10px] text-on-surface-variant/70 font-label-sm">
+<span class="">JavaScript</span>
+<span class="">Hier</span>
+</div>
+</div>
+<!-- Snippet Item -->
+<div class="bg-surface p-4 rounded-lg cursor-pointer hover:bg-surface-container transition-colors border border-outline-variant/30 hover:border-outline-variant group">
+<div class="flex justify-between items-start mb-2">
+<h3 class="font-label-sm text-label-sm text-on-surface group-hover:text-primary transition-colors">docker_compose_db.yml</h3>
+<span class="material-symbols-outlined text-on-surface-variant text-[16px]">integration_instructions</span>
+</div>
+<p class="text-xs text-on-surface-variant mb-3 line-clamp-2">Standard PostgreSQL and Redis configuration for local development environments.</p>
+<div class="flex justify-between items-center text-[10px] text-on-surface-variant/70 font-label-sm">
+<span class="">YAML</span>
+<span class="">03 Nov</span>
+</div>
+</div>
+<!-- Snippet Item -->
+<div class="bg-surface p-4 rounded-lg cursor-pointer hover:bg-surface-container transition-colors border border-outline-variant/30 hover:border-outline-variant group">
+<div class="flex justify-between items-start mb-2">
+<h3 class="font-label-sm text-label-sm text-on-surface group-hover:text-primary transition-colors">worker_pool.go</h3>
+<span class="material-symbols-outlined text-on-surface-variant text-[16px]">terminal</span>
+</div>
+<p class="text-xs text-on-surface-variant mb-3 line-clamp-2">Concurrent worker pool pattern implementation using channels and goroutines.</p>
+<div class="flex justify-between items-center text-[10px] text-on-surface-variant/70 font-label-sm">
+<span class="">Go</span>
+<span class="">28 Oct</span>
+</div>
+</div>
+</div>
+</aside>
+<!-- Right Panel: Editor View -->
+<section class="hidden md:flex flex-col flex-1 h-full glass-panel rounded-xl overflow-hidden shadow-lg relative bg-surface border border-outline-variant/40">
+<!-- Editor Header -->
+<div class="h-14 bg-surface-container-low border-b border-outline-variant/30 flex items-center justify-between px-6">
+<div class="flex items-center gap-3">
+<span class="material-symbols-outlined text-primary text-sm">code</span>
+<h2 class="font-label-sm text-label-sm text-on-surface">auth_middleware.py</h2>
+<span class="bg-surface-container-high text-on-surface-variant text-[10px] px-2 py-0.5 rounded font-label-sm">Python</span>
+</div>
+<div class="flex items-center gap-2"><button class="text-on-surface-variant hover:text-primary p-1.5 rounded hover:bg-surface-container transition-colors flex items-center gap-1.5" title="Ajouter aux favoris"><span class="material-symbols-outlined text-sm">favorite</span><span class="text-[10px] font-label-sm hidden lg:block">Favori</span></button><button class="text-on-surface-variant hover:text-primary p-1.5 rounded hover:bg-surface-container transition-colors flex items-center gap-1.5" title="Expliquer le snippet"><span class="material-symbols-outlined text-sm">lightbulb</span><span class="text-[10px] font-label-sm hidden lg:block">Expliquer</span></button><button class="text-on-surface-variant hover:text-primary p-1.5 rounded hover:bg-surface-container transition-colors flex items-center gap-1.5" title="Transcrire le snippet"><span class="material-symbols-outlined text-sm">translate</span><span class="text-[10px] font-label-sm hidden lg:block">Transcrire</span></button>
+<button class="text-on-surface-variant hover:text-primary p-1.5 rounded hover:bg-surface-container transition-colors" title="Copier">
+<span class="material-symbols-outlined text-sm">content_copy</span>
+</button>
+<button class="text-on-surface-variant hover:text-primary p-1.5 rounded hover:bg-surface-container transition-colors" title="Partager">
+<span class="material-symbols-outlined text-sm">share</span>
+</button>
+<button class="text-on-surface-variant hover:text-primary p-1.5 rounded hover:bg-surface-container transition-colors" title="Options">
+<span class="material-symbols-outlined text-sm">more_vert</span>
+</button>
+</div>
+</div>
+<!-- Editor Content -->
+<div class="flex-1 bg-surface-container-lowest p-6 overflow-auto"><div class="mb-6"><h1 class="text-2xl font-bold text-on-surface mb-2">auth_middleware.py</h1><p class="text-on-surface-variant mb-4">Implementation of JWT authentication middleware with refresh token rotation. This snippet handles token extraction, validation, and user context injection.</p><div class="flex flex-wrap gap-2 mb-4"><span class="bg-primary-container text-on-primary-container text-[10px] px-2 py-0.5 rounded font-label-sm">Python</span><span class="text-primary text-[10px] font-label-sm">#auth</span><span class="text-primary text-[10px] font-label-sm">#security</span><span class="text-primary text-[10px] font-label-sm">#middleware</span></div><hr class="border-outline-variant/30"></div>
+<pre class="fira-code text-[14px] leading-relaxed text-on-surface/90"><code class="language-python"><span class="code-keyword">import</span> jwt
+<span class="code-keyword">from</span> functools <span class="code-keyword">import</span> wraps
+<span class="code-keyword">from</span> flask <span class="code-keyword">import</span> request, jsonify, current_app
+<span class="code-keyword">from</span> models.user <span class="code-keyword">import</span> User
+
+<span class="code-comment"># Middleware to protect routes and verify JWT tokens</span>
+<span class="code-keyword">def</span> <span class="code-function">token_required</span>(f):
+    <span class="code-keyword">@wraps</span>(f)
+    <span class="code-keyword">def</span> <span class="code-function">decorated</span>(*args, **kwargs):
+        token = <span class="code-keyword">None</span>
+        
+        <span class="code-comment"># Extract token from Authorization header</span>
+        <span class="code-keyword">if</span> <span class="code-string">'Authorization'</span> <span class="code-keyword">in</span> request.headers:
+            auth_header = request.headers[<span class="code-string">'Authorization'</span>]
+            <span class="code-keyword">if</span> auth_header.startswith(<span class="code-string">'Bearer '</span>):
+                token = auth_header.split(<span class="code-string">" "</span>)[<span class="code-keyword">1</span>]
+        
+        <span class="code-keyword">if not</span> token:
+            <span class="code-keyword">return</span> jsonify({<span class="code-string">'message'</span>: <span class="code-string">'Token is missing!'</span>}), <span class="code-keyword">401</span>
+            
+        <span class="code-keyword">try</span>:
+            <span class="code-comment"># Decode payload</span>
+            data = jwt.decode(
+                token, 
+                current_app.config[<span class="code-string">'SECRET_KEY'</span>], 
+                algorithms=[<span class="code-string">"HS256"</span>]
+            )
+            current_user = User.query.filter_by(public_id=data[<span class="code-string">'public_id'</span>]).first()
+            
+            <span class="code-keyword">if not</span> current_user:
+                <span class="code-keyword">raise</span> Exception(<span class="code-string">'User not found'</span>)
+                
+        <span class="code-keyword">except</span> jwt.ExpiredSignatureError:
+            <span class="code-keyword">return</span> jsonify({<span class="code-string">'message'</span>: <span class="code-string">'Token has expired!'</span>}), <span class="code-keyword">401</span>
+        <span class="code-keyword">except</span> Exception <span class="code-keyword">as</span> e:
+            <span class="code-keyword">return</span> jsonify({<span class="code-string">'message'</span>: <span class="code-string">'Token is invalid!'</span>}), <span class="code-keyword">401</span>
+            
+        <span class="code-keyword">return</span> f(current_user, *args, **kwargs)
+        
+    <span class="code-keyword">return</span> decorated</code></pre>
+</div>
+<!-- Editor Footer / Meta -->
+<div class="h-8 bg-surface-container-low border-t border-outline-variant/30 flex items-center justify-end px-4 gap-4 text-[10px] font-label-sm text-on-surface-variant">
+<span class="">UTF-8</span>
+<span class="">Python</span>
+<span class="">Ln 32, Col 18</span>
+</div>
+</section>
+</main>
+<!-- BottomNavBar (Mobile Only based on hierarchy rules) -->
+<nav class="fixed bottom-8 left-1/2 -translate-x-1/2 z-50 flex justify-center bg-surface/90 backdrop-blur-md rounded-full shadow-lg border border-outline-variant/30 w-fit px-4 py-2"><ul class="flex items-center gap-2"><li><a class="flex items-center justify-center text-on-surface-variant hover:text-primary p-2 transition-colors" href="#"><span class="material-symbols-outlined">dashboard</span></a></li><li class=""><a class="flex items-center gap-2 bg-primary text-on-primary rounded-full px-4 py-2 transition-all font-label-sm text-label-sm" href="#"><span class="material-symbols-outlined">code</span><span class="">Snippets</span></a></li><li><a class="flex items-center justify-center text-on-surface-variant hover:text-primary p-2 transition-colors" href="#"><span class="material-symbols-outlined">folder_special</span></a></li><li><a class="flex items-center justify-center text-on-surface-variant hover:text-primary p-2 transition-colors" href="#"><span class="material-symbols-outlined">favorite</span></a></li><li><a class="flex items-center justify-center text-on-surface-variant hover:text-primary p-2 transition-colors" href="#"><span class="material-symbols-outlined">groups</span></a></li><li><a class="flex items-center justify-center text-on-surface-variant hover:text-primary p-2 transition-colors" href="#"><span class="material-symbols-outlined">auto_awesome</span></a></li></ul></nav>
+<style>
+        /* Custom Scrollbar for snippet list */
+        .custom-scrollbar::-webkit-scrollbar {
+            width: 4px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-track {
+            background: transparent;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+            background: #D7C1C3;
+            border-radius: 4px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+            background: #857375;
+        }
+        .scrollbar-hide::-webkit-scrollbar {
+            display: none;
+        }
+        .scrollbar-hide {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+    </style>
+<button class="fixed bottom-8 right-8 w-14 h-14 bg-primary text-on-primary rounded-full shadow-lg flex items-center justify-center hover:brightness-110 transition-all active:scale-95 z-50"><span class="material-symbols-outlined text-2xl">auto_awesome</span></button>
+</body></html>

@@ -96,7 +96,7 @@ function AdminUsers() {
         <p className="text-muted-foreground">Gérez les comptes et leurs rôles.</p>
       </div>
 
-      <div className="bg-card border border-border rounded-xl overflow-hidden">
+      <div className="bg-card border border-border rounded-xl overflow-hidden overflow-x-auto">
         <Table>
           <TableHeader>
             <TableRow>

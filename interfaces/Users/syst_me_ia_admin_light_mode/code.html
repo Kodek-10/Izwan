@@ -1,0 +1,379 @@
+<!DOCTYPE html>
+
+<html class="light" lang="fr"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Izwan Admin - AI &amp; System Settings</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500&amp;family=Inter:wght@400;600&amp;family=Poppins:wght@500;600;700;900&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "surface-container": "#f4eced",
+                        "tertiary": "#232020",
+                        "on-secondary-container": "#7b4f5b",
+                        "on-secondary": "#ffffff",
+                        "primary-fixed-dim": "#f7b5c3",
+                        "on-tertiary-fixed": "#1e1b1b",
+                        "on-primary": "#ffffff",
+                        "on-tertiary": "#ffffff",
+                        "outline": "#837376",
+                        "on-tertiary-container": "#a49d9d",
+                        "background": "#fff8f8",
+                        "error-container": "#ffdad6",
+                        "surface-variant": "#e9e0e1",
+                        "inverse-on-surface": "#f7eff0",
+                        "on-surface": "#1e1b1c",
+                        "on-secondary-fixed": "#31111b",
+                        "surface-bright": "#fff8f8",
+                        "secondary-fixed-dim": "#f0b8c5",
+                        "tertiary-fixed-dim": "#ccc5c5",
+                        "on-surface-variant": "#514346",
+                        "surface-container-highest": "#e9e0e1",
+                        "secondary-fixed": "#ffd9e1",
+                        "on-primary-fixed-variant": "#683844",
+                        "surface-dim": "#e0d8d9",
+                        "on-error-container": "#93000a",
+                        "surface-tint": "#844f5c",
+                        "on-error": "#ffffff",
+                        "surface-container-high": "#efe6e7",
+                        "primary-fixed": "#ffd9e0",
+                        "on-tertiary-fixed-variant": "#4a4646",
+                        "tertiary-container": "#393535",
+                        "secondary-container": "#ffc5d3",
+                        "error": "#ba1a1a",
+                        "surface-container-lowest": "#ffffff",
+                        "on-primary-fixed": "#350e1a",
+                        "on-background": "#1e1b1c",
+                        "primary": "#3b131f",
+                        "on-primary-container": "#cc8e9c",
+                        "tertiary-fixed": "#e9e1e1",
+                        "inverse-primary": "#f7b5c3",
+                        "secondary": "#7e525e",
+                        "inverse-surface": "#332f30",
+                        "outline-variant": "#d5c2c5",
+                        "on-secondary-fixed-variant": "#643b46",
+                        "surface-container-low": "#faf1f2",
+                        "primary-container": "#552834",
+                        "surface": "#fff8f8"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    "spacing": {
+                        "md": "16px",
+                        "xl": "40px",
+                        "sm": "8px",
+                        "margin-mobile": "16px",
+                        "gutter": "24px",
+                        "lg": "24px",
+                        "base": "4px",
+                        "margin-desktop": "64px",
+                        "xs": "4px",
+                        "sidebar-width": "280px"
+                    },
+                    "fontFamily": {
+                        "label-caps": ["Inter"],
+                        "display": ["Poppins"],
+                        "headline-lg-mobile": ["Poppins"],
+                        "headline-lg": ["Poppins"],
+                        "headline-md": ["Poppins"],
+                        "body-sm": ["Inter"],
+                        "body-lg": ["Inter"],
+                        "code-md": ["Fira Code"],
+                        "body-md": ["Inter"]
+                    },
+                    "fontSize": {
+                        "label-caps": ["12px", { "lineHeight": "16px", "letterSpacing": "0.05em", "fontWeight": "600" }],
+                        "display": ["48px", { "lineHeight": "56px", "letterSpacing": "-0.02em", "fontWeight": "700" }],
+                        "headline-lg-mobile": ["28px", { "lineHeight": "36px", "fontWeight": "600" }],
+                        "headline-lg": ["32px", { "lineHeight": "40px", "fontWeight": "600" }],
+                        "headline-md": ["24px", { "lineHeight": "32px", "fontWeight": "600" }],
+                        "body-sm": ["14px", { "lineHeight": "20px", "fontWeight": "400" }],
+                        "body-lg": ["18px", { "lineHeight": "28px", "fontWeight": "400" }],
+                        "code-md": ["14px", { "lineHeight": "22px", "fontWeight": "450" }],
+                        "body-md": ["16px", { "lineHeight": "24px", "fontWeight": "400" }]
+                    }
+                }
+            }
+        }
+    </script>
+<style>
+        body { background-color: #F7F4F4; } /* Base level White Smoke */
+        .card-surface { background-color: #FFFFFF; border: 1px solid #E0D8D8; }
+        .input-field { background-color: #FFFFFF; border: 1px solid #E0D8D8; }
+        .input-field:focus { border: 2px solid #552834; box-shadow: 0 0 0 4px rgba(85, 40, 52, 0.1); outline: none; }
+        .btn-primary { background-color: #552834; color: #FFFFFF; border-radius: 10px; }
+        .btn-secondary { background-color: transparent; border: 1px solid #552834; color: #552834; border-radius: 10px; }
+        .table-header { background-color: #F0EDED; }
+    </style>
+</head>
+<body class="text-on-surface font-body-md min-h-screen flex">
+<!-- SideNavBar (Shared Component) -->
+<nav class="bg-surface-container-low font-label-sm text-label-sm docked h-screen left-0 w-sidebar-width bg-surface-container-low border-r border-outline-variant/20 flat no shadows fixed left-0 top-0 h-full flex flex-col z-40 transition-all duration-200 ease-in-out hidden md:flex">
+<div class="p-6">
+<div class="flex items-center gap-3 mb-10">
+<div class="w-10 h-10 rounded-lg bg-primary-container flex items-center justify-center shrink-0">
+<span class="material-symbols-outlined text-on-primary-container" style="font-variation-settings: 'FILL' 1;">terminal</span>
+</div>
+<div>
+<h1 class="font-headline-md text-headline-md font-black text-primary">Izwan</h1>
+<p class="text-on-surface-variant font-label-caps uppercase text-[10px]">Code Manager</p>
+</div>
+</div>
+<button class="w-full btn-primary py-3 px-4 flex items-center justify-center gap-2 mb-8 hover:opacity-90 transition-opacity">
+<span class="material-symbols-outlined text-[18px]">add</span>
+<span class="font-label-caps uppercase">Nouveau Snippet</span>
+</button>
+<ul class="space-y-1">
+<li>
+<a class="flex items-center gap-3 text-on-surface-variant px-4 py-3 hover:bg-surface-container-high hover:text-on-surface rounded-md transition-colors" href="#">
+<span class="material-symbols-outlined" data-icon="dashboard">dashboard</span>
+                        Dashboard
+                    </a>
+</li>
+<li>
+<a class="flex items-center gap-3 text-on-surface-variant px-4 py-3 hover:bg-surface-container-high hover:text-on-surface rounded-md transition-colors" href="#">
+<span class="material-symbols-outlined" data-icon="code">code</span>
+                        Snippets
+                    </a>
+</li>
+<li>
+<a class="flex items-center gap-3 text-on-surface-variant px-4 py-3 hover:bg-surface-container-high hover:text-on-surface rounded-md transition-colors" href="#">
+<span class="material-symbols-outlined" data-icon="label">label</span>
+                        Tags
+                    </a>
+</li>
+<li>
+<a class="flex items-center gap-3 text-on-surface-variant px-4 py-3 hover:bg-surface-container-high hover:text-on-surface rounded-md transition-colors" href="#">
+<span class="material-symbols-outlined" data-icon="group">group</span>
+                        Équipe
+                    </a>
+</li>
+<li>
+<a class="flex items-center gap-3 bg-secondary-container/20 text-primary border-l-4 border-primary px-4 py-3 rounded-r-md" href="#">
+<span class="material-symbols-outlined" data-icon="settings" style="font-variation-settings: 'FILL' 1;">settings</span>
+                        Paramètres
+                    </a>
+</li>
+</ul>
+</div>
+<div class="mt-auto p-6">
+<ul class="space-y-1">
+<li>
+<a class="flex items-center gap-3 text-on-surface-variant px-4 py-3 hover:bg-surface-container-high hover:text-on-surface rounded-md transition-colors" href="#">
+<span class="material-symbols-outlined" data-icon="help">help</span>
+                        Aide
+                    </a>
+</li>
+<li>
+<a class="flex items-center gap-3 text-on-surface-variant px-4 py-3 hover:bg-surface-container-high hover:text-on-surface rounded-md transition-colors" href="#">
+<span class="material-symbols-outlined" data-icon="logout">logout</span>
+                        Déconnexion
+                    </a>
+</li>
+</ul>
+</div>
+</nav>
+<!-- Main Content Area -->
+<div class="flex-1 ml-0 md:ml-sidebar-width flex flex-col min-h-screen">
+<!-- TopNavBar Admin (Shared Component) -->
+<header class="bg-surface-container-lowest font-body-md text-body-md docked full-width top-0 bg-surface-container-lowest border-b border-outline-variant/50 shadow-sm flex justify-between items-center h-16 w-full px-6 sticky z-30">
+<div class="flex items-center gap-4">
+<h2 class="font-headline-md text-headline-md font-bold text-tertiary">Izwan Admin</h2>
+</div>
+<div class="flex items-center gap-6">
+<!-- Search Bar -->
+<div class="relative hidden sm:block">
+<span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-on-surface-variant text-[18px]">search</span>
+<input class="input-field rounded-full py-2 pl-10 pr-4 text-body-sm w-64 focus:w-80 transition-all duration-300" placeholder="Search parameters..." type="text"/>
+</div>
+<!-- Trailing Icon Actions -->
+<div class="flex items-center gap-2">
+<button class="text-on-surface-variant hover:bg-surface-container-high rounded-full p-2 transition-colors flex items-center justify-center">
+<span class="material-symbols-outlined" data-icon="language">language</span>
+</button>
+<button class="text-on-surface-variant hover:bg-surface-container-high rounded-full p-2 transition-colors flex items-center justify-center">
+<span class="material-symbols-outlined" data-icon="dark_mode">dark_mode</span>
+</button>
+<button class="text-on-surface-variant hover:bg-surface-container-high rounded-full p-2 transition-colors flex items-center justify-center relative">
+<span class="material-symbols-outlined" data-icon="notifications">notifications</span>
+<span class="absolute top-1.5 right-1.5 w-2 h-2 bg-error rounded-full"></span>
+</button>
+</div>
+<div class="h-8 w-px bg-outline-variant/50 hidden sm:block"></div>
+<img alt="Admin Avatar" class="w-8 h-8 rounded-full object-cover border border-outline-variant" data-alt="A small, professional circular avatar portrait of a software engineer in a modern, light-filled office, rendered in a crisp, clean light-mode corporate aesthetic." src="https://lh3.googleusercontent.com/aida-public/AB6AXuDmlpq_ezoGWBYefq4EuEMWjqVZsoPylURiWunFeYP_5a3SCANOjKdyBFIJACHrT1uNXjK6E6_4gb_Xm16vVpn4HQFjdzBZNt71qZ8iR6zcxu2fSk5Yc26R1qkZD3IOiD7WNG7Y2gHA6cn8uJSX7KSlJzE8RNRS3IEwPwtvRGecc1eq4dycLcPYviRQJmT2jHH_YRRIe0k6d51SElcvEipPZjW_rhq7c64WMsUaUmz1mUCPcNi1OwNC0AxfWGE6oo62dNszTtKmksA"/>
+</div>
+</header>
+<!-- Canvas -->
+<main class="flex-1 p-margin-mobile md:p-margin-desktop overflow-y-auto">
+<div class="max-w-[1200px] mx-auto">
+<div class="mb-8 flex flex-col sm:flex-row sm:items-end justify-between gap-4">
+<div>
+<h1 class="font-headline-lg text-headline-lg-mobile md:text-headline-lg text-on-surface mb-2">AI &amp; System Settings</h1>
+<p class="font-body-md text-body-md text-on-surface-variant">Configure core model parameters, API integrations, and global thresholds.</p>
+</div>
+<div class="flex gap-3">
+<button class="btn-secondary px-6 py-2.5 font-label-caps uppercase hover:bg-surface-container-low transition-colors">Discard Changes</button>
+<button class="btn-primary px-6 py-2.5 font-label-caps uppercase hover:opacity-90 transition-opacity">Save Configuration</button>
+</div>
+</div>
+<!-- Bento Grid Layout for Settings -->
+<div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+<!-- Left Column: AI Model Configuration (Wider) -->
+<div class="lg:col-span-8 flex flex-col gap-6">
+<!-- Card: Active Model Settings -->
+<section class="card-surface rounded-xl p-6">
+<div class="border-b border-outline-variant/30 pb-4 mb-6 flex justify-between items-center">
+<h3 class="font-display text-[18px] font-medium text-tertiary">Language Model Configuration</h3>
+<span class="bg-surface-container-low text-on-surface-variant px-3 py-1 rounded-full font-label-caps uppercase text-[10px] tracking-wider border border-outline-variant/50">Production</span>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+<div class="space-y-2">
+<label class="font-label-caps text-label-caps text-on-surface-variant">Primary Endpoint</label>
+<select class="w-full input-field rounded-lg py-2.5 px-3 font-code-md text-code-md text-on-surface appearance-none">
+<option>gpt-4-turbo-preview</option>
+<option>claude-3-opus-20240229</option>
+<option>gemini-1.5-pro</option>
+</select>
+</div>
+<div class="space-y-2">
+<label class="font-label-caps text-label-caps text-on-surface-variant">Fallback Endpoint</label>
+<select class="w-full input-field rounded-lg py-2.5 px-3 font-code-md text-code-md text-on-surface appearance-none">
+<option>gpt-3.5-turbo</option>
+<option selected="">claude-3-sonnet-20240229</option>
+</select>
+</div>
+</div>
+<div class="space-y-6">
+<div>
+<div class="flex justify-between items-center mb-2">
+<label class="font-label-caps text-label-caps text-on-surface-variant">Temperature (Creativity)</label>
+<span class="font-code-md text-code-md text-primary">0.7</span>
+</div>
+<input class="w-full accent-primary-container h-1 bg-surface-variant rounded-lg appearance-none cursor-pointer" max="2" min="0" step="0.1" type="range" value="0.7"/>
+</div>
+<div>
+<div class="flex justify-between items-center mb-2">
+<label class="font-label-caps text-label-caps text-on-surface-variant">Max Output Tokens</label>
+<span class="font-code-md text-code-md text-primary">4096</span>
+</div>
+<input class="w-full accent-primary-container h-1 bg-surface-variant rounded-lg appearance-none cursor-pointer" max="8192" min="256" step="256" type="range" value="4096"/>
+</div>
+</div>
+</section>
+<!-- Card: API Integrations -->
+<section class="card-surface rounded-xl p-6">
+<div class="border-b border-outline-variant/30 pb-4 mb-6">
+<h3 class="font-display text-[18px] font-medium text-tertiary">Service Integrations</h3>
+</div>
+<div class="space-y-4">
+<div class="flex items-start justify-between p-4 border border-outline-variant/30 rounded-lg hover:bg-surface-container-lowest transition-colors">
+<div class="flex items-center gap-4">
+<div class="w-10 h-10 rounded bg-surface-container flex items-center justify-center">
+<span class="material-symbols-outlined text-on-surface-variant">api</span>
+</div>
+<div>
+<h4 class="font-body-md text-body-md font-semibold">OpenAI Platform</h4>
+<p class="font-code-md text-code-md text-on-surface-variant text-[12px] truncate max-w-[200px] sm:max-w-md mt-1">sk-proj-8x...a9b2</p>
+</div>
+</div>
+<button class="btn-secondary px-3 py-1.5 font-label-caps uppercase text-[10px]">Rotate Key</button>
+</div>
+<div class="flex items-start justify-between p-4 border border-outline-variant/30 rounded-lg hover:bg-surface-container-lowest transition-colors">
+<div class="flex items-center gap-4">
+<div class="w-10 h-10 rounded bg-surface-container flex items-center justify-center">
+<span class="material-symbols-outlined text-on-surface-variant">database</span>
+</div>
+<div>
+<h4 class="font-body-md text-body-md font-semibold">Pinecone Vector DB</h4>
+<p class="font-code-md text-code-md text-on-surface-variant text-[12px] mt-1">Environment: us-west-2-aws</p>
+</div>
+</div>
+<button class="btn-secondary px-3 py-1.5 font-label-caps uppercase text-[10px]">Configure</button>
+</div>
+</div>
+</section>
+</div>
+<!-- Right Column: System Thresholds & Status (Narrower) -->
+<div class="lg:col-span-4 flex flex-col gap-6">
+<!-- Card: System Status -->
+<section class="card-surface rounded-xl p-6">
+<div class="border-b border-outline-variant/30 pb-4 mb-6">
+<h3 class="font-display text-[18px] font-medium text-tertiary">System Health</h3>
+</div>
+<div class="space-y-5">
+<div>
+<div class="flex justify-between items-center mb-2">
+<span class="font-body-sm text-body-sm text-on-surface-variant">API Rate Limit</span>
+<span class="font-code-md text-code-md text-tertiary">45/100 RPM</span>
+</div>
+<div class="w-full bg-surface-variant rounded-full h-1.5">
+<div class="bg-primary-container h-1.5 rounded-full" style="width: 45%"></div>
+</div>
+</div>
+<div>
+<div class="flex justify-between items-center mb-2">
+<span class="font-body-sm text-body-sm text-on-surface-variant">Token Usage (Monthly)</span>
+<span class="font-code-md text-code-md text-tertiary">1.2M / 5M</span>
+</div>
+<div class="w-full bg-surface-variant rounded-full h-1.5">
+<div class="bg-primary-container h-1.5 rounded-full" style="width: 24%"></div>
+</div>
+</div>
+<div class="pt-4 border-t border-outline-variant/30 flex justify-between items-center">
+<span class="font-body-sm text-body-sm">Global Maintenance Mode</span>
+<label class="relative inline-flex items-center cursor-pointer">
+<input class="sr-only peer" type="checkbox"/>
+<div class="w-11 h-6 bg-surface-variant peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-primary-container"></div>
+</label>
+</div>
+</div>
+</section>
+<!-- Card: Security Parameters -->
+<section class="card-surface rounded-xl p-6">
+<div class="border-b border-outline-variant/30 pb-4 mb-6">
+<h3 class="font-display text-[18px] font-medium text-tertiary">Security</h3>
+</div>
+<div class="space-y-4">
+<div class="space-y-2">
+<label class="font-label-caps text-label-caps text-on-surface-variant">Content Moderation Strictness</label>
+<select class="w-full input-field rounded-lg py-2 px-3 font-body-sm text-body-sm text-on-surface appearance-none">
+<option>Low (Default)</option>
+<option selected="">Medium (Recommended)</option>
+<option>High (Strict)</option>
+</select>
+</div>
+<div class="space-y-2">
+<label class="font-label-caps text-label-caps text-on-surface-variant">Session Timeout (Minutes)</label>
+<input class="w-full input-field rounded-lg py-2 px-3 font-code-md text-code-md text-on-surface" type="number" value="60"/>
+</div>
+</div>
+</section>
+</div>
+</div>
+</div>
+<!-- Bottom Footer (Shared Component adjusted for Admin layout) -->
+<footer class="mt-12 bg-surface-container-lowest text-on-surface-variant font-label-sm text-label-sm border-t border-outline-variant/20 py-8 px-6 flex flex-col md:flex-row justify-between items-center w-full">
+<div class="mb-4 md:mb-0">
+<span class="text-primary font-bold mr-2">Izwan</span>
+<span>© 2024 Izwan. Tous droits réservés. Confidentialité d'abord.</span>
+</div>
+<ul class="flex gap-6">
+<li><a class="hover:text-tertiary transition-colors" href="#">Sécurité</a></li>
+<li><a class="hover:text-tertiary transition-colors" href="#">API</a></li>
+<li><a class="hover:text-tertiary transition-colors" href="#">Status</a></li>
+<li><a class="hover:text-tertiary transition-colors" href="#">Contact</a></li>
+</ul>
+</footer>
+</main>
+</div>
+</body></html>

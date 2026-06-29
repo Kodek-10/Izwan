@@ -1,0 +1,467 @@
+<!DOCTYPE html><html class="dark" lang="fr"><head>
+<meta charset="utf-8">
+<meta content="width=device-width, initial-scale=1.0" name="viewport">
+<title>Izwan - Votre cerveau numérique pour le code</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&amp;family=Poppins:wght@600;700;900&amp;family=Fira+Code:wght@400;500&amp;display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet">
+<script id="tailwind-config">
+        tailwind.config = {
+          darkMode: "class",
+          theme: {
+            extend: {
+              "colors": {
+                      "on-secondary-fixed": "#001a42",
+                      "tertiary-container": "#009eb9",
+                      "error-container": "#93000a",
+                      "on-error-container": "#ffdad6",
+                      "secondary-container": "#0566d9",
+                      "on-secondary": "#002e6a",
+                      "tertiary-fixed-dim": "#4cd7f6",
+                      "outline-variant": "#494454",
+                      "surface-container-low": "#131b2e",
+                      "on-surface": "#dae2fd",
+                      "error": "#ffb4ab",
+                      "on-error": "#690005",
+                      "on-primary-fixed-variant": "#5516be",
+                      "on-secondary-fixed-variant": "#004395",
+                      "on-primary-fixed": "#23005c",
+                      "surface-container": "#171f33",
+                      "inverse-surface": "#dae2fd",
+                      "on-tertiary": "#003640",
+                      "primary-fixed-dim": "#d0bcff",
+                      "primary-container": "#a078ff",
+                      "outline": "#958ea0",
+                      "on-background": "#dae2fd",
+                      "secondary-fixed-dim": "#adc6ff",
+                      "secondary": "#adc6ff",
+                      "on-surface-variant": "#cbc3d7",
+                      "on-tertiary-container": "#002f38",
+                      "surface-dim": "#0b1326",
+                      "tertiary": "#4cd7f6",
+                      "on-tertiary-fixed-variant": "#004e5c",
+                      "surface-container-high": "#222a3d",
+                      "on-secondary-container": "#e6ecff",
+                      "background": "#0b1326",
+                      "surface-tint": "#d0bcff",
+                      "surface-container-lowest": "#060e20",
+                      "secondary-fixed": "#d8e2ff",
+                      "primary": "#d0bcff",
+                      "on-primary-container": "#340080",
+                      "surface": "#0b1326",
+                      "surface-container-highest": "#2d3449",
+                      "tertiary-fixed": "#acedff",
+                      "surface-bright": "#31394d",
+                      "on-primary": "#3c0091",
+                      "inverse-on-surface": "#283044",
+                      "surface-variant": "#2d3449",
+                      "primary-fixed": "#e9ddff",
+                      "inverse-primary": "#6d3bd7",
+                      "on-tertiary-fixed": "#001f26"
+              },
+              "borderRadius": {
+                      "DEFAULT": "0.25rem",
+                      "lg": "0.5rem",
+                      "xl": "0.75rem",
+                      "full": "9999px"
+              },
+              "spacing": {
+                      "container-max": "1440px",
+                      "gutter": "24px",
+                      "unit": "4px",
+                      "margin-mobile": "16px",
+                      "sidebar-width": "280px"
+              },
+              "fontFamily": {
+                      "code-block": [
+                              "Fira Code"
+                      ],
+                      "label-sm": [
+                              "Inter"
+                      ],
+                      "display-lg-mobile": [
+                              "Poppins"
+                      ],
+                      "display-lg": [
+                              "Poppins"
+                      ],
+                      "headline-md": [
+                              "Poppins"
+                      ],
+                      "body-md": [
+                              "Inter"
+                      ],
+                      "body-lg": [
+                              "Inter"
+                      ]
+              },
+              "fontSize": {
+                      "code-block": [
+                              "14px",
+                              {
+                                      "lineHeight": "1.7",
+                                      "fontWeight": "400"
+                              }
+                      ],
+                      "label-sm": [
+                              "13px",
+                              {
+                                      "lineHeight": "1.4",
+                                      "letterSpacing": "0.01em",
+                                      "fontWeight": "500"
+                              }
+                      ],
+                      "display-lg-mobile": [
+                              "32px",
+                              {
+                                      "lineHeight": "1.2",
+                                      "fontWeight": "600"
+                              }
+                      ],
+                      "display-lg": [
+                              "48px",
+                              {
+                                      "lineHeight": "1.2",
+                                      "letterSpacing": "-0.02em",
+                                      "fontWeight": "600"
+                              }
+                      ],
+                      "headline-md": [
+                              "24px",
+                              {
+                                      "lineHeight": "1.3",
+                                      "fontWeight": "600"
+                              }
+                      ],
+                      "body-md": [
+                              "16px",
+                              {
+                                      "lineHeight": "1.5",
+                                      "fontWeight": "400"
+                              }
+                      ],
+                      "body-lg": [
+                              "18px",
+                              {
+                                      "lineHeight": "1.6",
+                                      "fontWeight": "400"
+                              }
+                      ]
+              }
+      },
+          },
+        }
+      </script>
+<style>
+        .brand-gradient-text {
+            background: linear-gradient(to right, #8B5CF6, #3B82F6, #06B6D4);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        .brand-gradient-bg {
+            background: linear-gradient(to right, #8B5CF6, #3B82F6, #06B6D4);
+        }
+        .glow-effect {
+            box-shadow: 0 0 40px 10px rgba(139, 92, 246, 0.15);
+        }
+        .card-blur {
+            background: rgba(30, 41, 59, 0.6);
+            backdrop-filter: blur(10px);
+            border-top: 1px solid rgba(148, 163, 184, 0.1);
+            border-left: 1px solid rgba(148, 163, 184, 0.05);
+            border-right: 1px solid rgba(148, 163, 184, 0.05);
+            border-bottom: 1px solid rgba(148, 163, 184, 0.02);
+        }
+    </style>
+</head>
+<body class="bg-background text-on-background font-body-md text-body-md overflow-x-hidden min-h-screen flex flex-col relative selection:bg-primary-container selection:text-on-primary-container">
+<!-- Ambient Background Glows -->
+<div class="fixed top-0 left-0 w-full h-full pointer-events-none z-0 overflow-hidden">
+<div class="absolute top-[-20%] left-[-10%] w-[50%] h-[50%] rounded-full bg-primary/5 blur-[120px]"></div>
+<div class="absolute bottom-[-10%] right-[-10%] w-[40%] h-[60%] rounded-full bg-secondary/5 blur-[150px]"></div>
+<div class="absolute top-[40%] left-[20%] w-[30%] h-[30%] rounded-full bg-tertiary/5 blur-[100px]"></div>
+</div>
+<!-- TopNavBar -->
+<nav class="sticky top-0 z-50 flex justify-between items-center px-gutter w-full max-w-container-max mx-auto py-4 bg-background/80 backdrop-blur-md border-b border-outline-variant/30">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-primary text-3xl">code_blocks</span>
+<span class="font-headline-md text-headline-md font-bold text-primary">Izwan</span>
+</div>
+<div class="hidden md:flex items-center gap-8">
+<a class="text-on-surface-variant hover:text-primary transition-colors font-label-sm text-label-sm font-medium" href="#">Fonctionnalités</a>
+<a class="text-on-surface-variant hover:text-primary transition-colors font-label-sm text-label-sm font-medium" href="#">Tarifs</a>
+<a class="text-on-surface-variant hover:text-primary transition-colors font-label-sm text-label-sm font-medium" href="#">Documentation</a>
+<a class="text-on-surface-variant hover:text-primary transition-colors font-label-sm text-label-sm font-medium" href="#">À propos</a>
+</div>
+<div class="flex items-center gap-4">
+<div class="hidden sm:flex items-center gap-3 mr-2 border-r border-outline-variant/30 pr-4">
+<button class="text-on-surface-variant hover:text-on-surface transition-colors font-label-sm text-label-sm flex items-center gap-1">
+<span class="material-symbols-outlined text-[18px]">language</span>
+                    FR
+                </button>
+<button class="text-on-surface-variant hover:text-on-surface transition-colors rounded-full p-1 hover:bg-surface-container-high">
+<span class="material-symbols-outlined text-[20px]">light_mode</span>
+</button>
+</div>
+<a class="hidden sm:block text-on-surface-variant hover:text-primary transition-colors font-label-sm text-label-sm font-medium px-4 py-2" href="#">Connexion</a>
+<a class="brand-gradient-bg text-white font-label-sm text-label-sm font-medium px-5 py-2.5 rounded-lg hover:brightness-110 transition-all Active: scale-95" href="#">Commencer</a>
+</div>
+</nav>
+<!-- Main Content Canvas -->
+<main class="flex-grow relative z-10">
+<!-- Hero Section -->
+<section class="w-full max-w-container-max mx-auto px-gutter pt-20 pb-24 md:pt-32 md:pb-40 grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
+<!-- Left Column: Copy & CTAs -->
+<div class="lg:col-span-6 flex flex-col gap-8">
+<!-- Trust Badges -->
+<div class="flex flex-wrap items-center gap-3">
+<span class="flex items-center gap-1.5 bg-primary-container/10 text-primary border border-primary/20 px-3 py-1 rounded-full font-label-sm text-label-sm font-semibold">
+<span class="material-symbols-outlined text-[14px]">bolt</span>
+                        Gratuit
+                    </span>
+<span class="flex items-center gap-1.5 bg-secondary-container/10 text-secondary border border-secondary/20 px-3 py-1 rounded-full font-label-sm text-label-sm font-semibold">
+<span class="material-symbols-outlined text-[14px]">code</span>
+                        Open source
+                    </span>
+<span class="flex items-center gap-1.5 bg-tertiary-container/10 text-tertiary border border-tertiary/20 px-3 py-1 rounded-full font-label-sm text-label-sm font-semibold">
+<span class="material-symbols-outlined text-[14px]">wifi_off</span>
+                        Fonctionne hors-ligne
+                    </span>
+</div>
+<!-- Headline -->
+<div class="flex flex-col gap-4">
+<h1 class="font-display-lg-mobile text-display-lg-mobile md:font-display-lg md:text-display-lg font-black tracking-tight text-on-surface">
+                        Votre <span class="brand-gradient-text">cerveau numérique</span> pour le code
+                    </h1>
+<p class="font-body-lg text-body-lg text-on-surface-variant max-w-2xl leading-relaxed">
+                        Capturez, retrouvez et réutilisez vos snippets grâce à l'IA — en local et en toute confidentialité. Un espace de travail fluide, conçu pour les développeurs exigeants.
+                    </p>
+</div>
+<!-- CTAs -->
+<div class="flex flex-col sm:flex-row items-center gap-4 pt-4">
+<a class="w-full sm:w-auto brand-gradient-bg text-white font-label-sm text-label-sm font-semibold px-8 py-4 rounded-lg hover:brightness-110 transition-all flex items-center justify-center gap-2 group" href="#">
+<span class="material-symbols-outlined text-[20px] group-hover:translate-y-0.5 transition-transform">download</span>
+                        Télécharger pour Windows
+                    </a>
+<a class="w-full sm:w-auto bg-transparent text-on-surface-variant border border-outline-variant/50 font-label-sm text-label-sm font-medium px-8 py-4 rounded-lg hover:bg-surface-container-high hover:text-on-surface transition-all flex items-center justify-center gap-2" href="#">
+                        Ouvrir l'app web
+                        <span class="material-symbols-outlined text-[18px]">open_in_new</span>
+</a>
+</div>
+<p class="text-xs text-on-surface-variant/60 font-label-sm">Version 2.4.0 • Nécessite Windows 10+ ou macOS 12+</p>
+</div>
+<!-- Right Column: Dashboard Visual -->
+<div class="lg:col-span-6 relative perspective-1000">
+<div class="glow-effect relative rounded-xl border border-outline-variant/30 overflow-hidden bg-surface-container-low shadow-2xl transform rotate-y-[-5deg] rotate-x-[2deg] transition-transform duration-500 hover:rotate-y-0 hover:rotate-x-0">
+<!-- Fake Window Header -->
+<div class="bg-surface-container-highest border-b border-outline-variant/20 h-10 flex items-center px-4 gap-2">
+<div class="w-3 h-3 rounded-full bg-outline-variant/50"></div>
+<div class="w-3 h-3 rounded-full bg-outline-variant/50"></div>
+<div class="w-3 h-3 rounded-full bg-outline-variant/50"></div>
+</div>
+<!-- Fake App Content -->
+<div class="flex h-[400px]">
+<!-- Sidebar -->
+<div class="w-48 bg-surface-container border-r border-outline-variant/20 p-4 flex flex-col gap-4">
+<div class="h-6 w-24 bg-surface-bright rounded"></div>
+<div class="flex flex-col gap-2 mt-4">
+<div class="h-8 w-full bg-primary/10 rounded flex items-center px-2 border-l-2 border-primary">
+<div class="h-2 w-16 bg-primary/60 rounded"></div>
+</div>
+<div class="h-8 w-full bg-surface-bright rounded flex items-center px-2">
+<div class="h-2 w-20 bg-outline-variant rounded"></div>
+</div>
+<div class="h-8 w-full bg-surface-bright rounded flex items-center px-2">
+<div class="h-2 w-12 bg-outline-variant rounded"></div>
+</div>
+</div>
+</div>
+<!-- Main Area -->
+<div class="flex-1 bg-surface-container-lowest p-6 flex flex-col gap-4 relative overflow-hidden">
+<!-- Search Bar -->
+<div class="h-10 w-full bg-surface-container rounded-lg border border-primary/30 flex items-center px-4 shadow-[0_0_15px_rgba(139,92,246,0.1)]">
+<div class="h-4 w-4 rounded-full bg-primary/50 mr-3"></div>
+<div class="h-2 w-32 bg-on-surface/40 rounded"></div>
+</div>
+<!-- Code Block Snippet -->
+<div class="card-blur rounded-lg p-4 flex-1 flex flex-col gap-3">
+<div class="flex justify-between items-center border-b border-outline-variant/20 pb-2">
+<div class="h-4 w-40 bg-on-surface/80 rounded"></div>
+<div class="h-5 w-16 bg-tertiary/20 text-tertiary rounded text-[10px] flex items-center justify-center font-bold">PYTHON</div>
+</div>
+<div class="font-code-block text-code-block text-outline-variant mt-2 flex flex-col gap-2">
+<div class="h-3 w-full bg-surface-bright rounded"></div>
+<div class="h-3 w-5/6 bg-surface-bright rounded"></div>
+<div class="h-3 w-3/4 bg-surface-bright rounded"></div>
+<div class="h-3 w-full bg-surface-bright rounded mt-2"></div>
+<div class="h-3 w-2/3 bg-surface-bright rounded"></div>
+</div>
+</div>
+<!-- Hover Detail Widget -->
+<div class="absolute bottom-6 right-6 w-48 card-blur rounded-lg p-3 shadow-xl border border-primary/20 backdrop-blur-xl">
+<div class="h-2 w-20 bg-primary/60 rounded mb-2"></div>
+<div class="h-1.5 w-full bg-surface-bright rounded mb-1"></div>
+<div class="h-1.5 w-4/5 bg-surface-bright rounded"></div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</section>
+<!-- Features Grid (Bento Style) -->
+<section class="w-full max-w-container-max mx-auto px-gutter py-24 border-t border-outline-variant/10">
+<div class="text-center mb-16 flex flex-col gap-4">
+<h2 class="font-display-lg-mobile text-display-lg-mobile md:font-headline-md md:text-headline-md font-bold text-on-surface">Une architecture pensée pour le <span class="text-primary">flow state</span></h2>
+<p class="font-body-md text-body-md text-on-surface-variant max-w-2xl mx-auto">Pas de distraction, pas de latence. Juste vos connaissances techniques, indexées intelligemment et disponibles instantanément.</p>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-12 gap-6 auto-rows-[300px]">
+<!-- Feature 1: Semantic Search (Large) -->
+<div class="md:col-span-8 card-blur rounded-xl p-8 flex flex-col justify-between group overflow-hidden relative">
+<div class="absolute top-0 right-0 w-64 h-64 bg-primary/10 rounded-full blur-[80px] -mr-20 -mt-20 transition-all duration-700 group-hover:bg-primary/20"></div>
+<div class="z-10 flex flex-col gap-2">
+<div class="w-12 h-12 rounded-lg bg-surface-container-high border border-outline-variant/30 flex items-center justify-center mb-4">
+<span class="material-symbols-outlined text-primary text-[24px]">manage_search</span>
+</div>
+<h3 class="font-headline-md text-headline-md font-semibold text-on-surface">Recherche sémantique</h3>
+<p class="font-body-md text-body-md text-on-surface-variant max-w-md">Ne cherchez plus par mots-clés exacts. Décrivez ce que fait le code, l'IA d'Izwan comprendra le contexte et retrouvera le snippet pertinent, même si vous avez oublié le nom de la fonction.</p>
+</div>
+<!-- Visual Mock -->
+<div class="z-10 mt-6 h-20 bg-surface-container-lowest rounded-lg border border-outline-variant/20 p-3 flex items-center gap-3">
+<span class="material-symbols-outlined text-outline-variant">search</span>
+<div class="text-on-surface text-sm font-code-block italic opacity-70">"Comment parser un JSON complexe en Go..."</div>
+</div>
+</div>
+<!-- Feature 2: Local AI (Small) -->
+<div class="md:col-span-4 card-blur rounded-xl p-8 flex flex-col group relative overflow-hidden">
+<div class="absolute bottom-0 right-0 w-40 h-40 bg-secondary/10 rounded-full blur-[60px] transition-all duration-700 group-hover:bg-secondary/20"></div>
+<div class="w-12 h-12 rounded-lg bg-surface-container-high border border-outline-variant/30 flex items-center justify-center mb-4 z-10">
+<span class="material-symbols-outlined text-secondary text-[24px]">memory</span>
+</div>
+<h3 class="font-headline-md text-headline-md font-semibold text-on-surface z-10 mb-2">IA locale</h3>
+<p class="font-body-md text-body-md text-on-surface-variant z-10">Des modèles d'inférence légers qui tournent directement sur votre machine. Zéro latence réseau.</p>
+</div>
+<!-- Feature 3: Multi-surface (Small) -->
+<div class="md:col-span-4 card-blur rounded-xl p-8 flex flex-col group relative overflow-hidden">
+<div class="absolute top-0 left-0 w-40 h-40 bg-tertiary/10 rounded-full blur-[60px] transition-all duration-700 group-hover:bg-tertiary/20"></div>
+<div class="w-12 h-12 rounded-lg bg-surface-container-high border border-outline-variant/30 flex items-center justify-center mb-4 z-10">
+<span class="material-symbols-outlined text-tertiary text-[24px]">devices</span>
+</div>
+<h3 class="font-headline-md text-headline-md font-semibold text-on-surface z-10 mb-2">Multi-surfaces</h3>
+<p class="font-body-md text-body-md text-on-surface-variant z-10">Synchronisez vos données de manière chiffrée entre votre Desktop, Web et CLI.</p>
+</div>
+<!-- Feature 4: Organization (Large) -->
+<div class="md:col-span-8 card-blur rounded-xl p-8 flex flex-col md:flex-row gap-8 items-center group relative overflow-hidden">
+<div class="absolute bottom-0 left-1/2 w-80 h-40 bg-primary/10 rounded-full blur-[80px] -translate-x-1/2 transition-all duration-700 group-hover:bg-primary/20"></div>
+<div class="flex-1 z-10 flex flex-col gap-2">
+<div class="w-12 h-12 rounded-lg bg-surface-container-high border border-outline-variant/30 flex items-center justify-center mb-4">
+<span class="material-symbols-outlined text-primary text-[24px]">folder_special</span>
+</div>
+<h3 class="font-headline-md text-headline-md font-semibold text-on-surface">Organisation auto-magique</h3>
+<p class="font-body-md text-body-md text-on-surface-variant">Oubliez les dossiers chaotiques. L'IA tague, catégorise et relie vos snippets automatiquement lors de la capture.</p>
+</div>
+<!-- Visual Mock -->
+<div class="flex-1 w-full z-10 flex flex-wrap gap-2">
+<span class="bg-primary-container/10 text-primary border border-primary/20 px-3 py-1 rounded font-code-block text-[11px] font-bold">#REACT_HOOKS</span>
+<span class="bg-secondary-container/10 text-secondary border border-secondary/20 px-3 py-1 rounded font-code-block text-[11px] font-bold">#DB_MIGRATION</span>
+<span class="bg-tertiary-container/10 text-tertiary border border-tertiary/20 px-3 py-1 rounded font-code-block text-[11px] font-bold">#DOCKERFILE</span>
+<span class="bg-surface-container-high text-on-surface-variant border border-outline-variant/30 px-3 py-1 rounded font-code-block text-[11px] font-bold">#UTIL</span>
+</div>
+</div>
+</div>
+</section>
+<!-- Privacy Banner -->
+<section class="w-full max-w-container-max mx-auto px-gutter py-12">
+<div class="relative rounded-2xl overflow-hidden bg-surface-container-low border border-outline-variant/20 p-8 md:p-12 flex flex-col md:flex-row items-center justify-between gap-8">
+<!-- Banner Background Effect -->
+<div class="absolute inset-0 bg-gradient-to-r from-primary/10 via-surface-container-low to-secondary/10 opacity-50"></div>
+<div class="absolute top-0 right-0 w-1/3 h-full bg-gradient-to-l from-background to-transparent pointer-events-none"></div>
+<div class="relative z-10 flex flex-col gap-4 max-w-xl">
+<div class="flex items-center gap-2 text-primary mb-2">
+<span class="material-symbols-outlined">shield_lock</span>
+<span class="font-label-sm text-label-sm font-bold uppercase tracking-wider">Confidentialité absolue</span>
+</div>
+<h2 class="font-headline-md text-headline-md font-bold text-on-surface text-3xl">Vos snippets restent chez vous.</h2>
+<p class="font-body-md text-body-md text-on-surface-variant">
+                        Nous croyons que votre code propriétaire ne devrait jamais servir à entraîner des modèles tiers sans votre consentement. Izwan fonctionne 100% hors-ligne par défaut.
+                    </p>
+</div>
+<div class="relative z-10 flex flex-col gap-3 w-full md:w-auto">
+<div class="flex items-center gap-3 bg-surface-container p-3 rounded-lg border border-outline-variant/20">
+<span class="material-symbols-outlined text-secondary">check_circle</span>
+<span class="font-label-sm text-label-sm text-on-surface">Aucune télémétrie code</span>
+</div>
+<div class="flex items-center gap-3 bg-surface-container p-3 rounded-lg border border-outline-variant/20">
+<span class="material-symbols-outlined text-secondary">check_circle</span>
+<span class="font-label-sm text-label-sm text-on-surface">Stockage local SQLite</span>
+</div>
+<div class="flex items-center gap-3 bg-surface-container p-3 rounded-lg border border-outline-variant/20">
+<span class="material-symbols-outlined text-secondary">check_circle</span>
+<span class="font-label-sm text-label-sm text-on-surface">Sync E2E chiffrée (optionnel)</span>
+</div>
+</div>
+</div>
+</section>
+<!-- Download Section -->
+<section class="w-full max-w-container-max mx-auto px-gutter py-24 mb-12">
+<div class="text-center mb-12">
+<h2 class="font-display-lg-mobile text-display-lg-mobile md:font-headline-md md:text-headline-md font-bold text-on-surface mb-4">Prêt à optimiser votre workflow ?</h2>
+<p class="font-body-md text-body-md text-on-surface-variant">Téléchargez Izwan et commencez à construire votre base de connaissances.</p>
+</div>
+<div class="flex flex-col md:flex-row justify-center items-center gap-6 max-w-4xl mx-auto">
+<!-- Windows Card -->
+<div class="w-full md:w-1/2 card-blur rounded-xl p-6 flex flex-col items-center text-center gap-4 hover:border-primary/50 transition-colors cursor-pointer group">
+<span class="material-symbols-outlined text-4xl text-on-surface group-hover:text-primary transition-colors">window</span>
+<div>
+<h3 class="font-headline-md text-headline-md font-semibold text-on-surface text-xl">Windows</h3>
+<p class="font-body-md text-body-md text-on-surface-variant text-sm mt-1">.exe installer (64-bit)</p>
+</div>
+<button class="mt-2 w-full bg-surface-container-high text-on-surface border border-outline-variant/30 font-label-sm text-label-sm font-medium px-4 py-2 rounded-lg group-hover:bg-primary/10 group-hover:border-primary/50 transition-all">Télécharger</button>
+</div>
+<!-- Linux Card -->
+<div class="w-full md:w-1/2 card-blur rounded-xl p-6 flex flex-col items-center text-center gap-4 hover:border-secondary/50 transition-colors cursor-pointer group">
+<span class="material-symbols-outlined text-4xl text-on-surface group-hover:text-secondary transition-colors">terminal</span>
+<div>
+<h3 class="font-headline-md text-headline-md font-semibold text-on-surface text-xl">Linux</h3>
+<p class="font-body-md text-body-md text-on-surface-variant text-sm mt-1">.AppImage (x86_64)</p>
+</div>
+<button class="mt-2 w-full bg-surface-container-high text-on-surface border border-outline-variant/30 font-label-sm text-label-sm font-medium px-4 py-2 rounded-lg group-hover:bg-secondary/10 group-hover:border-secondary/50 transition-all">Télécharger</button>
+</div>
+</div>
+<div class="text-center mt-8">
+<p class="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-surface-container-low border border-outline-variant/20 font-label-sm text-label-sm text-on-surface-variant">
+<span class="material-symbols-outlined text-[16px]">laptop_mac</span>
+                    macOS bientôt disponible — <a class="text-primary hover:underline" href="#">Être notifié</a>
+</p>
+</div>
+</section>
+</main>
+<!-- Footer -->
+<footer class="bg-surface-container-lowest border-t border-outline-variant/20 py-12 px-gutter">
+<div class="max-w-container-max mx-auto flex flex-col md:flex-row justify-between items-center gap-6">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-primary text-2xl">code_blocks</span>
+<span class="font-label-sm text-label-sm text-primary font-bold">Izwan</span>
+</div>
+<div class="flex flex-wrap justify-center gap-6 font-label-sm text-label-sm">
+<a class="text-on-surface-variant hover:text-tertiary transition-colors" href="#">Sécurité</a>
+<a class="text-on-surface-variant hover:text-tertiary transition-colors" href="#">API</a>
+<a class="text-on-surface-variant hover:text-tertiary transition-colors" href="#">Status</a>
+<a class="text-on-surface-variant hover:text-tertiary transition-colors" href="#">Contact</a>
+</div>
+<div class="flex flex-col md:flex-row items-center gap-4">
+<div class="flex items-center gap-2 bg-surface-container-high rounded-full px-3 py-1 border border-outline-variant/30">
+<span class="material-symbols-outlined text-[16px] text-on-surface-variant">language</span>
+<select class="bg-transparent border-none text-on-surface-variant font-label-sm text-label-sm text-xs focus:ring-0 cursor-pointer py-1 pl-1 pr-6">
+<option value="fr">Français</option>
+<option value="en">English</option>
+</select>
+</div>
+<p class="font-label-sm text-label-sm text-on-surface-variant/70 text-xs">
+                    © 2024 Izwan. Tous droits réservés. Confidentialité d'abord.
+                </p>
+</div>
+</div>
+</footer>
+</body></html>

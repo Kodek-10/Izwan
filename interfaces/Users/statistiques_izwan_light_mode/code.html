@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+
+<html lang="fr"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Statistiques et Analytique</title>
+<!-- Google Fonts -->
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&amp;family=JetBrains+Mono:wght@400;500&amp;family=Montserrat:wght@600;700&amp;display=swap" rel="stylesheet"/>
+<!-- Material Symbols -->
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<!-- Tailwind CSS -->
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .material-symbols-outlined.filled {
+            font-variation-settings: 'FILL' 1;
+        }
+        
+        /* Ambient Background Blur */
+        .ambient-glow {
+            position: absolute;
+            width: 60vw;
+            height: 60vh;
+            background: radial-gradient(circle, rgba(85,40,52,0.05) 0%, rgba(247,244,244,0) 70%);
+            top: -20%;
+            left: -10%;
+            pointer-events: none;
+            z-index: 0;
+        }
+        
+        /* Custom scrollbar for bento cards if needed */
+        .custom-scrollbar::-webkit-scrollbar {
+            width: 4px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-track {
+            background: transparent;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+            background: #dfd8d8;
+            border-radius: 4px;
+        }
+    </style>
+<script id="tailwind-config">
+        tailwind.config = {
+            theme: {
+                extend: {
+                    "colors": {
+                        "surface": "#F7F4F4",
+                        "background": "#F7F4F4",
+                        "on-surface": "#552834",
+                        "on-surface-variant": "#857074",
+                        "surface-container": "#ffffff",
+                        "surface-container-low": "#fcfafa",
+                        "surface-container-high": "#ebe6e6",
+                        "surface-container-highest": "#dfd8d8",
+                        "primary": "#552834",
+                        "primary-container": "#7a3f51",
+                        "on-primary-container": "#ffffff",
+                        "tertiary": "#346e60",
+                        "tertiary-container": "#a9dfd0",
+                        "secondary": "#4e6287",
+                        "surface-bright": "#ffffff",
+                        "inverse-surface": "#322f2f",
+                        "outline": "#b0a8a8",
+                        "outline-variant": "#d1c7c7",
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.125rem",
+                        "lg": "0.25rem",
+                        "xl": "0.5rem",
+                        "full": "0.75rem"
+                    },
+                    "spacing": {
+                        "container-max": "1440px",
+                        "margin-desktop": "40px",
+                        "unit": "4px",
+                        "margin-mobile": "16px",
+                        "gutter": "24px"
+                    },
+                    "fontFamily": {
+                        "headline-lg": ["Montserrat"],
+                        "body-md": ["Inter"],
+                        "label-sm": ["JetBrains Mono"],
+                        "headline-lg-mobile": ["Montserrat"],
+                        "display-lg": ["Montserrat"],
+                        "code-snippet": ["JetBrains Mono"]
+                    },
+                    "fontSize": {
+                        "headline-lg": ["32px", { "lineHeight": "40px", "fontWeight": "600" }],
+                        "body-md": ["16px", { "lineHeight": "24px", "fontWeight": "400" }],
+                        "label-sm": ["12px", { "lineHeight": "16px", "letterSpacing": "0.05em", "fontWeight": "500" }],
+                        "headline-lg-mobile": ["24px", { "lineHeight": "32px", "fontWeight": "600" }],
+                        "display-lg": ["48px", { "lineHeight": "56px", "letterSpacing": "-0.02em", "fontWeight": "700" }],
+                        "code-snippet": ["14px", { "lineHeight": "20px", "fontWeight": "400" }]
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+<body class="bg-surface text-on-surface font-body-md min-h-screen overflow-x-hidden relative selection:bg-primary-container selection:text-on-primary-container">
+<!-- Ambient Glow Effect -->
+<div class="ambient-glow"></div>
+<main class="relative z-10 w-full max-w-container-max mx-auto px-margin-mobile md:px-margin-desktop py-12 mb-24">
+<!-- Header Section -->
+<header class="flex flex-col md:flex-row justify-between items-start md:items-end mb-12 gap-6 border-b border-surface-container-highest pb-6">
+<div>
+<h1 class="font-headline-lg-mobile md:font-headline-lg text-headline-lg-mobile md:text-headline-lg text-primary tracking-tight mb-2">Performances</h1>
+<p class="font-body-md text-body-md text-on-surface-variant max-w-2xl">Aperçu analytique de l'utilisation, des langages dominants et de l'impact sur la productivité globale de l'équipe.</p>
+</div>
+<!-- Profile Dropdown -->
+<div class="relative group">
+<button class="w-12 h-12 rounded-full bg-surface-container border border-surface-container-highest shadow-sm flex items-center justify-center overflow-hidden hover:border-primary transition-colors">
+<span class="material-symbols-outlined text-primary">person</span>
+</button>
+<div class="absolute right-0 top-full mt-2 w-48 bg-surface-container rounded-xl shadow-lg border border-surface-container-highest hidden group-hover:flex flex-col p-2 z-50">
+<a class="flex items-center gap-3 px-3 py-2 text-label-sm font-label-sm text-on-surface hover:bg-surface-container-high rounded-lg transition-colors" href="#">
+<span class="material-symbols-outlined text-[18px]">bar_chart</span>
+                        Statistiques
+                    </a>
+<a class="flex items-center gap-3 px-3 py-2 text-label-sm font-label-sm text-on-surface hover:bg-surface-container-high rounded-lg transition-colors" href="#">
+<span class="material-symbols-outlined text-[18px]">ios_share</span>
+                        Exportations
+                    </a>
+<a class="flex items-center gap-3 px-3 py-2 text-label-sm font-label-sm text-on-surface hover:bg-surface-container-high rounded-lg transition-colors" href="#">
+<span class="material-symbols-outlined text-[18px]">settings</span>
+                        Paramètres
+                    </a>
+</div>
+</div>
+</header>
+<!-- Bento Grid Layout -->
+<div class="grid grid-cols-1 md:grid-cols-12 gap-gutter">
+<!-- Usage Frequency (Large Chart Card) -->
+<div class="col-span-1 md:col-span-8 bg-surface-container rounded-xl p-8 border border-surface-container-high shadow-sm relative overflow-hidden flex flex-col group">
+<div class="flex justify-between items-start mb-8">
+<div>
+<h2 class="font-body-md text-body-md font-semibold text-on-surface mb-1">Fréquence d'utilisation</h2>
+<p class="font-label-sm text-label-sm text-on-surface-variant">Requêtes traitées par jour</p>
+</div>
+<div class="bg-surface-container-high p-2 rounded-lg border border-surface-container-highest text-tertiary">
+<span class="material-symbols-outlined" data-icon="monitoring">monitoring</span>
+</div>
+</div>
+<!-- CSS Based Bar Chart Representation -->
+<div class="flex-grow flex items-end justify-between gap-2 mt-4 pt-8 h-48 border-b border-surface-container-highest pb-2">
+<!-- Bars -->
+<div class="w-full bg-primary-container/20 hover:bg-primary-container/40 transition-colors rounded-t-sm h-[30%] relative group-hover:h-[35%] duration-500 ease-out"></div>
+<div class="w-full bg-primary-container/30 hover:bg-primary-container/50 transition-colors rounded-t-sm h-[45%] relative group-hover:h-[50%] duration-500 ease-out delay-75"></div>
+<div class="w-full bg-primary hover:bg-primary/80 transition-colors rounded-t-sm h-[85%] relative shadow-[0_0_15px_rgba(85,40,52,0.1)] group-hover:h-[90%] duration-500 ease-out delay-100"></div>
+<div class="w-full bg-primary-container/40 hover:bg-primary-container/60 transition-colors rounded-t-sm h-[60%] relative group-hover:h-[65%] duration-500 ease-out delay-150"></div>
+<div class="w-full bg-primary-container/20 hover:bg-primary-container/40 transition-colors rounded-t-sm h-[25%] relative group-hover:h-[30%] duration-500 ease-out delay-200"></div>
+<div class="w-full bg-primary-container/50 hover:bg-primary-container/70 transition-colors rounded-t-sm h-[75%] relative group-hover:h-[80%] duration-500 ease-out delay-300"></div>
+<div class="w-full bg-primary-container hover:bg-primary transition-colors rounded-t-sm h-[95%] relative shadow-[0_0_20px_rgba(85,40,52,0.2)] group-hover:h-[100%] duration-500 ease-out delay-500"></div>
+</div>
+<div class="flex justify-between mt-3 px-2">
+<span class="font-label-sm text-label-sm text-on-surface-variant">Lun</span>
+<span class="font-label-sm text-label-sm text-on-surface-variant">Mar</span>
+<span class="font-label-sm text-label-sm text-on-surface-variant">Mer</span>
+<span class="font-label-sm text-label-sm text-on-surface-variant">Jeu</span>
+<span class="font-label-sm text-label-sm text-on-surface-variant">Ven</span>
+<span class="font-label-sm text-label-sm text-on-surface-variant">Sam</span>
+<span class="font-label-sm text-label-sm text-primary font-bold">Dim</span>
+</div>
+</div>
+<!-- Most Used Languages (List Card) -->
+<div class="col-span-1 md:col-span-4 bg-surface-container rounded-xl p-8 border border-surface-container-high shadow-sm flex flex-col">
+<div class="flex justify-between items-start mb-6">
+<div>
+<h2 class="font-body-md text-body-md font-semibold text-on-surface mb-1">Langages</h2>
+<p class="font-label-sm text-label-sm text-on-surface-variant">Top 3 générés</p>
+</div>
+<span class="material-symbols-outlined text-on-surface-variant" data-icon="terminal">terminal</span>
+</div>
+<div class="flex flex-col gap-6 flex-grow justify-center">
+<!-- Lang Item -->
+<div>
+<div class="flex justify-between mb-2">
+<span class="font-code-snippet text-code-snippet text-secondary">TypeScript</span>
+<span class="font-label-sm text-label-sm text-on-surface">45%</span>
+</div>
+<div class="w-full bg-surface-container-highest rounded-full h-1.5">
+<div class="bg-secondary h-1.5 rounded-full" style="width: 45%"></div>
+</div>
+</div>
+<!-- Lang Item -->
+<div>
+<div class="flex justify-between mb-2">
+<span class="font-code-snippet text-code-snippet text-tertiary">Python</span>
+<span class="font-label-sm text-label-sm text-on-surface">32%</span>
+</div>
+<div class="w-full bg-surface-container-highest rounded-full h-1.5">
+<div class="bg-tertiary h-1.5 rounded-full" style="width: 32%"></div>
+</div>
+</div>
+<!-- Lang Item -->
+<div>
+<div class="flex justify-between mb-2">
+<span class="font-code-snippet text-code-snippet text-primary">Go</span>
+<span class="font-label-sm text-label-sm text-on-surface">18%</span>
+</div>
+<div class="w-full bg-surface-container-highest rounded-full h-1.5">
+<div class="bg-primary h-1.5 rounded-full" style="width: 18%"></div>
+</div>
+</div>
+</div>
+</div>
+<!-- Productivity Growth (Highlight Card) -->
+<div class="col-span-1 md:col-span-12 bg-surface-container rounded-xl p-8 border border-surface-container-high shadow-sm flex flex-col md:flex-row items-center justify-between gap-8">
+<div class="flex-1">
+<div class="flex items-center gap-3 mb-2">
+<div class="bg-tertiary-container/30 p-2 rounded-full">
+<span class="material-symbols-outlined text-tertiary" data-icon="trending_up">trending_up</span>
+</div>
+<h2 class="font-body-md text-body-md font-semibold text-on-surface">Croissance de la Productivité</h2>
+</div>
+<p class="font-body-md text-body-md text-on-surface-variant max-w-md">Temps moyen économisé par développeur sur la période sélectionnée grâce à la complétion intelligente.</p>
+</div>
+<div class="flex items-end gap-4 shrink-0">
+<div class="flex flex-col items-end">
+<span class="font-display-lg text-display-lg text-tertiary">+24%</span>
+<span class="font-label-sm text-label-sm text-tertiary/80 mt-1">vs période précédente</span>
+</div>
+<!-- Small Sparkline SVG placeholder -->
+<div class="w-24 h-12 opacity-80">
+<svg class="w-full h-full stroke-tertiary fill-none stroke-2" preserveaspectratio="none" viewbox="0 0 100 30">
+<path d="M0,25 Q10,20 20,25 T40,15 T60,20 T80,5 T100,10"></path>
+</svg>
+</div>
+</div>
+</div>
+</div>
+</main>
+<!-- Floating Bottom Dock Centered -->
+<div class="fixed bottom-8 left-1/2 -translate-x-1/2 z-50">
+<div class="flex items-center bg-surface-container rounded-full p-1.5 border border-surface-container-highest shadow-xl">
+<button class="px-6 py-2.5 rounded-full font-label-sm text-label-sm text-on-surface-variant hover:text-on-surface hover:bg-surface-container-high transition-colors">7j</button>
+<button class="px-6 py-2.5 rounded-full font-label-sm text-label-sm bg-primary text-white shadow-md transition-colors">30j</button>
+<button class="px-6 py-2.5 rounded-full font-label-sm text-label-sm text-on-surface-variant hover:text-on-surface hover:bg-surface-container-high transition-colors">90j</button>
+</div>
+</div>
+</body></html>

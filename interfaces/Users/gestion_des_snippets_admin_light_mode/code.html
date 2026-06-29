@@ -1,0 +1,470 @@
+<!DOCTYPE html>
+
+<html lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Izwan Admin - Gestion des Snippets</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&amp;family=Poppins:wght@500;600;700&amp;family=Fira+Code:wght@400;500&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+          darkMode: "class",
+          theme: {
+            extend: {
+              "colors": {
+                      "primary-fixed-dim": "#f7b5c3",
+                      "secondary": "#7e525e",
+                      "on-primary-fixed": "#350e1a",
+                      "inverse-primary": "#f7b5c3",
+                      "surface-bright": "#fff8f8",
+                      "secondary-container": "#ffc5d3",
+                      "on-tertiary-container": "#a49d9d",
+                      "tertiary": "#232020",
+                      "on-tertiary": "#ffffff",
+                      "on-background": "#1e1b1c",
+                      "surface-container-low": "#faf1f2",
+                      "outline-variant": "#d5c2c5",
+                      "surface-variant": "#e9e0e1",
+                      "secondary-fixed-dim": "#f0b8c5",
+                      "background": "#fff8f8",
+                      "tertiary-fixed-dim": "#ccc5c5",
+                      "secondary-fixed": "#ffd9e1",
+                      "tertiary-container": "#393535",
+                      "on-secondary-fixed-variant": "#643b46",
+                      "on-primary-container": "#cc8e9c",
+                      "on-surface": "#1e1b1c",
+                      "surface-container-highest": "#e9e0e1",
+                      "surface": "#fff8f8",
+                      "on-error": "#ffffff",
+                      "inverse-surface": "#332f30",
+                      "surface-dim": "#e0d8d9",
+                      "surface-container-high": "#efe6e7",
+                      "on-secondary": "#ffffff",
+                      "on-secondary-container": "#7b4f5b",
+                      "on-primary": "#ffffff",
+                      "on-secondary-fixed": "#31111b",
+                      "on-tertiary-fixed": "#1e1b1b",
+                      "primary-fixed": "#ffd9e0",
+                      "surface-container": "#f4eced",
+                      "inverse-on-surface": "#f7eff0",
+                      "error-container": "#ffdad6",
+                      "tertiary-fixed": "#e9e1e1",
+                      "on-primary-fixed-variant": "#683844",
+                      "surface-tint": "#844f5c",
+                      "on-surface-variant": "#514346",
+                      "on-error-container": "#93000a",
+                      "surface-container-lowest": "#ffffff",
+                      "primary-container": "#552834",
+                      "on-tertiary-fixed-variant": "#4a4646",
+                      "primary": "#3b131f",
+                      "error": "#ba1a1a",
+                      "outline": "#837376"
+              },
+              "borderRadius": {
+                      "DEFAULT": "0.25rem",
+                      "lg": "0.5rem",
+                      "xl": "0.75rem",
+                      "full": "9999px"
+              },
+              "spacing": {
+                      "md": "16px",
+                      "gutter": "24px",
+                      "lg": "24px",
+                      "xs": "4px",
+                      "margin-mobile": "16px",
+                      "xl": "40px",
+                      "margin-desktop": "64px",
+                      "base": "4px",
+                      "sm": "8px"
+              },
+              "fontFamily": {
+                      "display": [
+                              "Poppins"
+                      ],
+                      "label-caps": [
+                              "Inter"
+                      ],
+                      "body-sm": [
+                              "Inter"
+                      ],
+                      "code-md": [
+                              "Fira Code"
+                      ],
+                      "body-lg": [
+                              "Inter"
+                      ],
+                      "headline-lg": [
+                              "Poppins"
+                      ],
+                      "body-md": [
+                              "Inter"
+                      ],
+                      "headline-lg-mobile": [
+                              "Poppins"
+                      ],
+                      "headline-md": [
+                              "Poppins"
+                      ]
+              },
+              "fontSize": {
+                      "display": [
+                              "48px",
+                              {
+                                      "lineHeight": "56px",
+                                      "letterSpacing": "-0.02em",
+                                      "fontWeight": "700"
+                              }
+                      ],
+                      "label-caps": [
+                              "12px",
+                              {
+                                      "lineHeight": "16px",
+                                      "letterSpacing": "0.05em",
+                                      "fontWeight": "600"
+                              }
+                      ],
+                      "body-sm": [
+                              "14px",
+                              {
+                                      "lineHeight": "20px",
+                                      "fontWeight": "400"
+                              }
+                      ],
+                      "code-md": [
+                              "14px",
+                              {
+                                      "lineHeight": "22px",
+                                      "fontWeight": "450"
+                              }
+                      ],
+                      "body-lg": [
+                              "18px",
+                              {
+                                      "lineHeight": "28px",
+                                      "fontWeight": "400"
+                              }
+                      ],
+                      "headline-lg": [
+                              "32px",
+                              {
+                                      "lineHeight": "40px",
+                                      "fontWeight": "600"
+                              }
+                      ],
+                      "body-md": [
+                              "16px",
+                              {
+                                      "lineHeight": "24px",
+                                      "fontWeight": "400"
+                              }
+                      ],
+                      "headline-lg-mobile": [
+                              "28px",
+                              {
+                                      "lineHeight": "36px",
+                                      "fontWeight": "600"
+                              }
+                      ],
+                      "headline-md": [
+                              "24px",
+                              {
+                                      "lineHeight": "32px",
+                                      "fontWeight": "600"
+                              }
+                      ]
+              }
+      },
+          },
+        }
+    </script>
+<style>
+        body {
+            background-color: #F7F4F4; /* White Smoke */
+            color: #1e1b1c;
+        }
+    </style>
+</head>
+<body class="antialiased min-h-screen flex">
+<!-- SideNavBar -->
+<aside class="bg-surface h-screen w-64 fixed left-0 top-0 border-r border-outline-variant flex flex-col py-lg z-20">
+<div class="px-gutter mb-xl flex items-center gap-md">
+<div class="w-10 h-10 rounded-full bg-primary-container text-on-primary flex items-center justify-center font-display text-headline-md">
+                I
+            </div>
+<div>
+<h1 class="font-display text-headline-md text-primary leading-tight">Izwan Admin</h1>
+<p class="font-body-sm text-body-sm text-on-surface-variant">Back-office System</p>
+</div>
+</div>
+<nav class="flex-1 overflow-y-auto">
+<ul class="flex flex-col gap-sm px-md">
+<li>
+<a class="flex items-center gap-md px-md py-sm rounded-lg text-on-surface-variant hover:bg-surface-container-low transition-colors font-body-md text-body-md active:scale-95 duration-150" href="#">
+<span class="material-symbols-outlined">dashboard</span>
+                        Admin Dashboard
+                    </a>
+</li>
+<li>
+<a class="flex items-center gap-md px-md py-sm rounded-lg text-on-surface-variant hover:bg-surface-container-low transition-colors font-body-md text-body-md active:scale-95 duration-150" href="#">
+<span class="material-symbols-outlined">group</span>
+                        Gestion des Utilisateurs
+                    </a>
+</li>
+<li>
+<a class="flex items-center gap-md px-md py-sm rounded-lg bg-surface-container-low text-primary font-bold border-r-4 border-primary hover:bg-surface-container-low transition-colors font-body-md text-body-md active:scale-95 duration-150" href="#">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">code</span>
+                        Gestion des Snippets
+                    </a>
+</li>
+<li>
+<a class="flex items-center gap-md px-md py-sm rounded-lg text-on-surface-variant hover:bg-surface-container-low transition-colors font-body-md text-body-md active:scale-95 duration-150" href="#">
+<span class="material-symbols-outlined">memory</span>
+                        Admin AI &amp; System
+                    </a>
+</li>
+<li>
+<a class="flex items-center gap-md px-md py-sm rounded-lg text-on-surface-variant hover:bg-surface-container-low transition-colors font-body-md text-body-md active:scale-95 duration-150" href="#">
+<span class="material-symbols-outlined">history</span>
+                        Admin Audit
+                    </a>
+</li>
+<li>
+<a class="flex items-center gap-md px-md py-sm rounded-lg text-on-surface-variant hover:bg-surface-container-low transition-colors font-body-md text-body-md active:scale-95 duration-150" href="#">
+<span class="material-symbols-outlined">lock_person</span>
+                        Admin Roles &amp; Permissions
+                    </a>
+</li>
+</ul>
+</nav>
+<div class="px-gutter mt-auto pt-lg border-t border-outline-variant">
+<div class="flex items-center gap-md">
+<img class="w-10 h-10 rounded-full object-cover" data-alt="A small circular profile picture of an administrator, featuring a professional individual in a well-lit office setting. The style is modern, sharp, and corporate, fitting seamlessly into a clean, light-mode interface with subtle warm tones." src="https://lh3.googleusercontent.com/aida-public/AB6AXuAoR7rm_WdZ432DrJNzfmp_Q1Wo_L-xyvsEB1Yki87IMq7RNjINfYFZOSupbUp58wSOyLl1_fUSd1nXnISOmqgfWh9jYsEip7ISIIFmLOMD5HoGjU0q6IL0rSa-4nCSFF3zIQkC_dD6PYjO951BBGkmaA6psIP0OGSXZA9OWhatfMlFLq8RHO-bWxO47Kh3huDZcNmn4d0oiDH3x0OiStqh95skjKhw8WmUr6NXxBVJE3c8JH5VB01LSqqXBfh1lLBKBBLEq0EP1ng"/>
+<div>
+<p class="font-body-sm text-body-sm font-semibold">Admin User</p>
+<p class="font-label-caps text-label-caps text-on-surface-variant uppercase">Super Admin</p>
+</div>
+</div>
+</div>
+</aside>
+<!-- Main Content Wrapper -->
+<main class="ml-64 flex-1 flex flex-col min-h-screen">
+<!-- TopAppBar -->
+<header class="bg-surface fixed top-0 right-0 w-[calc(100%-16rem)] border-b border-outline-variant flex justify-between items-center h-16 px-gutter z-10">
+<div class="flex-1 flex justify-center max-w-2xl mx-auto">
+<div class="relative w-full max-w-md focus-within:ring-2 focus-within:ring-primary rounded-lg transition-shadow">
+<span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-on-surface-variant">search</span>
+<input class="w-full pl-10 pr-4 py-2 bg-surface-container-low border border-outline-variant rounded-lg font-body-sm text-body-sm text-on-surface focus:outline-none focus:border-primary-container focus:ring-0" placeholder="Search snippets, authors..." type="text"/>
+</div>
+</div>
+<div class="flex items-center gap-sm">
+<button class="p-2 text-on-surface-variant hover:bg-surface-container-high rounded-full transition-colors active:scale-95 duration-150 relative">
+<span class="material-symbols-outlined">notifications</span>
+<span class="absolute top-2 right-2 w-2 h-2 bg-error rounded-full"></span>
+</button>
+<button class="p-2 text-on-surface-variant hover:bg-surface-container-high rounded-full transition-colors active:scale-95 duration-150">
+<span class="material-symbols-outlined">settings</span>
+</button>
+</div>
+</header>
+<!-- Canvas -->
+<div class="flex-1 mt-16 p-margin-desktop">
+<div class="mb-xl flex justify-between items-end">
+<div>
+<h2 class="font-display text-headline-lg text-on-surface mb-xs">Gestion des Snippets</h2>
+<p class="font-body-md text-body-md text-on-surface-variant">Review, manage, and audit system code snippets.</p>
+</div>
+<button class="bg-primary-container text-on-primary px-lg py-sm rounded-[10px] font-body-sm text-body-sm font-semibold flex items-center gap-sm hover:bg-primary transition-colors">
+<span class="material-symbols-outlined">add</span>
+                    New Snippet
+                </button>
+</div>
+<!-- Stats Row -->
+<div class="grid grid-cols-1 md:grid-cols-3 gap-lg mb-xl">
+<!-- Stat Card 1 -->
+<div class="bg-white border border-[#E0D8D8] rounded-xl p-lg flex flex-col justify-between hover:shadow-[0px_10px_30px_rgba(85,40,52,0.08)] transition-shadow">
+<div class="flex justify-between items-start mb-md">
+<span class="material-symbols-outlined text-primary-container text-3xl">data_object</span>
+<span class="bg-surface-container-low text-primary-container px-2 py-1 rounded-full font-label-caps text-label-caps uppercase">+12% this week</span>
+</div>
+<div>
+<p class="font-body-sm text-body-sm text-on-surface-variant mb-xs">Total Snippets</p>
+<p class="font-display text-display text-on-surface">1,248</p>
+</div>
+</div>
+<!-- Stat Card 2 -->
+<div class="bg-white border border-[#E0D8D8] rounded-xl p-lg flex flex-col justify-between hover:shadow-[0px_10px_30px_rgba(85,40,52,0.08)] transition-shadow">
+<div class="flex justify-between items-start mb-md">
+<span class="material-symbols-outlined text-[#7e525e] text-3xl">pending_actions</span>
+<span class="bg-error-container text-on-error-container px-2 py-1 rounded-full font-label-caps text-label-caps uppercase">Requires Action</span>
+</div>
+<div>
+<p class="font-body-sm text-body-sm text-on-surface-variant mb-xs">Pending Review</p>
+<p class="font-display text-display text-on-surface">34</p>
+</div>
+</div>
+<!-- Stat Card 3 -->
+<div class="bg-white border border-[#E0D8D8] rounded-xl p-lg flex flex-col justify-between hover:shadow-[0px_10px_30px_rgba(85,40,52,0.08)] transition-shadow">
+<div class="flex justify-between items-start mb-md">
+<span class="material-symbols-outlined text-on-surface-variant text-3xl">terminal</span>
+</div>
+<div>
+<p class="font-body-sm text-body-sm text-on-surface-variant mb-xs">Most Used Lang</p>
+<p class="font-display text-headline-lg text-on-surface mt-2">JavaScript</p>
+<p class="font-body-sm text-body-sm text-on-surface-variant mt-1">45% of total repository</p>
+</div>
+</div>
+</div>
+<!-- Snippets Table Card -->
+<div class="bg-white border border-[#E0D8D8] rounded-xl overflow-hidden">
+<div class="p-lg border-b border-[#E0D8D8] flex justify-between items-center bg-[#F0EDED]">
+<h3 class="font-display text-headline-md text-on-surface">Recent Snippets</h3>
+<div class="flex gap-sm">
+<button class="px-md py-sm border border-outline-variant rounded-lg font-body-sm text-body-sm flex items-center gap-xs hover:bg-surface-container-low transition-colors">
+<span class="material-symbols-outlined text-sm">filter_list</span>
+                            Filter
+                        </button>
+</div>
+</div>
+<div class="overflow-x-auto">
+<table class="w-full text-left border-collapse">
+<thead>
+<tr class="bg-surface-container-low border-b border-[#E0D8D8]">
+<th class="py-md px-lg font-label-caps text-label-caps text-on-surface-variant uppercase tracking-wider">Nom du snippet</th>
+<th class="py-md px-lg font-label-caps text-label-caps text-on-surface-variant uppercase tracking-wider">Auteur</th>
+<th class="py-md px-lg font-label-caps text-label-caps text-on-surface-variant uppercase tracking-wider">Langage</th>
+<th class="py-md px-lg font-label-caps text-label-caps text-on-surface-variant uppercase tracking-wider">Tags</th>
+<th class="py-md px-lg font-label-caps text-label-caps text-on-surface-variant uppercase tracking-wider">Date de création</th>
+<th class="py-md px-lg font-label-caps text-label-caps text-on-surface-variant uppercase tracking-wider text-right">Actions</th>
+</tr>
+</thead>
+<tbody class="font-body-sm text-body-sm">
+<!-- Row 1 -->
+<tr class="border-b border-[#E0D8D8] hover:bg-surface-container-lowest transition-colors group">
+<td class="py-md px-lg font-code-md text-code-md text-on-surface font-medium">auth_middleware_v2</td>
+<td class="py-md px-lg text-on-surface-variant">sarah.jenkins@izwan.co</td>
+<td class="py-md px-lg">
+<span class="bg-[#F0EDED] text-[#1e1b1c] px-3 py-1 rounded-full font-label-caps text-label-caps">TypeScript</span>
+</td>
+<td class="py-md px-lg">
+<div class="flex gap-xs flex-wrap">
+<span class="bg-surface-container border border-outline-variant text-on-surface-variant px-2 py-0.5 rounded text-xs">Security</span>
+<span class="bg-surface-container border border-outline-variant text-on-surface-variant px-2 py-0.5 rounded text-xs">Core</span>
+</div>
+</td>
+<td class="py-md px-lg text-on-surface-variant font-code-md">Oct 24, 2023</td>
+<td class="py-md px-lg text-right">
+<div class="flex justify-end gap-xs opacity-0 group-hover:opacity-100 transition-opacity">
+<button class="p-1 text-primary hover:bg-primary-fixed rounded" title="Approuver">
+<span class="material-symbols-outlined text-sm">check_circle</span>
+</button>
+<button class="p-1 text-on-surface-variant hover:bg-surface-container-high rounded" title="Éditer">
+<span class="material-symbols-outlined text-sm">edit</span>
+</button>
+<button class="p-1 text-error hover:bg-error-container rounded" title="Supprimer">
+<span class="material-symbols-outlined text-sm">delete</span>
+</button>
+</div>
+</td>
+</tr>
+<!-- Row 2 -->
+<tr class="border-b border-[#E0D8D8] hover:bg-surface-container-lowest transition-colors group bg-surface-bright">
+<td class="py-md px-lg font-code-md text-code-md text-on-surface font-medium">data_parser_regex</td>
+<td class="py-md px-lg text-on-surface-variant">m.chen@izwan.co</td>
+<td class="py-md px-lg">
+<span class="bg-[#F0EDED] text-[#1e1b1c] px-3 py-1 rounded-full font-label-caps text-label-caps">Python</span>
+</td>
+<td class="py-md px-lg">
+<div class="flex gap-xs flex-wrap">
+<span class="bg-surface-container border border-outline-variant text-on-surface-variant px-2 py-0.5 rounded text-xs">Utils</span>
+</div>
+</td>
+<td class="py-md px-lg text-on-surface-variant font-code-md">Oct 22, 2023</td>
+<td class="py-md px-lg text-right">
+<div class="flex justify-end gap-xs opacity-0 group-hover:opacity-100 transition-opacity">
+<button class="p-1 text-primary hover:bg-primary-fixed rounded" title="Approuver">
+<span class="material-symbols-outlined text-sm">check_circle</span>
+</button>
+<button class="p-1 text-on-surface-variant hover:bg-surface-container-high rounded" title="Éditer">
+<span class="material-symbols-outlined text-sm">edit</span>
+</button>
+<button class="p-1 text-error hover:bg-error-container rounded" title="Supprimer">
+<span class="material-symbols-outlined text-sm">delete</span>
+</button>
+</div>
+</td>
+</tr>
+<!-- Row 3 -->
+<tr class="border-b border-[#E0D8D8] hover:bg-surface-container-lowest transition-colors group">
+<td class="py-md px-lg font-code-md text-code-md text-on-surface font-medium">ui_card_component</td>
+<td class="py-md px-lg text-on-surface-variant">j.doe@izwan.co</td>
+<td class="py-md px-lg">
+<span class="bg-[#F0EDED] text-[#1e1b1c] px-3 py-1 rounded-full font-label-caps text-label-caps">React</span>
+</td>
+<td class="py-md px-lg">
+<div class="flex gap-xs flex-wrap">
+<span class="bg-surface-container border border-outline-variant text-on-surface-variant px-2 py-0.5 rounded text-xs">Frontend</span>
+<span class="bg-surface-container border border-outline-variant text-on-surface-variant px-2 py-0.5 rounded text-xs">Design System</span>
+</div>
+</td>
+<td class="py-md px-lg text-on-surface-variant font-code-md">Oct 20, 2023</td>
+<td class="py-md px-lg text-right">
+<div class="flex justify-end gap-xs opacity-0 group-hover:opacity-100 transition-opacity">
+<button class="p-1 text-primary hover:bg-primary-fixed rounded" title="Approuver">
+<span class="material-symbols-outlined text-sm">check_circle</span>
+</button>
+<button class="p-1 text-on-surface-variant hover:bg-surface-container-high rounded" title="Éditer">
+<span class="material-symbols-outlined text-sm">edit</span>
+</button>
+<button class="p-1 text-error hover:bg-error-container rounded" title="Supprimer">
+<span class="material-symbols-outlined text-sm">delete</span>
+</button>
+</div>
+</td>
+</tr>
+<!-- Row 4 -->
+<tr class="hover:bg-surface-container-lowest transition-colors group bg-surface-bright">
+<td class="py-md px-lg font-code-md text-code-md text-on-surface font-medium">db_connection_pool</td>
+<td class="py-md px-lg text-on-surface-variant">system@izwan.co</td>
+<td class="py-md px-lg">
+<span class="bg-[#F0EDED] text-[#1e1b1c] px-3 py-1 rounded-full font-label-caps text-label-caps">Go</span>
+</td>
+<td class="py-md px-lg">
+<div class="flex gap-xs flex-wrap">
+<span class="bg-surface-container border border-outline-variant text-on-surface-variant px-2 py-0.5 rounded text-xs">Infrastructure</span>
+</div>
+</td>
+<td class="py-md px-lg text-on-surface-variant font-code-md">Oct 18, 2023</td>
+<td class="py-md px-lg text-right">
+<div class="flex justify-end gap-xs opacity-0 group-hover:opacity-100 transition-opacity">
+<button class="p-1 text-primary hover:bg-primary-fixed rounded" title="Approuver">
+<span class="material-symbols-outlined text-sm">check_circle</span>
+</button>
+<button class="p-1 text-on-surface-variant hover:bg-surface-container-high rounded" title="Éditer">
+<span class="material-symbols-outlined text-sm">edit</span>
+</button>
+<button class="p-1 text-error hover:bg-error-container rounded" title="Supprimer">
+<span class="material-symbols-outlined text-sm">delete</span>
+</button>
+</div>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+<!-- Pagination -->
+<div class="p-md border-t border-[#E0D8D8] flex justify-between items-center bg-white">
+<span class="font-body-sm text-body-sm text-on-surface-variant">Showing 1 to 4 of 1,248 entries</span>
+<div class="flex gap-xs">
+<button class="px-3 py-1 border border-outline-variant rounded text-on-surface-variant hover:bg-surface-container-low disabled:opacity-50" disabled="">Prev</button>
+<button class="px-3 py-1 bg-primary-container text-on-primary rounded">1</button>
+<button class="px-3 py-1 border border-outline-variant rounded text-on-surface-variant hover:bg-surface-container-low">2</button>
+<button class="px-3 py-1 border border-outline-variant rounded text-on-surface-variant hover:bg-surface-container-low">3</button>
+<button class="px-3 py-1 border border-outline-variant rounded text-on-surface-variant hover:bg-surface-container-low">Next</button>
+</div>
+</div>
+</div>
+</div>
+</main>
+</body></html>

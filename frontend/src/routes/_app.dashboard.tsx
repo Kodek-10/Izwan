@@ -1,39 +1,52 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { Code2, FolderKanban, Star, Languages, Plus, ArrowRight, Loader2 } from "lucide-react";
+import {
+  Code2,
+  FolderKanban,
+  Star,
+  Languages,
+  ArrowRight,
+  Loader2,
+  BarChart3,
+} from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { api } from "@/lib/api-client";
-
+import { toast } from "sonner";
 import { useTranslation } from "react-i18next";
+import { motion } from "framer-motion";
+import { useEffect, useState, useMemo } from "react";
 
 export const Route = createFileRoute("/_app/dashboard")({
-  head: ({ loaderData }: any) => ({ meta: [{ title: `${loaderData?.t?.('dashboard.title') || 'Dashboard'} — Izwan` }] }),
+  head: ({ loaderData }: any) => ({
+    meta: [
+      { title: `${loaderData?.t?.("dashboard.title") || "Dashboard"} — Izwan` },
+    ],
+  }),
   loader: async () => {
-    // On server, we can't access localStorage for the auth token.
     if (typeof window === "undefined") {
       return { snippets: [], stats: [], needsClientFetch: true };
     }
 
     try {
       const data = await api.get<{ items: any[] }>("/snippets/?limit=100");
-      const snippets = data.items.map(s => ({
+      const snippets = data.items.map((s) => ({
         ...s,
         tags: s.tags.map((t: any) => t.name),
         dateObj: new Date(s.updated_at),
       }));
-      
-      const languages = new Set(snippets.map(s => s.language)).size;
-      const tags = new Set(snippets.flatMap(s => s.tags)).size;
-      const favorites = snippets.filter(s => s.is_favorite).length;
 
-      return { 
+      const languages = new Set(snippets.map((s) => s.language)).size;
+      const tags = new Set(snippets.flatMap((s) => s.tags)).size;
+      const favorites = snippets.filter((s) => s.is_favorite).length;
+
+      return {
         snippets: snippets.slice(0, 5),
         stats: [
-          { label: "total_snippets", value: snippets.length, icon: Code2, color: "from-violet-500 to-indigo-500" },
-          { label: "languages", value: languages, icon: Languages, color: "from-blue-500 to-cyan-500" },
-          { label: "unique_tags", value: tags, icon: FolderKanban, color: "from-cyan-500 to-teal-500" },
-          { label: "favorites", value: favorites, icon: Star, color: "from-amber-500 to-pink-500" },
+          { label: "total_snippets", value: snippets.length, icon: Code2 },
+          { label: "languages", value: languages, icon: Languages },
+          { label: "unique_tags", value: tags, icon: FolderKanban },
+          { label: "favorites", value: favorites, icon: Star },
         ],
-        needsClientFetch: false
+        needsClientFetch: false,
       };
     } catch (e) {
       return { snippets: [], stats: [], needsClientFetch: false };
@@ -42,23 +55,9 @@ export const Route = createFileRoute("/_app/dashboard")({
   component: Dashboard,
 });
 
-import { motion } from "framer-motion";
-import { useEffect, useState } from "react";
-
-const container = {
-// ... (rest of animation configs)
-  hidden: { opacity: 0 },
-  show: {
-    opacity: 1,
-    transition: {
-      staggerChildren: 0.1
-    }
-  }
-};
-
 const item = {
   hidden: { opacity: 0, y: 20 },
-  show: { opacity: 1, y: 0 }
+  show: { opacity: 1, y: 0 },
 };
 
 function Dashboard() {
@@ -76,29 +75,28 @@ function Dashboard() {
   }, [data?.snippets, data?.stats, data?.needsClientFetch]);
 
   useEffect(() => {
-    // If the loader ran on server, we need to re-fetch on client where token is available
     if (data?.needsClientFetch) {
       const fetchOnClient = async () => {
         setIsClientLoading(true);
         try {
           const res = await api.get<{ items: any[] }>("/snippets/?limit=100");
-          const allSnippets = res.items.map(s => ({
+          const allSnippets = res.items.map((s) => ({
             ...s,
             tags: s.tags.map((t: any) => t.name),
             dateObj: new Date(s.updated_at),
           }));
-          
+
           setSnippets(allSnippets.slice(0, 5));
-          
-          const languages = new Set(allSnippets.map(s => s.language)).size;
-          const tags = new Set(allSnippets.flatMap(s => s.tags)).size;
-          const favorites = allSnippets.filter(s => s.is_favorite).length;
+
+          const languages = new Set(allSnippets.map((s) => s.language)).size;
+          const tags = new Set(allSnippets.flatMap((s) => s.tags)).size;
+          const favorites = allSnippets.filter((s) => s.is_favorite).length;
 
           setStats([
-            { label: "total_snippets", value: allSnippets.length, icon: Code2, color: "from-violet-500 to-indigo-500" },
-            { label: "languages", value: languages, icon: Languages, color: "from-blue-500 to-cyan-500" },
-            { label: "unique_tags", value: tags, icon: FolderKanban, color: "from-cyan-500 to-teal-500" },
-            { label: "favorites", value: favorites, icon: Star, color: "from-amber-500 to-pink-500" },
+            { label: "total_snippets", value: allSnippets.length, icon: Code2 },
+            { label: "languages", value: languages, icon: Languages },
+            { label: "unique_tags", value: tags, icon: FolderKanban },
+            { label: "favorites", value: favorites, icon: Star },
           ]);
         } catch (e) {
           console.error("Failed to fetch dashboard data on client", e);
@@ -109,6 +107,59 @@ function Dashboard() {
       fetchOnClient();
     }
   }, [data?.needsClientFetch]);
+
+  const languageDistribution = useMemo(() => {
+    const counts: Record<string, number> = {};
+    snippets.forEach((s) => {
+      counts[s.language] = (counts[s.language] || 0) + 1;
+    });
+    const total = snippets.length || 1;
+    return Object.entries(counts)
+      .map(([name, count]) => ({
+        name,
+        percentage: Math.round((count / total) * 100),
+      }))
+      .sort((a, b) => b.percentage - a.percentage)
+      .slice(0, 3);
+  }, [snippets]);
+
+  const topTags = useMemo(() => {
+    const counts: Record<string, number> = {};
+    snippets.forEach((s) => {
+      s.tags?.forEach((tagName: string) => {
+        counts[tagName] = (counts[tagName] || 0) + 1;
+      });
+    });
+    return Object.entries(counts)
+      .map(([name, count]) => ({ name, count }))
+      .sort((a, b) => b.count - a.count)
+      .slice(0, 5)
+      .map((t) => t.name);
+  }, [snippets]);
+
+  const chartData = [40, 65, 30, 85, 55, 45, 95];
+
+  const toggleFavorite = async (id: number, current: boolean) => {
+    try {
+      await api.put(`/snippets/${id}`, { is_favorite: !current });
+      setSnippets((prev) =>
+        prev.map((s) => (s.id === id ? { ...s, is_favorite: !current } : s))
+      );
+      toast.success(!current ? "Ajouté aux favoris" : "Retiré des favoris");
+      setStats((prevStats) =>
+        prevStats.map((stat) =>
+          stat.label === "favorites"
+            ? {
+                ...stat,
+                value: Math.max(0, !current ? stat.value + 1 : stat.value - 1),
+              }
+            : stat
+        )
+      );
+    } catch (e) {
+      toast.error("Erreur lors de la mise à jour du favori");
+    }
+  };
 
   if (isClientLoading) {
     return (
@@ -123,90 +174,234 @@ function Dashboard() {
     return (
       <div className="flex flex-col items-center justify-center h-64 border-2 border-dashed border-border rounded-xl">
         <p className="text-muted-foreground mb-4">{t("dashboard.error")}</p>
-        <Link to="/auth"><Button>{t("auth.login")}</Button></Link>
+        <Link to="/auth">
+          <Button>{t("auth.login")}</Button>
+        </Link>
       </div>
     );
   }
+
   return (
-    <div className="space-y-6">
-      <motion.div 
-        variants={container}
-        initial="hidden"
-        animate="show"
-        className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4"
-      >
-        {stats.map((s) => {
-          const Icon = s.icon;
-          return (
-            <motion.div variants={item} key={s.label} className="bg-card border border-border rounded-xl p-5 hover:shadow-md transition-shadow group">
-              <div className="flex items-start justify-between">
-                <div>
-                  <p className="text-xs text-muted-foreground uppercase tracking-wide">{t(`dashboard.stats.${s.label}`)}</p>
-                  <p className="text-2xl sm:text-3xl font-display font-bold mt-2">{s.value}</p>
-                </div>
-                <div className={`h-10 w-10 rounded-lg bg-gradient-to-br ${s.color} flex items-center justify-center transition-transform group-hover:scale-110 shrink-0`}>
-                  <Icon className="h-5 w-5 text-white" />
-                </div>
-              </div>
-            </motion.div>
-          );
-        })}
-      </motion.div>
+    <div className="space-y-8">
+      <div className="mb-8">
+        <h1 className="font-display text-5xl md:text-6xl lg:text-7xl font-bold text-foreground tracking-tight">
+          {t("dashboard.title", "Tableau de bord")}
+        </h1>
+        <p className="text-lg md:text-xl text-muted-foreground mt-2">
+          {t("dashboard.subtitle", "Apercu de votre activite et de vos snippets.")}
+        </p>
+      </div>
 
-      <motion.div 
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: 0.4 }}
-        className="bg-card border border-border rounded-xl overflow-hidden"
-      >
-        <div className="flex items-center justify-between p-4 sm:p-5 border-b border-border">
-          <h2 className="font-display font-semibold text-base sm:text-lg">{t("dashboard.recent_snippets")}</h2>
-          <Link to="/snippets" className="text-sm text-primary hover:underline flex items-center gap-1">
-            {t("dashboard.view_all")} <ArrowRight className="h-3 w-3" />
-          </Link>
+      <div className="grid grid-cols-4 md:grid-cols-12 gap-6">
+        <div className="col-span-4 md:col-span-8 grid grid-cols-2 gap-4 content-start">
+          {/* Stats */}
+          {stats.map((s, index) => {
+            const Icon = s.icon;
+            return (
+              <motion.div
+                key={s.label}
+                variants={item}
+                initial="hidden"
+                animate="show"
+                className="bg-card border border-border/50 rounded-xl p-6 relative overflow-hidden group shadow-sm hover:shadow-md transition-shadow"
+              >
+                <div className="absolute top-0 right-0 p-4 opacity-15 group-hover:opacity-30 transition-opacity">
+                  <Icon className="h-16 w-16 text-primary" />
+                </div>
+                <p className="text-sm uppercase tracking-wider text-muted-foreground font-semibold mb-2">
+                  {t(`dashboard.stats.${s.label}`)}
+                </p>
+                <div className="flex items-baseline gap-3">
+                  <span className="font-display text-5xl md:text-6xl lg:text-7xl font-bold text-foreground">
+                    {s.value}
+                  </span>
+                  {index === 0 && (
+                    <span className="text-sm font-semibold text-green-600 flex items-center">
+                      <BarChart3 className="h-4 w-4 mr-0.5" /> +12%
+                    </span>
+                  )}
+                </div>
+              </motion.div>
+            );
+          })}
+
+          {/* Chart */}
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="col-span-2 bg-card border border-border/50 rounded-xl p-6 min-h-[300px] flex flex-col mt-4 shadow-sm"
+          >
+            <div className="flex justify-between items-center mb-6">
+              <h2 className="text-lg font-semibold text-foreground">
+                {t("dashboard.activity", "Activite d'Insertion")}
+              </h2>
+              <div className="flex gap-2">
+                <Button variant="outline" size="sm" className="text-sm h-9">
+                  7J
+                </Button>
+                <Button
+                  size="sm"
+                  className="text-sm h-9 bg-primary text-white"
+                >
+                  30J
+                </Button>
+              </div>
+            </div>
+            <div className="flex-1 relative w-full h-full border-b border-l border-border/30 flex items-end gap-2 pt-8 pb-2 pl-2">
+              <div className="absolute -left-6 top-0 bottom-0 flex flex-col justify-between text-sm text-muted-foreground opacity-70 py-2">
+                <span>100</span>
+                <span>50</span>
+                <span>0</span>
+              </div>
+              {chartData.map((h, i) => (
+                <div
+                  key={i}
+                  className="w-full bg-primary/80 rounded-t-sm transition-all duration-500 hover:bg-primary/100"
+                  style={{ height: `${h}%` }}
+                ></div>
+              ))}
+            </div>
+          </motion.div>
         </div>
-        <div className="divide-y divide-border">
-          {snippets.slice(0, 5).map((s, idx) => (
+
+        {/* Side Panel */}
+        <div className="col-span-4 md:col-span-4 flex flex-col gap-6">
+          <motion.div
+            initial={{ opacity: 0, x: 20 }}
+            animate={{ opacity: 1, x: 0 }}
+            className="bg-card border border-border/50 rounded-xl p-6 shadow-sm"
+          >
+            <h3 className="text-lg md:text-xl font-semibold text-foreground mb-6">
+              {t("dashboard.language_distribution", "Distribution par Langage")}
+            </h3>
+            <div className="space-y-4">
+              {languageDistribution.length > 0 ? (
+                languageDistribution.map((lang) => (
+                  <div key={lang.name}>
+                    <div className="flex justify-between text-sm mb-1">
+                      <span className="text-foreground font-medium">
+                        {lang.name}
+                      </span>
+                      <span className="text-muted-foreground">
+                        {lang.percentage}%
+                      </span>
+                    </div>
+                    <div className="h-3 w-full bg-muted rounded-full overflow-hidden">
+                      <div
+                        className="h-full bg-primary rounded-full"
+                        style={{ width: `${lang.percentage}%` }}
+                      ></div>
+                    </div>
+                  </div>
+                ))
+              ) : (
+                <div className="text-sm text-muted-foreground text-center py-4">
+                  {t("dashboard.no_data", "Pas de donnees disponibles")}
+                </div>
+              )}
+            </div>
+          </motion.div>
+
+          <motion.div
+            initial={{ opacity: 0, x: 20 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ delay: 0.1 }}
+            className="bg-card border border-border/50 rounded-xl p-6 shadow-sm"
+          >
+            <h3 className="text-lg md:text-xl font-semibold text-foreground mb-4">
+              {t("dashboard.popular_tags", "Tags Populaires")}
+            </h3>
+            <div className="flex flex-wrap gap-2">
+              {topTags.length > 0 ? (
+                topTags.map((tag) => (
+                  <span
+                    key={tag}
+                    className="text-sm bg-muted border border-border/50 text-foreground px-3 py-1.5 rounded-full hover:border-primary/50 transition-colors cursor-pointer"
+                  >
+                    #{tag}
+                  </span>
+                ))
+              ) : (
+                <span className="text-sm text-muted-foreground">
+                  {t("dashboard.no_tags", "Aucun tag")}
+                </span>
+              )}
+            </div>
+          </motion.div>
+        </div>
+
+        {/* Recent Snippets */}
+        <div className="col-span-4 md:col-span-12 mt-4">
+          <div className="flex justify-between items-center mb-6">
+            <h2 className="font-display text-3xl md:text-4xl font-semibold text-foreground">
+              {t("dashboard.recent_snippets")}
+            </h2>
             <Link
-              key={s.id}
-              to="/snippets/$id"
-              params={{ id: s.id.toString() }}
-              className="flex items-center justify-between p-3 sm:p-4 hover:bg-muted/40 transition-colors group"
+              to="/snippets"
+              className="text-sm text-primary hover:underline flex items-center gap-1 font-medium"
             >
-              <div className="flex items-center gap-3 min-w-0">
-                <div className="h-8 w-8 sm:h-9 sm:w-9 rounded-lg gradient-brand flex items-center justify-center shrink-0 transition-transform group-hover:scale-105">
-                  <Code2 className="h-4 w-4 text-white" />
-                </div>
-                <div className="min-w-0">
-                  <p className="font-medium truncate text-sm sm:text-base">{s.title}</p>
-                  <p className="text-[10px] sm:text-xs text-muted-foreground truncate uppercase">
-                    {s.language}
-                  </p>
-                </div>
-              </div>
-              <span className="text-[10px] sm:text-xs text-muted-foreground shrink-0 ml-3 tabular-nums">
-                {s.dateObj.toLocaleDateString(i18n.language === 'fr' ? 'fr-FR' : 'en-US')}
-              </span>
+              {t("dashboard.view_all")}{" "}
+              <ArrowRight className="h-4 w-4" />
             </Link>
-          ))}
-          {snippets.length === 0 && (
-            <div className="p-8 text-center text-sm text-muted-foreground">{t("dashboard.no_snippets")}</div>
-          )}
+          </div>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            {snippets.length > 0 ? (
+              snippets.slice(0, 3).map((s) => (
+                <div key={s.id} className="relative">
+                  <Link
+                    to="/snippets/$id"
+                    params={{ id: s.id.toString() }}
+                    className="block"
+                  >
+                    <div className="bg-card border border-border/50 rounded-xl p-5 hover:border-primary/50 transition-colors group cursor-pointer shadow-sm hover:shadow-md h-full flex flex-col">
+                      <div className="flex justify-between items-start mb-4">
+                        <div className="flex items-center gap-2">
+                          <Code2 className="h-5 w-5 text-primary/80" />
+                          <span className="text-sm text-muted-foreground uppercase font-medium">
+                            {s.language}
+                          </span>
+                        </div>
+                      </div>
+                      <h4 className="text-lg font-semibold text-foreground mb-2 truncate group-hover:text-primary transition-colors">
+                        {s.title}
+                      </h4>
+                      <div className="text-sm xl:text-base font-mono text-muted-foreground/90 line-clamp-2 bg-muted/50 p-3 rounded border border-border/30 mt-auto">
+                        {s.code ||
+                          s.content ||
+                          t("dashboard.no_content", "Aucun contenu")}
+                      </div>
+                    </div>
+                  </Link>
+                  <button
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      toggleFavorite(s.id, s.is_favorite);
+                    }}
+                    className="absolute top-4 right-4 z-10 p-1.5 rounded-full hover:bg-accent transition-colors"
+                    aria-label={
+                      s.is_favorite
+                        ? "Retirer des favoris"
+                        : "Ajouter aux favoris"
+                    }
+                  >
+                    <Star
+                      className={`h-5 w-5 ${
+                        s.is_favorite
+                          ? "text-yellow-500 fill-yellow-500"
+                          : "text-muted-foreground"
+                      }`}
+                    />
+                  </button>
+                </div>
+              ))
+            ) : (
+              <div className="col-span-3 text-center text-muted-foreground py-8 border-2 border-dashed border-border rounded-xl">
+                {t("dashboard.no_snippets")}
+              </div>
+            )}
+          </div>
         </div>
-      </motion.div>
-
-      <motion.div 
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        transition={{ delay: 0.6 }}
-        className="flex justify-end"
-      >
-        <Link to="/snippets/new">
-          <Button className="gradient-brand text-white border-0 hover:opacity-90">
-            <Plus className="h-4 w-4 mr-2" /> {t("dashboard.add_snippet")}
-          </Button>
-        </Link>
-      </motion.div>
+      </div>
     </div>
   );
 }

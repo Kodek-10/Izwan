@@ -1,0 +1,342 @@
+<!DOCTYPE html><html lang="fr"><head>
+<meta charset="utf-8">
+<meta content="width=device-width, initial-scale=1.0" name="viewport">
+<title>Izwan - Constellation</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400&amp;family=JetBrains+Mono:wght@400;500&amp;family=Montserrat:wght@600;700&amp;display=swap" rel="stylesheet">
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "surface-variant": "#e0e3e5",
+                        "surface-dim": "#f7f4f4",
+                        "outline-variant": "#dcc0bb",
+                        "on-primary-container": "#611508",
+                        "tertiary-fixed-dim": "#55dcbc",
+                        "tertiary-container": "#00ad90",
+                        "surface-container-low": "#ffffff",
+                        "tertiary-fixed": "#75f9d8",
+                        "primary-fixed-dim": "#ffb4a5",
+                        "on-tertiary-fixed": "#002019",
+                        "on-tertiary": "#ffffff",
+                        "on-primary-fixed-variant": "#7e2a1b",
+                        "surface-tint": "#e87a64",
+                        "inverse-on-surface": "#f7f4f4",
+                        "on-tertiary-fixed-variant": "#005142",
+                        "on-surface": "#101415",
+                        "error": "#93000a",
+                        "secondary": "#364765",
+                        "surface-container": "#f0f0f0",
+                        "on-secondary-container": "#1f314d",
+                        "outline": "#a48b86",
+                        "inverse-surface": "#323537",
+                        "primary-fixed": "#ffdad3",
+                        "secondary-fixed-dim": "#b6c7eb",
+                        "on-surface-variant": "#56423e",
+                        "on-secondary-fixed-variant": "#364765",
+                        "surface-container-lowest": "#ffffff",
+                        "primary-container": "#ffdad3",
+                        "on-primary-fixed": "#3e0400",
+                        "surface-container-highest": "#e0e3e5",
+                        "secondary-fixed": "#d6e3ff",
+                        "on-primary": "#ffffff",
+                        "on-error": "#ffffff",
+                        "surface-container-high": "#e8e8e8",
+                        "inverse-primary": "#ffb4a5",
+                        "secondary-container": "#d6e3ff",
+                        "on-error-container": "#3e0400",
+                        "on-secondary": "#ffffff",
+                        "on-tertiary-container": "#002019",
+                        "primary": "#e87a64",
+                        "background": "#F7F4F4",
+                        "on-background": "#101415",
+                        "error-container": "#ffdad6",
+                        "surface-bright": "#ffffff",
+                        "on-secondary-fixed": "#081b37",
+                        "tertiary": "#00ad90",
+                        "surface": "#F7F4F4"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.125rem",
+                        "lg": "0.25rem",
+                        "xl": "0.5rem",
+                        "full": "0.75rem"
+                    },
+                    "spacing": {
+                        "container-max": "1440px",
+                        "margin-desktop": "40px",
+                        "unit": "4px",
+                        "margin-mobile": "16px",
+                        "gutter": "24px"
+                    },
+                    "fontFamily": {
+                        "headline-lg": ["Montserrat"],
+                        "body-md": ["Inter"],
+                        "label-sm": ["JetBrains Mono"],
+                        "headline-lg-mobile": ["Montserrat"],
+                        "display-lg": ["Montserrat"],
+                        "code-snippet": ["JetBrains Mono"]
+                    },
+                    "fontSize": {
+                        "headline-lg": ["32px", { "lineHeight": "40px", "fontWeight": "600" }],
+                        "body-md": ["16px", { "lineHeight": "24px", "fontWeight": "400" }],
+                        "label-sm": ["12px", { "lineHeight": "16px", "letterSpacing": "0.05em", "fontWeight": "500" }],
+                        "headline-lg-mobile": ["24px", { "lineHeight": "32px", "fontWeight": "600" }],
+                        "display-lg": ["48px", { "lineHeight": "56px", "letterSpacing": "-0.02em", "fontWeight": "700" }],
+                        "code-snippet": ["14px", { "lineHeight": "20px", "fontWeight": "400" }]
+                    }
+                }
+            }
+        }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        /* Custom scrollbar for sidebar */
+        ::-webkit-scrollbar {
+            width: 4px;
+        }
+        ::-webkit-scrollbar-track {
+            background: transparent;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: theme('colors.surface-variant');
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: theme('colors.primary');
+        }
+    </style>
+</head>
+<body class="bg-background text-on-background font-body-md h-screen w-screen overflow-hidden relative">
+<!-- Interactive Canvas Background -->
+<canvas class="absolute inset-0 w-full h-full z-0 cursor-crosshair" id="constellationCanvas"></canvas>
+<!-- TopAppBar -->
+<header class="fixed top-0 w-full z-50 flex justify-between items-center px-margin-desktop h-16 bg-surface/80 backdrop-blur-md">
+<div class="flex items-center gap-8">
+<h1 class="font-headline-lg text-headline-lg text-primary font-bold">Izwan</h1>
+<div class="relative hidden md:block">
+<span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-on-surface-variant text-sm">search</span>
+<input class="bg-white/50 border border-outline-variant/50 rounded-full py-1.5 pl-10 pr-4 font-body-md text-body-md text-on-surface focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary w-64 transition-all placeholder:text-on-surface-variant/70" placeholder="Rechercher des nœuds..." type="text">
+</div>
+</div>
+<div class="flex items-center gap-4">
+<button class="text-primary hover:bg-surface-bright/50 transition-colors p-2 rounded-full scale-95 active:scale-90 flex items-center justify-center">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">notifications</span>
+</button>
+<div class="relative group">
+<img alt="User avatar" class="w-9 h-9 rounded-full border-2 border-surface-variant object-cover cursor-pointer" data-alt="A minimalist, high-tech user avatar graphic featuring geometric shapes in deep navy blue and vibrant desert sand coral, conveying a premium technical aesthetic." src="https://lh3.googleusercontent.com/aida-public/AB6AXuAPkO-qWc9Kg3bKqlQ4HlHsX8En5gKiEN-SVBQ1Bk0iGWHP7vdl-Yr87hV5y2dkHmzHKtysNyuOHbdwYhN6Z79-s2lu7rDyNmVbIxNnXtkc6Z3AHEgfq2ZVuj-Sp0MzNPPmAPijFRoIsZyJOD40ZUhp7OywB5As9PEtf5ZtmAzm4FvLwAFWu3gwtZHT2C620vQq8SdF3jwrQZRdyCz4GB_oHEDT_3EHCYXefAdR2SnTC1r1m_XCDlieb5ScVU1b_FuksWtdRBIM4Zo">
+<div class="absolute right-0 mt-2 w-48 bg-white rounded-xl shadow-lg border border-gray-100 hidden group-hover:block z-50 overflow-hidden">
+<a class="block px-4 py-3 text-sm text-gray-700 hover:bg-gray-50 flex items-center gap-2" href="#">
+<span class="material-symbols-outlined text-[18px]">bar_chart</span> Statistiques
+                    </a>
+<a class="block px-4 py-3 text-sm text-gray-700 hover:bg-gray-50 flex items-center gap-2" href="#">
+<span class="material-symbols-outlined text-[18px]">ios_share</span> Exportations
+                    </a>
+<a class="block px-4 py-3 text-sm text-gray-700 hover:bg-gray-50 flex items-center gap-2" href="#">
+<span class="material-symbols-outlined text-[18px]">settings</span> Paramètres
+                    </a>
+</div>
+</div>
+</div>
+</header>
+<!-- Interactive Sidebar (Node Details) -->
+<aside class="absolute left-margin-mobile md:left-margin-desktop top-24 bottom-32 w-80 bg-white/80 backdrop-blur-xl border border-surface-variant rounded-xl p-6 flex flex-col gap-6 shadow-xl z-40 transition-transform duration-300">
+<!-- Header -->
+<div>
+<div class="flex items-center justify-between mb-2">
+<span class="px-2 py-1 bg-secondary-container text-on-secondary-container font-label-sm text-label-sm rounded uppercase">Snippet</span>
+<button class="text-on-surface-variant hover:text-primary transition-colors">
+<span class="material-symbols-outlined text-sm">open_in_full</span>
+</button>
+</div>
+<h2 class="font-headline-lg-mobile text-headline-lg-mobile text-on-surface break-words leading-tight">Authentification JWT Middleware</h2>
+</div>
+<!-- Meta -->
+<div class="flex flex-wrap gap-2">
+<span class="px-2.5 py-1 bg-white border border-outline-variant text-on-surface-variant font-label-sm text-label-sm rounded-full flex items-center gap-1">
+<span class="w-2 h-2 rounded-full bg-tertiary"></span> TypeScript
+            </span>
+<span class="px-2.5 py-1 bg-white border border-outline-variant text-on-surface-variant font-label-sm text-label-sm rounded-full flex items-center gap-1">
+<span class="w-2 h-2 rounded-full bg-primary"></span> Sécurité
+            </span>
+</div>
+<!-- Description -->
+<p class="font-body-md text-body-md text-on-surface-variant text-sm">
+            Middleware Express pour valider les tokens JWT entrants, extraire les informations utilisateur et gérer les erreurs d'autorisation.
+        </p>
+<!-- Connections List -->
+<div class="flex-1 overflow-y-auto mt-2">
+<h3 class="font-label-sm text-label-sm text-primary mb-3 uppercase tracking-widest opacity-80">Nœuds Connectés (3)</h3>
+<ul class="flex flex-col gap-2">
+<li class="flex items-center gap-3 p-3 bg-surface/50 hover:bg-surface-bright rounded-lg cursor-pointer transition-colors border border-transparent hover:border-surface-variant">
+<div class="w-8 h-8 rounded bg-surface-container flex items-center justify-center">
+<span class="material-symbols-outlined text-tertiary text-sm">code</span>
+</div>
+<div class="flex flex-col">
+<span class="font-body-md text-body-md text-on-surface text-sm">LoginRoute.ts</span>
+<span class="font-label-sm text-label-sm text-on-surface-variant text-[10px]">Dépendance</span>
+</div>
+</li>
+<li class="flex items-center gap-3 p-3 bg-surface/50 hover:bg-surface-bright rounded-lg cursor-pointer transition-colors border border-transparent hover:border-surface-variant">
+<div class="w-8 h-8 rounded bg-surface-container flex items-center justify-center">
+<span class="material-symbols-outlined text-secondary text-sm">database</span>
+</div>
+<div class="flex flex-col">
+<span class="font-body-md text-body-md text-on-surface text-sm">UserSchema.ts</span>
+<span class="font-label-sm text-label-sm text-on-surface-variant text-[10px]">Référence</span>
+</div>
+</li>
+<li class="flex items-center gap-3 p-3 bg-surface/50 hover:bg-surface-bright rounded-lg cursor-pointer transition-colors border border-transparent hover:border-surface-variant">
+<div class="w-8 h-8 rounded bg-surface-container flex items-center justify-center">
+<span class="material-symbols-outlined text-primary text-sm">api</span>
+</div>
+<div class="flex flex-col">
+<span class="font-body-md text-body-md text-on-surface text-sm">AuthService.ts</span>
+<span class="font-label-sm text-label-sm text-on-surface-variant text-[10px]">Parent</span>
+</div>
+</li>
+</ul>
+</div>
+<button class="w-full py-3 bg-primary/10 text-primary border border-primary/30 rounded-lg font-label-sm text-label-sm hover:bg-primary hover:text-white transition-all duration-300 flex items-center justify-center gap-2">
+<span class="material-symbols-outlined text-sm">edit</span>
+            Éditer le Snippet
+        </button>
+</aside>
+<!-- BottomNavBar (Docked Shell) -->
+<nav class="fixed bottom-0 left-0 right-0 z-50 flex justify-center pb-6">
+<div class="flex gap-1 p-2 rounded-full mx-auto w-fit bg-white/80 backdrop-blur-lg shadow-xl border border-surface-variant/50">
+<button class="flex items-center justify-center text-on-surface-variant p-3 rounded-full hover:bg-surface hover:text-on-surface transition-all">
+<span class="material-symbols-outlined">dashboard</span>
+</button>
+<button class="flex items-center justify-center text-on-surface-variant p-3 rounded-full hover:bg-surface hover:text-on-surface transition-all">
+<span class="material-symbols-outlined">code</span>
+</button>
+<button class="flex items-center justify-center text-on-surface-variant p-3 rounded-full hover:bg-surface hover:text-on-surface transition-all">
+<span class="material-symbols-outlined">folder_special</span>
+</button>
+<button class="flex items-center justify-center text-on-surface-variant p-3 rounded-full hover:bg-surface hover:text-on-surface transition-all">
+<span class="material-symbols-outlined">favorite</span>
+</button>
+<button class="flex items-center justify-center text-on-surface-variant p-3 rounded-full hover:bg-surface hover:text-on-surface transition-all">
+<span class="material-symbols-outlined">groups</span>
+</button>
+<!-- Active Tab -->
+<button class="flex items-center gap-2 bg-primary-container text-on-primary-container rounded-full px-5 py-2 shadow-inner transition-all duration-300 ml-1">
+<span class="material-symbols-outlined text-sm">auto_awesome</span>
+<span class="font-label-sm text-label-sm font-bold">Constellation</span>
+</button>
+</div>
+</nav>
+<!-- Simple Canvas Script for Constellation Effect -->
+<script>
+        const canvas = document.getElementById('constellationCanvas');
+        const ctx = canvas.getContext('2d');
+        let width, height;
+        let snippets = [];
+        
+        // Colors from theme suitable for light mode
+        const colors = ['#e87a64', '#00ad90', '#364765', '#dcc0bb']; 
+        
+        // List of sample tags to establish connections
+        const allTags = ['TypeScript', 'Sécurité', 'Auth', 'API', 'Database', 'Frontend', 'Backend', 'React', 'Nodejs'];
+
+        function resize() {
+            width = canvas.width = window.innerWidth;
+            height = canvas.height = window.innerHeight;
+        }
+
+        class SnippetNode {
+            constructor(isCentral = false) {
+                this.x = isCentral ? width * 0.4 : Math.random() * width;
+                this.y = isCentral ? height * 0.5 : Math.random() * height;
+                this.vx = (Math.random() - 0.5) * 0.5;
+                this.vy = (Math.random() - 0.5) * 0.5;
+                this.radius = isCentral ? 6 : Math.random() * 3 + 1.5;
+                this.color = colors[Math.floor(Math.random() * colors.length)];
+                
+                // Assign 1-3 random tags to each snippet node
+                this.tags = [];
+                const numTags = isCentral ? 4 : Math.floor(Math.random() * 3) + 1;
+                for(let i = 0; i < numTags; i++) {
+                    const tag = allTags[Math.floor(Math.random() * allTags.length)];
+                    if(!this.tags.includes(tag)) this.tags.push(tag);
+                }
+            }
+            update() {
+                this.x += this.vx;
+                this.y += this.vy;
+                if (this.x < 0 || this.x > width) this.vx *= -1;
+                if (this.y < 0 || this.y > height) this.vy *= -1;
+            }
+            draw() {
+                ctx.beginPath();
+                ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
+                ctx.fillStyle = this.color;
+                ctx.fill();
+                
+                // Outer glow
+                ctx.beginPath();
+                ctx.arc(this.x, this.y, this.radius * 3, 0, Math.PI * 2);
+                ctx.fillStyle = this.color + '33'; // 33 hex opacity (20%)
+                ctx.fill();
+            }
+        }
+
+        function init() {
+            resize();
+            snippets = [];
+            const numNodes = Math.floor((width * height) / 18000); // Responsive amount
+            for (let i = 0; i < numNodes; i++) {
+                snippets.push(new SnippetNode());
+            }
+            // Add a fixed central active node
+            let activeNode = new SnippetNode(true);
+            activeNode.color = '#e87a64'; // Primary
+            activeNode.tags = ['TypeScript', 'Sécurité', 'Auth']; // Matches sidebar
+            snippets.push(activeNode);
+        }
+
+        function animate() {
+            ctx.clearRect(0, 0, width, height);
+            
+            // Draw connections based on shared tags
+            for (let i = 0; i < snippets.length; i++) {
+                for (let j = i + 1; j < snippets.length; j++) {
+                    const sharedTags = snippets[i].tags.filter(tag => snippets[j].tags.includes(tag));
+                    
+                    if (sharedTags.length > 0) {
+                        const dx = snippets[i].x - snippets[j].x;
+                        const dy = snippets[i].y - snippets[j].y;
+                        const dist = Math.sqrt(dx * dx + dy * dy);
+                        
+                        if (dist < 250) {
+                            ctx.beginPath();
+                            // Darker line for light mode, opacity based on distance
+                            ctx.strokeStyle = `rgba(16, 20, 21, ${0.15 - dist/1666})`; 
+                            ctx.lineWidth = sharedTags.length * 0.5; // Thicker line for more shared tags
+                            ctx.moveTo(snippets[i].x, snippets[i].y);
+                            ctx.lineTo(snippets[j].x, snippets[j].y);
+                            ctx.stroke();
+                        }
+                    }
+                }
+            }
+
+            snippets.forEach(p => {
+                p.update();
+                p.draw();
+            });
+
+            requestAnimationFrame(animate);
+        }
+
+        window.addEventListener('resize', init);
+        init();
+        animate();
+    </script>
+</body></html>

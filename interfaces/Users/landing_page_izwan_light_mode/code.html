@@ -1,0 +1,556 @@
+<!DOCTYPE html><html class="light" lang="fr"><head>
+<meta charset="utf-8">
+<meta content="width=device-width, initial-scale=1.0" name="viewport">
+<title>Izwan - Votre cerveau numérique pour le code</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&amp;family=Montserrat:wght@600;700;900&amp;family=JetBrains+Mono:wght@400;500&amp;display=swap" rel="stylesheet">
+<script id="tailwind-config">
+  tailwind.config = {
+    darkMode: "class",
+    theme: {
+      extend: {
+        "colors": {
+                "inverse-surface": "#342f30",
+                "tertiary-fixed-dim": "#48d9ba",
+                "primary-container": "#904050",
+                "tertiary-container": "#64f6d6",
+                "on-primary-container": "#ffffff",
+                "secondary-fixed-dim": "#b1c8e1",
+                "primary-fixed-dim": "#ffb2bc",
+                "on-tertiary-fixed-variant": "#005141",
+                "surface-container-low": "#faf1f2",
+                "on-secondary": "#ffffff",
+                "on-secondary-fixed": "#021c32",
+                "on-surface-variant": "#504345",
+                "outline": "#837375",
+                "surface-tint": "#904050",
+                "surface-variant": "#f2dfe1",
+                "surface-container-highest": "#e6dcdd",
+                "on-tertiary": "#ffffff",
+                "surface-container-lowest": "#ffffff",
+                "primary-fixed": "#ffd9de",
+                "on-secondary-fixed-variant": "#304965",
+                "on-secondary-container": "#203a55",
+                "on-primary-fixed-variant": "#73293a",
+                "primary": "#552834",
+                "surface-container": "#f4eaeb",
+                "outline-variant": "#d5c2c4",
+                "inverse-on-surface": "#faeeee",
+                "tertiary-fixed": "#64f6d6",
+                "on-primary": "#ffffff",
+                "secondary": "#49607d",
+                "background": "#F7F4F4",
+                "on-error-container": "#410002",
+                "surface-dim": "#e0d8d9",
+                "surface": "#fff8f8",
+                "on-error": "#ffffff",
+                "error": "#ba1a1a",
+                "on-surface": "#552834",
+                "on-tertiary-fixed": "#002019",
+                "on-primary-fixed": "#3f0015",
+                "secondary-container": "#cde4fe",
+                "secondary-fixed": "#cde4fe",
+                "surface-bright": "#fff8f8",
+                "inverse-primary": "#ffb2bc",
+                "on-background": "#552834",
+                "error-container": "#ffdad6",
+                "tertiary": "#006b57",
+                "surface-container-high": "#efe6e7",
+                "on-tertiary-container": "#002019"
+        },
+        "borderRadius": {
+                "DEFAULT": "0.125rem",
+                "lg": "0.5rem",
+                "xl": "1rem",
+                "full": "9999px"
+        },
+        "spacing": {
+                "container-max": "1440px",
+                "gutter": "24px",
+                "margin-mobile": "16px",
+                "unit": "4px",
+                "margin-desktop": "40px"
+        },
+        "fontFamily": {
+                "headline-lg": [
+                        "Montserrat"
+                ],
+                "label-sm": [
+                        "JetBrains Mono"
+                ],
+                "display-lg": [
+                        "Montserrat"
+                ],
+                "code-snippet": [
+                        "JetBrains Mono"
+                ],
+                "body-md": [
+                        "Inter"
+                ],
+                "headline-lg-mobile": [
+                        "Montserrat"
+                ]
+        },
+        "fontSize": {
+                "headline-lg": [
+                        "32px",
+                        {
+                                "lineHeight": "40px",
+                                "fontWeight": "600"
+                        }
+                ],
+                "label-sm": [
+                        "12px",
+                        {
+                                "lineHeight": "16px",
+                                "letterSpacing": "0.05em",
+                                "fontWeight": "500"
+                        }
+                ],
+                "display-lg": [
+                        "48px",
+                        {
+                                "lineHeight": "56px",
+                                "letterSpacing": "-0.02em",
+                                "fontWeight": "700"
+                        }
+                ],
+                "code-snippet": [
+                        "14px",
+                        {
+                                "lineHeight": "20px",
+                                "fontWeight": "400"
+                        }
+                ],
+                "body-md": [
+                        "16px",
+                        {
+                                "lineHeight": "24px",
+                                "fontWeight": "400"
+                        }
+                ],
+                "headline-lg-mobile": [
+                        "24px",
+                        {
+                                "lineHeight": "32px",
+                                "fontWeight": "600"
+                        }
+                ]
+        }
+},
+    },
+  }
+</script>
+<style>
+        .brand-gradient-text {
+            background: linear-gradient(to right, #552834, #904050);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        .brand-gradient-bg {
+            background: linear-gradient(to right, #552834, #904050);
+        }
+        .glow-effect {
+            box-shadow: 0 0 40px 10px rgba(85, 40, 52, 0.1);
+        }
+        .card-blur {
+            background: rgba(255, 255, 255, 0.8);
+            backdrop-filter: blur(16px);
+            border: 1px solid rgba(85, 40, 52, 0.1);
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+        }
+        
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .animate-fade-in-up {
+            animation: fadeInUp 0.8s ease-out forwards;
+            opacity: 0;
+        }
+        
+        .delay-100 { animation-delay: 100ms; }
+        .delay-200 { animation-delay: 200ms; }
+        .delay-300 { animation-delay: 300ms; }
+    </style>
+</head>
+<body class="bg-[#F7F4F4] text-[#552834] font-body-md text-body-md overflow-x-hidden min-h-screen flex flex-col relative selection:bg-primary-container selection:text-on-primary-container">
+<!-- TopNavBar -->
+<nav class="sticky top-0 z-50 flex justify-between items-center px-gutter w-full max-w-container-max mx-auto py-4 bg-[#F7F4F4]/80 backdrop-blur-xl border-b border-[#552834]/10 shadow-sm">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-[#552834] text-3xl">code_blocks</span>
+<span class="font-headline-lg text-headline-lg font-bold text-[#552834]">Izwan</span>
+</div>
+<div class="hidden md:flex items-center gap-8">
+<a class="text-on-surface-variant hover:text-primary transition-colors font-label-sm text-label-sm font-medium" href="#">Fonctionnalités</a>
+<a class="text-on-surface-variant hover:text-primary transition-colors font-label-sm text-label-sm font-medium" href="#">Tarifs</a>
+<a class="text-on-surface-variant hover:text-primary transition-colors font-label-sm text-label-sm font-medium" href="#">Documentation</a>
+<a class="text-on-surface-variant hover:text-primary transition-colors font-label-sm text-label-sm font-medium" href="#">À propos</a>
+</div>
+<div class="flex items-center gap-4">
+<div class="hidden sm:flex items-center gap-3 mr-2 border-r border-outline-variant/30 pr-4">
+<button class="text-on-surface-variant hover:text-on-surface transition-colors font-label-sm text-label-sm flex items-center gap-1">
+<span class="material-symbols-outlined text-[18px]">language</span>
+                    FR
+                </button>
+<button class="text-on-surface-variant hover:text-on-surface transition-colors rounded-full p-1 hover:bg-surface-container-high">
+<span class="material-symbols-outlined text-[20px]">light_mode</span>
+</button>
+</div>
+<a class="hidden sm:block text-on-surface-variant hover:text-primary transition-colors font-label-sm text-label-sm font-medium px-4 py-2" href="#">Connexion</a>
+<a class="brand-gradient-bg text-white font-label-sm text-label-sm font-medium px-5 py-2.5 rounded-lg hover:opacity-90 transition-all active:scale-95 shadow-md" href="#">Commencer</a>
+</div>
+</nav>
+<!-- Main Content Canvas -->
+<main class="flex-grow relative z-10">
+<!-- Hero Section -->
+<section class="relative w-full overflow-hidden">
+<canvas class="absolute inset-0 w-full h-full -z-10" id="hero-glcanvas" width="1280" height="730"></canvas>
+<div class="w-full max-w-container-max mx-auto px-gutter pt-20 pb-24 md:pt-32 md:pb-40 grid grid-cols-1 lg:grid-cols-12 gap-12 items-center animate-fade-in-up">
+<!-- Left Column: Copy & CTAs -->
+<div class="lg:col-span-6 flex flex-col gap-8">
+<!-- Trust Badges -->
+<div class="flex flex-wrap items-center gap-3">
+<span class="flex items-center gap-1.5 bg-primary/10 text-primary border border-primary/20 px-3 py-1 rounded-full font-label-sm text-label-sm font-semibold backdrop-blur-sm">
+<span class="material-symbols-outlined text-[14px]">bolt</span>
+                        Gratuit
+                    </span>
+<span class="flex items-center gap-1.5 bg-secondary/10 text-secondary border border-secondary/20 px-3 py-1 rounded-full font-label-sm text-label-sm font-semibold backdrop-blur-sm">
+<span class="material-symbols-outlined text-[14px]">code</span>
+                        Open source
+                    </span>
+<span class="flex items-center gap-1.5 bg-tertiary/10 text-tertiary border border-tertiary/20 px-3 py-1 rounded-full font-label-sm text-label-sm font-semibold backdrop-blur-sm">
+<span class="material-symbols-outlined text-[14px]">wifi_off</span>
+                        Fonctionne hors-ligne
+                    </span>
+</div>
+<!-- Headline -->
+<div class="flex flex-col gap-4">
+<h1 class="font-headline-lg-mobile text-headline-lg-mobile md:font-display-lg md:text-display-lg font-black tracking-tight text-[#552834]">
+                        Votre <span class="brand-gradient-text">cerveau numérique</span> pour le code
+                    </h1>
+<p class="font-body-md text-body-md text-on-surface-variant max-w-2xl leading-relaxed">
+                        Capturez, retrouvez et réutilisez vos snippets grâce à l'IA — en local et en toute confidentialité. Un espace de travail fluide, conçu pour les développeurs exigeants.
+                    </p>
+</div>
+<!-- CTAs -->
+<div class="flex flex-col sm:flex-row items-center gap-4 pt-4">
+<a class="w-full sm:w-auto brand-gradient-bg text-white font-label-sm text-label-sm font-semibold px-8 py-4 rounded-lg hover:opacity-90 transition-all flex items-center justify-center gap-2 group shadow-lg" href="#">
+<span class="material-symbols-outlined text-[20px] group-hover:translate-y-0.5 transition-transform">download</span>
+                        Télécharger pour Windows
+                    </a>
+<a class="w-full sm:w-auto bg-white text-primary border border-primary/20 font-label-sm text-label-sm font-medium px-8 py-4 rounded-lg hover:bg-surface transition-all flex items-center justify-center gap-2 shadow-sm" href="#">
+                        Ouvrir l'app web
+                        <span class="material-symbols-outlined text-[18px]">open_in_new</span>
+</a>
+</div>
+<p class="text-xs text-on-surface-variant/80 font-label-sm">Version 2.4.0 • Nécessite Windows 10+ ou macOS 12+</p>
+</div>
+<!-- Right Column: Dashboard Visual -->
+<div class="lg:col-span-6 relative perspective-1000">
+<div class="glow-effect relative rounded-xl border border-primary/10 overflow-hidden bg-white shadow-2xl transform rotate-y-[-5deg] rotate-x-[2deg] transition-transform duration-500 hover:rotate-y-0 hover:rotate-x-0">
+<!-- Fake Window Header -->
+<div class="bg-surface-container border-b border-primary/10 h-10 flex items-center px-4 gap-2">
+<div class="w-3 h-3 rounded-full bg-error/80"></div>
+<div class="w-3 h-3 rounded-full bg-[#fbbc04]/80"></div>
+<div class="w-3 h-3 rounded-full bg-tertiary/80"></div>
+</div>
+<!-- Fake App Content -->
+<div class="flex h-[400px]">
+<!-- Sidebar -->
+<div class="w-48 bg-surface-container/50 border-r border-primary/10 p-4 flex flex-col gap-4">
+<div class="h-6 w-24 bg-primary/10 rounded"></div>
+<div class="flex flex-col gap-2 mt-4">
+<div class="h-8 w-full bg-primary/10 rounded flex items-center px-2 border-l-2 border-primary">
+<div class="h-2 w-16 bg-primary/60 rounded"></div>
+</div>
+<div class="h-8 w-full hover:bg-surface-variant rounded flex items-center px-2">
+<div class="h-2 w-20 bg-on-surface-variant/40 rounded"></div>
+</div>
+<div class="h-8 w-full hover:bg-surface-variant rounded flex items-center px-2">
+<div class="h-2 w-12 bg-on-surface-variant/40 rounded"></div>
+</div>
+</div>
+</div>
+<!-- Main Area -->
+<div class="flex-1 bg-white p-6 flex flex-col gap-4 relative overflow-hidden">
+<!-- Search Bar -->
+<div class="h-10 w-full bg-surface-container rounded-lg border border-primary/20 flex items-center px-4 shadow-sm">
+<div class="h-4 w-4 rounded-full bg-primary/40 mr-3"></div>
+<div class="h-2 w-32 bg-on-surface-variant/40 rounded"></div>
+</div>
+<!-- Code Block Snippet -->
+<div class="bg-surface-container-low rounded-lg p-4 flex-1 flex flex-col gap-3 border border-primary/10">
+<div class="flex justify-between items-center border-b border-primary/10 pb-2">
+<div class="h-4 w-40 bg-on-surface/80 rounded"></div>
+<div class="h-5 w-16 bg-tertiary/10 text-tertiary rounded text-[10px] flex items-center justify-center font-bold">PYTHON</div>
+</div>
+<div class="font-code-snippet text-code-snippet text-on-surface-variant mt-2 flex flex-col gap-2">
+<div class="h-3 w-full bg-primary/10 rounded"></div>
+<div class="h-3 w-5/6 bg-primary/10 rounded"></div>
+<div class="h-3 w-3/4 bg-primary/10 rounded"></div>
+<div class="h-3 w-full bg-primary/10 rounded mt-2"></div>
+<div class="h-3 w-2/3 bg-primary/10 rounded"></div>
+</div>
+</div>
+<!-- Hover Detail Widget -->
+<div class="absolute bottom-6 right-6 w-48 bg-white rounded-lg p-3 shadow-lg border border-primary/20">
+<div class="h-2 w-20 bg-primary/60 rounded mb-2"></div>
+<div class="h-1.5 w-full bg-on-surface-variant/30 rounded mb-1"></div>
+<div class="h-1.5 w-4/5 bg-on-surface-variant/30 rounded"></div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</section>
+<!-- Features Grid (Bento Style) -->
+<section class="w-full max-w-container-max mx-auto px-gutter py-24 animate-fade-in-up delay-100">
+<div class="text-center mb-16 flex flex-col gap-4">
+<h2 class="font-headline-lg-mobile text-headline-lg-mobile md:font-headline-lg md:text-headline-lg font-bold text-on-surface">Une architecture pensée pour le <span class="brand-gradient-text">flow state</span></h2>
+<p class="font-body-md text-body-md text-on-surface-variant max-w-2xl mx-auto">Pas de distraction, pas de latence. Juste vos connaissances techniques, indexées intelligemment et disponibles instantanément.</p>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-12 gap-6 auto-rows-[300px]">
+<!-- Feature 1: Semantic Search (Large) -->
+<div class="md:col-span-8 card-blur rounded-xl p-8 flex flex-col justify-between group overflow-hidden relative">
+<div class="absolute top-0 right-0 w-64 h-64 bg-primary/5 rounded-full blur-[80px] -mr-20 -mt-20 transition-all duration-700 group-hover:bg-primary/10"></div>
+<div class="z-10 flex flex-col gap-2">
+<div class="w-12 h-12 rounded-lg bg-primary/5 border border-primary/10 flex items-center justify-center mb-4">
+<span class="material-symbols-outlined text-primary text-[24px]">manage_search</span>
+</div>
+<h3 class="font-headline-lg text-xl font-semibold text-on-surface">Recherche sémantique</h3>
+<p class="font-body-md text-body-md text-on-surface-variant max-w-md">Ne cherchez plus par mots-clés exacts. Décrivez ce que fait le code, l'IA d'Izwan comprendra le contexte et retrouvera le snippet pertinent, même si vous avez oublié le nom de la fonction.</p>
+</div>
+<!-- Visual Mock -->
+<div class="z-10 mt-6 h-20 bg-surface-container rounded-lg border border-primary/10 p-3 flex items-center gap-3">
+<span class="material-symbols-outlined text-on-surface-variant">search</span>
+<div class="text-on-surface text-sm font-code-snippet italic opacity-80">"Comment parser un JSON complexe en Go..."</div>
+</div>
+</div>
+<!-- Feature 2: Local AI (Small) -->
+<div class="md:col-span-4 card-blur rounded-xl p-8 flex flex-col group relative overflow-hidden">
+<div class="absolute bottom-0 right-0 w-40 h-40 bg-secondary/5 rounded-full blur-[60px] transition-all duration-700 group-hover:bg-secondary/10"></div>
+<div class="w-12 h-12 rounded-lg bg-secondary/5 border border-secondary/10 flex items-center justify-center mb-4 z-10">
+<span class="material-symbols-outlined text-secondary text-[24px]">memory</span>
+</div>
+<h3 class="font-headline-lg text-xl font-semibold text-on-surface z-10 mb-2">IA locale</h3>
+<p class="font-body-md text-body-md text-on-surface-variant z-10">Des modèles d'inférence légers qui tournent directement sur votre machine. Zéro latence réseau.</p>
+</div>
+<!-- Feature 3: Multi-surface (Small) -->
+<div class="md:col-span-4 card-blur rounded-xl p-8 flex flex-col group relative overflow-hidden">
+<div class="absolute top-0 left-0 w-40 h-40 bg-tertiary/5 rounded-full blur-[60px] transition-all duration-700 group-hover:bg-tertiary/10"></div>
+<div class="w-12 h-12 rounded-lg bg-tertiary/5 border border-tertiary/10 flex items-center justify-center mb-4 z-10">
+<span class="material-symbols-outlined text-tertiary text-[24px]">devices</span>
+</div>
+<h3 class="font-headline-lg text-xl font-semibold text-on-surface z-10 mb-2">Multi-surfaces</h3>
+<p class="font-body-md text-body-md text-on-surface-variant z-10">Synchronisez vos données de manière chiffrée entre votre Desktop, Web et CLI.</p>
+</div>
+<!-- Feature 4: Organization (Large) -->
+<div class="md:col-span-8 card-blur rounded-xl p-8 flex flex-col md:flex-row gap-8 items-center group relative overflow-hidden">
+<div class="absolute bottom-0 left-1/2 w-80 h-40 bg-primary/5 rounded-full blur-[80px] -translate-x-1/2 transition-all duration-700 group-hover:bg-primary/10"></div>
+<div class="flex-1 z-10 flex flex-col gap-2">
+<div class="w-12 h-12 rounded-lg bg-primary/5 border border-primary/10 flex items-center justify-center mb-4">
+<span class="material-symbols-outlined text-primary text-[24px]">folder_special</span>
+</div>
+<h3 class="font-headline-lg text-xl font-semibold text-on-surface">Organisation auto-magique</h3>
+<p class="font-body-md text-body-md text-on-surface-variant">Oubliez les dossiers chaotiques. L'IA tague, catégorise et relie vos snippets automatiquement lors de la capture.</p>
+</div>
+<!-- Visual Mock -->
+<div class="flex-1 w-full z-10 flex flex-wrap gap-2">
+<span class="bg-primary/10 text-primary border border-primary/20 px-3 py-1 rounded font-code-snippet text-[11px] font-bold">#REACT_HOOKS</span>
+<span class="bg-secondary/10 text-secondary border border-secondary/20 px-3 py-1 rounded font-code-snippet text-[11px] font-bold">#DB_MIGRATION</span>
+<span class="bg-tertiary/10 text-tertiary border border-tertiary/20 px-3 py-1 rounded font-code-snippet text-[11px] font-bold">#DOCKERFILE</span>
+<span class="bg-surface-variant text-on-surface-variant border border-outline/20 px-3 py-1 rounded font-code-snippet text-[11px] font-bold">#UTIL</span>
+</div>
+</div>
+</div>
+</section>
+<!-- Privacy Banner -->
+<section class="w-full max-w-container-max mx-auto px-gutter py-12 animate-fade-in-up delay-200">
+<div class="relative rounded-2xl overflow-hidden card-blur p-8 md:p-12 flex flex-col md:flex-row items-center justify-between gap-8">
+<!-- Banner Background Effect -->
+<div class="absolute inset-0 bg-gradient-to-r from-primary/5 via-transparent to-secondary/5 opacity-80"></div>
+<div class="relative z-10 flex flex-col gap-4 max-w-xl">
+<div class="flex items-center gap-2 text-primary mb-2">
+<span class="material-symbols-outlined">shield_lock</span>
+<span class="font-label-sm text-label-sm font-bold uppercase tracking-wider">Confidentialité absolue</span>
+</div>
+<h2 class="font-headline-lg text-3xl font-bold text-on-surface">Vos snippets restent chez vous.</h2>
+<p class="font-body-md text-body-md text-on-surface-variant">
+                        Nous croyons que votre code propriétaire ne devrait jamais servir à entraîner des modèles tiers sans votre consentement. Izwan fonctionne 100% hors-ligne par défaut.
+                    </p>
+</div>
+<div class="relative z-10 flex flex-col gap-3 w-full md:w-auto">
+<div class="flex items-center gap-3 bg-white p-3 rounded-lg border border-primary/10 shadow-sm">
+<span class="material-symbols-outlined text-secondary">check_circle</span>
+<span class="font-label-sm text-label-sm text-on-surface">Aucune télémétrie code</span>
+</div>
+<div class="flex items-center gap-3 bg-white p-3 rounded-lg border border-primary/10 shadow-sm">
+<span class="material-symbols-outlined text-secondary">check_circle</span>
+<span class="font-label-sm text-label-sm text-on-surface">Stockage local SQLite</span>
+</div>
+<div class="flex items-center gap-3 bg-white p-3 rounded-lg border border-primary/10 shadow-sm">
+<span class="material-symbols-outlined text-secondary">check_circle</span>
+<span class="font-label-sm text-label-sm text-on-surface">Sync E2E chiffrée (optionnel)</span>
+</div>
+</div>
+</div>
+</section>
+<!-- Download Section -->
+<section class="w-full max-w-container-max mx-auto px-gutter py-24 mb-12 animate-fade-in-up delay-300">
+<div class="text-center mb-12">
+<h2 class="font-headline-lg-mobile text-headline-lg-mobile md:font-headline-lg md:text-headline-lg font-bold text-on-surface mb-4">Prêt à optimiser votre workflow ?</h2>
+<p class="font-body-md text-body-md text-on-surface-variant">Téléchargez Izwan et commencez à construire votre base de connaissances.</p>
+</div>
+<div class="flex flex-col md:flex-row justify-center items-center gap-6 max-w-4xl mx-auto">
+<!-- Windows Card -->
+<div class="w-full md:w-1/2 card-blur rounded-xl p-6 flex flex-col items-center text-center gap-4 hover:border-primary/30 transition-colors cursor-pointer group bg-white">
+<span class="material-symbols-outlined text-4xl text-on-surface group-hover:text-primary transition-colors">window</span>
+<div>
+<h3 class="font-headline-lg text-xl font-semibold text-on-surface">Windows</h3>
+<p class="font-body-md text-body-md text-on-surface-variant text-sm mt-1">.exe installer (64-bit)</p>
+</div>
+<button class="mt-2 w-full bg-surface-container text-on-surface border border-primary/10 font-label-sm text-label-sm font-medium px-4 py-2 rounded-lg group-hover:bg-primary/10 group-hover:border-primary/30 transition-all">Télécharger</button>
+</div>
+<!-- Linux Card -->
+<div class="w-full md:w-1/2 card-blur rounded-xl p-6 flex flex-col items-center text-center gap-4 hover:border-secondary/30 transition-colors cursor-pointer group bg-white">
+<span class="material-symbols-outlined text-4xl text-on-surface group-hover:text-secondary transition-colors">terminal</span>
+<div>
+<h3 class="font-headline-lg text-xl font-semibold text-on-surface">Linux</h3>
+<p class="font-body-md text-body-md text-on-surface-variant text-sm mt-1">.AppImage (x86_64)</p>
+</div>
+<button class="mt-2 w-full bg-surface-container text-on-surface border border-primary/10 font-label-sm text-label-sm font-medium px-4 py-2 rounded-lg group-hover:bg-secondary/10 group-hover:border-secondary/30 transition-all">Télécharger</button>
+</div>
+</div>
+<div class="text-center mt-8">
+<p class="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white border border-primary/10 font-label-sm text-label-sm text-on-surface-variant shadow-sm">
+<span class="material-symbols-outlined text-[16px]">laptop_mac</span>
+                    macOS bientôt disponible — <a class="text-primary hover:underline font-semibold" href="#">Être notifié</a>
+</p>
+</div>
+</section>
+</main>
+<!-- Footer -->
+<footer class="bg-surface-container-low border-t border-primary/10 py-12 px-gutter">
+<div class="max-w-container-max mx-auto flex flex-col md:flex-row justify-between items-center gap-6">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-primary text-2xl">code_blocks</span>
+<span class="font-label-sm text-label-sm text-primary font-bold">Izwan</span>
+</div>
+<div class="flex flex-wrap justify-center gap-6 font-label-sm text-label-sm">
+<a class="text-on-surface-variant hover:text-primary transition-colors" href="#">Sécurité</a>
+<a class="text-on-surface-variant hover:text-primary transition-colors" href="#">API</a>
+<a class="text-on-surface-variant hover:text-primary transition-colors" href="#">Status</a>
+<a class="text-on-surface-variant hover:text-primary transition-colors" href="#">Contact</a>
+</div>
+<div class="flex flex-col md:flex-row items-center gap-4">
+<div class="flex items-center gap-2 bg-white rounded-full px-3 py-1 border border-primary/10 shadow-sm">
+<span class="material-symbols-outlined text-[16px] text-on-surface-variant">language</span>
+<select class="bg-transparent border-none text-on-surface-variant font-label-sm text-label-sm text-xs focus:ring-0 cursor-pointer py-1 pl-1 pr-6">
+<option value="fr">Français</option>
+<option value="en">English</option>
+</select>
+</div>
+<p class="font-label-sm text-label-sm text-on-surface-variant/70 text-xs">
+                    © 2024 Izwan. Tous droits réservés. Confidentialité d'abord.
+                </p>
+</div>
+</div>
+</footer>
+<script>
+// WebGL Background Setup (Modified for light mode)
+window.addEventListener('load', () => {
+  const canvas = document.getElementById('hero-glcanvas');
+  if(!canvas) return;
+  const gl = canvas.getContext('webgl');
+  if (!gl) return;
+  
+  const resize = () => {
+    canvas.width = canvas.clientWidth;
+    canvas.height = canvas.clientHeight;
+    gl.viewport(0, 0, canvas.width, canvas.height);
+  };
+  window.addEventListener('resize', resize);
+  resize();
+
+  const vsSource = `
+    attribute vec2 position;
+    varying vec2 v_texCoord;
+    void main() {
+      gl_Position = vec4(position, 0.0, 1.0);
+      v_texCoord = position * 0.5 + 0.5;
+    }
+  `;
+  
+  const fsSource = `
+    precision highp float;
+    uniform float u_time;
+    uniform vec2 u_resolution;
+    uniform vec2 u_mouse;
+    varying vec2 v_texCoord;
+
+    void main() {
+        vec2 uv = v_texCoord;
+        vec2 p = (gl_FragCoord.xy * 2.0 - u_resolution.xy) / min(u_resolution.x, u_resolution.y);
+        
+        // Very subtle, light flowing background
+        vec3 color1 = vec3(0.969, 0.957, 0.957); // #F7F4F4 Base
+        vec3 color2 = vec3(0.957, 0.875, 0.886); // Light pinkish accent
+        
+        float noise = 0.0;
+        for(float i = 1.0; i < 4.0; i++) {
+            p.x += 0.3 / i * sin(i * 3.0 * p.y + u_time * 0.3);
+            p.y += 0.3 / i * cos(i * 3.0 * p.x + u_time * 0.3);
+            noise += 0.1 / length(p);
+        }
+        
+        vec3 finalColor = mix(color1, color2, clamp(noise * 0.15, 0.0, 1.0));
+        gl_FragColor = vec4(finalColor, 1.0);
+    }
+  `;
+
+  const compileShader = (type, source) => {
+    const shader = gl.createShader(type);
+    gl.shaderSource(shader, source);
+    gl.compileShader(shader);
+    return shader;
+  };
+
+  const vs = compileShader(gl.VERTEX_SHADER, vsSource);
+  const fs = compileShader(gl.FRAGMENT_SHADER, fsSource);
+
+  const program = gl.createProgram();
+  gl.attachShader(program, vs);
+  gl.attachShader(program, fs);
+  gl.linkProgram(program);
+  gl.useProgram(program);
+
+  const positionLoc = gl.getAttribLocation(program, 'position');
+  const buffer = gl.createBuffer();
+  gl.bindBuffer(gl.ARRAY_BUFFER, buffer);
+  gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([
+    -1, -1,  1, -1,  -1, 1,
+    -1,  1,  1, -1,   1, 1
+  ]), gl.STATIC_DRAW);
+  gl.enableVertexAttribArray(positionLoc);
+  gl.vertexAttribPointer(positionLoc, 2, gl.FLOAT, false, 0, 0);
+
+  const timeLoc = gl.getUniformLocation(program, 'u_time');
+  const resLoc = gl.getUniformLocation(program, 'u_resolution');
+
+  let startTime = Date.now();
+  const render = () => {
+    gl.uniform1f(timeLoc, (Date.now() - startTime) / 1000.0);
+    gl.uniform2f(resLoc, canvas.width, canvas.height);
+    gl.drawArrays(gl.TRIANGLES, 0, 6);
+    requestAnimationFrame(render);
+  };
+  render();
+});
+</script>
+
+
+</body></html>

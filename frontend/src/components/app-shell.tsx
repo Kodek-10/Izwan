@@ -16,8 +16,9 @@ import {
   Settings,
   Shield,
   Loader2,
+  Download,
 } from "lucide-react";
-import { motion } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion";
 import { IzwaLogo, IzwaWordmark } from "./izwan-logo";
 import { useTheme } from "./theme-provider";
 import { Button } from "./ui/button";
@@ -31,13 +32,8 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "./ui/dropdown-menu";
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipProvider,
-  TooltipTrigger,
-} from "./ui/tooltip";
 import { FloatingAssistant } from "./floating-assistant";
+import { CreateSnippetDialog } from "./create-snippet-dialog";
 
 const navItems = [
   { to: "/dashboard", label: "Tableau de bord", icon: LayoutDashboard },
@@ -55,6 +51,16 @@ export function AppShell({ children }: { children: React.ReactNode }) {
 
   const [user, setUser] = React.useState<{ username: string; role?: string } | null>(null);
   const [mounted, setMounted] = React.useState(false);
+  const [hoveredDock, setHoveredDock] = React.useState<string | null>(null);
+  const [selectedLabel, setSelectedLabel] = React.useState<string | null>(null);
+  const [pressedDock, setPressedDock] = React.useState<string | null>(null);
+  const [createOpen, setCreateOpen] = React.useState(false);
+
+  React.useEffect(() => {
+    const handler = () => setCreateOpen(true);
+    window.addEventListener("snippet:new", handler);
+    return () => window.removeEventListener("snippet:new", handler);
+  }, []);
 
   React.useEffect(() => {
     setMounted(true);
@@ -64,6 +70,10 @@ export function AppShell({ children }: { children: React.ReactNode }) {
   }, []);
 
   const getInitials = (name: string) => (name ? name.slice(0, 2).toUpperCase() : "??");
+
+  React.useEffect(() => {
+    setSelectedLabel(null);
+  }, [location.pathname]);
 
   // --- Recherche sémantique globale ---
   const [searchQuery, setSearchQuery] = React.useState("");
@@ -102,7 +112,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
   const handleLogout = () => {
     api.logout();
     toast.success("Déconnecté");
-    navigate({ to: "/auth" });
+    navigate({ to: "/", replace: true });
   };
 
   return (
@@ -185,10 +195,10 @@ export function AppShell({ children }: { children: React.ReactNode }) {
                 <DropdownMenuLabel className="truncate">{user?.username || "Compte"}</DropdownMenuLabel>
                 <DropdownMenuSeparator />
                 <DropdownMenuItem onClick={() => navigate({ to: "/settings" })}>
-                  <User className="mr-2 h-4 w-4" /> Profil
-                </DropdownMenuItem>
-                <DropdownMenuItem onClick={() => navigate({ to: "/settings" })}>
                   <Settings className="mr-2 h-4 w-4" /> Paramètres
+                </DropdownMenuItem>
+                <DropdownMenuItem onClick={() => navigate({ to: "/export" })}>
+                  <Download className="mr-2 h-4 w-4" /> Exportations
                 </DropdownMenuItem>
                 {user?.role === "ADMIN" && (
                   <DropdownMenuItem onClick={() => navigate({ to: "/admin" })}>
@@ -208,40 +218,63 @@ export function AppShell({ children }: { children: React.ReactNode }) {
       {/* Contenu */}
       <main className="mx-auto max-w-6xl px-4 pb-28 pt-6 sm:px-6">{children}</main>
 
-      {/* Dock flottant */}
-      <TooltipProvider delayDuration={200}>
-        <nav className="fixed bottom-5 left-1/2 z-30 -translate-x-1/2">
-          <div className="flex items-center gap-1 rounded-full border border-border bg-card/90 p-1.5 shadow-lg backdrop-blur-md">
-            {navItems.map((item) => {
-              const Icon = item.icon;
-              const active = location.pathname.startsWith(item.to);
-              return (
-                <Tooltip key={item.to}>
-                  <TooltipTrigger asChild>
-                    <Link
-                      to={item.to}
-                      className="relative flex h-10 w-10 items-center justify-center rounded-full transition-colors"
+      {/* Dock flottant avec effet tiroir */}
+      <nav className="fixed bottom-5 left-1/2 z-30 -translate-x-1/2">
+        <div className="flex items-center gap-1 rounded-full border border-border bg-card/90 p-1.5 shadow-lg backdrop-blur-md">
+          {navItems.map((item) => {
+            const Icon = item.icon;
+            const active = location.pathname.startsWith(item.to);
+            return (
+              <div
+                key={item.to}
+                className="relative flex items-center h-10 rounded-full transition-all duration-300"
+                onMouseEnter={() => setHoveredDock(item.to)}
+                onMouseLeave={() => setHoveredDock(null)}
+              >
+                <Link
+                  to={item.to}
+                  onClick={(e) => {
+                    if (active) {
+                      e.preventDefault();
+                      setSelectedLabel((prev) => (prev === item.to ? null : item.to));
+                    }
+                  }}
+                  onMouseDown={() => setPressedDock(item.to)}
+                  onMouseUp={() => setPressedDock(null)}
+                  onMouseLeave={() => setPressedDock(null)}
+                  className="relative flex h-10 w-10 shrink-0 items-center justify-center rounded-full transition-colors z-10"
+                >
+                  {active && (
+                    <motion.span
+                      layoutId="dock-active"
+                      className="absolute inset-0 rounded-full gradient-brand"
+                      transition={{ type: "spring", bounce: 0.2, duration: 0.5 }}
+                    />
+                  )}
+                  <Icon className={`relative h-5 w-5 ${active ? "text-white" : "text-muted-foreground"} ${hoveredDock === item.to || pressedDock === item.to ? "scale-110" : ""} transition-transform`} />
+                </Link>
+                <AnimatePresence>
+                  {(active || selectedLabel === item.to) && (
+                    <motion.span
+                      initial={{ width: 0, opacity: 0, x: -4 }}
+                      animate={{ width: "auto", opacity: 1, x: 0 }}
+                      exit={{ width: 0, opacity: 0, x: -4 }}
+                      transition={{ type: "spring", bounce: 0.1, duration: 0.4 }}
+                      className="text-sm font-medium whitespace-nowrap overflow-hidden pr-3 text-foreground"
                     >
-                      {active && (
-                        <motion.span
-                          layoutId="dock-active"
-                          className="absolute inset-0 rounded-full gradient-brand"
-                          transition={{ type: "spring", bounce: 0.2, duration: 0.5 }}
-                        />
-                      )}
-                      <Icon className={`relative h-5 w-5 ${active ? "text-white" : "text-muted-foreground"}`} />
-                    </Link>
-                  </TooltipTrigger>
-                  <TooltipContent side="top">{item.label}</TooltipContent>
-                </Tooltip>
-              );
-            })}
-          </div>
-        </nav>
-      </TooltipProvider>
+                      {item.label}
+                    </motion.span>
+                  )}
+                </AnimatePresence>
+              </div>
+            );
+          })}
+        </div>
+      </nav>
 
       {/* Assistant flottant (panneau coulissant depuis la droite) */}
       <FloatingAssistant />
+      <CreateSnippetDialog open={createOpen} onOpenChange={setCreateOpen} />
     </div>
   );
 }

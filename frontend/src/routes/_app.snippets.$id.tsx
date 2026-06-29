@@ -1,5 +1,19 @@
 import { createFileRoute, Link, notFound, useRouter } from "@tanstack/react-router";
-import { ArrowLeft, Copy, Star, Loader2, Sparkles, X, Languages, Pencil, Save } from "lucide-react";
+import {
+  ArrowLeft,
+  Copy,
+  Star,
+  Loader2,
+  Sparkles,
+  X,
+  Languages,
+  Pencil,
+  Save,
+  Share2,
+  MoreVertical,
+  Code2,
+  Trash2,
+} from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -8,8 +22,22 @@ import { useState, useEffect } from "react";
 import { useTranslation } from "react-i18next";
 import { api } from "@/lib/api-client";
 import { toast } from "sonner";
-import { motion, AnimatePresence } from "framer-motion";
+import { motion } from "framer-motion";
 import { CodeEditor } from "@/components/code-editor";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 
 type ApiTag = {
   id: number;
@@ -51,7 +79,6 @@ export const Route = createFileRoute("/_app/snippets/$id")({
     return { meta: [{ title: `${loaderData?.snippet?.title ?? "Snippet"} — Izwan` }] };
   },
   loader: async ({ params }) => {
-    // On server, we can't access localStorage for the auth token.
     if (typeof window === "undefined") {
       return { snippet: null, needsClientFetch: true };
     }
@@ -87,13 +114,12 @@ function SnippetDetail() {
   const [editTagInput, setEditTagInput] = useState("");
 
   // New AI Explanation state
-  const [explanation, setExplanation] = useState("");
   const [isExplaining, setIsExplaining] = useState(false);
 
   // New Translation state
   const [isTranslating, setIsTranslating] = useState(false);
-  const [showTranslateUI, setShowTranslateUI] = useState(false);
   const [targetLang, setTargetLang] = useState("");
+  const [isTranslateDialogOpen, setIsTranslateDialogOpen] = useState(false);
 
   useEffect(() => {
     if (data?.snippet && !data.needsClientFetch) {
@@ -103,7 +129,6 @@ function SnippetDetail() {
   }, [data]);
 
   useEffect(() => {
-    // If the loader ran on server, we need to re-fetch on client where token is available
     if (data?.needsClientFetch) {
       const fetchOnClient = async () => {
         setIsClientLoading(true);
@@ -146,8 +171,6 @@ function SnippetDetail() {
     setEditCode(snippet.code);
     setEditTags(snippet.tags || []);
     setEditTagInput("");
-    setExplanation("");
-    setShowTranslateUI(false);
     setIsEditing(true);
   };
 
@@ -211,7 +234,11 @@ function SnippetDetail() {
         code: snippet.code,
         language: snippet.language,
       });
-      setExplanation(res.explanation);
+      window.dispatchEvent(
+        new CustomEvent("assistant:explain", {
+          detail: { explanation: res.explanation },
+        })
+      );
       toast.success(t("snippets.detail.explanation_success"));
     } catch (e) {
       toast.error(t("snippets.detail.explanation_error"));
@@ -248,14 +275,22 @@ function SnippetDetail() {
       });
 
       toast.success("Traduction réussie et sauvegardée comme nouveau snippet !");
-      setShowTranslateUI(false);
+      setIsTranslateDialogOpen(false);
       setTargetLang("");
-      // Refresh the page or navigate to new snippet if we had the router here
-      // window.location.href = `/snippets/${createRes.id}`;
     } catch (e) {
       toast.error("Erreur lors de la traduction");
     } finally {
       setIsTranslating(false);
+    }
+  };
+
+  const handleDelete = async () => {
+    try {
+      await api.delete(`/snippets/${snippet.id}`);
+      toast.success(t("snippets.delete_success"));
+      router.navigate({ to: "/snippets" });
+    } catch (e) {
+      toast.error(t("snippets.delete_error"));
     }
   };
 
@@ -264,286 +299,266 @@ function SnippetDetail() {
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.4 }}
-      className="max-w-3xl mx-auto space-y-5 pb-10"
+      className="max-w-4xl mx-auto space-y-5 pb-10"
     >
+      {/* Back Button */}
       <Link
         to="/snippets"
-        className="inline-flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground"
+        className="inline-flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground transition-colors"
       >
-        <ArrowLeft className="h-4 w-4" /> {t("common.back")}
+        <ArrowLeft className="h-4 w-4" /> Retour aux snippets
       </Link>
 
-      <div className="bg-card border border-border rounded-xl p-4 sm:p-6 space-y-5 shadow-sm">
-        <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-4">
-          <h1 className="text-xl sm:text-2xl font-display font-semibold break-words">
-            {snippet.title}
-          </h1>
-          <div className="flex items-center gap-2 self-end sm:self-auto">
-            <Button
-              variant="outline"
-              size="sm"
-              onClick={startEditing}
-              disabled={isEditing}
-              className="text-primary border-primary/20 hover:bg-primary/5 text-xs"
+      {/* Editor Panel */}
+      <div className="bg-card border border-border rounded-xl overflow-hidden shadow-sm flex flex-col">
+        {/* Editor Header */}
+        <div className="h-14 bg-muted/50 border-b border-border flex items-center justify-between px-4 sm:px-6">
+          <div className="flex items-center gap-3 min-w-0">
+            <Code2 className="h-5 w-5 text-primary shrink-0" />
+            <h2 className="font-semibold text-sm text-foreground truncate">
+              {snippet.title}
+            </h2>
+            <span className="bg-muted text-muted-foreground text-[10px] px-2 py-0.5 rounded font-medium shrink-0">
+              {snippet.language}
+            </span>
+          </div>
+          <div className="flex items-center gap-1 shrink-0">
+            <button
+              onClick={toggleFavorite}
+              className={`p-1.5 rounded hover:bg-muted transition-colors flex items-center gap-1.5 ${
+                isFavorite ? "text-yellow-500" : "text-muted-foreground hover:text-foreground"
+              }`}
+              title={isFavorite ? "Retirer des favoris" : "Ajouter aux favoris"}
             >
-              <Pencil className="h-3.5 w-3.5 mr-1.5" />
-              {t("common.edit")}
-            </Button>
-            <Button
-              variant="outline"
-              size="sm"
-              onClick={() => setShowTranslateUI(!showTranslateUI)}
-              disabled={isEditing}
-              className="text-primary border-primary/20 hover:bg-primary/5 text-xs"
-            >
-              <Languages className="h-3.5 w-3.5 mr-1.5" />
-              Traduire
-            </Button>
-            <Button
-              variant="outline"
-              size="sm"
+              <Star className={`h-4 w-4 ${isFavorite ? "fill-current" : ""}`} />
+            </button>
+            <button
               onClick={handleExplain}
               disabled={isExplaining || isEditing}
-              className="text-primary border-primary/20 hover:bg-primary/5 text-xs"
+              className="px-3 py-1.5 rounded hover:bg-muted text-muted-foreground hover:text-foreground transition-colors flex items-center gap-1.5 text-sm font-medium"
             >
               {isExplaining ? (
-                <Loader2 className="h-3.5 w-3.5 animate-spin mr-1.5" />
+                <Loader2 className="h-4 w-4 animate-spin" />
               ) : (
-                <Sparkles className="h-3.5 w-3.5 mr-1.5" />
+                <Sparkles className="h-4 w-4" />
               )}
-              {t("snippets.detail.explain_ai")}
-            </Button>
-            <Button
-              variant="ghost"
-              size="icon"
-              className={`h-8 w-8 ${isFavorite ? "text-amber-400 hover:text-amber-500 hover:bg-amber-50" : "text-muted-foreground"}`}
-              onClick={toggleFavorite}
+              Expliquer
+            </button>
+            <button
+              onClick={() => setIsTranslateDialogOpen(true)}
               disabled={isEditing}
+              className="px-3 py-1.5 rounded hover:bg-muted text-muted-foreground hover:text-foreground transition-colors flex items-center gap-1.5 text-sm font-medium"
             >
-              <Star className={`h-5 w-5 ${isFavorite ? "fill-current" : ""}`} />
-            </Button>
-          </div>
-        </div>
-
-        {isEditing ? (
-          <div className="space-y-5 rounded-xl border border-border bg-background/40 p-4">
-            <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
-              <div className="space-y-2">
-                <Label htmlFor="edit-title">{t("snippets.form.title")}</Label>
-                <Input
-                  id="edit-title"
-                  value={editTitle}
-                  onChange={(event) => setEditTitle(event.target.value)}
-                />
-              </div>
-              <div className="space-y-2">
-                <Label htmlFor="edit-language">{t("snippets.form.language")}</Label>
-                <Input
-                  id="edit-language"
-                  value={editLanguage}
-                  onChange={(event) => setEditLanguage(event.target.value)}
-                />
-              </div>
-            </div>
-
-            <div className="space-y-2">
-              <Label htmlFor="edit-description">{t("snippets.form.description")}</Label>
-              <Textarea
-                id="edit-description"
-                rows={3}
-                value={editDescription}
-                onChange={(event) => setEditDescription(event.target.value)}
-              />
-            </div>
-
-            <div className="space-y-2">
-              <Label>{t("snippets.form.tags")}</Label>
-              <div className="flex min-h-[44px] flex-wrap gap-2 rounded-md border border-input bg-input/40 p-2">
-                {editTags.map((tag) => (
-                  <span
-                    key={tag}
-                    className="inline-flex items-center gap-1 rounded-md bg-primary/15 px-2.5 py-1 text-xs font-medium text-primary"
-                  >
-                    {tag}
-                    <button
-                      type="button"
-                      onClick={() => setEditTags(editTags.filter((current) => current !== tag))}
-                    >
-                      <X className="h-3 w-3" />
-                    </button>
-                  </span>
-                ))}
-                <input
-                  value={editTagInput}
-                  onChange={(event) => setEditTagInput(event.target.value)}
-                  onKeyDown={(event) => {
-                    if (event.key === "Enter" && editTagInput.trim()) {
-                      event.preventDefault();
-                      const nextTag = editTagInput.trim().toLowerCase();
-                      if (!editTags.includes(nextTag)) setEditTags([...editTags, nextTag]);
-                      setEditTagInput("");
-                    }
-                  }}
-                  placeholder={t("snippets.form.add_tag")}
-                  className="min-w-[120px] flex-1 bg-transparent text-sm outline-none"
-                />
-              </div>
-            </div>
-
-            <div className="space-y-2">
-              <Label htmlFor="edit-code">{t("snippets.form.code")}</Label>
-              <CodeEditor
-                id="edit-code"
-                value={editCode}
-                onChange={setEditCode}
-                language={editLanguage || "text"}
-                minRows={14}
-              />
-            </div>
-
-            <div className="flex flex-col-reverse justify-end gap-2 sm:flex-row">
-              <Button variant="outline" onClick={cancelEditing} disabled={isSavingEdit}>
-                {t("common.cancel")}
-              </Button>
-              <Button onClick={handleSaveEdit} disabled={isSavingEdit}>
-                {isSavingEdit ? (
-                  <Loader2 className="h-4 w-4 animate-spin mr-2" />
-                ) : (
-                  <Save className="h-4 w-4 mr-2" />
-                )}
-                {t("common.save")}
-              </Button>
-            </div>
-          </div>
-        ) : (
-          <div className="flex flex-wrap gap-1.5">
-            {snippet.tags.map((t: string) => (
-              <span
-                key={t}
-                className="px-2 py-0.5 rounded-md bg-primary/10 text-primary text-[10px] sm:text-xs font-medium lowercase"
-              >
-                {t}
-              </span>
-            ))}
-          </div>
-        )}
-
-        <AnimatePresence>
-          {showTranslateUI && !isEditing && (
-            <motion.div
-              initial={{ opacity: 0, height: 0 }}
-              animate={{ opacity: 1, height: "auto" }}
-              exit={{ opacity: 0, height: 0 }}
-              className="bg-card border border-border rounded-xl p-4 sm:p-5 relative overflow-hidden shadow-sm"
-            >
-              <h3 className="text-sm font-semibold mb-3 flex items-center gap-2">
-                <Languages className="h-4 w-4" /> Traduire le snippet
-              </h3>
-              <div className="flex gap-2 items-center">
-                <Input
-                  placeholder="Langage cible (ex: python, typescript)"
-                  value={targetLang}
-                  onChange={(e) => setTargetLang(e.target.value)}
-                  className="max-w-xs h-9"
-                />
-                <Button
-                  size="sm"
-                  onClick={handleTranslate}
-                  disabled={isTranslating || !targetLang.trim()}
-                  className="h-9"
-                >
-                  {isTranslating ? (
-                    <Loader2 className="h-4 w-4 animate-spin mr-2" />
-                  ) : (
-                    <Sparkles className="h-4 w-4 mr-2" />
-                  )}
-                  Lancer la traduction
-                </Button>
-              </div>
-            </motion.div>
-          )}
-        </AnimatePresence>
-
-        <AnimatePresence>
-          {explanation && !isEditing && (
-            <motion.div
-              initial={{ opacity: 0, height: 0 }}
-              animate={{ opacity: 1, height: "auto" }}
-              exit={{ opacity: 0, height: 0 }}
-              className="bg-primary/5 border border-primary/10 rounded-xl p-4 sm:p-5 relative overflow-hidden"
-            >
-              <button
-                onClick={() => setExplanation("")}
-                className="absolute top-2 right-2 p-1 text-muted-foreground hover:text-foreground"
-              >
-                <X className="h-4 w-4" />
-              </button>
-              <h3 className="text-xs sm:text-sm font-semibold text-primary uppercase tracking-wide mb-3 flex items-center gap-2">
-                <Sparkles className="h-3.5 w-3.5 sm:h-4 sm:w-4" />{" "}
-                {t("snippets.detail.explanation_ai")}
-              </h3>
-              <div className="text-xs sm:text-sm prose prose-sm dark:prose-invert max-w-none whitespace-pre-wrap leading-relaxed">
-                {explanation}
-              </div>
-            </motion.div>
-          )}
-        </AnimatePresence>
-
-        {!isEditing && (
-          <>
-            <div className="space-y-2">
-              <h3 className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">
-                {t("snippets.form.description")}
-              </h3>
-              <p className="text-sm leading-relaxed text-foreground/90">{snippet.description}</p>
-            </div>
-
-            <div className="space-y-2">
-              <div className="flex items-center justify-between mb-1">
-                <h3 className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">
-                  {t("snippets.form.code")}
-                </h3>
-                <Button
-                  variant="outline"
-                  size="sm"
-                  className="h-7 text-[10px] px-2"
+              <Languages className="h-4 w-4" />
+              Transcrire
+            </button>
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <button className="p-1.5 rounded hover:bg-muted text-muted-foreground hover:text-foreground transition-colors" title="Plus">
+                  <MoreVertical className="h-4 w-4" />
+                </button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="end">
+                <DropdownMenuItem
                   onClick={() => {
                     navigator.clipboard?.writeText(snippet.code);
                     toast.success(t("snippets.detail.copy_success"));
                   }}
                 >
-                  <Copy className="h-3 w-3 mr-1" /> {t("common.share")}
+                  <Copy className="mr-2 h-4 w-4" />
+                  Copier
+                </DropdownMenuItem>
+                <DropdownMenuItem
+                  onClick={() => {
+                    const url = `${window.location.origin}/snippets/${snippet.id}`;
+                    navigator.clipboard.writeText(url);
+                    toast.success("Lien copié !");
+                  }}
+                >
+                  <Share2 className="mr-2 h-4 w-4" />
+                  Partager
+                </DropdownMenuItem>
+                <DropdownMenuItem onClick={startEditing} disabled={isEditing}>
+                  <Pencil className="mr-2 h-4 w-4" />
+                  Modifier
+                </DropdownMenuItem>
+                <DropdownMenuSeparator />
+                <DropdownMenuItem onClick={handleDelete} className="text-destructive focus:text-destructive">
+                  <Trash2 className="mr-2 h-4 w-4" />
+                  Supprimer
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
+          </div>
+        </div>
+
+        {/* Editor Content */}
+        <div className="flex-1 bg-background p-4 sm:p-6 overflow-auto">
+          {isEditing ? (
+            <div className="space-y-5 rounded-xl border border-border bg-card/40 p-4">
+              <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
+                <div className="space-y-2">
+                  <Label htmlFor="edit-title">{t("snippets.form.title")}</Label>
+                  <Input
+                    id="edit-title"
+                    value={editTitle}
+                    onChange={(event) => setEditTitle(event.target.value)}
+                  />
+                </div>
+                <div className="space-y-2">
+                  <Label htmlFor="edit-language">{t("snippets.form.language")}</Label>
+                  <Input
+                    id="edit-language"
+                    value={editLanguage}
+                    onChange={(event) => setEditLanguage(event.target.value)}
+                  />
+                </div>
+              </div>
+
+              <div className="space-y-2">
+                <Label htmlFor="edit-description">{t("snippets.form.description")}</Label>
+                <Textarea
+                  id="edit-description"
+                  rows={3}
+                  value={editDescription}
+                  onChange={(event) => setEditDescription(event.target.value)}
+                />
+              </div>
+
+              <div className="space-y-2">
+                <Label>{t("snippets.form.tags")}</Label>
+                <div className="flex min-h-[44px] flex-wrap gap-2 rounded-md border border-input bg-input/40 p-2">
+                  {editTags.map((tag) => (
+                    <span
+                      key={tag}
+                      className="inline-flex items-center gap-1 rounded-md bg-primary/15 px-2.5 py-1 text-xs font-medium text-primary"
+                    >
+                      {tag}
+                      <button
+                        type="button"
+                        onClick={() => setEditTags(editTags.filter((current) => current !== tag))}
+                      >
+                        <X className="h-3 w-3" />
+                      </button>
+                    </span>
+                  ))}
+                  <input
+                    value={editTagInput}
+                    onChange={(event) => setEditTagInput(event.target.value)}
+                    onKeyDown={(event) => {
+                      if (event.key === "Enter" && editTagInput.trim()) {
+                        event.preventDefault();
+                        const nextTag = editTagInput.trim().toLowerCase();
+                        if (!editTags.includes(nextTag)) setEditTags([...editTags, nextTag]);
+                        setEditTagInput("");
+                      }
+                    }}
+                    placeholder={t("snippets.form.add_tag")}
+                    className="min-w-[120px] flex-1 bg-transparent text-sm outline-none"
+                  />
+                </div>
+              </div>
+
+              <div className="space-y-2">
+                <Label htmlFor="edit-code">{t("snippets.form.code")}</Label>
+                <CodeEditor
+                  id="edit-code"
+                  value={editCode}
+                  onChange={setEditCode}
+                  language={editLanguage || "text"}
+                  minRows={14}
+                />
+              </div>
+
+              <div className="flex flex-col-reverse justify-end gap-2 sm:flex-row">
+                <Button variant="outline" onClick={cancelEditing} disabled={isSavingEdit}>
+                  {t("common.cancel")}
+                </Button>
+                <Button onClick={handleSaveEdit} disabled={isSavingEdit}>
+                  {isSavingEdit ? (
+                    <Loader2 className="h-4 w-4 animate-spin mr-2" />
+                  ) : (
+                    <Save className="h-4 w-4 mr-2" />
+                  )}
+                  {t("common.save")}
                 </Button>
               </div>
-              <CodeEditor value={snippet.code} language={snippet.language} readOnly minRows={14} />
             </div>
-          </>
-        )}
+          ) : (
+            <>
+              <div className="mb-6">
+                <h1 className="text-2xl font-bold text-foreground mb-2">{snippet.title}</h1>
+                {snippet.description && (
+                  <p className="text-muted-foreground mb-4">{snippet.description}</p>
+                )}
+                <div className="flex flex-wrap gap-2 mb-4">
+                  <span className="bg-primary/10 text-primary text-xs px-2 py-0.5 rounded font-medium">
+                    {snippet.language}
+                  </span>
+                  {snippet.tags.map((t: string) => (
+                    <span
+                      key={t}
+                      className="text-primary text-xs font-medium"
+                    >
+                      #{t}
+                    </span>
+                  ))}
+                </div>
+                <hr className="border-border/30" />
+              </div>
 
-        <div className="border-t border-border pt-4">
-          <h3 className="text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-3">
-            {t("snippets.detail.info_title")}
-          </h3>
-          <dl className="grid grid-cols-2 md:grid-cols-4 gap-4 text-xs sm:text-sm">
-            <div className="space-y-1">
-              <dt className="text-muted-foreground">{t("snippets.detail.created_at")}</dt>
-              <dd className="font-medium">
-                {snippet.dateObj.toLocaleDateString(i18n.language === "fr" ? "fr-FR" : "en-US")}
-              </dd>
-            </div>
-            <div className="space-y-1">
-              <dt className="text-muted-foreground">{t("snippets.form.language")}</dt>
-              <dd className="font-medium text-primary font-semibold">{snippet.language}</dd>
-            </div>
-            <div className="space-y-1">
-              <dt className="text-muted-foreground">{t("snippets.detail.size")}</dt>
-              <dd className="font-medium tabular-nums">
-                {snippet.code.length} {t("snippets.detail.bytes")}
-              </dd>
-            </div>
-          </dl>
+              <CodeEditor
+                value={snippet.code}
+                language={snippet.language}
+                readOnly
+                minRows={14}
+              />
+            </>
+          )}
         </div>
+
+        {/* Editor Footer */}
+        {!isEditing && (
+          <div className="h-8 bg-muted/50 border-t border-border flex items-center justify-end px-4 gap-4 text-[10px] font-medium text-muted-foreground">
+            <span>UTF-8</span>
+            <span>{snippet.language}</span>
+            <span>{snippet.code.length} chars</span>
+          </div>
+        )}
       </div>
+
+      {/* Translate Dialog */}
+      <Dialog open={isTranslateDialogOpen} onOpenChange={setIsTranslateDialogOpen}>
+        <DialogContent className="sm:max-w-md">
+          <DialogHeader>
+            <DialogTitle>Traduire le snippet</DialogTitle>
+            <DialogDescription>
+              Entrez le langage cible pour traduire ce snippet.
+            </DialogDescription>
+          </DialogHeader>
+          <div className="flex gap-2 items-center py-4">
+            <Input
+              placeholder="Langage cible (ex: python, typescript)"
+              value={targetLang}
+              onChange={(e) => setTargetLang(e.target.value)}
+              className="max-w-xs h-9"
+            />
+            <Button
+              size="sm"
+              onClick={handleTranslate}
+              disabled={isTranslating || !targetLang.trim()}
+              className="h-9"
+            >
+              {isTranslating ? (
+                <Loader2 className="h-4 w-4 animate-spin mr-2" />
+              ) : (
+                <Sparkles className="h-4 w-4 mr-2" />
+              )}
+              Lancer la traduction
+            </Button>
+          </div>
+        </DialogContent>
+      </Dialog>
     </motion.div>
   );
 }
