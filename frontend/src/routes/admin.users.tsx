@@ -175,9 +175,11 @@ function AdminUsers() {
                     <TableCell className="font-mono text-xs text-muted-foreground">{fmtDate(u.created_at)}</TableCell>
                     <TableCell className="space-x-2 whitespace-nowrap text-right">
                       {isAdmin ? (
-                        <Button variant="outline" size="sm" disabled={busyId === u.id} onClick={() => changeRole(u, "USER")}>
-                          <ShieldOff className="mr-1 h-4 w-4" /> Rétrograder
-                        </Button>
+                        !isSelf && (
+                          <Button variant="outline" size="sm" disabled={busyId === u.id} onClick={() => changeRole(u, "USER")}>
+                            <ShieldOff className="mr-1 h-4 w-4" /> Rétrograder
+                          </Button>
+                        )
                       ) : (
                         <Button variant="outline" size="sm" disabled={busyId === u.id} onClick={() => changeRole(u, "ADMIN")}>
                           <ShieldCheck className="mr-1 h-4 w-4" /> Promouvoir

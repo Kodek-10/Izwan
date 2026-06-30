@@ -10,7 +10,6 @@ import {
   LogOut,
   PanelLeftClose,
   PanelLeftOpen,
-  ArrowLeft,
   Loader2,
 } from "lucide-react";
 import { IzwaLogo } from "@/components/izwan-logo";
@@ -164,12 +163,6 @@ function AdminLayout() {
             </Button>
             <span className="font-display text-lg font-semibold">Administration</span>
           </div>
-          <Link
-            to="/dashboard"
-            className="flex items-center gap-2 text-sm text-muted-foreground transition-colors hover:text-foreground"
-          >
-            <ArrowLeft className="h-4 w-4" /> Retour à l'app
-          </Link>
         </header>
         <main className="flex-1 overflow-auto p-4 sm:p-6">
           <Outlet />

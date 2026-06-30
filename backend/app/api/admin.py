@@ -63,6 +63,10 @@ def update_user_role(
     if user is None:
         raise HTTPException(status_code=404, detail="Utilisateur introuvable")
 
+    # Garde-fou : un administrateur ne peut pas modifier son propre rôle (anti auto-rétrogradation).
+    if user.id == admin.id and payload.role != ADMIN:
+        raise HTTPException(status_code=400, detail="Vous ne pouvez pas modifier votre propre rôle")
+
     # Garde-fou : ne jamais retirer le dernier administrateur.
     if user.role == ADMIN and payload.role != ADMIN and _admin_count(db) <= 1:
         raise HTTPException(status_code=400, detail="Impossible de rétrograder le dernier administrateur")

@@ -4,6 +4,7 @@ import {
   BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, 
   PieChart, Pie, Cell, LineChart, Line, Legend 
 } from 'recharts';
+import { chartTooltipProps } from "@/lib/chart-theme";
 import { LayoutDashboard, Code2, Clock, Globe } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import { useEffect, useState } from "react";
@@ -126,7 +127,7 @@ function StatsPage() {
                     <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
                   ))}
                 </Pie>
-                <Tooltip />
+                <Tooltip {...chartTooltipProps} />
                 <Legend iconType="circle" wrapperStyle={{ fontSize: '10px' }} />
               </PieChart>
             </ResponsiveContainer>
@@ -141,7 +142,7 @@ function StatsPage() {
                 <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="var(--border)" />
                 <XAxis dataKey="name" axisLine={false} tickLine={false} tick={{ fontSize: 10 }} dy={10} />
                 <YAxis axisLine={false} tickLine={false} tick={{ fontSize: 10 }} />
-                <Tooltip contentStyle={{ borderRadius: '12px', border: 'none', boxShadow: '0 10px 15px -3px rgba(0,0,0,0.1)', fontSize: '12px' }} />
+                <Tooltip {...chartTooltipProps} />
                 <Line 
                   type="monotone" 
                   dataKey="count" 

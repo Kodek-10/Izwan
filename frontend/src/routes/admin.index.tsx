@@ -12,6 +12,7 @@ import {
   ResponsiveContainer,
   Cell,
 } from "recharts";
+import { chartTooltipProps } from "@/lib/chart-theme";
 
 export const Route = createFileRoute("/admin/")({
   component: AdminDashboard,
@@ -159,7 +160,7 @@ function AdminDashboard() {
                 <CartesianGrid strokeDasharray="3 3" className="stroke-border" />
                 <XAxis dataKey="name" tick={{ fontSize: 12 }} />
                 <YAxis allowDecimals={false} tick={{ fontSize: 12 }} />
-                <Tooltip />
+                <Tooltip {...chartTooltipProps} />
                 <Bar dataKey="value" radius={[4, 4, 0, 0]}>
                   {usageData.map((_, i) => (
                     <Cell key={i} fill={BAR_COLORS[i % BAR_COLORS.length]} />
