@@ -1,5 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import {
   Palette,
   Code,
@@ -9,6 +9,7 @@ import {
   Moon,
   Lock,
   Save,
+  Check,
 } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
@@ -55,12 +56,9 @@ export const Route = createFileRoute("/_app/settings")({
 const LANGUAGES = [
   { code: "fr", label: "Français" },
   { code: "en", label: "English" },
-  { code: "es", label: "Español" },
-  { code: "de", label: "Deutsch" },
 ];
 
 const TAB_SIZES = ["2", "4", "8"];
-
 
 function SettingsPage() {
   const { t, i18n } = useTranslation();
@@ -71,17 +69,70 @@ function SettingsPage() {
     data?.user || { username: "Utilisateur", email: "" }
   );
   const [isLoading, setIsLoading] = useState(false);
-  const [updatingProfile, setUpdatingProfile] = useState(false);
+  const [saveStatus, setSaveStatus] = useState<"idle" | "saving" | "saved">("idle");
 
-  const [fontSize, setFontSize] = useState(14);
-  const [tabSize, setTabSize] = useState("4");
-  const [ligatures, setLigatures] = useState(true);
+  // Load editor preferences from localStorage
+  const [fontSize, setFontSize] = useState(() => {
+    try { return parseInt(localStorage.getItem("izwan_fontSize") || "14") } catch { return 14 }
+  });
+  const [tabSize, setTabSize] = useState(() => {
+    try { return localStorage.getItem("izwan_tabSize") || "4" } catch { return "4" }
+  });
+  const [ligatures, setLigatures] = useState(() => {
+    try { return localStorage.getItem("izwan_ligatures") !== "false" } catch { return true }
+  });
 
   // Password
   const [currentPw, setCurrentPw] = useState("");
   const [newPw, setNewPw] = useState("");
   const [confirmPw, setConfirmPw] = useState("");
   const [isChangingPw, setIsChangingPw] = useState(false);
+
+  // Auto-save editor preferences to localStorage
+  useEffect(() => {
+    localStorage.setItem("izwan_fontSize", String(fontSize));
+  }, [fontSize]);
+
+  useEffect(() => {
+    localStorage.setItem("izwan_tabSize", tabSize);
+  }, [tabSize]);
+
+  useEffect(() => {
+    localStorage.setItem("izwan_ligatures", String(ligatures));
+  }, [ligatures]);
+
+  useEffect(() => {
+    if (i18n.language) {
+      localStorage.setItem("izwan_language", i18n.language);
+    }
+  }, [i18n.language]);
+
+  // Debounced auto-save for profile
+  const isFirstRender = useRef(true);
+  useEffect(() => {
+    if (isFirstRender.current) {
+      isFirstRender.current = false;
+      return;
+    }
+    const timer = setTimeout(async () => {
+      if (!user.username && !user.email) return;
+      setSaveStatus("saving");
+      try {
+        await api.put("/auth/me", {
+          username: user.username,
+          email: user.email,
+        });
+        setSaveStatus("saved");
+        const resetTimer = setTimeout(() => setSaveStatus("idle"), 2000);
+        return () => clearTimeout(resetTimer);
+      } catch (err: any) {
+        setSaveStatus("idle");
+        toast.error(err.message || "Erreur lors de la sauvegarde du profil");
+      }
+    }, 1000);
+
+    return () => clearTimeout(timer);
+  }, [user.username, user.email]);
 
   useEffect(() => {
     if (data?.needsClientFetch) {
@@ -101,21 +152,6 @@ function SettingsPage() {
       fetch();
     }
   }, [data?.needsClientFetch]);
-
-  const handleUpdateProfile = async () => {
-    setUpdatingProfile(true);
-    try {
-      await api.put("/auth/me", {
-        username: user.username,
-        email: user.email,
-      });
-      toast.success("Profil mis à jour");
-    } catch (err: any) {
-      toast.error(err.message || "Erreur");
-    } finally {
-      setUpdatingProfile(false);
-    }
-  };
 
   const handleChangePassword = async () => {
     if (newPw !== confirmPw) {
@@ -214,13 +250,38 @@ function SettingsPage() {
                 />
               </div>
             </div>
-            <div className="flex justify-end pt-2">
+            <div className="flex justify-end items-center gap-3 pt-2">
+              {saveStatus === "saving" && (
+                <span className="text-xs text-muted-foreground flex items-center gap-1">
+                  <Loader2 className="h-3 w-3 animate-spin" />
+                  Sauvegarde...
+                </span>
+              )}
+              {saveStatus === "saved" && (
+                <span className="text-xs text-emerald-500 flex items-center gap-1">
+                  <Check className="h-3 w-3" />
+                  Sauvegardé
+                </span>
+              )}
               <Button
-                onClick={handleUpdateProfile}
-                disabled={updatingProfile}
+                onClick={async () => {
+                  setSaveStatus("saving");
+                  try {
+                    await api.put("/auth/me", {
+                      username: user.username,
+                      email: user.email,
+                    });
+                    setSaveStatus("saved");
+                    setTimeout(() => setSaveStatus("idle"), 2000);
+                  } catch (err: any) {
+                    setSaveStatus("idle");
+                    toast.error(err.message || "Erreur lors de la sauvegarde du profil");
+                  }
+                }}
+                disabled={saveStatus === "saving"}
                 className="bg-primary text-primary-foreground hover:bg-primary/90"
               >
-                {updatingProfile && (
+                {saveStatus === "saving" && (
                   <Loader2 className="h-4 w-4 animate-spin mr-2" />
                 )}
                 <Save className="h-4 w-4 mr-2" />
