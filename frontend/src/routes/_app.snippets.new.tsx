@@ -14,7 +14,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { languages } from "@/lib/mock-data";
+import { LANGUAGES } from "@/lib/languages";
 import { api } from "@/lib/api-client";
 import { toast } from "sonner";
 
@@ -151,7 +151,7 @@ function NewSnippetPage() {
                   <SelectValue />
                 </SelectTrigger>
                 <SelectContent>
-                  {languages.map((l) => (
+                  {LANGUAGES.map((l) => (
                     <SelectItem key={l} value={l}>
                       {l}
                     </SelectItem>

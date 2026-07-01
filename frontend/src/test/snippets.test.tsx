@@ -1,7 +1,6 @@
 import { describe, it, expect, vi } from 'vitest';
 import { render, screen, fireEvent } from '@testing-library/react';
 import { Route } from '../routes/_app.snippets.index';
-import { snippets } from '../lib/mock-data';
 
 // Mock TanStack Router
 const { mockSnippets } = vi.hoisted(() => {
@@ -71,28 +70,30 @@ describe('SnippetsPage filtering', () => {
   it('should render all snippets by default', () => {
     render(<SnippetsPage />);
     // Check if some snippets from mock data are present
-    expect(screen.getByText(snippets[0].title)).toBeInTheDocument();
-    expect(screen.getByText(snippets[1].title)).toBeInTheDocument();
+    expect(screen.getByText(mockSnippets[0].title)).toBeInTheDocument();
+    expect(screen.getByText(mockSnippets[1].title)).toBeInTheDocument();
   });
 
   it('should filter snippets by search query', () => {
     render(<SnippetsPage />);
-    const searchInput = screen.getByPlaceholderText('Rechercher un snippet...');
-    
+    // La recherche est masquée derrière le bouton « Filtrer ».
+    fireEvent.click(screen.getByText('Filtrer'));
+    const searchInput = screen.getByRole('textbox');
+
     fireEvent.change(searchInput, { target: { value: 'Python' } });
-    
-    // "Connexion MySQL Python" should be there
+
+    // "Connexion MySQL Python" reste, "Composant React Modal" (JS) disparaît.
     expect(screen.getByText('Connexion MySQL Python')).toBeInTheDocument();
-    // "Composant React Modal" should NOT be there
     expect(screen.queryByText('Composant React Modal')).not.toBeInTheDocument();
   });
 
   it('should filter snippets by language', () => {
     render(<SnippetsPage />);
-    
-    // This is a bit harder to test because of the Radix Select component which uses portals
-    // But we can check if the filtering logic in the component works if we could trigger it.
-    // For now, let's just verify the initial render.
-    expect(screen.getByText('Tous les snippets')).toBeInTheDocument();
+
+    // Onglet de langue dérivé des snippets réels (plus de liste figée mock-data).
+    fireEvent.click(screen.getByRole('button', { name: 'JavaScript' }));
+
+    expect(screen.getByText('Composant React Modal')).toBeInTheDocument();
+    expect(screen.queryByText('Connexion MySQL Python')).not.toBeInTheDocument();
   });
 });

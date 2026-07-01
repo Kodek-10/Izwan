@@ -19,7 +19,7 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
-import { languages } from "@/lib/mock-data";
+import { LANGUAGES } from "@/lib/languages";
 import { api } from "@/lib/api-client";
 import { toast } from "sonner";
 
@@ -150,7 +150,7 @@ export function CreateSnippetDialog({
                     <SelectValue />
                   </SelectTrigger>
                   <SelectContent>
-                    {languages.map((l) => (
+                    {LANGUAGES.map((l) => (
                       <SelectItem key={l} value={l}>
                         {l}
                       </SelectItem>
