@@ -11,6 +11,10 @@ import {
   Tooltip,
   ResponsiveContainer,
   Cell,
+  PieChart,
+  Pie,
+  AreaChart,
+  Area,
 } from "recharts";
 import { chartTooltipProps } from "@/lib/chart-theme";
 
@@ -25,7 +29,11 @@ type Stats = {
   total_collections: number;
   snippets_by_language: Record<string, number>;
 };
-type AiUsage = { total: number; by_feature: Record<string, number> };
+type AiUsage = {
+  total: number;
+  by_feature: Record<string, number>;
+  by_day: { date: string; count: number }[];
+};
 type Privacy = { air_gapped: boolean; generation_provider: string; embedding_provider: string };
 type AuditEntry = {
   id: number;
@@ -36,7 +44,7 @@ type AuditEntry = {
   created_at: string | null;
 };
 
-const BAR_COLORS = ["#e8765a", "#c75a45", "#9e412f", "#55dcbc", "#b6c7eb"];
+const LANG_COLORS = ["#e8765a", "#55dcbc", "#b6c7eb", "#c75a45", "#9e412f", "#f1c40f", "#8e7cc3"];
 const FEATURE_LABELS: Record<string, string> = {
   enrich: "Enrichissement",
   explain: "Explication",
@@ -54,8 +62,46 @@ const ACTION_LABELS: Record<string, string> = {
 
 function timeAgo(iso: string | null) {
   if (!iso) return "";
+  return new Date(iso).toLocaleString("fr-FR", {
+    day: "2-digit",
+    month: "short",
+    hour: "2-digit",
+    minute: "2-digit",
+  });
+}
+function shortDay(iso: string) {
   const d = new Date(iso);
-  return d.toLocaleString("fr-FR", { day: "2-digit", month: "short", hour: "2-digit", minute: "2-digit" });
+  return d.toLocaleDateString("fr-FR", { day: "2-digit", month: "2-digit" });
+}
+
+// Donut avec total affiché au centre.
+function CenterDonut({
+  data,
+  total,
+  label,
+}: {
+  data: { name: string; value: number }[];
+  total: number;
+  label: string;
+}) {
+  return (
+    <div className="relative h-[180px]">
+      <ResponsiveContainer width="100%" height="100%">
+        <PieChart>
+          <Pie data={data} dataKey="value" nameKey="name" innerRadius={52} outerRadius={72} paddingAngle={3}>
+            {data.map((_, i) => (
+              <Cell key={i} fill={LANG_COLORS[i % LANG_COLORS.length]} />
+            ))}
+          </Pie>
+          <Tooltip {...chartTooltipProps} />
+        </PieChart>
+      </ResponsiveContainer>
+      <div className="pointer-events-none absolute inset-0 flex flex-col items-center justify-center">
+        <span className="font-display text-2xl font-bold">{total}</span>
+        <span className="font-mono text-[10px] uppercase text-muted-foreground">{label}</span>
+      </div>
+    </div>
+  );
 }
 
 function AdminDashboard() {
@@ -105,6 +151,14 @@ function AdminDashboard() {
     { label: "Collections", value: stats.total_collections, icon: FolderKanban },
   ];
 
+  const langData = Object.entries(stats.snippets_by_language)
+    .map(([name, value]) => ({ name, value }))
+    .sort((a, b) => b.value - a.value);
+  const accountData = [
+    { name: "USER", value: Math.max(0, stats.total_users - stats.total_admins) },
+    { name: "ADMIN", value: stats.total_admins },
+  ];
+  const trendData = (usage?.by_day ?? []).map((d) => ({ date: shortDay(d.date), count: d.count }));
   const usageData = Object.entries(usage?.by_feature ?? {}).map(([k, v]) => ({
     name: FEATURE_LABELS[k] ?? k,
     value: v,
@@ -129,7 +183,7 @@ function AdminDashboard() {
       </div>
 
       {/* KPIs */}
-      <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
+      <div className="grid grid-cols-2 gap-4 lg:grid-cols-4">
         {kpis.map((k) => {
           const Icon = k.icon;
           return (
@@ -148,30 +202,76 @@ function AdminDashboard() {
         })}
       </div>
 
+      {/* Tendance IA + comptes */}
       <div className="grid gap-6 lg:grid-cols-3">
-        {/* Usage IA */}
         <div className="rounded-xl border border-border bg-card p-5 lg:col-span-2">
-          <h2 className="mb-4 font-display font-semibold">Utilisation de l'IA (30 jours)</h2>
-          {usageData.length === 0 ? (
-            <p className="py-12 text-center text-sm text-muted-foreground">Aucun appel IA sur la période.</p>
-          ) : (
-            <ResponsiveContainer width="100%" height={260}>
-              <BarChart data={usageData}>
-                <CartesianGrid strokeDasharray="3 3" className="stroke-border" />
-                <XAxis dataKey="name" tick={{ fontSize: 12 }} />
-                <YAxis allowDecimals={false} tick={{ fontSize: 12 }} />
+          <h2 className="mb-4 font-display font-semibold">Tendance des appels IA (30 jours)</h2>
+          {usage && usage.total > 0 ? (
+            <ResponsiveContainer width="100%" height={200}>
+              <AreaChart data={trendData}>
+                <defs>
+                  <linearGradient id="aiTrend" x1="0" y1="0" x2="0" y2="1">
+                    <stop offset="0%" stopColor="#e8765a" stopOpacity={0.5} />
+                    <stop offset="100%" stopColor="#e8765a" stopOpacity={0} />
+                  </linearGradient>
+                </defs>
+                <CartesianGrid strokeDasharray="3 3" className="stroke-border" vertical={false} />
+                <XAxis dataKey="date" tick={{ fontSize: 11 }} interval={4} tickLine={false} />
+                <YAxis allowDecimals={false} tick={{ fontSize: 11 }} width={28} />
                 <Tooltip {...chartTooltipProps} />
-                <Bar dataKey="value" radius={[4, 4, 0, 0]}>
+                <Area type="monotone" dataKey="count" stroke="#e8765a" strokeWidth={2} fill="url(#aiTrend)" />
+              </AreaChart>
+            </ResponsiveContainer>
+          ) : (
+            <p className="py-12 text-center text-sm text-muted-foreground">Aucun appel IA sur la période.</p>
+          )}
+        </div>
+
+        <div className="rounded-xl border border-border bg-card p-5">
+          <h2 className="mb-2 font-display font-semibold">Comptes</h2>
+          <CenterDonut data={accountData} total={stats.total_users} label="comptes" />
+          <div className="mt-2 flex justify-center gap-4 text-xs text-muted-foreground">
+            <span className="flex items-center gap-1.5">
+              <span className="h-2 w-2 rounded-full" style={{ background: LANG_COLORS[0] }} /> USER {accountData[0].value}
+            </span>
+            <span className="flex items-center gap-1.5">
+              <span className="h-2 w-2 rounded-full" style={{ background: LANG_COLORS[1] }} /> ADMIN {accountData[1].value}
+            </span>
+          </div>
+        </div>
+      </div>
+
+      {/* Langages + usage par fonction + services */}
+      <div className="grid gap-6 lg:grid-cols-3">
+        <div className="rounded-xl border border-border bg-card p-5">
+          <h2 className="mb-2 font-display font-semibold">Snippets par langage</h2>
+          {langData.length > 0 ? (
+            <CenterDonut data={langData} total={stats.total_snippets} label="snippets" />
+          ) : (
+            <p className="py-12 text-center text-sm text-muted-foreground">Aucun snippet.</p>
+          )}
+        </div>
+
+        <div className="rounded-xl border border-border bg-card p-5">
+          <h2 className="mb-2 font-display font-semibold">Usage IA par fonction</h2>
+          {usageData.length > 0 ? (
+            <ResponsiveContainer width="100%" height={180}>
+              <BarChart data={usageData} layout="vertical" margin={{ left: 8 }}>
+                <XAxis type="number" allowDecimals={false} tick={{ fontSize: 11 }} />
+                <YAxis type="category" dataKey="name" tick={{ fontSize: 11 }} width={92} />
+                <Tooltip {...chartTooltipProps} />
+                <Bar dataKey="value" radius={[0, 4, 4, 0]}>
                   {usageData.map((_, i) => (
-                    <Cell key={i} fill={BAR_COLORS[i % BAR_COLORS.length]} />
+                    <Cell key={i} fill={LANG_COLORS[i % LANG_COLORS.length]} />
                   ))}
                 </Bar>
               </BarChart>
             </ResponsiveContainer>
+          ) : (
+            <p className="py-12 text-center text-sm text-muted-foreground">Aucun appel IA.</p>
           )}
         </div>
 
-        {/* État des fournisseurs */}
         <div className="rounded-xl border border-border bg-card p-5">
           <h2 className="mb-4 font-display font-semibold">État des services</h2>
           <ul className="space-y-3">

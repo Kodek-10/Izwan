@@ -140,7 +140,29 @@ def ai_usage_stats(
         .all()
     )
     by_feature = {feature: count for feature, count in rows}
-    return schemas.AiUsageStats(days=days, total=sum(by_feature.values()), by_feature=by_feature)
+
+    day_rows = (
+        db.query(func.date(models.AiUsage.created_at), func.count(models.AiUsage.id))
+        .filter(models.AiUsage.created_at >= since)
+        .group_by(func.date(models.AiUsage.created_at))
+        .all()
+    )
+    counts_by_day = {str(day): count for day, count in day_rows}
+    today = datetime.now(timezone.utc).date()
+    by_day = [
+        schemas.AiUsageDay(
+            date=(today - timedelta(days=offset)).isoformat(),
+            count=counts_by_day.get((today - timedelta(days=offset)).isoformat(), 0),
+        )
+        for offset in range(days - 1, -1, -1)
+    ]
+
+    return schemas.AiUsageStats(
+        days=days,
+        total=sum(by_feature.values()),
+        by_feature=by_feature,
+        by_day=by_day,
+    )
 
 
 @router.get("/audit", response_model=List[schemas.AuditEntry])

@@ -33,10 +33,15 @@ class RolesMatrix(BaseModel):
     roles: List[str]
     capabilities: List[RoleCapability]
 
+class AiUsageDay(BaseModel):
+    date: str
+    count: int
+
 class AiUsageStats(BaseModel):
     days: int
     total: int
     by_feature: Dict[str, int]
+    by_day: List[AiUsageDay] = []
 
 class AuditEntry(BaseModel):
     id: int

@@ -28,6 +28,8 @@ import {
   Tooltip,
   ResponsiveContainer,
   Cell,
+  AreaChart,
+  Area,
 } from "recharts";
 import { chartTooltipProps } from "@/lib/chart-theme";
 
@@ -107,6 +109,28 @@ function AdminAudit() {
     }));
   }, [events]);
 
+  const dailyActivity = useMemo(() => {
+    const n = parseInt(days, 10) || 30;
+    const counts: Record<string, number> = {};
+    for (const e of events) {
+      if (!e.created_at) continue;
+      const key = new Date(e.created_at).toISOString().slice(0, 10);
+      counts[key] = (counts[key] ?? 0) + 1;
+    }
+    const out: { date: string; count: number }[] = [];
+    const today = new Date();
+    for (let i = n - 1; i >= 0; i--) {
+      const d = new Date(today);
+      d.setDate(today.getDate() - i);
+      const key = d.toISOString().slice(0, 10);
+      out.push({
+        date: d.toLocaleDateString("fr-FR", { day: "2-digit", month: "2-digit" }),
+        count: counts[key] ?? 0,
+      });
+    }
+    return out;
+  }, [events, days]);
+
   return (
     <div className="space-y-6">
       <div>
@@ -155,7 +179,7 @@ function AdminAudit() {
           {distribution.length === 0 ? (
             <p className="py-12 text-center text-sm text-muted-foreground">Aucun événement sur la période.</p>
           ) : (
-            <ResponsiveContainer width="100%" height={220}>
+            <ResponsiveContainer width="100%" height={180}>
               <BarChart data={distribution}>
                 <CartesianGrid strokeDasharray="3 3" className="stroke-border" />
                 <XAxis dataKey="name" tick={{ fontSize: 12 }} />
@@ -170,6 +194,31 @@ function AdminAudit() {
             </ResponsiveContainer>
           )}
         </div>
+      </div>
+
+      {/* Activité par jour */}
+      <div className="rounded-xl border border-border bg-card p-5">
+        <h2 className="mb-4 font-display font-semibold">Activité par jour</h2>
+        <ResponsiveContainer width="100%" height={160}>
+          <AreaChart data={dailyActivity}>
+            <defs>
+              <linearGradient id="auditTrend" x1="0" y1="0" x2="0" y2="1">
+                <stop offset="0%" stopColor="#55dcbc" stopOpacity={0.5} />
+                <stop offset="100%" stopColor="#55dcbc" stopOpacity={0} />
+              </linearGradient>
+            </defs>
+            <CartesianGrid strokeDasharray="3 3" className="stroke-border" vertical={false} />
+            <XAxis
+              dataKey="date"
+              tick={{ fontSize: 11 }}
+              tickLine={false}
+              interval={Math.max(0, Math.floor(dailyActivity.length / 6))}
+            />
+            <YAxis allowDecimals={false} tick={{ fontSize: 11 }} width={24} />
+            <Tooltip {...chartTooltipProps} />
+            <Area type="monotone" dataKey="count" stroke="#55dcbc" strokeWidth={2} fill="url(#auditTrend)" />
+          </AreaChart>
+        </ResponsiveContainer>
       </div>
 
       {/* Table */}
