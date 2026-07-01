@@ -15,7 +15,6 @@ import {
 } from "lucide-react";
 import { useState, useEffect } from "react";
 import { useTranslation } from "react-i18next";
-import { languages } from "@/lib/mock-data";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import {
@@ -123,6 +122,11 @@ function SnippetsPage() {
   const [assignSnippet, setAssignSnippet] = useState<any>(null);
   const [assignColId, setAssignColId] = useState<string>("none");
   const [isAssigning, setIsAssigning] = useState(false);
+
+  // Langues réellement présentes dans les snippets (filtre data-driven, pas de liste figée).
+  const availableLanguages = Array.from(
+    new Set(snippets.map((s: any) => s.language).filter(Boolean)),
+  ).sort();
 
   useEffect(() => {
     if (!data) return;
@@ -306,7 +310,7 @@ function SnippetsPage() {
         >
           Tous les snippets
         </button>
-        {languages.slice(0, 5).map((language) => (
+        {availableLanguages.slice(0, 6).map((language) => (
           <button
             key={language}
             onClick={() => setLang(language === lang ? "all" : language)}
@@ -340,7 +344,7 @@ function SnippetsPage() {
               </SelectTrigger>
               <SelectContent>
                 <SelectItem value="all">{t("common.all_languages")}</SelectItem>
-                {languages.map((l) => (
+                {availableLanguages.map((l) => (
                   <SelectItem key={l} value={l}>
                     {l}
                   </SelectItem>

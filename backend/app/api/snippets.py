@@ -109,6 +109,65 @@ def read_snippets(skip: int = 0, limit: int = 100, favorite: bool = None, collec
         "items": snippets
     }
 
+@router.get("/graph", response_model=schemas.SnippetGraph)
+def snippet_graph(
+    threshold: float = 0.5,
+    max_neighbors: int = 4,
+    duplicate_threshold: float = 0.9,
+    db: Session = Depends(get_db),
+    current_user: models.User = Depends(get_current_user),
+):
+    """Graphe de proximité sémantique entre les snippets de l'utilisateur.
+
+    Chaque snippet est relié à ses plus proches voisins (similarité cosinus des
+    embeddings) au-dessus de `threshold`, limité à `max_neighbors` par nœud.
+    Les paires dont la similarité dépasse `duplicate_threshold` sont signalées
+    comme doublons potentiels.
+    """
+    snippets = (
+        db.query(models.Snippet)
+        .filter(models.Snippet.owner_id == current_user.id)
+        .all()
+    )
+
+    items = []
+    for s in snippets:
+        if s.embedding:
+            vector = embedding_service.deserialize_embedding(s.embedding.vector)
+            items.append((s, vector))
+
+    nodes = [
+        schemas.GraphNode(id=s.id, title=s.title, language=s.language)
+        for s, _ in items
+    ]
+
+    links = []
+    seen = set()
+    for i, (s_i, v_i) in enumerate(items):
+        scored = []
+        for j, (s_j, v_j) in enumerate(items):
+            if i == j:
+                continue
+            score = embedding_service.cosine_similarity(v_i, v_j)
+            if score >= threshold:
+                scored.append((s_j.id, score))
+        scored.sort(key=lambda x: x[1], reverse=True)
+        for target_id, score in scored[:max_neighbors]:
+            a, b = sorted((s_i.id, target_id))
+            if (a, b) in seen:
+                continue
+            seen.add((a, b))
+            links.append(
+                schemas.GraphLink(
+                    source=a,
+                    target=b,
+                    score=round(float(score), 3),
+                    duplicate=bool(score >= duplicate_threshold),
+                )
+            )
+
+    return schemas.SnippetGraph(nodes=nodes, links=links)
+
 @router.get("/{snippet_id}", response_model=schemas.Snippet)
 def read_snippet(snippet_id: int, db: Session = Depends(get_db), current_user: models.User = Depends(get_current_user)):
     db_snippet = db.query(models.Snippet).filter(models.Snippet.id == snippet_id, models.Snippet.owner_id == current_user.id).first()
