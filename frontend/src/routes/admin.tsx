@@ -28,6 +28,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { useTheme } from "@/components/theme-provider";
 import { AdminSettingsDialog } from "@/components/admin-settings-dialog";
+import { LogoutConfirmDialog } from "@/components/logout-confirm-dialog";
 import { api } from "@/lib/api-client";
 
 export const Route = createFileRoute("/admin")({
@@ -53,6 +54,7 @@ function AdminLayout() {
   const [mounted, setMounted] = useState(false);
   const [username, setUsername] = useState("");
   const [settingsOpen, setSettingsOpen] = useState(false);
+  const [logoutOpen, setLogoutOpen] = useState(false);
 
   useEffect(() => {
     setMounted(true);
@@ -163,7 +165,7 @@ function AdminLayout() {
 
         <div className="border-t border-sidebar-border p-2">
           <button
-            onClick={handleLogout}
+            onClick={() => setLogoutOpen(true)}
             title="Déconnexion"
             className={`flex w-full items-center gap-3 rounded-lg px-3 py-2 text-sm text-muted-foreground transition-colors hover:bg-sidebar-accent/50 ${
               collapsed ? "justify-center" : ""
@@ -204,7 +206,7 @@ function AdminLayout() {
                   <Settings className="mr-2 h-4 w-4" /> Paramètres
                 </DropdownMenuItem>
                 <DropdownMenuSeparator />
-                <DropdownMenuItem onClick={handleLogout} className="text-destructive focus:text-destructive">
+                <DropdownMenuItem onClick={() => setLogoutOpen(true)} className="text-destructive focus:text-destructive">
                   <LogOut className="mr-2 h-4 w-4" /> Déconnexion
                 </DropdownMenuItem>
               </DropdownMenuContent>
@@ -222,6 +224,7 @@ function AdminLayout() {
         username={username}
         onUsernameChange={setUsername}
       />
+      <LogoutConfirmDialog open={logoutOpen} onOpenChange={setLogoutOpen} onConfirm={handleLogout} />
     </div>
   );
 }

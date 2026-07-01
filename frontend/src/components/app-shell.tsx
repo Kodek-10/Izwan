@@ -32,6 +32,7 @@ import {
 } from "./ui/dropdown-menu";
 import { FloatingAssistant } from "./floating-assistant";
 import { CreateSnippetDialog } from "./create-snippet-dialog";
+import { LogoutConfirmDialog } from "./logout-confirm-dialog";
 
 const navItems = [
   { to: "/dashboard", label: "Tableau de bord", icon: LayoutDashboard },
@@ -52,6 +53,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
   const [selectedLabel, setSelectedLabel] = React.useState<string | null>(null);
   const [pressedDock, setPressedDock] = React.useState<string | null>(null);
   const [createOpen, setCreateOpen] = React.useState(false);
+  const [logoutOpen, setLogoutOpen] = React.useState(false);
 
   React.useEffect(() => {
     const handler = () => setCreateOpen(true);
@@ -192,7 +194,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
                   </DropdownMenuItem>
                 )}
                 <DropdownMenuSeparator />
-                <DropdownMenuItem onClick={handleLogout} className="text-destructive focus:text-destructive">
+                <DropdownMenuItem onClick={() => setLogoutOpen(true)} className="text-destructive focus:text-destructive">
                   <LogOut className="mr-2 h-4 w-4" /> Déconnexion
                 </DropdownMenuItem>
               </DropdownMenuContent>
@@ -261,6 +263,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
       {/* Assistant flottant (panneau coulissant depuis la droite) */}
       <FloatingAssistant />
       <CreateSnippetDialog open={createOpen} onOpenChange={setCreateOpen} />
+      <LogoutConfirmDialog open={logoutOpen} onOpenChange={setLogoutOpen} onConfirm={handleLogout} />
     </div>
   );
 }
