@@ -6,7 +6,6 @@ import {
   Star,
   FolderKanban,
   Network,
-  BarChart3,
   Search,
   Bell,
   Sun,
@@ -41,7 +40,6 @@ const navItems = [
   { to: "/collections", label: "Collections", icon: FolderKanban },
   { to: "/favorites", label: "Favoris", icon: Star },
   { to: "/constellation", label: "Constellation", icon: Network },
-  { to: "/statistics", label: "Statistiques", icon: BarChart3 },
 ];
 
 export function AppShell({ children }: { children: React.ReactNode }) {
