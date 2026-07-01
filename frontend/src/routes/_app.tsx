@@ -1,5 +1,7 @@
 import { createFileRoute, Outlet, redirect, useLocation } from "@tanstack/react-router";
+import { useEffect, useState } from "react";
 import { AppShell } from "@/components/app-shell";
+import { OnboardingDialog } from "@/components/onboarding-dialog";
 import { api } from "@/lib/api-client";
 import { motion, AnimatePresence } from "framer-motion";
 
@@ -20,9 +22,22 @@ export const Route = createFileRoute("/_app")({
 
 function AppRouteComponent() {
   const location = useLocation();
-  
+  const [showOnboarding, setShowOnboarding] = useState(false);
+
+  useEffect(() => {
+    if (localStorage.getItem("izwan-onboarded") !== "1") {
+      setShowOnboarding(true);
+    }
+  }, []);
+
+  const finishOnboarding = () => {
+    localStorage.setItem("izwan-onboarded", "1");
+    setShowOnboarding(false);
+  };
+
   return (
     <AppShell>
+      <OnboardingDialog open={showOnboarding} onClose={finishOnboarding} />
       <AnimatePresence mode="wait" initial={false}>
         <motion.div
           key={location.pathname}
