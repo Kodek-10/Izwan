@@ -1,15 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useState, useEffect } from "react";
-import {
-  Palette,
-  Code,
-  User,
-  Loader2,
-  Sun,
-  Moon,
-  Lock,
-  Save,
-} from "lucide-react";
+import { Palette, User, Loader2, Sun, Moon, Lock, Save, Globe } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
@@ -23,27 +14,15 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { Switch } from "@/components/ui/switch";
-import { Slider } from "@/components/ui/slider";
 
 export const Route = createFileRoute("/_app/settings")({
-  head: ({ loaderData }: any) => ({
-    meta: [
-      {
-        title: `${
-          loaderData?.t?.("settings.title") || "Paramètres"
-        } — Izwan`,
-      },
-    ],
-  }),
+  head: () => ({ meta: [{ title: "Paramètres — Izwan" }] }),
   loader: async () => {
     if (typeof window === "undefined") {
       return { user: { username: "Utilisateur" }, needsClientFetch: true };
     }
     try {
-      const user = await api.get<{ username: string; email?: string }>(
-        "/auth/me"
-      );
+      const user = await api.get<{ username: string }>("/auth/me");
       return { user, needsClientFetch: false };
     } catch (e) {
       return { user: { username: "Utilisateur" }, needsClientFetch: false };
@@ -55,29 +34,17 @@ export const Route = createFileRoute("/_app/settings")({
 const LANGUAGES = [
   { code: "fr", label: "Français" },
   { code: "en", label: "English" },
-  { code: "es", label: "Español" },
-  { code: "de", label: "Deutsch" },
 ];
 
-const TAB_SIZES = ["2", "4", "8"];
-
-
 function SettingsPage() {
-  const { t, i18n } = useTranslation();
+  const { i18n } = useTranslation();
   const data = Route.useLoaderData();
   const { theme, setTheme } = useTheme();
 
-  const [user, setUser] = useState(
-    data?.user || { username: "Utilisateur", email: "" }
-  );
+  const [username, setUsername] = useState(data?.user?.username || "Utilisateur");
   const [isLoading, setIsLoading] = useState(false);
   const [updatingProfile, setUpdatingProfile] = useState(false);
 
-  const [fontSize, setFontSize] = useState(14);
-  const [tabSize, setTabSize] = useState("4");
-  const [ligatures, setLigatures] = useState(true);
-
-  // Password
   const [currentPw, setCurrentPw] = useState("");
   const [newPw, setNewPw] = useState("");
   const [confirmPw, setConfirmPw] = useState("");
@@ -85,30 +52,26 @@ function SettingsPage() {
 
   useEffect(() => {
     if (data?.needsClientFetch) {
-      const fetch = async () => {
+      const fetchUser = async () => {
         setIsLoading(true);
         try {
-          const u = await api.get<{ username: string; email?: string }>(
-            "/auth/me"
-          );
-          setUser(u);
+          const u = await api.get<{ username: string }>("/auth/me");
+          setUsername(u.username);
         } catch {
           /* ignore */
         } finally {
           setIsLoading(false);
         }
       };
-      fetch();
+      fetchUser();
     }
   }, [data?.needsClientFetch]);
 
   const handleUpdateProfile = async () => {
+    if (!username.trim()) return;
     setUpdatingProfile(true);
     try {
-      await api.put("/auth/me", {
-        username: user.username,
-        email: user.email,
-      });
+      await api.put("/auth/me", { username: username.trim() });
       toast.success("Profil mis à jour");
     } catch (err: any) {
       toast.error(err.message || "Erreur");
@@ -123,9 +86,7 @@ function SettingsPage() {
       return;
     }
     if (newPw.length < 6) {
-      toast.error(
-        "Le nouveau mot de passe doit contenir au moins 6 caractères."
-      );
+      toast.error("Le nouveau mot de passe doit contenir au moins 6 caractères.");
       return;
     }
     setIsChangingPw(true);
@@ -139,9 +100,7 @@ function SettingsPage() {
       setConfirmPw("");
       toast.success("Mot de passe changé avec succès");
     } catch (err: any) {
-      toast.error(
-        err.message || "Erreur lors du changement de mot de passe."
-      );
+      toast.error(err.message || "Erreur lors du changement de mot de passe.");
     } finally {
       setIsChangingPw(false);
     }
@@ -149,202 +108,78 @@ function SettingsPage() {
 
   if (isLoading) {
     return (
-      <div className="flex flex-col items-center justify-center h-64 space-y-4">
+      <div className="flex h-64 flex-col items-center justify-center space-y-4">
         <Loader2 className="h-8 w-8 animate-spin text-primary" />
-        <p className="text-sm text-muted-foreground">
-          {t("common.loading")}
-        </p>
       </div>
     );
   }
 
   return (
     <div className="space-y-8">
-      {/* Header */}
-      <div className="mb-12">
-        <h1 className="text-3xl md:text-4xl font-bold text-foreground mb-2">
-          Paramètres
-        </h1>
-        <p className="text-muted-foreground">
-          Gérez vos préférences utilisateur, thèmes et configurations d'API.
-        </p>
+      <div>
+        <h1 className="mb-2 text-3xl font-bold text-foreground md:text-4xl">Paramètres</h1>
+        <p className="text-muted-foreground">Gérez votre profil, votre apparence et votre sécurité.</p>
       </div>
 
-      {/* Bento Grid */}
-      <div className="grid grid-cols-1 md:grid-cols-12 gap-6">
-        {/* Profile Section (Wide) */}
-        <section className="md:col-span-8 bg-card/80 backdrop-blur-xl border border-border rounded-xl p-6 md:p-8 flex flex-col md:flex-row gap-8 items-start relative overflow-hidden group shadow-sm">
-          <div className="absolute inset-0 bg-gradient-to-br from-primary/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none" />
-          <div className="relative w-24 h-24 md:w-32 md:h-32 rounded-xl overflow-hidden border-2 border-border flex-shrink-0 shadow-sm bg-muted flex items-center justify-center">
+      <div className="grid grid-cols-1 gap-6 md:grid-cols-12">
+        {/* Profil */}
+        <section className="flex flex-col items-start gap-8 rounded-xl border border-border bg-card p-6 shadow-sm md:col-span-7 md:flex-row md:p-8">
+          <div className="flex h-24 w-24 flex-shrink-0 items-center justify-center rounded-xl border-2 border-border bg-muted md:h-28 md:w-28">
             <User className="h-12 w-12 text-muted-foreground" />
           </div>
-          <div className="flex-grow w-full space-y-6 relative">
+          <div className="w-full flex-grow space-y-6">
             <div>
-              <h3 className="font-semibold text-lg text-foreground mb-1">
-                Profil Public
-              </h3>
-              <p className="text-sm text-muted-foreground">
-                Vos informations de base affichées aux autres membres de l'Équipe.
-              </p>
+              <h3 className="mb-1 text-lg font-semibold text-foreground">Profil</h3>
+              <p className="text-sm text-muted-foreground">Votre nom d'utilisateur sur Izwan.</p>
             </div>
-            <div className="space-y-4">
-              <div className="flex flex-col gap-1.5">
-                <label className="text-xs font-mono text-muted-foreground uppercase tracking-wider">
-                  Nom d'affichage
-                </label>
-                <Input
-                  value={user.username}
-                  onChange={(e) =>
-                    setUser((u) => ({ ...u, username: e.target.value }))
-                  }
-                  className="bg-background border-border"
-                />
-              </div>
-              <div className="flex flex-col gap-1.5">
-                <label className="text-xs font-mono text-muted-foreground uppercase tracking-wider">
-                  Adresse Email
-                </label>
-                <Input
-                  type="email"
-                  value={user.email || "alexandre@izwan.dev"}
-                  onChange={(e) =>
-                    setUser((u) => ({ ...u, email: e.target.value }))
-                  }
-                  className="bg-background border-border"
-                />
-              </div>
+            <div className="flex flex-col gap-1.5">
+              <label className="font-mono text-xs uppercase tracking-wider text-muted-foreground">
+                Nom d'utilisateur
+              </label>
+              <Input value={username} onChange={(e) => setUsername(e.target.value)} className="bg-background" />
             </div>
-            <div className="flex justify-end pt-2">
-              <Button
-                onClick={handleUpdateProfile}
-                disabled={updatingProfile}
-                className="bg-primary text-primary-foreground hover:bg-primary/90"
-              >
-                {updatingProfile && (
-                  <Loader2 className="h-4 w-4 animate-spin mr-2" />
-                )}
-                <Save className="h-4 w-4 mr-2" />
-                Enregistrer
+            <div className="flex justify-end">
+              <Button onClick={handleUpdateProfile} disabled={updatingProfile || !username.trim()}>
+                {updatingProfile && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+                <Save className="mr-2 h-4 w-4" /> Enregistrer
               </Button>
             </div>
           </div>
         </section>
 
-        {/* Appearance (Square) */}
-        <section className="md:col-span-4 bg-card/80 backdrop-blur-xl border border-border rounded-xl p-6 md:p-8 flex flex-col shadow-sm">
-          <div>
-            <h3 className="font-semibold text-lg text-foreground mb-1 flex items-center gap-2">
-              <Palette className="h-5 w-5 text-primary" />
-              Apparence
+        {/* Apparence */}
+        <section className="flex flex-col rounded-xl border border-border bg-card p-6 shadow-sm md:col-span-5 md:p-8">
+          <div className="mb-6">
+            <h3 className="mb-1 flex items-center gap-2 text-lg font-semibold text-foreground">
+              <Palette className="h-5 w-5 text-primary" /> Apparence
             </h3>
-            <p className="text-sm text-muted-foreground mb-6">
-              Personnalisez l'interface utilisateur.
-            </p>
+            <p className="text-sm text-muted-foreground">Thème et langue de l'interface.</p>
           </div>
           <div className="space-y-3">
-            <button
-              onClick={() => setTheme("dark")}
-              className={`flex items-center w-full justify-between p-4 rounded-lg border transition-all ${
-                theme === "dark"
-                  ? "border-primary ring-1 ring-primary bg-primary/5"
-                  : "border-border hover:border-primary/50"
-              }`}
-            >
-              <div className="flex items-center gap-3">
-                <Moon className="h-5 w-5 text-foreground" />
-                <span className="text-sm font-medium">Sombre</span>
-              </div>
-              <div
-                className={`w-5 h-5 rounded-full border-2 flex items-center justify-center ${
-                  theme === "dark"
-                    ? "border-primary"
-                    : "border-muted-foreground/20"
+            <div className="grid grid-cols-2 gap-3">
+              <button
+                onClick={() => setTheme("dark")}
+                className={`flex items-center justify-center gap-2 rounded-lg border p-3 transition-all ${
+                  theme === "dark" ? "border-primary bg-primary/5 ring-1 ring-primary" : "border-border hover:border-primary/50"
                 }`}
               >
-                {theme === "dark" && (
-                  <div className="w-2.5 h-2.5 bg-primary rounded-full" />
-                )}
-              </div>
-            </button>
-            <button
-              onClick={() => setTheme("light")}
-              className={`flex items-center w-full justify-between p-4 rounded-lg border transition-all ${
-                theme === "light"
-                  ? "border-primary ring-1 ring-primary bg-primary/5"
-                  : "border-border hover:border-primary/50"
-              }`}
-            >
-              <div className="flex items-center gap-3">
-                <Sun className="h-5 w-5 text-foreground" />
-                <span className="text-sm font-medium">Clair</span>
-              </div>
-              <div
-                className={`w-5 h-5 rounded-full border-2 flex items-center justify-center ${
-                  theme === "light"
-                    ? "border-primary"
-                    : "border-muted-foreground/20"
+                <Moon className="h-4 w-4" /> <span className="text-sm font-medium">Sombre</span>
+              </button>
+              <button
+                onClick={() => setTheme("light")}
+                className={`flex items-center justify-center gap-2 rounded-lg border p-3 transition-all ${
+                  theme === "light" ? "border-primary bg-primary/5 ring-1 ring-primary" : "border-border hover:border-primary/50"
                 }`}
               >
-                {theme === "light" && (
-                  <div className="w-2.5 h-2.5 bg-primary rounded-full" />
-                )}
-              </div>
-            </button>
-          </div>
-        </section>
-
-        {/* Editor Preferences */}
-        <section className="md:col-span-6 bg-card/80 backdrop-blur-xl border border-border rounded-xl p-6 md:p-8 shadow-sm">
-          <h3 className="font-semibold text-lg text-foreground mb-1 flex items-center gap-2">
-            <Code className="h-5 w-5 text-tertiary" />
-            Préférences Éditeur
-          </h3>
-          <p className="text-sm text-muted-foreground mb-8">
-            Configuration de l'environnement de code.
-          </p>
-          <div className="space-y-6">
-            <div className="flex flex-col gap-3">
-              <div className="flex justify-between items-center">
-                <label className="text-xs font-mono text-muted-foreground uppercase tracking-wider">
-                  Taille de police (px)
-                </label>
-                <span className="font-mono text-xs text-tertiary bg-muted px-2 py-1 rounded">
-                  {fontSize}px
-                </span>
-              </div>
-              <Slider
-                value={[fontSize]}
-                onValueChange={(v) => setFontSize(v[0])}
-                max={24}
-                min={10}
-                step={1}
-              />
+                <Sun className="h-4 w-4" /> <span className="text-sm font-medium">Clair</span>
+              </button>
             </div>
-            <div className="flex flex-col gap-2">
-              <label className="text-xs font-mono text-muted-foreground uppercase tracking-wider">
-                Taille de tabulation
+            <div className="flex flex-col gap-1.5 pt-2">
+              <label className="flex items-center gap-1.5 font-mono text-xs uppercase tracking-wider text-muted-foreground">
+                <Globe className="h-3.5 w-3.5" /> Langue
               </label>
-              <select
-                value={tabSize}
-                onChange={(e) => setTabSize(e.target.value)}
-                className="bg-background border border-border rounded-lg px-4 py-2 font-mono text-sm text-foreground focus:outline-none focus:border-primary appearance-none w-full shadow-sm"
-              >
-                {TAB_SIZES.map((s) => (
-                  <option key={s} value={s}>
-                    {s} espaces
-                  </option>
-                ))}
-              </select>
-            </div>
-            <div className="flex flex-col gap-2 mb-6">
-              <label className="text-xs font-mono text-muted-foreground uppercase tracking-wider">
-                Changer la langue
-              </label>
-              <Select
-                value={i18n.language}
-                onValueChange={(val) => i18n.changeLanguage(val)}
-              >
-                <SelectTrigger className="bg-background border-border">
+              <Select value={i18n.language} onValueChange={(val) => i18n.changeLanguage(val)}>
+                <SelectTrigger className="bg-background">
                   <SelectValue />
                 </SelectTrigger>
                 <SelectContent>
@@ -356,102 +191,36 @@ function SettingsPage() {
                 </SelectContent>
               </Select>
             </div>
-            <div className="pt-4 border-t border-border">
-              <label className="flex items-center gap-3 cursor-pointer group">
-                <div className="relative flex items-center justify-center">
-                  <input
-                    type="checkbox"
-                    checked={ligatures}
-                    onChange={(e) => setLigatures(e.target.checked)}
-                    className="sr-only peer"
-                  />
-                  <div className="w-5 h-5 rounded border-2 border-border peer-checked:bg-tertiary peer-checked:border-tertiary transition-colors flex items-center justify-center">
-                    {ligatures && (
-                      <svg
-                        className="w-3 h-3 text-white"
-                        fill="none"
-                        viewBox="0 0 24 24"
-                        stroke="currentColor"
-                        strokeWidth={3}
-                      >
-                        <path
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          d="M5 13l4 4L19 7"
-                        />
-                      </svg>
-                    )}
-                  </div>
-                </div>
-                <span className="text-sm text-foreground group-hover:text-primary transition-colors">
-                  Activer les ligatures de police
-                </span>
-              </label>
-            </div>
           </div>
         </section>
 
-        {/* Password */}
-        <section className="md:col-span-6 bg-card/80 backdrop-blur-xl border border-border rounded-xl p-6 md:p-8 flex flex-col shadow-sm">
+        {/* Mot de passe */}
+        <section className="flex flex-col rounded-xl border border-border bg-card p-6 shadow-sm md:col-span-12 md:p-8">
           <div className="mb-6">
-            <h3 className="font-semibold text-lg text-foreground mb-1 flex items-center gap-2">
-              <Lock className="h-5 w-5 text-primary" />
-              Mot de passe
+            <h3 className="mb-1 flex items-center gap-2 text-lg font-semibold text-foreground">
+              <Lock className="h-5 w-5 text-primary" /> Mot de passe
             </h3>
-            <p className="text-sm text-muted-foreground">
-              Changez votre mot de passe pour sécuriser votre compte.
-            </p>
+            <p className="text-sm text-muted-foreground">Changez votre mot de passe pour sécuriser votre compte.</p>
           </div>
-          <div className="flex-grow space-y-4">
+          <div className="grid gap-4 md:grid-cols-3">
             <div className="flex flex-col gap-1.5">
-              <label className="text-xs font-mono text-muted-foreground uppercase tracking-wider">
-                Mot de passe actuel
-              </label>
-              <Input
-                type="password"
-                value={currentPw}
-                onChange={(e) => setCurrentPw(e.target.value)}
-                className="bg-background border-border"
-                placeholder="••••••••"
-              />
+              <label className="font-mono text-xs uppercase tracking-wider text-muted-foreground">Mot de passe actuel</label>
+              <Input type="password" value={currentPw} onChange={(e) => setCurrentPw(e.target.value)} className="bg-background" placeholder="••••••••" />
             </div>
             <div className="flex flex-col gap-1.5">
-              <label className="text-xs font-mono text-muted-foreground uppercase tracking-wider">
-                Nouveau mot de passe
-              </label>
-              <Input
-                type="password"
-                value={newPw}
-                onChange={(e) => setNewPw(e.target.value)}
-                className="bg-background border-border"
-                placeholder="••••••••"
-              />
+              <label className="font-mono text-xs uppercase tracking-wider text-muted-foreground">Nouveau mot de passe</label>
+              <Input type="password" value={newPw} onChange={(e) => setNewPw(e.target.value)} className="bg-background" placeholder="••••••••" />
             </div>
             <div className="flex flex-col gap-1.5">
-              <label className="text-xs font-mono text-muted-foreground uppercase tracking-wider">
-                Confirmer le mot de passe
-              </label>
-              <Input
-                type="password"
-                value={confirmPw}
-                onChange={(e) => setConfirmPw(e.target.value)}
-                className="bg-background border-border"
-                placeholder="••••••••"
-              />
+              <label className="font-mono text-xs uppercase tracking-wider text-muted-foreground">Confirmer</label>
+              <Input type="password" value={confirmPw} onChange={(e) => setConfirmPw(e.target.value)} className="bg-background" placeholder="••••••••" />
             </div>
-            <div className="flex justify-end pt-2">
-              <Button
-                onClick={handleChangePassword}
-                disabled={isChangingPw}
-                className="bg-primary text-primary-foreground hover:bg-primary/90"
-              >
-                {isChangingPw && (
-                  <Loader2 className="h-4 w-4 animate-spin mr-2" />
-                )}
-                <Save className="h-4 w-4 mr-2" />
-                Enregistrer
-              </Button>
-            </div>
+          </div>
+          <div className="mt-4 flex justify-end">
+            <Button onClick={handleChangePassword} disabled={isChangingPw}>
+              {isChangingPw && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+              <Save className="mr-2 h-4 w-4" /> Enregistrer
+            </Button>
           </div>
         </section>
       </div>
