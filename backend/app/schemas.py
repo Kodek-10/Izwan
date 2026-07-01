@@ -124,6 +124,21 @@ class PaginatedSnippet(BaseModel):
     limit: int
     items: List[Snippet]
 
+class GraphNode(BaseModel):
+    id: int
+    title: str
+    language: str
+
+class GraphLink(BaseModel):
+    source: int
+    target: int
+    score: float
+    duplicate: bool = False
+
+class SnippetGraph(BaseModel):
+    nodes: List[GraphNode]
+    links: List[GraphLink]
+
 class AdminSnippet(BaseModel):
     """Métadonnées d'un snippet pour l'admin — JAMAIS le code (confidentialité)."""
     id: int
