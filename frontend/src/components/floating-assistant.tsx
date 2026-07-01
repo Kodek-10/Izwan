@@ -26,6 +26,23 @@ export function FloatingAssistant() {
   const [messages, setMessages] = useState<Message[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const scrollRef = useRef<HTMLDivElement>(null);
+  const [isMobile, setIsMobile] = useState(false);
+
+  useEffect(() => {
+    const check = () => setIsMobile(window.innerWidth < 640);
+    check();
+    window.addEventListener("resize", check);
+    return () => window.removeEventListener("resize", check);
+  }, []);
+
+  // Pousse le contenu de la page au lieu de le recouvrir (desktop uniquement).
+  useEffect(() => {
+    document.documentElement.style.setProperty(
+      "--assistant-push",
+      open && !isMobile ? `${width}px` : "0px",
+    );
+    return () => document.documentElement.style.setProperty("--assistant-push", "0px");
+  }, [open, width, isMobile]);
 
   useEffect(() => {
     const saved = Number(localStorage.getItem("assistant-width"));
@@ -117,7 +134,7 @@ export function FloatingAssistant() {
             animate={{ x: 0 }}
             exit={{ x: "100%" }}
             transition={{ type: "spring", damping: 32, stiffness: 320 }}
-            style={{ width }}
+            style={{ width: isMobile ? "100%" : width }}
             className="fixed right-0 top-0 z-40 flex h-screen max-w-[100vw] flex-col border-l border-border bg-card shadow-2xl"
           >
             {/* Poignée de redimensionnement (non bloquante) */}
