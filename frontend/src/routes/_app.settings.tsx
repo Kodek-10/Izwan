@@ -85,8 +85,8 @@ function SettingsPage() {
       toast.error("Les mots de passe ne correspondent pas.");
       return;
     }
-    if (newPw.length < 6) {
-      toast.error("Le nouveau mot de passe doit contenir au moins 6 caractères.");
+    if (newPw.length < 8) {
+      toast.error("Le nouveau mot de passe doit contenir au moins 8 caractères.");
       return;
     }
     setIsChangingPw(true);

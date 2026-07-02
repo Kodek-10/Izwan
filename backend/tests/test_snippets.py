@@ -4,11 +4,11 @@ import pytest
 def auth_headers(client):
     client.post(
         "/api/v1/auth/register",
-        json={"username": "user1", "password": "pass"}
+        json={"username": "user1", "password": "password"}
     )
     resp = client.post(
         "/api/v1/auth/login",
-        data={"username": "user1", "password": "pass"}
+        data={"username": "user1", "password": "password"}
     )
     token = resp.json()["access_token"]
     return {"Authorization": f"Bearer {token}"}
