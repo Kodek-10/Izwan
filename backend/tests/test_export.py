@@ -2,8 +2,8 @@ import pytest
 
 @pytest.fixture
 def auth_headers(client):
-    client.post("/api/v1/auth/register", json={"username": "exportuser", "password": "pass"})
-    resp = client.post("/api/v1/auth/login", data={"username": "exportuser", "password": "pass"})
+    client.post("/api/v1/auth/register", json={"username": "exportuser", "password": "password"})
+    resp = client.post("/api/v1/auth/login", data={"username": "exportuser", "password": "password"})
     token = resp.json()["access_token"]
     return {"Authorization": f"Bearer {token}"}
 

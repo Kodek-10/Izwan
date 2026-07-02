@@ -11,9 +11,24 @@ import {
   PanelLeftClose,
   PanelLeftOpen,
   Loader2,
+  Sun,
+  Moon,
+  Settings,
+  User,
 } from "lucide-react";
 import { IzwaLogo } from "@/components/izwan-logo";
 import { Button } from "@/components/ui/button";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import { useTheme } from "@/components/theme-provider";
+import { AdminSettingsDialog } from "@/components/admin-settings-dialog";
+import { LogoutConfirmDialog } from "@/components/logout-confirm-dialog";
 import { api } from "@/lib/api-client";
 
 export const Route = createFileRoute("/admin")({
@@ -33,21 +48,29 @@ const adminNav = [
 function AdminLayout() {
   const navigate = useNavigate();
   const location = useLocation();
+  const { theme, toggle } = useTheme();
   const [allowed, setAllowed] = useState<boolean | null>(null);
   const [collapsed, setCollapsed] = useState(false);
+  const [mounted, setMounted] = useState(false);
+  const [username, setUsername] = useState("");
+  const [settingsOpen, setSettingsOpen] = useState(false);
+  const [logoutOpen, setLogoutOpen] = useState(false);
 
   useEffect(() => {
+    setMounted(true);
     setCollapsed(localStorage.getItem("admin-sidebar-collapsed") === "1");
   }, []);
 
   useEffect(() => {
     let cancelled = false;
     api
-      .get<{ role?: string }>("/auth/me")
+      .get<{ role?: string; username?: string }>("/auth/me")
       .then((me) => {
         if (cancelled) return;
-        if (me.role === "ADMIN") setAllowed(true);
-        else {
+        if (me.role === "ADMIN") {
+          setAllowed(true);
+          setUsername(me.username || "");
+        } else {
           setAllowed(false);
           navigate({ to: "/dashboard" });
         }
@@ -142,7 +165,7 @@ function AdminLayout() {
 
         <div className="border-t border-sidebar-border p-2">
           <button
-            onClick={handleLogout}
+            onClick={() => setLogoutOpen(true)}
             title="Déconnexion"
             className={`flex w-full items-center gap-3 rounded-lg px-3 py-2 text-sm text-muted-foreground transition-colors hover:bg-sidebar-accent/50 ${
               collapsed ? "justify-center" : ""
@@ -163,11 +186,45 @@ function AdminLayout() {
             </Button>
             <span className="font-display text-lg font-semibold">Administration</span>
           </div>
+          <div className="flex items-center gap-1">
+            <Button variant="ghost" size="icon" onClick={toggle} aria-label="Thème">
+              {mounted && (theme === "dark" ? <Sun className="h-4 w-4" /> : <Moon className="h-4 w-4" />)}
+            </Button>
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <button
+                  className="flex h-9 w-9 items-center justify-center rounded-full gradient-brand text-sm font-semibold text-white outline-none"
+                  aria-label="Compte"
+                >
+                  {username ? username.slice(0, 2).toUpperCase() : <User className="h-4 w-4" />}
+                </button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="end" className="w-56">
+                <DropdownMenuLabel className="truncate">{username || "Administrateur"}</DropdownMenuLabel>
+                <DropdownMenuSeparator />
+                <DropdownMenuItem onClick={() => setSettingsOpen(true)}>
+                  <Settings className="mr-2 h-4 w-4" /> Paramètres
+                </DropdownMenuItem>
+                <DropdownMenuSeparator />
+                <DropdownMenuItem onClick={() => setLogoutOpen(true)} className="text-destructive focus:text-destructive">
+                  <LogOut className="mr-2 h-4 w-4" /> Déconnexion
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
+          </div>
         </header>
         <main className="flex-1 overflow-auto p-4 sm:p-6">
           <Outlet />
         </main>
       </div>
+
+      <AdminSettingsDialog
+        open={settingsOpen}
+        onOpenChange={setSettingsOpen}
+        username={username}
+        onUsernameChange={setUsername}
+      />
+      <LogoutConfirmDialog open={logoutOpen} onOpenChange={setLogoutOpen} onConfirm={handleLogout} />
     </div>
   );
 }

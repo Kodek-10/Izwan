@@ -6,9 +6,7 @@ import {
   Star,
   FolderKanban,
   Network,
-  BarChart3,
   Search,
-  Bell,
   Sun,
   Moon,
   LogOut,
@@ -34,6 +32,7 @@ import {
 } from "./ui/dropdown-menu";
 import { FloatingAssistant } from "./floating-assistant";
 import { CreateSnippetDialog } from "./create-snippet-dialog";
+import { LogoutConfirmDialog } from "./logout-confirm-dialog";
 
 const navItems = [
   { to: "/dashboard", label: "Tableau de bord", icon: LayoutDashboard },
@@ -41,7 +40,6 @@ const navItems = [
   { to: "/collections", label: "Collections", icon: FolderKanban },
   { to: "/favorites", label: "Favoris", icon: Star },
   { to: "/constellation", label: "Constellation", icon: Network },
-  { to: "/statistics", label: "Statistiques", icon: BarChart3 },
 ];
 
 export function AppShell({ children }: { children: React.ReactNode }) {
@@ -55,6 +53,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
   const [selectedLabel, setSelectedLabel] = React.useState<string | null>(null);
   const [pressedDock, setPressedDock] = React.useState<string | null>(null);
   const [createOpen, setCreateOpen] = React.useState(false);
+  const [logoutOpen, setLogoutOpen] = React.useState(false);
 
   React.useEffect(() => {
     const handler = () => setCreateOpen(true);
@@ -116,7 +115,10 @@ export function AppShell({ children }: { children: React.ReactNode }) {
   };
 
   return (
-    <div className="min-h-screen bg-background text-foreground">
+    <div
+      style={{ paddingRight: "var(--assistant-push, 0px)" }}
+      className="min-h-screen bg-background text-foreground transition-[padding] duration-300"
+    >
       {/* Top bar */}
       <header className="sticky top-0 z-30 border-b border-border bg-background/80 backdrop-blur-md">
         <div className="mx-auto flex h-16 max-w-6xl items-center gap-4 px-4 sm:px-6">
@@ -170,20 +172,6 @@ export function AppShell({ children }: { children: React.ReactNode }) {
             </Button>
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
-                <Button variant="ghost" size="icon" aria-label="Notifications">
-                  <Bell className="h-4 w-4" />
-                </Button>
-              </DropdownMenuTrigger>
-              <DropdownMenuContent align="end" className="w-72">
-                <DropdownMenuLabel>Notifications</DropdownMenuLabel>
-                <DropdownMenuSeparator />
-                <div className="p-4 text-center text-sm text-muted-foreground">
-                  Aucune notification pour le moment.
-                </div>
-              </DropdownMenuContent>
-            </DropdownMenu>
-            <DropdownMenu>
-              <DropdownMenuTrigger asChild>
                 <button
                   className="flex h-9 w-9 items-center justify-center rounded-full gradient-brand text-sm font-semibold text-white outline-none"
                   suppressHydrationWarning
@@ -206,7 +194,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
                   </DropdownMenuItem>
                 )}
                 <DropdownMenuSeparator />
-                <DropdownMenuItem onClick={handleLogout} className="text-destructive focus:text-destructive">
+                <DropdownMenuItem onClick={() => setLogoutOpen(true)} className="text-destructive focus:text-destructive">
                   <LogOut className="mr-2 h-4 w-4" /> Déconnexion
                 </DropdownMenuItem>
               </DropdownMenuContent>
@@ -275,6 +263,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
       {/* Assistant flottant (panneau coulissant depuis la droite) */}
       <FloatingAssistant />
       <CreateSnippetDialog open={createOpen} onOpenChange={setCreateOpen} />
+      <LogoutConfirmDialog open={logoutOpen} onOpenChange={setLogoutOpen} onConfirm={handleLogout} />
     </div>
   );
 }

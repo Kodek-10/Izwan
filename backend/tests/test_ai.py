@@ -1,7 +1,7 @@
 from backend.app.services.ai_service import AIService
 
 
-def _token(client, username="ai_user", password="pw"):
+def _token(client, username="ai_user", password="password"):
     client.post("/api/v1/auth/register", json={"username": username, "password": password})
     r = client.post("/api/v1/auth/login", data={"username": username, "password": password})
     return r.json()["access_token"]

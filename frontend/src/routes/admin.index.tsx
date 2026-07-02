@@ -172,7 +172,6 @@ function AdminDashboard() {
     },
     { name: "Embeddings (FastEmbed)", ok: true, detail: privacy?.embedding_provider ?? "fastembed" },
     { name: "Mode air-gapped", ok: !privacy?.air_gapped, detail: privacy?.air_gapped ? "activé" : "désactivé" },
-    { name: "Base de données", ok: true, detail: "OK" },
   ];
 
   return (
