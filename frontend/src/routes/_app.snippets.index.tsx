@@ -7,13 +7,11 @@ import {
   Code2,
   Share2,
   Trash2,
-  X,
   Loader2,
   FolderOpen,
-  Filter,
   Copy,
 } from "lucide-react";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { useTranslation } from "react-i18next";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -113,6 +111,7 @@ function SnippetsPage() {
   const router = useRouter();
   const [q, setQ] = useState("");
   const [lang, setLang] = useState("all");
+  const [tag, setTag] = useState("all");
   const [snippets, setSnippets] = useState<any[]>(data?.initialSnippets || []);
   const [collectionName, setCollectionName] = useState<string | null>(data?.collectionName || null);
   const [isLoading, setIsLoading] = useState(data?.needsClientFetch ?? true);
@@ -127,6 +126,12 @@ function SnippetsPage() {
   const availableLanguages = Array.from(
     new Set(snippets.map((s: any) => s.language).filter(Boolean)),
   ).sort();
+
+  // Tags réellement présents dans les snippets.
+  const availableTags = useMemo(() => {
+    const allTags = snippets.flatMap((s: any) => s.tags || []);
+    return Array.from(new Set(allTags)).sort();
+  }, [snippets]);
 
   useEffect(() => {
     if (!data) return;
@@ -186,7 +191,8 @@ function SnippetsPage() {
   const filtered = snippets.filter((s) => {
     const matchesQ = !q || s.title.toLowerCase().includes(q.toLowerCase());
     const matchesL = lang === "all" || s.language === lang;
-    return matchesQ && matchesL;
+    const matchesT = tag === "all" || (s.tags || []).includes(tag);
+    return matchesQ && matchesL && matchesT;
   });
 
   const toggleFavorite = async (id: number, current: boolean) => {
@@ -256,8 +262,6 @@ function SnippetsPage() {
     }
   };
 
-  const [showFilters, setShowFilters] = useState(false);
-
   if (isLoading) {
     return (
       <div className="flex flex-col items-center justify-center h-64 space-y-4">
@@ -280,90 +284,56 @@ function SnippetsPage() {
             Filtrez par langage ou par tag pour retrouver rapidement vos solutions.
           </p>
         </div>
-        <div className="flex items-center gap-3">
-          <Button
-            variant="outline"
-            className="flex items-center gap-2"
-            onClick={() => setShowFilters(!showFilters)}
-          >
-            <Filter className="h-4 w-4" />
-            Filtrer
-          </Button>
-          <Button
-            className="bg-primary text-primary-foreground hover:bg-primary/90 flex items-center gap-2"
-            onClick={() => window.dispatchEvent(new CustomEvent("snippet:new"))}
-          >
-            <Plus className="h-4 w-4" /> {t("snippets.new")}
-          </Button>
-        </div>
-      </div>
-
-      {/* Filters / Tabs */}
-      <div className="flex overflow-x-auto pb-4 gap-2 scrollbar-hide border-b border-border">
-        <button
-          onClick={() => setLang("all")}
-          className={`px-4 py-2 rounded-t-lg border-b-2 font-body-md whitespace-nowrap transition-colors ${
-            lang === "all"
-              ? "border-primary text-primary font-medium"
-              : "border-transparent text-muted-foreground hover:text-foreground hover:bg-muted/50"
-          }`}
+        <Button
+          className="bg-primary text-primary-foreground hover:bg-primary/90 flex items-center gap-2"
+          onClick={() => window.dispatchEvent(new CustomEvent("snippet:new"))}
         >
-          Tous les snippets
-        </button>
-        {availableLanguages.slice(0, 6).map((language) => (
-          <button
-            key={language}
-            onClick={() => setLang(language === lang ? "all" : language)}
-            className={`px-4 py-2 rounded-t-lg border-b-2 font-body-md whitespace-nowrap transition-colors ${
-              lang === language
-                ? "border-primary text-primary font-medium"
-                : "border-transparent text-muted-foreground hover:text-foreground hover:bg-muted/50"
-            }`}
-          >
-            {language}
-          </button>
-        ))}
+          <Plus className="h-4 w-4" /> {t("snippets.new")}
+        </Button>
       </div>
 
-      {/* Search */}
-      {showFilters && (
-        <div className="bg-card border border-border rounded-xl p-4 space-y-3 animate-in fade-in slide-in-from-top-2 duration-300">
-          <div className="relative">
-            <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-            <Input
-              value={q}
-              onChange={(e) => setQ(e.target.value)}
-              placeholder={t("snippets.search_placeholder")}
-              className="pl-9"
-            />
-          </div>
-          <div className="flex flex-col sm:flex-row gap-2">
-            <Select value={lang} onValueChange={setLang}>
-              <SelectTrigger className="w-full sm:w-44">
-                <SelectValue placeholder={t("common.all_languages")} />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="all">{t("common.all_languages")}</SelectItem>
-                {availableLanguages.map((l) => (
-                  <SelectItem key={l} value={l}>
-                    {l}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-            <Select defaultValue="all">
-              <SelectTrigger className="w-full sm:w-40">
-                <SelectValue placeholder={t("common.all_tags")} />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="all">{t("common.all_tags")}</SelectItem>
-              </SelectContent>
-            </Select>
-          </div>
+      {/* Search & Filters */}
+      <div className="bg-card border border-border rounded-xl p-4 space-y-3 shadow-sm">
+        <div className="relative">
+          <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+          <Input
+            value={q}
+            onChange={(e) => setQ(e.target.value)}
+            placeholder={t("snippets.search_placeholder")}
+            className="pl-9"
+          />
         </div>
-      )}
+        <div className="flex flex-col sm:flex-row gap-2">
+          <Select value={lang} onValueChange={setLang}>
+            <SelectTrigger className="w-full sm:w-44">
+              <SelectValue placeholder={t("common.all_languages")} />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="all">{t("common.all_languages")}</SelectItem>
+              {availableLanguages.map((l) => (
+                <SelectItem key={l} value={l}>
+                  {l}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+          <Select value={tag} onValueChange={setTag}>
+            <SelectTrigger className="w-full sm:w-40">
+              <SelectValue placeholder={t("common.all_tags")} />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="all">{t("common.all_tags")}</SelectItem>
+              {availableTags.map((t) => (
+                <SelectItem key={t} value={t}>
+                  {t}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+        </div>
+      </div>
 
-      {/* Bento Grid үлээр Grid */}
+      {/* Bento Grid */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 auto-rows-min">
         {filtered.map((s, index) => {
           return (
@@ -372,7 +342,8 @@ function SnippetsPage() {
               variants={item}
               initial="hidden"
               animate="show"
-              className={`bg-card rounded-xl border border-border hover:border-primary/50 transition-colors overflow-hidden flex flex-col group ${
+              className={`bg-card rounded-xl border
+                border-border hover:border-primary/50 transition-colors overflow-hidden flex flex-col group ${
                 index === 0 ? "lg:col-span-2" : ""
               } ${index === 3 ? "md:col-span-2 lg:col-span-2" : ""}`}
             >
@@ -451,7 +422,6 @@ function SnippetsPage() {
                   <DropdownMenu>
                     <DropdownMenuTrigger asChild>
                       <button
-                        onClick={(e) => e.stopPropagation()}
                         className="p-1.5 rounded-full hover:bg-muted text-muted-foreground hover:text-foreground transition-colors"
                       >
                         <MoreVertical className="h-4 w-4" />
