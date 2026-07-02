@@ -227,10 +227,17 @@ export function AppShell({ children }: { children: React.ReactNode }) {
             return (
               <div
                 key={item.to}
-                className="relative flex items-center h-10 rounded-full transition-all duration-300"
+                className={`relative flex items-center h-10 rounded-full transition-all duration-300 ${active ? "pr-3" : ""}`}
                 onMouseEnter={() => setHoveredDock(item.to)}
                 onMouseLeave={() => setHoveredDock(null)}
               >
+                {active && (
+                  <motion.span
+                    layoutId="dock-active"
+                    className="absolute inset-0 rounded-full gradient-brand"
+                    transition={{ type: "spring", bounce: 0.2, duration: 0.5 }}
+                  />
+                )}
                 <Link
                   to={item.to}
                   onClick={(e) => {
@@ -244,13 +251,6 @@ export function AppShell({ children }: { children: React.ReactNode }) {
                   onMouseLeave={() => setPressedDock(null)}
                   className="relative flex h-10 w-10 shrink-0 items-center justify-center rounded-full transition-colors z-10"
                 >
-                  {active && (
-                    <motion.span
-                      layoutId="dock-active"
-                      className="absolute inset-0 rounded-full gradient-brand"
-                      transition={{ type: "spring", bounce: 0.2, duration: 0.5 }}
-                    />
-                  )}
                   <Icon className={`relative h-5 w-5 ${active ? "text-white" : "text-muted-foreground"} ${hoveredDock === item.to || pressedDock === item.to ? "scale-110" : ""} transition-transform`} />
                 </Link>
                 <AnimatePresence>
@@ -260,7 +260,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
                       animate={{ width: "auto", opacity: 1, x: 0 }}
                       exit={{ width: 0, opacity: 0, x: -4 }}
                       transition={{ type: "spring", bounce: 0.1, duration: 0.4 }}
-                      className="text-sm font-medium whitespace-nowrap overflow-hidden pr-3 text-foreground"
+                      className="text-sm font-medium whitespace-nowrap overflow-hidden pr-3 text-white z-10"
                     >
                       {item.label}
                     </motion.span>
