@@ -8,6 +8,15 @@ import {
   Loader2,
   BarChart3,
 } from "lucide-react";
+import {
+  LineChart,
+  Line,
+  XAxis,
+  YAxis,
+  CartesianGrid,
+  Tooltip,
+  ResponsiveContainer,
+} from "recharts";
 import { Button } from "@/components/ui/button";
 import { api } from "@/lib/api-client";
 import { toast } from "sonner";
@@ -27,7 +36,7 @@ export const Route = createFileRoute("/_app/dashboard")({
     }
 
     try {
-      const data = await api.get<{ items: any[] }>("/snippets/?limit=100");
+      const data = await api.get<{ items: any[] }>("/snippets/?limit=500");
       const snippets = data.items.map((s) => ({
         ...s,
         tags: s.tags.map((t: any) => t.name),
@@ -39,7 +48,7 @@ export const Route = createFileRoute("/_app/dashboard")({
       const favorites = snippets.filter((s) => s.is_favorite).length;
 
       return {
-        snippets: snippets.slice(0, 5),
+        snippets,
         stats: [
           { label: "total_snippets", value: snippets.length, icon: Code2 },
           { label: "languages", value: languages, icon: Languages },
@@ -86,7 +95,7 @@ function Dashboard() {
             dateObj: new Date(s.updated_at),
           }));
 
-          setSnippets(allSnippets.slice(0, 5));
+          setSnippets(allSnippets);
 
           const languages = new Set(allSnippets.map((s) => s.language)).size;
           const tags = new Set(allSnippets.flatMap((s) => s.tags)).size;
@@ -137,7 +146,30 @@ function Dashboard() {
       .map((t) => t.name);
   }, [snippets]);
 
-  const chartData = [40, 65, 30, 85, 55, 45, 95];
+  const [chartDays, setChartDays] = useState<7 | 30>(30);
+
+  const activityChartData = useMemo(() => {
+    const days = chartDays;
+    const data = [];
+    for (let i = days - 1; i >= 0; i--) {
+      const d = new Date();
+      d.setDate(d.getDate() - i);
+      const dateStr = d.toISOString().split("T")[0];
+      const count = snippets.filter((s) => {
+        const sDate = new Date(s.updated_at).toISOString().split("T")[0];
+        return sDate === dateStr;
+      }).length;
+      data.push({
+        date: dateStr,
+        count,
+        label: d.toLocaleDateString(i18n.language === "fr" ? "fr-FR" : "en-US", {
+          day: "numeric",
+          month: "short",
+        }),
+      });
+    }
+    return data;
+  }, [snippets, chartDays, i18n.language]);
 
   const toggleFavorite = async (id: number, current: boolean) => {
     try {
@@ -231,35 +263,66 @@ function Dashboard() {
             animate={{ opacity: 1, y: 0 }}
             className="col-span-2 bg-card border border-border/50 rounded-xl p-6 min-h-[300px] flex flex-col mt-4 shadow-sm"
           >
-            <div className="flex justify-between items-center mb-6">
+            <div className="flex justify-between items-center mb-4">
               <h2 className="text-lg font-semibold text-foreground">
                 {t("dashboard.activity", "Activite d'Insertion")}
               </h2>
               <div className="flex gap-2">
-                <Button variant="outline" size="sm" className="text-sm h-9">
+                <Button
+                  variant={chartDays === 7 ? "default" : "outline"}
+                  size="sm"
+                  className="text-sm h-9"
+                  onClick={() => setChartDays(7)}
+                >
                   7J
                 </Button>
                 <Button
+                  variant={chartDays === 30 ? "default" : "outline"}
                   size="sm"
-                  className="text-sm h-9 bg-primary text-white"
+                  className="text-sm h-9"
+                  onClick={() => setChartDays(30)}
                 >
                   30J
                 </Button>
               </div>
             </div>
-            <div className="flex-1 relative w-full h-full border-b border-l border-border/30 flex items-end gap-2 pt-8 pb-2 pl-2">
-              <div className="absolute -left-6 top-0 bottom-0 flex flex-col justify-between text-sm text-muted-foreground opacity-70 py-2">
-                <span>100</span>
-                <span>50</span>
-                <span>0</span>
-              </div>
-              {chartData.map((h, i) => (
-                <div
-                  key={i}
-                  className="w-full bg-primary/80 rounded-t-sm transition-all duration-500 hover:bg-primary/100"
-                  style={{ height: `${h}%` }}
-                ></div>
-              ))}
+            <div className="flex-1 w-full min-h-[270px] -ml-4">
+              <ResponsiveContainer width="100%" height="100%">
+                <LineChart data={activityChartData} margin={{ top: 10, right: 10, left: 0, bottom: 0 }}>
+                  <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" vertical={false} />
+                  <XAxis
+                    dataKey="label"
+                    tick={{ fontSize: 11, fill: "hsl(var(--muted-foreground))" }}
+                    axisLine={{ stroke: "hsl(var(--border))" }}
+                    tickLine={false}
+                    minTickGap={8}
+                  />
+                  <YAxis
+                    tick={{ fontSize: 11, fill: "hsl(var(--muted-foreground))" }}
+                    axisLine={false}
+                    tickLine={false}
+                    allowDecimals={false}
+                  />
+                  <Tooltip
+                    contentStyle={{
+                      backgroundColor: "hsl(var(--card))",
+                      border: "1px solid hsl(var(--border))",
+                      borderRadius: "8px",
+                      fontSize: "12px",
+                    }}
+                    itemStyle={{ color: "hsl(var(--foreground))" }}
+                    labelStyle={{ color: "hsl(var(--muted-foreground))" }}
+                  />
+                  <Line
+                    type="monotone"
+                    dataKey="count"
+                    stroke="hsl(var(--primary))"
+                    strokeWidth={2.5}
+                    dot={{ r: 4, fill: "hsl(var(--primary))" }}
+                    activeDot={{ r: 6 }}
+                  />
+                </LineChart>
+              </ResponsiveContainer>
             </div>
           </motion.div>
         </div>
