@@ -77,6 +77,7 @@ export const Route = createFileRoute("/_app/snippets/")({
         initialSnippets: data.items.map((s) => ({
           ...s,
           tags: s.tags.map((t: any) => t.name),
+          language: s.language?.toLowerCase(),
           dateObj: new Date(s.updated_at),
         })),
         collectionName,
@@ -150,6 +151,7 @@ function SnippetsPage() {
             res.items.map((s) => ({
               ...s,
               tags: s.tags.map((t: any) => t.name),
+              language: s.language?.toLowerCase(),
               dateObj: new Date(s.updated_at),
             }))
           );
