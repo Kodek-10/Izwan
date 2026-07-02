@@ -302,6 +302,7 @@ function Dashboard() {
                     axisLine={false}
                     tickLine={false}
                     allowDecimals={false}
+                    domain={[0, Math.max(...activityChartData.map((d) => d.count), 1)]}
                   />
                   <Tooltip
                     contentStyle={{
