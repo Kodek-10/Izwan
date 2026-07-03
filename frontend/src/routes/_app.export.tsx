@@ -4,7 +4,6 @@ import { api } from "@/lib/api-client";
 import {
   Loader2,
   Download,
-  Table,
   FileText,
   FileCode,
   Trash2,
@@ -56,7 +55,7 @@ interface ExportHistoryItem {
   status: "ready";
 }
 
-type FormatId = "csv" | "markdown" | "pdf";
+type FormatId = "markdown" | "pdf";
 
 type SelectionMode = "all" | "filtered" | "custom";
 
@@ -183,25 +182,6 @@ function ExportPage() {
     document.body.removeChild(a);
   };
 
-  const exportCsv = (items: Snippet[]) => {
-    if (items.length === 0) throw new Error("Aucun snippet à exporter");
-    const headers = ["id", "title", "language", "code", "tags", "is_favorite", "created_at", "updated_at", "collection_name"];
-    const rows = items.map((s) => [
-      s.id, s.title, s.language,
-      JSON.stringify(s.code),
-      s.tags.join(";"),
-      s.is_favorite ? "true" : "false",
-      s.created_at, s.updated_at,
-      s.collection_name || "",
-    ]);
-    const csv = [headers.join(",")]
-      .concat(rows.map((r) => r.map((c) => `"${String(c).replace(/"/g, '"\'')}"`).join(",")))
-      .join("\n");
-    const blob = new Blob([csv], { type: "text/csv" });
-    download(blob, `izwan_export_${getDateStamp()}.csv`);
-    return formatSize(blob.size);
-  };
-
   const exportMarkdown = (items: Snippet[]) => {
     if (items.length === 0) throw new Error("Aucun snippet à exporter");
     const md = items
@@ -259,8 +239,7 @@ function ExportPage() {
     setIsLoading(true);
     let size = "—";
     try {
-      if (formatId === "csv") size = exportCsv(items);
-      else if (formatId === "markdown") size = exportMarkdown(items);
+      if (formatId === "markdown") size = exportMarkdown(items);
       else size = await exportServer(formatId, items);
       toast.success("Export réussi !");
       addHistory({
@@ -279,7 +258,6 @@ function ExportPage() {
   /* ---------------------------------------------------------------- */
 
   const formats = [
-    { id: "csv" as FormatId, name: "CSV", desc: "Tables & tableurs compatibles Excel", icon: Table, color: "text-emerald-500", border: "hover:border-emerald-500", ring: "focus:ring-emerald-500" },
     { id: "markdown" as FormatId, name: "Markdown", desc: "Documentation lisible", icon: FileText, color: "text-amber-500", border: "hover:border-amber-500", ring: "focus:ring-amber-500" },
     { id: "pdf" as FormatId, name: "PDF", desc: "Rapport formaté (serveur)", icon: FileCode, color: "text-destructive", border: "hover:border-destructive", ring: "focus:ring-destructive" },
   ];
@@ -376,7 +354,7 @@ function ExportPage() {
           <h2 className="text-xl font-semibold text-foreground">Formats d'Export</h2>
           <span className="text-sm text-muted-foreground bg-muted/50 px-3 py-1 rounded-full border border-border/30">{exportCount} snippet{exportCount !== 1 ? "s" : ""} à exporter</span>
         </div>
-        <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
           {formats.map((fmt) => (
             <motion.button key={fmt.id} whileHover={{ y: -4 }} whileTap={{ scale: 0.98 }} onClick={() => handleExport(fmt.id)} disabled={isLoading || exportCount === 0}
               className={`group text-left bg-card rounded-xl p-6 border transition-all relative overflow-hidden flex flex-col h-48 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-background ${fmt.border} ${fmt.ring} border-border hover:border-primary/50 shadow-sm disabled:opacity-50 disabled:cursor-not-allowed`}>
