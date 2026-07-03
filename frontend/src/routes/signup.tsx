@@ -1,11 +1,8 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
-import { Eye, EyeOff, Loader2, User, Mail, Lock } from "lucide-react";
+import { Eye, EyeOff, Loader2, Mail, Lock } from "lucide-react";
 import { useState, useEffect } from "react";
 import { useTranslation } from "react-i18next";
 import { IzwaLogo } from "@/components/izwan-logo";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
 import { api } from "@/lib/api-client";
 import { toast } from "sonner";
 import "./auth-layout.css";
@@ -194,17 +191,17 @@ function SignupPage() {
             <div className="flex items-start gap-3 py-2">
               <input className="auth-checkbox mt-1 w-5 h-5" id="terms" type="checkbox" required />
               <label htmlFor="terms" className="text-sm text-[var(--on-surface-variant)] leading-tight">
-                J'accepte les <Link to="#" className="text-[var(--primary)] font-semibold hover:underline">Conditions d'utilisation</Link> et la <Link to="#" className="text-[var(--primary)] font-semibold hover:underline">Politique de confidentialité</Link>.
+                J'accepte les <span className="text-[var(--primary)] font-semibold hover:underline cursor-pointer">Conditions d'utilisation</span> et la <span className="text-[var(--primary)] font-semibold hover:underline cursor-pointer">Politique de confidentialité</span>.
               </label>
             </div>
             {/* Submit */}
-            <Button
+            <button
               type="submit"
               className="w-full h-14 bg-[var(--primary)] text-white font-semibold text-lg rounded-xl hover:bg-[var(--primary-container)] active:scale-[0.98] transition-all shadow-lg shadow-[var(--primary)]/10"
               disabled={loading}
             >
               {loading ? <Loader2 className="h-5 w-5 animate-spin mx-auto" /> : "Créer un compte"}
-            </Button>
+            </button>
           </form>
 
           <footer className="mt-10 text-center">

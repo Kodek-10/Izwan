@@ -1,5 +1,5 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
-import { Eye, EyeOff, Loader2, Code, User, Lock, Mail } from "lucide-react";
+import { Eye, EyeOff, Loader2, Code, Lock, Mail } from "lucide-react";
 import { useState, useEffect } from "react";
 import { useTranslation } from "react-i18next";
 import { IzwaLogo } from "@/components/izwan-logo";
@@ -22,12 +22,8 @@ function AuthPage() {
   useEffect(() => {
     if (api.isAuthenticated()) {
       api.get<{ role?: string }>("/auth/me")
-        .then((me) => {
-          navigate({ to: me.role === "ADMIN" ? "/admin" : "/dashboard" });
-        })
-        .catch(() => {
-          navigate({ to: "/dashboard" });
-        });
+        .then((me) => { navigate({ to: me.role === "ADMIN" ? "/admin" : "/dashboard" }); })
+        .catch(() => { navigate({ to: "/dashboard" }); });
     }
   }, [navigate]);
 
@@ -47,44 +43,34 @@ function AuthPage() {
 
   return (
     <main className="auth-page min-h-screen flex overflow-x-hidden bg-surface-container-lowest">
-      {/* Left Panel: Visual */}
+      {/* Left Panel */}
       <section className="hidden lg:flex w-1/2 min-h-screen relative items-center justify-center overflow-hidden">
-        {/* Background image */}
         <div className="absolute inset-0 z-0 bg-gradient-to-br from-[#2b121c] to-[#1a0c12]" />
-
-        {/* Dark overlay */}
-        <div className="absolute inset-0 z-10 bg-gradient-to-br from-black/70 to-black/40"></div>
-
-        {/* Content */}
+        <div className="absolute inset-0 z-10 bg-gradient-to-br from-black/70 to-black/40" />
         <div className="relative z-20 flex flex-col items-center text-center max-w-lg px-8">
           <div className="mb-10">
             <span className="font-display text-5xl text-white font-black tracking-tighter">Izwan</span>
-            <div className="h-1 w-12 bg-white mx-auto rounded-full mt-1"></div>
+            <div className="h-1 w-12 bg-white mx-auto rounded-full mt-1" />
           </div>
-
           <h1 className="font-headline-lg text-3xl text-white mb-6 leading-tight">
             Maîtrisez votre code avec élégance
           </h1>
-
           <p className="font-body-lg text-lg text-white/80 max-w-md">
             Une plateforme de gestion de snippets conçue pour les artisans du logiciel exigeants. Structurez vos idées, accélérez votre workflow.
           </p>
-
-          {/* Decorative element */}
           <div className="mt-10 glass-panel p-6 rounded-xl flex items-center gap-4 animate-pulse">
             <Code className="text-white h-8 w-8" />
             <div className="text-left">
-              <div className="h-2 w-24 bg-white/30 rounded mb-2"></div>
-              <div className="h-2 w-16 bg-white/20 rounded"></div>
+              <div className="h-2 w-24 bg-white/30 rounded mb-2" />
+              <div className="h-2 w-16 bg-white/20 rounded" />
             </div>
           </div>
         </div>
       </section>
 
-      {/* Right Panel: Auth Form */}
+      {/* Right Panel */}
       <section className="w-full lg:w-1/2 flex items-center justify-center p-6 md:p-12 lg:p-24 bg-surface-container-lowest">
         <div className="w-full max-w-md space-y-8">
-          {/* Mobile Logo */}
           <div className="lg:hidden text-center mb-8">
             <div className="flex items-center justify-center gap-2 mb-2">
               <IzwaLogo className="h-8 w-8 text-primary" />
@@ -97,7 +83,7 @@ function AuthPage() {
             <p className="text-[var(--on-surface-variant)] font-body-md text-lg">Entrez vos identifiants pour accéder à votre espace de travail.</p>
           </div>
 
-          {/* Social Logins */}
+          {/* Socials */}
           <div className="grid grid-cols-2 gap-4">
             <button className="auth-btn-social" onClick={() => toast("Google Auth coming soon")}>
               <svg className="w-5 h-5" viewBox="0 0 24 24">
@@ -108,7 +94,6 @@ function AuthPage() {
               </svg>
               <span className="text-sm font-medium">Google</span>
             </button>
-
             <button className="auth-btn-social" onClick={() => toast("GitHub Auth coming soon")}>
               <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
                 <path d="M12 .297c-6.63 0-12 5.373-12 12 0 5.303 3.438 9.8 8.205 11.385.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61C4.422 18.07 3.633 17.7 3.633 17.7c-1.087-.744.084-.729.084-.729 1.205.084 1.838 1.236 1.838 1.236 1.07 1.835 2.809 1.305 3.495.998.108-.776.417-1.305.76-1.605-2.665-.3-5.466-1.332-5.466-5.93 0-1.31.465-2.38 1.235-3.22-.135-.303-.54-1.523.105-3.176 0 0 1.005-.322 3.3 1.23.96-.267 1.98-.399 3-.405 1.02.006 2.04.138 3 .405 2.28-1.552 3.285-1.23 3.285-1.23.645 1.653.24 2.873.12 3.176.765.84 1.23 1.91 1.23 3.22 0 4.61-2.805 5.625-5.475 5.92.42.36.81 1.096.81 2.22 0 1.606-.015 2.896-.015 3.286 0 .315.21.69.825.57C20.565 22.092 24 17.592 24 12.297c0-6.627-5.373-12-12-12" />
@@ -117,15 +102,13 @@ function AuthPage() {
             </button>
           </div>
 
-          {/* Divider */}
           <div className="relative flex items-center justify-center">
-            <div className="w-full h-[1px] bg-[var(--outline-variant)]"></div>
+            <div className="w-full h-px bg-[var(--outline-variant)]" />
             <span className="absolute px-4 bg-[var(--surface-container-lowest)] text-[var(--on-surface-variant)] font-label-caps text-[10px] tracking-[0.1em]">
               Ou continuer avec
             </span>
           </div>
 
-          {/* Login Form */}
           <form onSubmit={handleSubmit} className="space-y-6">
             <div className="space-y-4">
               <div className="group">
@@ -134,42 +117,23 @@ function AuthPage() {
                 </label>
                 <div className="relative">
                   <Mail className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-[var(--outline)]" />
-                  <input
-                    id="email"
-                    name="email"
-                    type="email"
-                    autoComplete="email"
-                    required
-                    placeholder="nom@exemple.com"
-                    className="auth-input pl-12"
-                    value={username}
-                    onChange={(e) => setUsername(e.target.value)}
-                  />
+                  <input id="email" name="email" type="email" autoComplete="email" required
+                    placeholder="nom@exemple.com" className="auth-input pl-12"
+                    value={username} onChange={(e) => setUsername(e.target.value)} />
                 </div>
               </div>
-
               <div className="group">
-                <label htmlFor="password" className="block font-label-caps text-[var(--on-surface-variant)] mb-1">
+                <label htmlFor="password" className="block font-label-c_List text-[var(--on-surface-variant)] mb-1">
                   Mot de Passe
                 </label>
                 <div className="relative">
                   <Lock className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-[var(--outline)]" />
-                  <input
-                    id="password"
-                    name="password"
-                    type={showPw ? "text" : "password"}
-                    autoComplete="current-password"
-                    required
-                    placeholder="••••••••"
-                    className="auth-input pl-12 pr-12"
-                    value={password}
-                    onChange={(e) => setPassword(e.target.value)}
-                  />
-                  <button
-                    type="button"
+                  <input id="password" name="password" type={showPw ? "text" : "password"}
+                    autoComplete="current-password" required placeholder="••••••••"
+                    className="auth-input pl-12 pr-12" value={password} onChange={(e) => setPassword(e.target.value)} />
+                  <button type="button"
                     className="absolute right-4 top-1/2 -translate-y-1/2 text-[var(--outline)] hover:text-[var(--primary)] transition-colors"
-                    onClick={() => setShowPw((s) => !s)}
-                  >
+                    onClick={() => setShowPw((s) => !s)}>
                     {showPw ? <EyeOff className="h-5 w-5" /> : <Eye className="h-5 w-5" />}
                   </button>
                 </div>
@@ -183,9 +147,9 @@ function AuthPage() {
                   Se souvenir de moi
                 </span>
               </label>
-              <Link to="/forgot-password" className="font-body-sm text-[var(--primary)] font-semibold hover:underline">
+              <span className="font-body-sm text-[var(--primary)] font-semibold hover:underline cursor-pointer">
                 Mot de passe oublié ?
-              </Link>
+              </span>
             </div>
 
             <button type="submit" className="auth-btn-primary" disabled={loading}>
@@ -202,12 +166,11 @@ function AuthPage() {
             </p>
           </div>
 
-          {/* Footer Links */}
           <footer className="pt-8 border-t border-[var(--outline-variant)]/20">
             <div className="flex flex-wrap justify-center gap-x-6 gap-y-2 text-xs font-label-caps text-[var(--outline)]">
-              <Link to="#" className="hover:text-[var(--primary)] transition-colors">Aide</Link>
-              <Link to="#" className="hover:text-[var(--primary)] transition-colors">Confidentialité</Link>
-              <Link to="#" className="hover:text-[var(--primary)] transition-colors">Conditions</Link>
+              <span className="hover:text-[var(--primary)] transition-colors cursor-pointer">Aide</span>
+              <span className="hover:text-[var(--primary)] transition-colors cursor-pointer">Confidentialité</span>
+              <span className="hover:text-[var(--primary)] transition-colors cursor-pointer">Conditions</span>
             </div>
             <p className="text-center text-[10px] text-[var(--outline)]/60 mt-4">
               © {new Date().getFullYear()} Izwan. Tous droits réservés.
