@@ -1,11 +1,25 @@
 import { createFileRoute, useRouter } from "@tanstack/react-router";
-import { Sparkles, Send, User, Bot, Loader2, Trash2, ArrowLeft } from "lucide-react";
+import {
+  Sparkles,
+  User,
+  Bot,
+  Loader2,
+  Trash2,
+  ArrowLeft,
+  ArrowUp,
+} from "lucide-react";
 import { useState, useRef, useEffect } from "react";
 import { useTranslation } from "react-i18next";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
 import { api } from "@/lib/api-client";
 import { toast } from "sonner";
+
+import { PromptSuggestion } from "@/components/ui/prompt-suggestion"
+import {
+  PromptInput,
+  PromptInputActions,
+  PromptInputTextarea,
+} from "@/components/ui/prompt-input"
 
 export const Route = createFileRoute("/_app/assistant")({
   head: () => ({ meta: [{ title: "Assistant Chat IA — Izwan" }] }),
@@ -115,19 +129,22 @@ function AssistantPage() {
                   {t("assistant.welcome_desc")}
                 </p>
               </div>
-              <div className="grid grid-cols-1 gap-2 w-full max-w-sm mt-4">
-                <button 
+              <div className="flex flex-wrap gap-2 w-full max-w-lg mt-4">
+                <PromptSuggestion
                   onClick={() => handleSendMessage(t("assistant.suggest_1"))}
-                  className="text-xs p-2 rounded-lg border border-border hover:bg-muted transition-colors text-left"
                 >
                   {t("assistant.suggest_1")}
-                </button>
-                <button 
+                </PromptSuggestion>
+                <PromptSuggestion
                   onClick={() => handleSendMessage(t("assistant.suggest_2"))}
-                  className="text-xs p-2 rounded-lg border border-border hover:bg-muted transition-colors text-left"
                 >
                   {t("assistant.suggest_2")}
-                </button>
+                </PromptSuggestion>
+                <PromptSuggestion
+                  onClick={() => handleSendMessage(t("assistant.suggest_3"))}
+                >
+                  {t("assistant.suggest_3")}
+                </PromptSuggestion>
               </div>
             </div>
           )}
@@ -173,24 +190,31 @@ function AssistantPage() {
         </div>
 
         <div className="p-4 bg-muted/30 border-t border-border">
-          <div className="flex gap-2 bg-background border border-border rounded-xl p-1 shadow-sm focus-within:ring-2 focus-within:ring-primary/20 transition-all">
-            <Input 
-              value={query}
-              onChange={(e) => setQuery(e.target.value)}
-              onKeyDown={(e) => e.key === "Enter" && handleSendMessage()}
-              placeholder={t("assistant.placeholder")}
-              className="border-0 focus-visible:ring-0 bg-transparent h-10 shadow-none"
-              disabled={isLoading}
-            />
-            <Button 
-              size="icon" 
-              onClick={() => handleSendMessage()} 
-              disabled={!query.trim() || isLoading}
-              className="h-10 w-10 shrink-0 gradient-brand text-white border-0"
-            >
-              <Send className="h-4 w-4" />
-            </Button>
-          </div>
+          <PromptInput
+            className="bg-background border border-border rounded-xl shadow-sm focus-within:ring-2 focus-within:ring-primary/20 transition-all"
+            value={query}
+            onValueChange={setQuery}
+            onSubmit={() => handleSendMessage()}
+            disabled={isLoading}
+          >
+            <div className="flex items-start gap-2 p-1">
+              <PromptInputTextarea
+                placeholder={t("assistant.placeholder")}
+                className="flex-1 h-10 py-2.5"
+              />
+              <PromptInputActions className="pt-1 pr-1">
+                <Button
+                  size="icon"
+                  onClick={() => handleSendMessage()}
+                  disabled={!query.trim() || isLoading}
+                  className="h-9 w-9 shrink-0 gradient-brand text-white border-0"
+                  aria-label="Send"
+                >
+                  <ArrowUp className="h-4 min-h-4 min-w-4 w-4" />
+                </Button>
+              </PromptInputActions>
+            </div>
+          </PromptInput>
         </div>
       </div>
     </div>
