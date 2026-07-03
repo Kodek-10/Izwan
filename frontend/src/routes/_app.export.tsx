@@ -202,12 +202,29 @@ function ExportPage() {
     return formatSize(blob.size);
   };
 
-  const exportServer = async (formatId: string): Promise<string> => {
+  const exportMarkdown = (items: Snippet[]) => {
+    if (items.length === 0) throw new Error("Aucun snippet à exporter");
+    const md = items
+      .map(
+        (s) =>
+          `## ${s.title}\n\n` +
+          `\`\`\`${s.language}\n${s.code}\n\`\`\`\n\n` +
+          `**Collection :** ${s.collection_name || "—"} | **Tags :** ${s.tags.join(", ") || "Aucun"} | **Favori :** ${s.is_favorite ? "Oui" : "Non"}\n`
+      )
+      .join("\n---\n\n");
+    const blob = new Blob([md], { type: "text/markdown" });
+    download(blob, `izwan_export_${getDateStamp()}.md`);
+    return formatSize(blob.size);
+  };
+
+  const exportServer = async (formatId: string, items: Snippet[]): Promise<string> => {
     const p = new URLSearchParams();
     if (selectedCollection != null) p.append("collection_id", String(selectedCollection));
     if (favoritesOnly) p.append("favorite_only", "true");
+    if (selectionMode === "custom" && items.length > 0) {
+      p.append("ids", items.map((s) => s.id).join(","));
+    }
     const q = p.toString() ? `?${p.toString()}` : "";
-    // API_URL already ends with /api/v1, don't add another /api/v1
     const res = await fetch(`${API_URL}/export/${formatId}${q}`, {
       headers: { Authorization: `Bearer ${localStorage.getItem("token") || ""}` },
     });
@@ -224,7 +241,8 @@ function ExportPage() {
     let size = "—";
     try {
       if (formatId === "csv") size = exportCsv(items);
-      else size = await exportServer(formatId);
+      else if (formatId === "markdown") size = exportMarkdown(items);
+      else size = await exportServer(formatId, items);
       toast.success("Export réussi !");
       addHistory({
         id: Date.now().toString(),
