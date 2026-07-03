@@ -218,13 +218,32 @@ function ExportPage() {
   };
 
   const exportServer = async (formatId: string, items: Snippet[]): Promise<string> => {
+    // En mode "custom" on transmet les IDs sélectionnés via un POST
+    // car la liste peut être longue et le backend doit savoir quels
+    // snippets inclure au lieu d'appliquer seulement les filtres globaux.
+    if (selectionMode === "custom") {
+      const res = await fetch(`${API_URL}/export/${formatId}`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${localStorage.getItem("token") || ""}`,
+        },
+        body: JSON.stringify({
+          ids: items.map((s) => s.id),
+          format: formatId,
+        }),
+      });
+      if (!res.ok) throw new Error("Export échoué");
+      const blob = await res.blob();
+      download(blob, `izwan_export_${getDateStamp()}.${getExt(formatId)}`);
+      return formatSize(blob.size);
+    }
+
     const p = new URLSearchParams();
     if (selectedCollection != null) p.append("collection_id", String(selectedCollection));
     if (favoritesOnly) p.append("favorite_only", "true");
-    if (selectionMode === "custom" && items.length > 0) {
-      p.append("ids", items.map((s) => s.id).join(","));
-    }
     const q = p.toString() ? `?${p.toString()}` : "";
+
     const res = await fetch(`${API_URL}/export/${formatId}${q}`, {
       headers: { Authorization: `Bearer ${localStorage.getItem("token") || ""}` },
     });
