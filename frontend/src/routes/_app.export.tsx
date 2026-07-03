@@ -36,6 +36,12 @@ interface Snippet {
   collection_name?: string;
 }
 
+interface PaginatedSnippets {
+  total: number;
+  skip: number;
+  items: Snippet[];
+}
+
 interface Collection {
   id: number;
   name: string;
@@ -50,7 +56,9 @@ interface ExportHistoryItem {
   status: "ready";
 }
 
-type FormatId = "csv" | "json" | "markdown" | "pdf";
+type FormatId = "csv" | "markdown" | "pdf";
+
+type SelectionMode = "all" | "filtered" | "custom";
 
 /* ------------------------------------------------------------------ */
 // Helpers
@@ -73,7 +81,6 @@ function getDateStamp(): string {
 
 function getExt(format: string): string {
   if (format === "markdown") return "md";
-  if (format === "pdf") return "pdf";
   return format;
 }
 
@@ -93,13 +100,27 @@ function ExportPage() {
   const [history, setHistory] = useState<ExportHistoryItem[]>([]);
   const [collections, setCollections] = useState<Collection[]>([]);
   const [snippets, setSnippets] = useState<Snippet[]>([]);
-  const [selectionMode, setSelectionMode] = useState<"all" | "custom">("all");
+  const [selectionMode, setSelectionMode] = useState<SelectionMode>("all");
   const [selectedIds, setSelectedIds] = useState<Set<number>>(new Set());
 
+  /* ---------------------------------------------------------------- */
+  // Load data (API returns paginated: { total, skip, items })
+  /* ---------------------------------------------------------------- */
+
   useEffect(() => {
-    api.get<Collection[]>("/collections/").then(setCollections).catch(() => {});
-    api.get<Snippet[]>("/snippets/").then(setSnippets).catch(() => {});
+    api.get<Collection[]>("/collections").then(setCollections).catch(() => {});
   }, []);
+
+  useEffect(() => {
+    const params = new URLSearchParams();
+    params.append("limit", "10000"); // get all
+    if (favoritesOnly) params.append("favorite", "true");
+    if (selectedCollection != null) params.append("collection_id", String(selectedCollection));
+
+    api.get<PaginatedSnippets>(`/snippets?${params.toString()}`)
+      .then((res) => setSnippets(res.items || []))
+      .catch(() => setSnippets([]));
+  }, [favoritesOnly, selectedCollection]);
 
   useEffect(() => {
     if (typeof window === "undefined") return;
@@ -117,24 +138,24 @@ function ExportPage() {
     }
   };
 
+  const addHistory = (item: ExportHistoryItem) => {
+    saveHistory([item, ...history].slice(0, 50));
+  };
+
+  /* Reset selection when data reloads */
+  useEffect(() => { setSelectedIds(new Set()); }, [favoritesOnly, selectedCollection]);
+
   /* ---------------------------------------------------------------- */
-  // Selection
+  // Selection logic
   /* ---------------------------------------------------------------- */
 
-  const filteredSnippets = (() => {
-    let f = snippets;
-    if (selectedCollection) {
-      f = f.filter((s) => s.collection_id === selectedCollection);
-    }
-    if (favoritesOnly) {
-      f = f.filter((s) => s.is_favorite);
-    }
-    return f;
+  const filtered = snippets; /* already filtered by API */
+
+  const snippetsToExport = (() => {
+    if (selectionMode === "all") return filtered;
+    if (selectionMode === "filtered") return filtered;
+    return filtered.filter((s) => selectedIds.has(s.id));
   })();
-
-  const snippetsToExport = selectionMode === "all"
-    ? filteredSnippets
-    : filteredSnippets.filter((s) => selectedIds.has(s.id));
 
   const toggleSelect = (id: number) => {
     setSelectedIds((prev) => {
@@ -183,10 +204,11 @@ function ExportPage() {
 
   const exportServer = async (formatId: string): Promise<string> => {
     const p = new URLSearchParams();
-    if (selectedCollection) p.append("collection_id", String(selectedCollection));
+    if (selectedCollection != null) p.append("collection_id", String(selectedCollection));
     if (favoritesOnly) p.append("favorite_only", "true");
     const q = p.toString() ? `?${p.toString()}` : "";
-    const res = await fetch(`${API_URL}/api/v1/export/${formatId}${q}`, {
+    // API_URL already ends with /api/v1, don't add another /api/v1
+    const res = await fetch(`${API_URL}/export/${formatId}${q}`, {
       headers: { Authorization: `Bearer ${localStorage.getItem("token") || ""}` },
     });
     if (!res.ok) throw new Error("Export échoué");
@@ -202,85 +224,79 @@ function ExportPage() {
     let size = "—";
     try {
       if (formatId === "csv") size = exportCsv(items);
-      else if (formatId === "json") {
-        const blob = new Blob([JSON.stringify(items, null, 2)], { type: "application/json" });
-        download(blob, `izwan_export_${getDateStamp()}.json`);
-        size = formatSize(blob.size);
-      } else {
-        size = await exportServer(formatId);
-      }
+      else size = await exportServer(formatId);
       toast.success("Export réussi !");
-      saveHistory([{
+      addHistory({
         id: Date.now().toString(),
         file: `izwan_export_${getDateStamp()}.${getExt(formatId)}`,
         date: new Date().toLocaleString("fr-FR", { year: "numeric", month: "short", day: "2-digit", hour: "2-digit", minute: "2-digit" }),
         size, format: formatId, status: "ready" as const,
-      }, ...history].slice(0, 50));
+      });
     } catch (e) {
       toast.error(e instanceof Error ? e.message : "Erreur lors de l'export");
     } finally { setIsLoading(false); }
   };
-
-  // Reset selection when filters change
-  useEffect(() => { setSelectedIds(new Set()); }, [selectedCollection, favoritesOnly]);
 
   /* ---------------------------------------------------------------- */
   // Render helpers
   /* ---------------------------------------------------------------- */
 
   const formats = [
-    { id: "csv" as FormatId, name: "CSV", desc: "Tables & tableurs", icon: Table, color: "text-emerald-500", border: "hover:border-emerald-500", ring: "focus:ring-emerald-500", }
-    , { id: "json" as FormatId, name: "JSON", desc: "Données hiérarchiques", icon: FileText, color: "text-sky-500", border: "hover:border-sky-500", ring: "focus:ring-sky-500", }
-    , { id: "markdown" as FormatId, name: "Markdown", desc: "Documentation lisible", icon: FileText, color: "text-amber-500", border: "hover:border-amber-500", ring: "focus:ring-amber-500", }
-    , { id: "pdf" as FormatId, name: "PDF", desc: "Rapports formatés", icon: FileCode, color: "text-destructive", border: "hover:border-destructive", ring: "focus:ring-destructive", }
+    { id: "csv" as FormatId, name: "CSV", desc: "Tables & tableurs compatibles Excel", icon: Table, color: "text-emerald-500", border: "hover:border-emerald-500", ring: "focus:ring-emerald-500" },
+    { id: "markdown" as FormatId, name: "Markdown", desc: "Documentation lisible", icon: FileText, color: "text-amber-500", border: "hover:border-amber-500", ring: "focus:ring-amber-500" },
+    { id: "pdf" as FormatId, name: "PDF", desc: "Rapport formaté (serveur)", icon: FileCode, color: "text-destructive", border: "hover:border-destructive", ring: "focus:ring-destructive" },
   ];
 
   return (
     <div className="space-y-10">
       {/* Header */}
-      <div className="flex flex-col md:flex-row md:items-end justify-between gap-6">
-        <div>
-          <h1 className="text-3xl md:text-4xl font-bold text-foreground mb-2">Exportations</h1>
-          <p className="text-muted-foreground max-w-2xl">
-            Exportez vos snippets dans différents formats. Filtrez par collection ou favoris, et choisissez quels snippets exporter.
-          </p>
-        </div>
+      <div>
+        <h1 className="text-3xl md:text-4xl font-bold text-foreground mb-2">Exportations</h1>
+        <p className="text-muted-foreground max-w-2xl">
+          Exportez vos snippets. Filtrez par collection ou favoris, choisissez quels snippets exporter, puis sélectionnez un format.
+        </p>
       </div>
 
       {/* Filters */}
-      <div className="flex flex-col sm:flex-row gap-4 items-start flex-wrap">
-        <div className="flex items-center gap-2 bg-card/50 backdrop-blur-md border border-border rounded-xl p-4 w-full sm:w-auto">
-          <FolderOpen className="h-5 w-5 text-muted-foreground shrink-0" />
-          <select
-            value={selectedCollection?.toString() || ""}
-            onChange={(e) => setSelectedCollection(e.target.value ? Number(e.target.value) : null)}
-            className="bg-transparent border-0 outline-none text-sm text-foreground w-full appearance-none cursor-pointer pl-2"
-          >
-            <option value="">Toutes les collections</option>
-            {collections.map((c) => (<option key={c.id} value={c.id}>{c.name}</option>))}
-          </select>
-        </div>
+      <div className="bg-card rounded-xl border border-border p-6 space-y-4">
+        <h2 className="text-lg font-semibold text-foreground">Filtrer les snippets</h2>
+        <div className="flex flex-col sm:flex-row gap-4 items-start flex-wrap">
+          <div className="flex items-center gap-2 bg-background border border-border rounded-xl px-4 py-3 w-full sm:w-auto">
+            <FolderOpen className="h-5 w-5 text-muted-foreground shrink-0" />
+            <select
+              value={selectedCollection?.toString() || ""}
+              onChange={(e) => {
+                setSelectedCollection(e.target.value ? Number(e.target.value) : null);
+                setSelectionMode("all");
+              }}
+              className="bg-transparent border-0 outline-none text-sm text-foreground w-full appearance-none cursor-pointer pl-2"
+            >
+              <option value="">Toutes les collections</option>
+              {collections.map((c) => (<option key={c.id} value={c.id}>{c.name}</option>))}
+            </select>
+          </div>
 
-        <button
-          onClick={() => setFavoritesOnly(!favoritesOnly)}
-          className={`flex items-center gap-2 rounded-xl border p-4 transition-colors ${favoritesOnly ? "border-amber-500/50 bg-amber-500/10 text-amber-700" : "border-border bg-card/50 text-muted-foreground hover:text-foreground"}`}
-        >
-          <Star className={`h-5 w-5 ${favoritesOnly ? "fill-amber-500 text-amber-500" : ""}`} />
-          <span className="text-sm font-medium">Favoris uniquement</span>
-        </button>
+          <button
+            onClick={() => { setFavoritesOnly(!favoritesOnly); setSelectionMode("all"); }}
+            className={`flex items-center gap-2 rounded-xl border px-4 py-3 transition-colors ${favoritesOnly ? "border-amber-500/50 bg-amber-500/10 text-amber-700" : "border-border bg-background text-muted-foreground hover:text-foreground"}`}
+          >
+            <Star className={`h-5 w-5 ${favoritesOnly ? "fill-amber-500 text-amber-500" : ""}`} />
+            <span className="text-sm font-medium">Favoris uniquement</span>
+          </button>
+        </div>
       </div>
 
       {/* Selection Mode */}
       <div className="bg-card rounded-xl border border-border p-6 space-y-4">
         <h2 className="text-lg font-semibold text-foreground">Quels snippets exporter ?</h2>
-        <div className="flex gap-3">
+        <div className="flex flex-wrap gap-3">
           <button onClick={() => { setSelectionMode("all"); setSelectedIds(new Set()); }}
-            className={`flex-1 sm:flex-none px-4 py-3 rounded-xl border text-sm font-medium transition-all ${selectionMode === "all" ? "border-primary bg-primary/5 text-primary" : "border-border bg-muted/30 text-muted-foreground hover:text-foreground"}`}>
-            <div className="flex items-center gap-2 justify-center">{selectionMode === "all" ? <CheckSquare2 className="h-4 w-4" /> : <Square className="h-4 w-4" />}Tous les snippets</div>
+            className={`flex-1 sm:flex-none px-4 py-3 rounded-xl border text-sm font-medium transition-all ${selectionMode === "all" ? "border-primary bg-primary/5 text-primary" : "border-border bg-background text-muted-foreground hover:text-foreground"}`}>
+            <div className="flex items-center gap-2 justify-center">{selectionMode === "all" ? <CheckSquare2 className="h-4 w-4" /> : <Square className="h-4 w-4" />}<span>Tous</span></div>
           </button>
-          <button onClick={() => setSelectionMode("custom")}
-            className={`flex-1 sm:flex-none px-4 py-3 rounded-xl border text-sm font-medium transition-all ${selectionMode === "custom" ? "border-primary bg-primary/5 text-primary" : "border-border bg-muted/30 text-muted-foreground hover:text-foreground"}`}>
-            <div className="flex items-center gap-2 justify-center">{selectionMode === "custom" ? <CheckSquare2 className="h-4 w-4" /> : <Square className="h-4 w-4" />}Choisir manuellement</div>
+          <button onClick={() => { setSelectionMode("custom"); }}
+            className={`flex-1 sm:flex-none px-4 py-3 rounded-xl border text-sm font-medium transition-all ${selectionMode === "custom" ? "border-primary bg-primary/5 text-primary" : "border-border bg-background text-muted-foreground hover:text-foreground"}`}>
+            <div className="flex items-center gap-2 justify-center">{selectionMode === "custom" ? <CheckSquare2 className="h-4 w-4" /> : <Square className="h-4 w-4" />}<span>Choisir manuellement</span></div>
           </button>
         </div>
 
@@ -289,17 +305,17 @@ function ExportPage() {
             <motion.div initial={{ height: 0, opacity: 0 }} animate={{ height: "auto", opacity: 1 }} exit={{ height: 0, opacity: 0 }} transition={{ duration: 0.25 }} className="overflow-hidden">
               <div className="pt-4 border-t border-border/50 space-y-3">
                 <div className="flex items-center justify-between">
-                  <p className="text-sm text-muted-foreground"><span className="font-medium text-foreground">{selectedIds.size}</span> / {filteredSnippets.length} sélectionné(s)</p>
+                  <p className="text-sm text-muted-foreground"><span className="font-medium text-foreground">{selectedIds.size}</span> / {filtered.length} sélectionné(s)</p>
                   <div className="flex gap-3">
-                    <button onClick={() => setSelectedIds(new Set(filteredSnippets.map((s) => s.id)))} className="text-xs text-primary hover:underline">Tout</button>
+                    <button onClick={() => setSelectedIds(new Set(filtered.map((s) => s.id)))} className="text-xs text-primary hover:underline">Tout</button>
                     <button onClick={() => setSelectedIds(new Set())} className="text-xs text-primary hover:underline">Aucun</button>
                   </div>
                 </div>
                 <div className="max-h-72 overflow-y-auto space-y-2 overscroll-contain">
-                  {filteredSnippets.map((s) => {
+                  {filtered.map((s) => {
                     const isSelected = selectedIds.has(s.id);
                     return (
-                      <button key={s.id} onClick={() => toggleSelect(s.id)} className={`w-full flex items-center gap-3 p-3 rounded-lg border text-left transition-all ${isSelected ? "border-primary/50 bg-primary/5" : "border-border bg-card/50 hover:bg-muted/50"}`}>
+                      <button key={s.id} onClick={() => toggleSelect(s.id)} className={`w-full flex items-center gap-3 p-3 rounded-lg border text-left transition-all ${isSelected ? "border-primary/50 bg-primary/5" : "border-border bg-background hover:bg-muted/50"}`}>
                         <div className={`shrink-0 w-5 h-5 rounded border-2 flex items-center justify-center transition-colors ${isSelected ? "bg-primary border-primary" : "border-muted-foreground/30"}`}>{isSelected && <Check className="h-3 w-3 text-white" />}</div>
                         <div className="flex-1 min-w-0">
                           <p className="text-sm font-medium text-foreground truncate">{s.title}</p>
@@ -309,7 +325,7 @@ function ExportPage() {
                       </button>
                     );
                   })}
-                  {filteredSnippets.length === 0 && <p className="text-sm text-muted-foreground text-center py-4">Aucun snippet ne correspond aux filtres.</p>}
+                  {filtered.length === 0 && <p className="text-sm text-muted-foreground text-center py-4">Aucun snippet ne correspond aux filtres.</p>}
                 </div>
               </div>
             </motion.div>
@@ -323,10 +339,10 @@ function ExportPage() {
           <h2 className="text-xl font-semibold text-foreground">Formats d'Export</h2>
           <span className="text-sm text-muted-foreground bg-muted/50 px-3 py-1 rounded-full border border-border/30">{exportCount} snippet{exportCount !== 1 ? "s" : ""} à exporter</span>
         </div>
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
           {formats.map((fmt) => (
             <motion.button key={fmt.id} whileHover={{ y: -4 }} whileTap={{ scale: 0.98 }} onClick={() => handleExport(fmt.id)} disabled={isLoading || exportCount === 0}
-              className={`group text-left bg-card rounded-xl p-6 border transition-all relative overflow-hidden flex flex-col h-48 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-background ${fmt.border} ${fmt.ring} border-border hover:border-primary纲领-gray-300 shadow-sm disabled:opacity-50 disabled:cursor-not-allowed`}>
+              className={`group text-left bg-card rounded-xl p-6 border transition-all relative overflow-hidden flex flex-col h-48 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-background ${fmt.border} ${fmt.ring} border-border hover:border-primary/50 shadow-sm disabled:opacity-50 disabled:cursor-not-allowed`}>
               <div className="absolute -right-4 -top-4 w-24 h-24 bg-primary/10 rounded-full blur-2xl group-hover:bg-primary/20 transition-colors" />
               <div className="w-12 h-12 rounded-lg bg-muted flex items-center justify-center mb-auto border border-border/30">
                 <fmt.icon className={`h-6 w-6 ${fmt.color}`} />
@@ -354,38 +370,41 @@ function ExportPage() {
           )}
         </div>
 
-        <table className="w-full text-left border-collapse">
-          <thead>
-            <tr className="border-b border-border/50 bg-muted/30">
-              <th className="py-4 px-6 font-mono text-xs text-muted-foreground font-medium uppercase">Fichier</th>
-              <th className="py-4 px-6 font-mono text-xs text-muted-foreground font-medium uppercase">Date</th>
-              <th className="py-4 px-6 font-mono text-xs text-muted-foreground font-medium uppercase">Taille</th>
-              <th className="py-4 px-6 font-mono text-xs text-muted-foreground font-medium uppercase">Statut</th>
-            </tr>
-          </thead>
-          <tbody className="text-sm text-foreground divide-y divide-border/50">
-            {history.map((row) => (
-              <tr key={row.id} className="hover:bg-muted/50 transition-colors">
-                <td className="py-4 px-6">
-                  <div className="flex items-center gap-3">
-                    <div className="w-8 h-8 rounded bg-muted flex items-center justify-center text-primary">
-                      <Archive className="h-4 w-4" />
-                    </div>
-                    <span className="font-mono text-sm text-foreground">{row.file}</span>
-                  </div>
-                </td>
-                <td className="py-4 px-6 text-muted-foreground">{row.date}</td>
-                <td className="py-4 px-6 text-muted-foreground font-mono text-xs">{row.size}</td>
-                <td className="py-4 px-6">
-                  <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full border text-xs font-mono bg-emerald-500/10 text-emerald-600 border-emerald-500/20">
-                    <span className="w-1.5 h-1.5 rounded-full bg-emerald-500" /> Prêt
-                  </span>
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-        {history.length === 0 && (
+        {history.length > 0 ? (
+          <div className="bg-card rounded-xl border border-border overflow-x-auto shadow-sm">
+            <table className="w-full text-left border-collapse">
+              <thead>
+                <tr className="border-b border-border/50 bg-muted/30">
+                  <th className="py-4 px-6 font-mono text-xs text-muted-foreground font-medium uppercase">Fichier</th>
+                  <th className="py-4 px-6 font-mono text-xs text-muted-foreground font-medium uppercase">Date</th>
+                  <th className="py-4 px-6 font-monon text-xs text-muted-foreground font-medium uppercase">Taille</th>
+                  <th className="py-4 px-6 font-mono text-xs text-muted-foreground font-medium uppercase">Statut</th>
+                </tr>
+              </thead>
+              <tbody className="text-sm text-foreground divide-y divide-border/50">
+                {history.map((row) => (
+                  <tr key={row.id} className="hover:bg-muted/50 transition-colors">
+                    <td className="py-4 px-6">
+                      <div className="flex items-center gap-3">
+                        <div className="w-8 h-8 rounded bg-muted flex items-center justify-center text-primary">
+                          <Archive className="h-4 w-4" />
+                        </div>
+                        <span className="font-mono text-sm text-foreground">{row.file}</span>
+                      </div>
+                    </td>
+                    <td className="py-4 px-6 text-muted-foreground">{row.date}</td>
+                    <td className="py-4 px-6 text-muted-foreground font-mono text-xs">{row.size}</td>
+                    <td className="py-4 px-6">
+                      <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full border text-xs font-mono bg-emerald-500/10 text-emerald-600 border-emerald-500/20">
+                        <span className="w-1.5 h-1.5 rounded-full bg-emerald-500" /> Prêt
+                      </span>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        ) : (
           <div className="text-center py-12 border border-dashed border-border rounded-xl text-muted-foreground">
             <Download className="h-8 w-8 mx-auto mb-3 opacity-40" />
             <p className="text-sm">Aucun export pour le moment.</p>
