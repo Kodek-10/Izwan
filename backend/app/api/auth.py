@@ -113,7 +113,6 @@ def login_for_access_token(
         user = db.query(models.User).filter(models.User.email == username_or_email).first()
     else:
         user = db.query(models.User).filter(models.User.username == username_or_email).first()
-
     if not user or not security.verify_password(form_data.password, user.hashed_password):
         rate_limit.record_failure(rl_key)
         record_audit(db, "auth", "login_failed", actor=form_data.username)
