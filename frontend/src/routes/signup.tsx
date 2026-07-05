@@ -14,6 +14,8 @@ export const Route = createFileRoute("/signup")({
 function SignupPage() {
   const { t } = useTranslation();
   const [username, setUsername] = useState("");
+  const [email, setEmail] = useState("");
+  const [displayName, setDisplayName] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [showPw, setShowPw] = useState(false);
@@ -34,7 +36,7 @@ function SignupPage() {
     }
     setLoading(true);
     try {
-      await api.signup(username, password);
+      await api.signup(username, email, password, displayName || undefined);
       toast.success(t("auth.signup_success"));
       navigate({ to: "/dashboard" });
     } catch (error: any) {
@@ -120,6 +122,43 @@ function SignupPage() {
 
           {/* Main Form */}
           <form onSubmit={handleSubmit} className="space-y-5">
+            {/* Nom d'utilisateur */}
+            <div className="space-y-1.5">
+              <label className="font-label-caps text-[var(--on-surface-variant)] px-1 uppercase tracking-wider" htmlFor="username">
+                Nom d'utilisateur
+              </label>
+              <div className="relative group">
+                <input
+                  id="username"
+                  name="username"
+                  type="text"
+                  required
+                  autoComplete="username"
+                  placeholder="jean_dupont"
+                  className="auth-input"
+                  value={username}
+                  onChange={(e) => setUsername(e.target.value)}
+                />
+              </div>
+            </div>
+            {/* Nom affiché (optionnel) */}
+            <div className="space-y-1.5">
+              <label className="font-label-caps text-[var(--on-surface-variant)] px-1 uppercase tracking-wider" htmlFor="displayName">
+                Nom affiché (optionnel)
+              </label>
+              <div className="relative group">
+                <input
+                  id="displayName"
+                  name="displayName"
+                  type="text"
+                  autoComplete="name"
+                  placeholder="Jean Dupont"
+                  className="auth-input"
+                  value={displayName}
+                  onChange={(e) => setDisplayName(e.target.value)}
+                />
+              </div>
+            </div>
             {/* Email */}
             <div className="space-y-1.5">
               <label className="font-label-caps text-[var(--on-surface-variant)] px-1 uppercase tracking-wider" htmlFor="email">
@@ -135,8 +174,8 @@ function SignupPage() {
                   autoComplete="email"
                   placeholder="jean@exemple.com"
                   className="auth-input pl-12"
-                  value={username}
-                  onChange={(e) => setUsername(e.target.value)}
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
                 />
               </div>
             </div>

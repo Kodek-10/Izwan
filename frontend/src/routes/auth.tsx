@@ -112,13 +112,13 @@ function AuthPage() {
           <form onSubmit={handleSubmit} className="space-y-6">
             <div className="space-y-4">
               <div className="group">
-                <label htmlFor="email" className="block font-label-caps text-[var(--on-surface-variant)] mb-1">
-                  Adresse Email
+                <label htmlFor="identifier" className="block font-label-caps text-[var(--on-surface-variant)] mb-1">
+                  Nom d'utilisateur ou Email
                 </label>
                 <div className="relative">
                   <Mail className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-[var(--outline)]" />
-                  <input id="email" name="email" type="email" autoComplete="email" required
-                    placeholder="nom@exemple.com" className="auth-input pl-12"
+                  <input id="identifier" name="identifier" type="text" autoComplete="username" required
+                    placeholder="jean_dupont ou jean@exemple.com" className="auth-input pl-12"
                     value={username} onChange={(e) => setUsername(e.target.value)} />
                 </div>
               </div>

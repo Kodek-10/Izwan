@@ -1,10 +1,11 @@
-from fastapi import APIRouter, Depends, HTTPException, status, Header
+from fastapi import APIRouter, Depends, HTTPException, status, Header, Request
 from fastapi.security import OAuth2PasswordRequestForm
 from sqlalchemy.orm import Session
 from datetime import timedelta
 from typing import Optional
 from ..core.database import get_db
 from ..core import security
+from ..core import rate_limit
 from .. import models, schemas
 from ..core.audit import record_audit
 
@@ -16,13 +17,26 @@ def get_lang(accept_language: Optional[str] = None) -> str:
 @router.post("/register", response_model=schemas.User)
 def register(user: schemas.UserCreate, db: Session = Depends(get_db), accept_language: Optional[str] = Header(None)):
     lang = get_lang(accept_language)
+    pw_error = security.password_policy_error(user.password, lang)
+    if pw_error:
+        raise HTTPException(status_code=400, detail=pw_error)
     db_user = db.query(models.User).filter(models.User.username == user.username).first()
     if db_user:
         detail = "Username already registered" if lang == "en" else "Nom d'utilisateur déjà enregistré"
         raise HTTPException(status_code=400, detail=detail)
 
+    db_email = db.query(models.User).filter(models.User.email == user.email).first()
+    if db_email:
+        detail = "Email already registered" if lang == "en" else "Email déjà enregistré"
+        raise HTTPException(status_code=400, detail=detail)
+
     hashed_password = security.get_password_hash(user.password)
-    new_user = models.User(username=user.username, hashed_password=hashed_password)
+    new_user = models.User(
+        username=user.username,
+        email=user.email,
+        display_name=user.display_name,
+        hashed_password=hashed_password,
+    )
     db.add(new_user)
     db.commit()
     db.refresh(new_user)
@@ -64,6 +78,10 @@ def change_password(
         detail = "Incorrect current password" if lang == "en" else "Mot de passe actuel incorrect"
         raise HTTPException(status_code=400, detail=detail)
 
+    pw_error = security.password_policy_error(data.new_password, lang)
+    if pw_error:
+        raise HTTPException(status_code=400, detail=pw_error)
+
     current_user.hashed_password = security.get_password_hash(data.new_password)
     db.commit()
     msg = "Password updated successfully" if lang == "en" else "Mot de passe mis à jour avec succès"
@@ -72,13 +90,32 @@ def change_password(
 
 @router.post("/login", response_model=schemas.Token)
 def login_for_access_token(
-    db: Session = Depends(get_db), 
+    request: Request,
+    db: Session = Depends(get_db),
     form_data: OAuth2PasswordRequestForm = Depends(),
     accept_language: Optional[str] = Header(None)
 ):
     lang = get_lang(accept_language)
-    user = db.query(models.User).filter(models.User.username == form_data.username).first()
+    client_ip = request.client.host if request.client else "unknown"
+    rl_key = f"login:{client_ip}"
+    if rate_limit.is_rate_limited(rl_key):
+        retry = rate_limit.retry_after_seconds(rl_key)
+        detail = (
+            f"Too many login attempts. Try again in {retry}s."
+            if lang == "en"
+            else f"Trop de tentatives de connexion. Réessayez dans {retry}s."
+        )
+        raise HTTPException(status_code=429, detail=detail, headers={"Retry-After": str(retry)})
+
+    # Allow login with either username or email
+    username_or_email = form_data.username
+    if "@" in username_or_email:
+        user = db.query(models.User).filter(models.User.email == username_or_email).first()
+    else:
+        user = db.query(models.User).filter(models.User.username == username_or_email).first()
+
     if not user or not security.verify_password(form_data.password, user.hashed_password):
+        rate_limit.record_failure(rl_key)
         record_audit(db, "auth", "login_failed", actor=form_data.username)
         detail = "Incorrect username or password" if lang == "en" else "Nom d'utilisateur ou mot de passe incorrect"
         raise HTTPException(
@@ -86,7 +123,8 @@ def login_for_access_token(
             detail=detail,
             headers={"WWW-Authenticate": "Bearer"},
         )
-    
+
+    rate_limit.reset(rl_key)
     access_token_expires = timedelta(minutes=security.ACCESS_TOKEN_EXPIRE_MINUTES)
     access_token = security.create_access_token(
         data={"sub": user.username, "role": user.role}, expires_delta=access_token_expires
