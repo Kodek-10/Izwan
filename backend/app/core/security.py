@@ -25,6 +25,18 @@ def verify_password(plain_password: str, hashed_password: str):
 def get_password_hash(password: str):
     return bcrypt.hashpw(password.encode('utf-8'), bcrypt.gensalt()).decode('utf-8')
 
+PASSWORD_MIN_LENGTH = 8
+
+def password_policy_error(password: str, lang: str = "fr") -> Optional[str]:
+    """Retourne un message d'erreur si le mot de passe est trop faible, sinon None."""
+    if len(password) < PASSWORD_MIN_LENGTH:
+        return (
+            f"Password must be at least {PASSWORD_MIN_LENGTH} characters."
+            if lang == "en"
+            else f"Le mot de passe doit contenir au moins {PASSWORD_MIN_LENGTH} caractères."
+        )
+    return None
+
 def create_access_token(data: dict, expires_delta: Optional[timedelta] = None):
     to_encode = data.copy()
     if expires_delta:
