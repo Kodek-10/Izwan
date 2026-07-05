@@ -97,13 +97,13 @@ class ApiClient {
   }
 
   // Helper for registration + login
-  async signup(username: string, password: string): Promise<{ access_token: string }> {
+  async signup(username: string, email: string, password: string, display_name?: string): Promise<{ access_token: string }> {
     const response = await fetch(`${API_URL}/auth/register`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
       },
-      body: JSON.stringify({ username, password }),
+      body: JSON.stringify({ username, email, password, display_name }),
     });
 
     if (!response.ok) {

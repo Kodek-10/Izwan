@@ -136,22 +136,52 @@ function CollectionsPage() {
               <motion.div
                 key={collection.id}
                 variants={item}
-                className="bg-card rounded-xl p-6 flex flex-col gap-6 hover:bg-muted/50 transition-colors cursor-pointer group shadow-sm border border-border"
+                className="bg-card rounded-xl p-6 flex flex-col gap-6 hover:bg-muted/50 transition-colors cursor-pointer group shadow-sm border border-border relative overflow-hidden"
               >
-                <div className="flex justify-between items-start">
-                  <div className="w-12 h-12 rounded-lg bg-muted flex items-center justify-center text-primary group-hover:bg-primary group-hover:text-primary-foreground transition-colors shadow-sm">
-                    <Icon className="h-6 w-6" />
+                <Link
+                  to="/collections/$id"
+                  params={{ id: collection.id.toString() }}
+                  className="flex flex-col gap-6 h-full"
+                >
+                  <div className="flex items-start">
+                    <div className="w-12 h-12 rounded-lg bg-muted flex items-center justify-center text-primary group-hover:bg-primary group-hover:text-primary-foreground transition-colors shadow-sm">
+                      <Icon className="h-6 w-6" />
+                    </div>
                   </div>
+                  <div>
+                    <h3 className="text-lg font-semibold text-foreground mb-1">
+                      {collection.name}
+                    </h3>
+                    <div className="flex items-center gap-3">
+                      <span className="text-xs bg-muted text-muted-foreground px-2 py-1 rounded">
+                        {collection.snippet_count || 0} snippets
+                      </span>
+                      {collection.updated_at && (
+                        <span className="text-xs text-muted-foreground">
+                          Mis à jour: {" "}
+                          {new Date(collection.updated_at).toLocaleDateString(
+                            "fr-FR",
+                            { day: "2-digit", month: "short" }
+                          )}
+                        </span>
+                      )}
+                    </div>
+                  </div>
+                </Link>
+
+                {/* Menu flottant au-dessus du lien pour ne pas bloquer la navigation */}
+                <div className="absolute top-5 right-5 z-10">
                   <DropdownMenu>
                     <DropdownMenuTrigger asChild>
                       <button
                         onClick={(e) => e.stopPropagation()}
                         className="p-1.5 rounded-full hover:bg-muted text-muted-foreground hover:text-foreground transition-colors"
+                        aria-label="Actions"
                       >
                         <MoreVertical className="h-4 w-4" />
                       </button>
                     </DropdownMenuTrigger>
-                    <DropdownMenuContent align="end">
+                    <DropdownMenuContent align="end" sideOffset={4}>
                       <DropdownMenuItem
                         className="text-destructive focus:text-destructive"
                         onClick={() => deleteCollection(collection.id)}
@@ -161,29 +191,6 @@ function CollectionsPage() {
                     </DropdownMenuContent>
                   </DropdownMenu>
                 </div>
-                <Link
-                  to="/collections/$id"
-                  params={{ id: collection.id.toString() }}
-                  className="block"
-                >
-                  <h3 className="text-lg font-semibold text-foreground mb-1">
-                    {collection.name}
-                  </h3>
-                  <div className="flex items-center gap-3">
-                    <span className="text-xs bg-muted text-muted-foreground px-2 py-1 rounded">
-                      {collection.snippet_count || 0} snippets
-                    </span>
-                    {collection.updated_at && (
-                      <span className="text-xs text-muted-foreground">
-                        Mis à jour: {" "}
-                        {new Date(collection.updated_at).toLocaleDateString(
-                          "fr-FR",
-                          { day: "2-digit", month: "short" }
-                        )}
-                      </span>
-                    )}
-                  </div>
-                </Link>
               </motion.div>
             );
           })}

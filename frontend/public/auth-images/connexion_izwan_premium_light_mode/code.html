@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+
+<html class="light" lang="fr"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;900&amp;family=Inter:wght@400;500;600&amp;family=Fira+Code:wght@450&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "tertiary-container": "#393535",
+                        "inverse-surface": "#332f30",
+                        "inverse-primary": "#f7b5c3",
+                        "outline": "#837376",
+                        "on-surface-variant": "#514346",
+                        "on-primary-fixed": "#350e1a",
+                        "on-secondary-fixed": "#31111b",
+                        "error": "#ba1a1a",
+                        "on-tertiary-fixed": "#1e1b1b",
+                        "surface-bright": "#fff8f8",
+                        "on-primary-container": "#cc8e9c",
+                        "tertiary-fixed": "#e9e1e1",
+                        "surface-variant": "#e9e0e1",
+                        "on-tertiary": "#ffffff",
+                        "surface-container-low": "#faf1f2",
+                        "inverse-on-surface": "#f7eff0",
+                        "on-secondary-container": "#7b4f5b",
+                        "secondary-fixed-dim": "#f0b8c5",
+                        "surface-container-high": "#efe6e7",
+                        "error-container": "#ffdad6",
+                        "tertiary-fixed-dim": "#ccc5c5",
+                        "on-error": "#ffffff",
+                        "surface-container": "#f4eced",
+                        "primary": "#3b131f",
+                        "surface-tint": "#844f5c",
+                        "primary-container": "#552834",
+                        "background": "#fff8f8",
+                        "on-secondary-fixed-variant": "#643b46",
+                        "surface-dim": "#e0d8d9",
+                        "on-tertiary-fixed-variant": "#4a4646",
+                        "on-primary": "#ffffff",
+                        "secondary-container": "#ffc5d3",
+                        "secondary": "#7e525e",
+                        "primary-fixed-dim": "#f7b5c3",
+                        "surface-container-lowest": "#ffffff",
+                        "on-primary-fixed-variant": "#683844",
+                        "on-error-container": "#93000a",
+                        "primary-fixed": "#ffd9e0",
+                        "surface-container-highest": "#e9e0e1",
+                        "secondary-fixed": "#ffd9e1",
+                        "on-surface": "#1e1b1c",
+                        "tertiary": "#232020",
+                        "outline-variant": "#d5c2c5",
+                        "on-secondary": "#ffffff",
+                        "on-background": "#1e1b1c",
+                        "surface": "#fff8f8",
+                        "on-tertiary-container": "#a49d9d"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    "spacing": {
+                        "margin-mobile": "16px",
+                        "base": "4px",
+                        "xl": "40px",
+                        "sm": "8px",
+                        "md": "16px",
+                        "gutter": "24px",
+                        "lg": "24px",
+                        "xs": "4px",
+                        "margin-desktop": "64px"
+                    },
+                    "fontFamily": {
+                        "headline-md": ["Poppins"],
+                        "body-lg": ["Inter"],
+                        "label-caps": ["Inter"],
+                        "headline-lg": ["Poppins"],
+                        "headline-lg-mobile": ["Poppins"],
+                        "code-md": ["Fira Code"],
+                        "display": ["Poppins"],
+                        "body-sm": ["Inter"],
+                        "body-md": ["Inter"]
+                    },
+                    "fontSize": {
+                        "headline-md": ["24px", {"lineHeight": "32px", "fontWeight": "600"}],
+                        "body-lg": ["18px", {"lineHeight": "28px", "fontWeight": "400"}],
+                        "label-caps": ["12px", {"lineHeight": "16px", "letterSpacing": "0.05em", "fontWeight": "600"}],
+                        "headline-lg": ["32px", {"lineHeight": "40px", "fontWeight": "600"}],
+                        "headline-lg-mobile": ["28px", {"lineHeight": "36px", "fontWeight": "600"}],
+                        "code-md": ["14px", {"lineHeight": "22px", "fontWeight": "450"}],
+                        "display": ["48px", {"lineHeight": "56px", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                        "body-sm": ["14px", {"lineHeight": "20px", "fontWeight": "400"}],
+                        "body-md": ["16px", {"lineHeight": "24px", "fontWeight": "400"}]
+                    }
+                },
+            },
+        }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+            display: inline-block;
+            vertical-align: middle;
+        }
+        .form-input-focus:focus {
+            box-shadow: 0 0 0 2px rgba(85, 40, 52, 0.1);
+        }
+        .glass-panel {
+            background: rgba(255, 255, 255, 0.03);
+            backdrop-filter: blur(8px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        .wine-gradient-overlay {
+            background: linear-gradient(135deg, rgba(85, 40, 52, 0.95) 0%, rgba(59, 19, 31, 0.8) 100%);
+        }
+    </style>
+</head>
+<body class="bg-background text-on-background min-h-screen flex overflow-x-hidden font-body-md text-body-md">
+<!-- Split Layout Container -->
+<main class="flex w-full min-h-screen">
+<!-- Left Section: Visual Panel -->
+<section class="hidden lg:flex relative w-1/2 min-h-screen overflow-hidden items-center justify-center p-xl">
+<!-- Background Image Placeholder -->
+<div class="absolute inset-0 z-0 bg-cover bg-center" style="background-image: url('https://lh3.googleusercontent.com/aida/AP1WRLvET-WIDFM5WASBkp9qlGrC4k3zK9bl0HBYYFIk8YBgzL3y7bbHW3V_M_yEcrKvZmcIWJ-ycPrpk8Q309rt6PKc8sQxQuDXa9R9DVH3nfbP0cvxhnItulS9GyMbuoxkSgZCqZkcPZvpLVE2I9fzZ0d21eSSZ8mSzlbKVQ8nwsyunu3cWEzEJDefZ3NeuV16kFbdSTIMLW-vAeo4_cqcZ5AvFqksWMzgHOFzTK6_TAMTPBQv4rIgbcueQ_Q')"></div>
+<!-- Branding Content -->
+<div class="relative z-20 flex flex-col items-center text-center max-w-lg">
+<div class="mb-lg">
+<span class="font-headline-lg text-headline-lg text-white font-black tracking-tighter">Izwan</span>
+<div class="h-1 w-12 bg-white mx-auto rounded-full mt-1"></div>
+</div>
+<h1 class="font-display text-display text-white mb-md leading-tight">
+                    Maîtrisez votre code avec élégance
+                </h1>
+<p class="font-body-lg text-body-lg text-white/80 max-w-md">
+                    Une plateforme de gestion de snippets conçue pour les artisans du logiciel exigeants. Structurez vos idées, accélérez votre workflow.
+                </p>
+<!-- Micro-interaction decorative element -->
+<div class="mt-xl glass-panel p-md rounded-xl flex items-center gap-4 animate-pulse">
+<span class="material-symbols-outlined text-white text-3xl">code</span>
+<div class="text-left">
+<div class="h-2 w-24 bg-white/30 rounded mb-2"></div>
+<div class="h-2 w-16 bg-white/20 rounded"></div>
+</div>
+</div>
+</div>
+<!-- Overlay for legibility -->
+<div class="absolute inset-0 z-10 wine-gradient-overlay mix-blend-multiply"></div>
+</section>
+<!-- Right Section: Auth Form -->
+<section class="w-full lg:w-1/2 flex items-center justify-center bg-surface-container-lowest p-gutter md:p-xl">
+<div class="w-full max-w-md space-y-8">
+<!-- Header Mobile Logo (visible only on mobile) -->
+<div class="lg:hidden text-center mb-8">
+<span class="font-headline-md text-headline-md text-primary font-bold">Izwan</span>
+</div>
+<div class="space-y-2">
+<h2 class="font-headline-lg text-headline-lg text-on-surface">Content de vous revoir</h2>
+<p class="text-on-surface-variant font-body-md">Entrez vos identifiants pour accéder à votre espace de travail.</p>
+</div>
+<!-- Social Logins -->
+<div class="grid grid-cols-2 gap-4">
+<button class="flex items-center justify-center gap-3 px-4 py-3 border border-outline-variant hover:bg-surface-container transition-colors rounded-lg font-body-md">
+<svg class="w-5 h-5" viewbox="0 0 24 24">
+<path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4"></path>
+<path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"></path>
+<path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l3.66-2.84z" fill="#FBBC05"></path>
+<path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 12-4.53z" fill="#EA4335"></path>
+</svg>
+                        Google
+                    </button>
+<button class="flex items-center justify-center gap-3 px-4 py-3 border border-outline-variant hover:bg-surface-container transition-colors rounded-lg font-body-md">
+<svg class="w-5 h-5" fill="currentColor" viewbox="0 0 24 24">
+<path d="M12 .297c-6.63 0-12 5.373-12 12 0 5.303 3.438 9.8 8.205 11.385.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61C4.422 18.07 3.633 17.7 3.633 17.7c-1.087-.744.084-.729.084-.729 1.205.084 1.838 1.236 1.838 1.236 1.07 1.835 2.809 1.305 3.495.998.108-.776.417-1.305.76-1.605-2.665-.3-5.466-1.332-5.466-5.93 0-1.31.465-2.38 1.235-3.22-.135-.303-.54-1.523.105-3.176 0 0 1.005-.322 3.3 1.23.96-.267 1.98-.399 3-.405 1.02.006 2.04.138 3 .405 2.28-1.552 3.285-1.23 3.285-1.23.645 1.653.24 2.873.12 3.176.765.84 1.23 1.91 1.23 3.22 0 4.61-2.805 5.625-5.475 5.92.42.36.81 1.096.81 2.22 0 1.606-.015 2.896-.015 3.286 0 .315.21.69.825.57C20.565 22.092 24 17.592 24 12.297c0-6.627-5.373-12-12-12"></path>
+</svg>
+                        GitHub
+                    </button>
+</div>
+<div class="relative flex items-center justify-center">
+<div class="w-full border-t border-outline-variant/30"></div>
+<span class="absolute px-4 bg-surface-container-lowest text-on-surface-variant font-label-caps uppercase text-[10px] tracking-[0.1em]">Ou continuer avec</span>
+</div>
+<!-- Main Login Form -->
+<form class="space-y-6" onsubmit="return false;">
+<div class="space-y-4">
+<div class="group">
+<label class="block font-label-caps text-on-surface-variant mb-1 uppercase tracking-wider text-[11px]" for="email">Adresse Email</label>
+<input class="w-full px-4 py-3 bg-white border border-outline-variant rounded-lg outline-none focus:ring-2 focus:ring-primary/10 focus:border-primary transition-all duration-200 font-body-md placeholder:text-outline/50" id="email" name="email" placeholder="nom@entreprise.fr" required="" type="email"/>
+</div>
+<div class="group">
+<label class="block font-label-caps text-on-surface-variant mb-1 uppercase tracking-wider text-[11px]" for="password">Mot de Passe</label>
+<div class="relative">
+<input class="w-full px-4 py-3 bg-white border border-outline-variant rounded-lg outline-none focus:ring-2 focus:ring-primary/10 focus:border-primary transition-all duration-200 font-body-md placeholder:text-outline/50" id="password" name="password" placeholder="••••••••" required="" type="password"/>
+<button class="absolute right-3 top-1/2 -translate-y-1/2 text-outline hover:text-primary transition-colors p-1" onclick="togglePassword()" type="button">
+<span class="material-symbols-outlined text-[20px]" id="pass-icon">visibility</span>
+</button>
+</div>
+</div>
+</div>
+<div class="flex items-center justify-between">
+<label class="flex items-center gap-2 cursor-pointer group">
+<input class="w-4 h-4 rounded border-outline-variant text-primary focus:ring-primary transition-colors cursor-pointer" type="checkbox"/>
+<span class="font-body-sm text-on-surface-variant group-hover:text-on-surface transition-colors">Se souvenir de moi</span>
+</label>
+<a class="font-body-sm text-primary font-semibold hover:underline" href="#">Mot de passe oublié ?</a>
+</div>
+<button class="w-full bg-primary-container text-white py-4 rounded-[10px] font-semibold hover:bg-primary transition-all active:scale-[0.98] shadow-sm hover:shadow-md" type="submit">
+                        Connexion
+                    </button>
+</form>
+<div class="text-center pt-4">
+<p class="font-body-md text-on-surface-variant">
+                        Nouveau sur Izwan ? 
+                        <a class="text-primary font-bold hover:underline" href="#">Créer un compte</a>
+</p>
+</div>
+<!-- Footer Links -->
+<footer class="pt-12 border-t border-outline-variant/20">
+<div class="flex flex-wrap justify-center gap-x-6 gap-y-2 text-[12px] font-label-caps text-outline uppercase tracking-tight">
+<a class="hover:text-primary transition-colors" href="#">Aide</a>
+<a class="hover:text-primary transition-colors" href="#">Confidentialité</a>
+<a class="hover:text-primary transition-colors" href="#">Conditions</a>
+<a class="hover:text-primary transition-colors" href="#">Status</a>
+</div>
+<p class="text-center text-[10px] text-outline/60 mt-4">© 2024 Izwan. Tous droits réservés.</p>
+</footer>
+</div>
+</section>
+</main>
+<script>
+        function togglePassword() {
+            const passInput = document.getElementById('password');
+            const passIcon = document.getElementById('pass-icon');
+            if (passInput.type === 'password') {
+                passInput.type = 'text';
+                passIcon.textContent = 'visibility_off';
+            } else {
+                passInput.type = 'password';
+                passIcon.textContent = 'visibility';
+            }
+        }
+
+        // Simple button active state animation reinforcement
+        document.querySelectorAll('button').forEach(btn => {
+            btn.addEventListener('mousedown', () => btn.classList.add('scale-95'));
+            btn.addEventListener('mouseup', () => btn.classList.remove('scale-95'));
+            btn.addEventListener('mouseleave', () => btn.classList.remove('scale-95'));
+        });
+    </script>
+</body></html>

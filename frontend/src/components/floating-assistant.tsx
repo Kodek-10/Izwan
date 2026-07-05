@@ -1,11 +1,16 @@
 import { useState, useRef, useEffect } from "react";
 import { Link } from "@tanstack/react-router";
 import { AnimatePresence, motion } from "framer-motion";
-import { Sparkles, Send, Maximize2, X, Bot, User, Loader2 } from "lucide-react";
+import { Sparkles, Maximize2, X, Bot, User, Loader2, ArrowUp } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
 import { api } from "@/lib/api-client";
 import { toast } from "sonner";
+import { PromptSuggestion } from "@/components/ui/prompt-suggestion";
+import {
+  PromptInput,
+  PromptInputActions,
+  PromptInputTextarea,
+} from "@/components/ui/prompt-input";
 
 type Message = { role: "user" | "assistant"; content: string };
 
@@ -175,13 +180,12 @@ export function FloatingAssistant() {
                   <p className="text-sm text-muted-foreground">Comment puis-je vous aider ?</p>
                   <div className="w-full space-y-2">
                     {SUGGESTIONS.map((s) => (
-                      <button
+                      <PromptSuggestion
                         key={s}
                         onClick={() => send(s)}
-                        className="w-full rounded-lg border border-border p-2 text-left text-xs transition-colors hover:bg-muted"
                       >
                         {s}
-                      </button>
+                      </PromptSuggestion>
                     ))}
                   </div>
                 </div>
@@ -222,24 +226,31 @@ export function FloatingAssistant() {
 
             {/* Saisie */}
             <div className="border-t border-border p-3">
-              <div className="flex items-center gap-2 rounded-xl border border-border bg-background p-1">
-                <Input
-                  value={query}
-                  onChange={(e) => setQuery(e.target.value)}
-                  onKeyDown={(e) => e.key === "Enter" && send()}
-                  placeholder="Posez votre question…"
-                  className="border-0 bg-transparent shadow-none focus-visible:ring-0"
-                  disabled={isLoading}
-                />
-                <Button
-                  size="icon"
-                  onClick={() => send()}
-                  disabled={!query.trim() || isLoading}
-                  className="shrink-0 gradient-brand border-0 text-white"
-                >
-                  <Send className="h-4 w-4" />
-                </Button>
-              </div>
+              <PromptInput
+                className="bg-background border border-border rounded-xl shadow-sm focus-within:ring-2 focus-within:ring-primary/20 transition-all"
+                value={query}
+                onValueChange={setQuery}
+                onSubmit={() => send()}
+                disabled={isLoading}
+              >
+                <div className="flex items-start gap-2 p-1">
+                  <PromptInputTextarea
+                    placeholder="Posez votre question…"
+                    className="flex-1 py-2.5"
+                  />
+                  <PromptInputActions className="pt-1 pr-1">
+                    <Button
+                      size="icon"
+                      onClick={() => send()}
+                      disabled={!query.trim() || isLoading}
+                      className="h-8 w-8 shrink-0 gradient-brand text-white border-0"
+                      aria-label="Send"
+                    >
+                      <ArrowUp className="h-4 min-h-4 min-w-4 w-4" />
+                    </Button>
+                  </PromptInputActions>
+                </div>
+              </PromptInput>
             </div>
           </motion.aside>
         )}

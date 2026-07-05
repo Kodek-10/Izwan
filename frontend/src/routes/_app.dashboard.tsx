@@ -1,132 +1,193 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { Code2, FolderKanban, Star, Globe, ArrowRight, Loader2 } from "lucide-react";
 import {
-  PieChart,
-  Pie,
-  Cell,
-  AreaChart,
-  Area,
-  BarChart,
-  Bar,
+  Code2,
+  FolderKanban,
+  Star,
+  Languages,
+  ArrowRight,
+  Loader2,
+  BarChart3,
+} from "lucide-react";
+import {
+  LineChart,
+  Line,
   XAxis,
   YAxis,
   CartesianGrid,
   Tooltip,
   ResponsiveContainer,
 } from "recharts";
-import { chartTooltipProps } from "@/lib/chart-theme";
+import { Button } from "@/components/ui/button";
 import { api } from "@/lib/api-client";
 import { toast } from "sonner";
 import { useTranslation } from "react-i18next";
-import { useEffect, useMemo, useState } from "react";
+import { motion } from "framer-motion";
+import { useEffect, useState, useMemo } from "react";
 
 export const Route = createFileRoute("/_app/dashboard")({
-  head: () => ({ meta: [{ title: "Tableau de bord — Izwan" }] }),
+  head: ({ loaderData }: any) => ({
+    meta: [
+      { title: `${loaderData?.t?.("dashboard.title") || "Dashboard"} — Izwan` },
+    ],
+  }),
   loader: async () => {
     if (typeof window === "undefined") {
-      return { snippets: [], needsClientFetch: true };
+      return { snippets: [], stats: [], needsClientFetch: true };
     }
+
     try {
-      const data = await api.get<{ items: any[] }>("/snippets/?limit=1000");
-      return { snippets: mapSnippets(data.items), needsClientFetch: false };
+      const data = await api.get<{ items: any[] }>("/snippets/?limit=500");
+      const snippets = data.items.map((s) => ({
+        ...s,
+        tags: s.tags.map((t: any) => t.name),
+        dateObj: new Date(s.updated_at),
+      }));
+
+      const languages = new Set(snippets.map((s) => s.language)).size;
+      const tags = new Set(snippets.flatMap((s) => s.tags)).size;
+      const favorites = snippets.filter((s) => s.is_favorite).length;
+
+      return {
+        snippets,
+        stats: [
+          { label: "total_snippets", value: snippets.length, icon: Code2 },
+          { label: "languages", value: languages, icon: Languages },
+          { label: "unique_tags", value: tags, icon: FolderKanban },
+          { label: "favorites", value: favorites, icon: Star },
+        ],
+        needsClientFetch: false,
+      };
     } catch (e) {
-      return { snippets: [], needsClientFetch: false };
+      return { snippets: [], stats: [], needsClientFetch: false };
     }
   },
   component: Dashboard,
 });
 
-const COLORS = ["#e8765a", "#55dcbc", "#b6c7eb", "#c75a45", "#9e412f", "#f1c40f", "#8e7cc3", "#3178c6"];
-
-function mapSnippets(items: any[]) {
-  return items.map((s) => ({
-    ...s,
-    tags: (s.tags || []).map((t: any) => (typeof t === "string" ? t : t.name)),
-    dateObj: new Date(s.updated_at),
-  }));
-}
+const item = {
+  hidden: { opacity: 0, y: 20 },
+  show: { opacity: 1, y: 0 },
+};
 
 function Dashboard() {
   const { t, i18n } = useTranslation();
   const data = Route.useLoaderData();
   const [snippets, setSnippets] = useState<any[]>(data?.snippets || []);
+  const [stats, setStats] = useState<any[]>(data?.stats || []);
   const [isClientLoading, setIsClientLoading] = useState(false);
 
   useEffect(() => {
-    if (data?.snippets && !data.needsClientFetch) setSnippets(data.snippets);
-  }, [data?.snippets, data?.needsClientFetch]);
+    if (data?.snippets && !data.needsClientFetch) {
+      setSnippets(data.snippets);
+      setStats(data.stats);
+    }
+  }, [data?.snippets, data?.stats, data?.needsClientFetch]);
 
   useEffect(() => {
     if (data?.needsClientFetch) {
-      setIsClientLoading(true);
-      api
-        .get<{ items: any[] }>("/snippets/?limit=1000")
-        .then((res) => setSnippets(mapSnippets(res.items)))
-        .catch((e) => console.error("Failed to fetch dashboard data", e))
-        .finally(() => setIsClientLoading(false));
+      const fetchOnClient = async () => {
+        setIsClientLoading(true);
+        try {
+          const res = await api.get<{ items: any[] }>("/snippets/?limit=100");
+          const allSnippets = res.items.map((s) => ({
+            ...s,
+            tags: s.tags.map((t: any) => t.name),
+            dateObj: new Date(s.updated_at),
+          }));
+
+          setSnippets(allSnippets);
+
+          const languages = new Set(allSnippets.map((s) => s.language)).size;
+          const tags = new Set(allSnippets.flatMap((s) => s.tags)).size;
+          const favorites = allSnippets.filter((s) => s.is_favorite).length;
+
+          setStats([
+            { label: "total_snippets", value: allSnippets.length, icon: Code2 },
+            { label: "languages", value: languages, icon: Languages },
+            { label: "unique_tags", value: tags, icon: FolderKanban },
+            { label: "favorites", value: favorites, icon: Star },
+          ]);
+        } catch (e) {
+          console.error("Failed to fetch dashboard data on client", e);
+        } finally {
+          setIsClientLoading(false);
+        }
+      };
+      fetchOnClient();
     }
   }, [data?.needsClientFetch]);
 
-  const kpis = useMemo(() => {
-    const languages = new Set(snippets.map((s) => s.language)).size;
-    const tags = new Set(snippets.flatMap((s) => s.tags)).size;
-    const favorites = snippets.filter((s) => s.is_favorite).length;
-    return [
-      { label: "total_snippets", value: snippets.length, icon: Code2 },
-      { label: "languages", value: languages, icon: Globe },
-      { label: "unique_tags", value: tags, icon: FolderKanban },
-      { label: "favorites", value: favorites, icon: Star },
-    ];
-  }, [snippets]);
-
-  const langData = useMemo(() => {
+  const languageDistribution = useMemo(() => {
     const counts: Record<string, number> = {};
-    snippets.forEach((s) => (counts[s.language] = (counts[s.language] || 0) + 1));
+    snippets.forEach((s) => {
+      counts[s.language] = (counts[s.language] || 0) + 1;
+    });
+    const total = snippets.length || 1;
     return Object.entries(counts)
-      .map(([name, value]) => ({ name, value }))
-      .sort((a, b) => b.value - a.value);
+      .map(([name, count]) => ({
+        name,
+        percentage: Math.round((count / total) * 100),
+      }))
+      .sort((a, b) => b.percentage - a.percentage)
+      .slice(0, 3);
   }, [snippets]);
 
   const topTags = useMemo(() => {
     const counts: Record<string, number> = {};
-    snippets.forEach((s) => s.tags?.forEach((n: string) => (counts[n] = (counts[n] || 0) + 1)));
-    return Object.entries(counts)
-      .map(([name, value]) => ({ name, value }))
-      .sort((a, b) => b.value - a.value)
-      .slice(0, 8);
-  }, [snippets]);
-
-  const colData = useMemo(() => {
-    const counts: Record<string, number> = {};
     snippets.forEach((s) => {
-      const name = s.collection_ref?.name || "Sans collection";
-      counts[name] = (counts[name] || 0) + 1;
+      s.tags?.forEach((tagName: string) => {
+        counts[tagName] = (counts[tagName] || 0) + 1;
+      });
     });
     return Object.entries(counts)
-      .map(([name, value]) => ({ name, value }))
-      .sort((a, b) => b.value - a.value)
-      .slice(0, 8);
+      .map(([name, count]) => ({ name, count }))
+      .sort((a, b) => b.count - a.count)
+      .slice(0, 5)
+      .map((t) => t.name);
   }, [snippets]);
 
-  const growth = useMemo(() => {
-    const months = t("statistics.months", { returnObjects: true }) as string[];
-    const now = new Date();
-    const out: { name: string; count: number }[] = [];
-    for (let i = 5; i >= 0; i--) {
-      const monthEnd = new Date(now.getFullYear(), now.getMonth() - i + 1, 0, 23, 59, 59);
-      const count = snippets.filter((s) => new Date(s.created_at) <= monthEnd).length;
-      out.push({ name: Array.isArray(months) ? months[monthEnd.getMonth()] ?? "" : "", count });
-    }
-    return out;
-  }, [snippets, t]);
+  const [chartDays, setChartDays] = useState<7 | 30>(30);
 
-  const recent = snippets.slice(0, 3);
+  const activityChartData = useMemo(() => {
+    const days = chartDays;
+    const data = [];
+    for (let i = days - 1; i >= 0; i--) {
+      const d = new Date();
+      d.setDate(d.getDate() - i);
+      const dateStr = d.toISOString().split("T")[0];
+      const count = snippets.filter((s) => {
+        const sDate = new Date(s.updated_at).toISOString().split("T")[0];
+        return sDate === dateStr;
+      }).length;
+      data.push({
+        date: dateStr,
+        count,
+        label: d.toLocaleDateString(i18n.language === "fr" ? "fr-FR" : "en-US", {
+          day: "numeric",
+          month: "short",
+        }),
+      });
+    }
+    return data;
+  }, [snippets, chartDays, i18n.language]);
 
   const toggleFavorite = async (id: number, current: boolean) => {
     try {
       await api.put(`/snippets/${id}`, { is_favorite: !current });
-      setSnippets((prev) => prev.map((s) => (s.id === id ? { ...s, is_favorite: !current } : s)));
+      setSnippets((prev) =>
+        prev.map((s) => (s.id === id ? { ...s, is_favorite: !current } : s))
+      );
       toast.success(!current ? "Ajouté aux favoris" : "Retiré des favoris");
+      setStats((prevStats) =>
+        prevStats.map((stat) =>
+          stat.label === "favorites"
+            ? {
+                ...stat,
+                value: Math.max(0, !current ? stat.value + 1 : stat.value - 1),
+              }
+            : stat
+        )
+      );
     } catch (e) {
       toast.error("Erreur lors de la mise à jour du favori");
     }
@@ -134,174 +195,275 @@ function Dashboard() {
 
   if (isClientLoading) {
     return (
-      <div className="flex h-64 flex-col items-center justify-center space-y-4">
+      <div className="flex flex-col items-center justify-center h-64 space-y-4">
         <Loader2 className="h-8 w-8 animate-spin text-primary" />
         <p className="text-sm text-muted-foreground">{t("dashboard.loading")}</p>
       </div>
     );
   }
 
+  if (!data || (stats.length === 0 && !isClientLoading)) {
+    return (
+      <div className="flex flex-col items-center justify-center h-64 border-2 border-dashed border-border rounded-xl">
+        <p className="text-muted-foreground mb-4">{t("dashboard.error")}</p>
+        <Link to="/auth">
+          <Button>{t("auth.login")}</Button>
+        </Link>
+      </div>
+    );
+  }
+
   return (
-    <div className="space-y-6">
-      <div>
-        <h1 className="font-display text-3xl font-bold tracking-tight md:text-4xl">
+    <div className="space-y-8">
+      <div className="mb-8">
+        <h1 className="font-display text-5xl md:text-6xl lg:text-7xl font-bold text-foreground tracking-tight">
           {t("dashboard.title", "Tableau de bord")}
         </h1>
-        <p className="mt-1 text-muted-foreground">
-          {t("dashboard.subtitle", "Aperçu de votre activité et de vos snippets.")}
+        <p className="text-lg md:text-xl text-muted-foreground mt-2">
+          {t("dashboard.subtitle", "Apercu de votre activite et de vos snippets.")}
         </p>
       </div>
 
-      {/* KPIs */}
-      <div className="grid grid-cols-2 gap-4 lg:grid-cols-4">
-        {kpis.map((s) => {
-          const Icon = s.icon;
-          return (
-            <div key={s.label} className="rounded-xl border border-border bg-card p-5 shadow-sm">
-              <div className="flex items-start justify-between">
-                <div>
-                  <p className="font-mono text-xs uppercase tracking-wide text-muted-foreground">
-                    {t(`dashboard.stats.${s.label}`)}
-                  </p>
-                  <p className="mt-2 font-display text-3xl font-bold">{s.value}</p>
+      <div className="grid grid-cols-4 md:grid-cols-12 gap-6">
+        <div className="col-span-4 md:col-span-8 grid grid-cols-2 gap-4 content-start">
+          {/* Stats */}
+          {stats.map((s, index) => {
+            const Icon = s.icon;
+            return (
+              <motion.div
+                key={s.label}
+                variants={item}
+                initial="hidden"
+                animate="show"
+                className="bg-card border border-border/50 rounded-xl p-6 relative overflow-hidden group shadow-sm hover:shadow-md transition-shadow"
+              >
+                <div className="absolute top-0 right-0 p-4 opacity-15 group-hover:opacity-30 transition-opacity">
+                  <Icon className="h-16 w-16 text-primary" />
                 </div>
-                <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-accent text-primary">
-                  <Icon className="h-4 w-4" />
+                <p className="text-sm uppercase tracking-wider text-muted-foreground font-semibold mb-2">
+                  {t(`dashboard.stats.${s.label}`)}
+                </p>
+                <div className="flex items-baseline gap-3">
+                  <span className="font-display text-5xl md:text-6xl lg:text-7xl font-bold text-foreground">
+                    {s.value}
+                  </span>
+                  {index === 0 && (
+                    <span className="text-sm font-semibold text-green-600 flex items-center">
+                      <BarChart3 className="h-4 w-4 mr-0.5" /> +12%
+                    </span>
+                  )}
                 </div>
+              </motion.div>
+            );
+          })}
+
+          {/* Chart */}
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="col-span-2 bg-card border border-border/50 rounded-xl p-6 min-h-[300px] flex flex-col mt-4 shadow-sm"
+          >
+            <div className="flex justify-between items-center mb-4">
+              <h2 className="text-lg font-semibold text-foreground">
+                {t("dashboard.activity", "Activite d'Insertion")}
+              </h2>
+              <div className="flex gap-2">
+                <Button
+                  variant={chartDays === 7 ? "default" : "outline"}
+                  size="sm"
+                  className="text-sm h-9"
+                  onClick={() => setChartDays(7)}
+                >
+                  7J
+                </Button>
+                <Button
+                  variant={chartDays === 30 ? "default" : "outline"}
+                  size="sm"
+                  className="text-sm h-9"
+                  onClick={() => setChartDays(30)}
+                >
+                  30J
+                </Button>
               </div>
             </div>
-          );
-        })}
-      </div>
-
-      {/* Donut langages + croissance */}
-      <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
-        <div className="rounded-2xl border border-border bg-card p-4 shadow-sm sm:p-6">
-          <h3 className="mb-2 font-display font-semibold">Répartition par langage</h3>
-          {langData.length > 0 ? (
-            <div className="relative h-[200px]">
+            <div className="flex-1 w-full min-h-[270px] -ml-4">
               <ResponsiveContainer width="100%" height="100%">
-                <PieChart>
-                  <Pie data={langData} dataKey="value" nameKey="name" innerRadius={58} outerRadius={80} paddingAngle={3}>
-                    {langData.map((_, i) => (
-                      <Cell key={i} fill={COLORS[i % COLORS.length]} />
-                    ))}
-                  </Pie>
-                  <Tooltip {...chartTooltipProps} />
-                </PieChart>
+                <LineChart data={activityChartData} margin={{ top: 10, right: 10, left: 0, bottom: 0 }}>
+                  <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" vertical={false} />
+                  <XAxis
+                    dataKey="label"
+                    tick={{ fontSize: 11, fill: "hsl(var(--muted-foreground))" }}
+                    axisLine={{ stroke: "hsl(var(--border))" }}
+                    tickLine={false}
+                    minTickGap={8}
+                  />
+                  <YAxis
+                    tick={{ fontSize: 11, fill: "hsl(var(--muted-foreground))" }}
+                    axisLine={false}
+                    tickLine={false}
+                    allowDecimals={false}
+                    domain={[0, Math.max(...activityChartData.map((d) => d.count), 1)]}
+                  />
+                  <Tooltip
+                    contentStyle={{
+                      backgroundColor: "hsl(var(--card))",
+                      border: "1px solid hsl(var(--border))",
+                      borderRadius: "8px",
+                      fontSize: "12px",
+                    }}
+                    itemStyle={{ color: "hsl(var(--foreground))" }}
+                    labelStyle={{ color: "hsl(var(--muted-foreground))" }}
+                  />
+                  <Line
+                    type="monotone"
+                    dataKey="count"
+                    stroke="hsl(var(--primary))"
+                    strokeWidth={2.5}
+                    dot={{ r: 4, fill: "hsl(var(--primary))" }}
+                    activeDot={{ r: 6 }}
+                  />
+                </LineChart>
               </ResponsiveContainer>
-              <div className="pointer-events-none absolute inset-0 flex flex-col items-center justify-center">
-                <span className="font-display text-3xl font-bold">{snippets.length}</span>
-                <span className="font-mono text-[10px] uppercase text-muted-foreground">snippets</span>
-              </div>
             </div>
-          ) : (
-            <p className="py-16 text-center text-sm text-muted-foreground">{t("dashboard.no_data", "Pas de données")}</p>
-          )}
+          </motion.div>
         </div>
 
-        <div className="rounded-2xl border border-border bg-card p-4 shadow-sm sm:p-6">
-          <h3 className="mb-2 font-display font-semibold">Croissance de la bibliothèque</h3>
-          <div className="h-[200px]">
-            <ResponsiveContainer width="100%" height="100%">
-              <AreaChart data={growth}>
-                <defs>
-                  <linearGradient id="dashGrowth" x1="0" y1="0" x2="0" y2="1">
-                    <stop offset="0%" stopColor="#e8765a" stopOpacity={0.5} />
-                    <stop offset="100%" stopColor="#e8765a" stopOpacity={0} />
-                  </linearGradient>
-                </defs>
-                <CartesianGrid strokeDasharray="3 3" className="stroke-border" vertical={false} />
-                <XAxis dataKey="name" tick={{ fontSize: 11 }} tickLine={false} axisLine={false} />
-                <YAxis allowDecimals={false} tick={{ fontSize: 11 }} width={28} axisLine={false} tickLine={false} />
-                <Tooltip {...chartTooltipProps} />
-                <Area type="monotone" dataKey="count" stroke="#e8765a" strokeWidth={2.5} fill="url(#dashGrowth)" />
-              </AreaChart>
-            </ResponsiveContainer>
-          </div>
-        </div>
-      </div>
-
-      {/* Top tags + collections */}
-      <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
-        <div className="rounded-2xl border border-border bg-card p-4 shadow-sm sm:p-6">
-          <h3 className="mb-4 font-display font-semibold">Tags les plus utilisés</h3>
-          {topTags.length > 0 ? (
-            <ResponsiveContainer width="100%" height={Math.max(160, topTags.length * 30)}>
-              <BarChart data={topTags} layout="vertical" margin={{ left: 8 }}>
-                <XAxis type="number" allowDecimals={false} tick={{ fontSize: 11 }} hide />
-                <YAxis type="category" dataKey="name" tick={{ fontSize: 11 }} width={100} axisLine={false} tickLine={false} />
-                <Tooltip {...chartTooltipProps} />
-                <Bar dataKey="value" radius={[0, 4, 4, 0]}>
-                  {topTags.map((_, i) => (
-                    <Cell key={i} fill={COLORS[i % COLORS.length]} />
-                  ))}
-                </Bar>
-              </BarChart>
-            </ResponsiveContainer>
-          ) : (
-            <p className="py-12 text-center text-sm text-muted-foreground">Aucun tag pour le moment.</p>
-          )}
-        </div>
-
-        <div className="rounded-2xl border border-border bg-card p-4 shadow-sm sm:p-6">
-          <h3 className="mb-4 font-display font-semibold">Snippets par collection</h3>
-          {colData.length > 0 ? (
-            <ResponsiveContainer width="100%" height={Math.max(160, colData.length * 30)}>
-              <BarChart data={colData} layout="vertical" margin={{ left: 8 }}>
-                <XAxis type="number" allowDecimals={false} tick={{ fontSize: 11 }} hide />
-                <YAxis type="category" dataKey="name" tick={{ fontSize: 11 }} width={110} axisLine={false} tickLine={false} />
-                <Tooltip {...chartTooltipProps} />
-                <Bar dataKey="value" radius={[0, 4, 4, 0]} fill="#55dcbc" />
-              </BarChart>
-            </ResponsiveContainer>
-          ) : (
-            <p className="py-12 text-center text-sm text-muted-foreground">Aucune collection.</p>
-          )}
-        </div>
-      </div>
-
-      {/* Snippets récents */}
-      <div>
-        <div className="mb-4 flex items-center justify-between">
-          <h2 className="font-display text-xl font-semibold">{t("dashboard.recent_snippets")}</h2>
-          <Link to="/snippets" className="flex items-center gap-1 text-sm font-medium text-primary hover:underline">
-            {t("dashboard.view_all")} <ArrowRight className="h-4 w-4" />
-          </Link>
-        </div>
-        <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
-          {recent.length > 0 ? (
-            recent.map((s) => (
-              <div key={s.id} className="relative">
-                <Link to="/snippets/$id" params={{ id: s.id.toString() }} className="block">
-                  <div className="flex h-full flex-col rounded-xl border border-border bg-card p-5 shadow-sm transition-colors hover:border-primary/50">
-                    <div className="mb-4 flex items-center gap-2">
-                      <Code2 className="h-5 w-5 text-primary/80" />
-                      <span className="text-sm font-medium uppercase text-muted-foreground">{s.language}</span>
+        {/* Side Panel */}
+        <div className="col-span-4 md:col-span-4 flex flex-col gap-6">
+          <motion.div
+            initial={{ opacity: 0, x: 20 }}
+            animate={{ opacity: 1, x: 0 }}
+            className="bg-card border border-border/50 rounded-xl p-6 shadow-sm"
+          >
+            <h3 className="text-lg md:text-xl font-semibold text-foreground mb-6">
+              {t("dashboard.language_distribution", "Distribution par Langage")}
+            </h3>
+            <div className="space-y-4">
+              {languageDistribution.length > 0 ? (
+                languageDistribution.map((lang) => (
+                  <div key={lang.name}>
+                    <div className="flex justify-between text-sm mb-1">
+                      <span className="text-foreground font-medium">
+                        {lang.name}
+                      </span>
+                      <span className="text-muted-foreground">
+                        {lang.percentage}%
+                      </span>
                     </div>
-                    <h4 className="mb-2 truncate text-lg font-semibold">{s.title}</h4>
-                    <div className="mt-auto line-clamp-2 rounded border border-border/30 bg-muted/50 p-3 font-mono text-sm text-muted-foreground/90">
-                      {s.code || t("dashboard.no_content", "Aucun contenu")}
+                    <div className="h-3 w-full bg-muted rounded-full overflow-hidden">
+                      <div
+                        className="h-full bg-primary rounded-full"
+                        style={{ width: `${lang.percentage}%` }}
+                      ></div>
                     </div>
                   </div>
-                </Link>
-                <button
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    toggleFavorite(s.id, s.is_favorite);
-                  }}
-                  className="absolute right-4 top-4 z-10 rounded-full p-1.5 transition-colors hover:bg-accent"
-                  aria-label={s.is_favorite ? "Retirer des favoris" : "Ajouter aux favoris"}
-                >
-                  <Star className={`h-5 w-5 ${s.is_favorite ? "fill-yellow-500 text-yellow-500" : "text-muted-foreground"}`} />
-                </button>
-              </div>
-            ))
-          ) : (
-            <div className="col-span-3 rounded-xl border-2 border-dashed border-border py-8 text-center text-muted-foreground">
-              {t("dashboard.no_snippets")}
+                ))
+              ) : (
+                <div className="text-sm text-muted-foreground text-center py-4">
+                  {t("dashboard.no_data", "Pas de donnees disponibles")}
+                </div>
+              )}
             </div>
-          )}
+          </motion.div>
+
+          <motion.div
+            initial={{ opacity: 0, x: 20 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ delay: 0.1 }}
+            className="bg-card border border-border/50 rounded-xl p-6 shadow-sm"
+          >
+            <h3 className="text-lg md:text-xl font-semibold text-foreground mb-4">
+              {t("dashboard.popular_tags", "Tags Populaires")}
+            </h3>
+            <div className="flex flex-wrap gap-2">
+              {topTags.length > 0 ? (
+                topTags.map((tag) => (
+                  <span
+                    key={tag}
+                    className="text-sm bg-muted border border-border/50 text-foreground px-3 py-1.5 rounded-full hover:border-primary/50 transition-colors cursor-pointer"
+                  >
+                    #{tag}
+                  </span>
+                ))
+              ) : (
+                <span className="text-sm text-muted-foreground">
+                  {t("dashboard.no_tags", "Aucun tag")}
+                </span>
+              )}
+            </div>
+          </motion.div>
+        </div>
+
+        {/* Recent Snippets */}
+        <div className="col-span-4 md:col-span-12 mt-4">
+          <div className="flex justify-between items-center mb-6">
+            <h2 className="font-display text-3xl md:text-4xl font-semibold text-foreground">
+              {t("dashboard.recent_snippets")}
+            </h2>
+            <Link
+              to="/snippets"
+              className="text-sm text-primary hover:underline flex items-center gap-1 font-medium"
+            >
+              {t("dashboard.view_all")}{" "}
+              <ArrowRight className="h-4 w-4" />
+            </Link>
+          </div>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            {snippets.length > 0 ? (
+              snippets.slice(0, 3).map((s) => (
+                <div key={s.id} className="relative">
+                  <Link
+                    to="/snippets/$id"
+                    params={{ id: s.id.toString() }}
+                    className="block"
+                  >
+                    <div className="bg-card border border-border/50 rounded-xl p-5 hover:border-primary/50 transition-colors group cursor-pointer shadow-sm hover:shadow-md h-full flex flex-col">
+                      <div className="flex justify-between items-start mb-4">
+                        <div className="flex items-center gap-2">
+                          <Code2 className="h-5 w-5 text-primary/80" />
+                          <span className="text-sm text-muted-foreground uppercase font-medium">
+                            {s.language}
+                          </span>
+                        </div>
+                      </div>
+                      <h4 className="text-lg font-semibold text-foreground mb-2 truncate group-hover:text-primary transition-colors">
+                        {s.title}
+                      </h4>
+                      <div className="text-sm xl:text-base font-mono text-muted-foreground/90 line-clamp-2 bg-muted/50 p-3 rounded border border-border/30 mt-auto">
+                        {s.code ||
+                          s.content ||
+                          t("dashboard.no_content", "Aucun contenu")}
+                      </div>
+                    </div>
+                  </Link>
+                  <button
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      toggleFavorite(s.id, s.is_favorite);
+                    }}
+                    className="absolute top-4 right-4 z-10 p-1.5 rounded-full hover:bg-accent transition-colors"
+                    aria-label={
+                      s.is_favorite
+                        ? "Retirer des favoris"
+                        : "Ajouter aux favoris"
+                    }
+                  >
+                    <Star
+                      className={`h-5 w-5 ${
+                        s.is_favorite
+                          ? "text-yellow-500 fill-yellow-500"
+                          : "text-muted-foreground"
+                      }`}
+                    />
+                  </button>
+                </div>
+              ))
+            ) : (
+              <div className="col-span-3 text-center text-muted-foreground py-8 border-2 border-dashed border-border rounded-xl">
+                {t("dashboard.no_snippets")}
+              </div>
+            )}
+          </div>
         </div>
       </div>
     </div>

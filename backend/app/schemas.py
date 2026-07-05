@@ -4,9 +4,12 @@ from datetime import datetime
 
 class UserBase(BaseModel):
     username: str
+    email: str
+    display_name: Optional[str] = None
 
 class UserCreate(UserBase):
     password: str
+    display_name: Optional[str] = None
 
 class User(UserBase):
     id: int

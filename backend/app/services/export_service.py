@@ -1,4 +1,5 @@
 from sqlalchemy.orm import Session
+from typing import Optional, List
 from .. import models
 import markdown
 from xhtml2pdf import pisa
@@ -8,14 +9,19 @@ from io import BytesIO
 import os
 
 class ExportService:
-    def export_to_markdown(self, db: Session, user_id: int, collection_id: int = None, favorite_only: bool = False, lang: str = "fr") -> str:
+    def _get_base_query(self, db: Session, user_id: int, collection_id: int = None, favorite_only: bool = False, ids: Optional[List[int]] = None):
         query = db.query(models.Snippet).filter(models.Snippet.owner_id == user_id)
-        if collection_id:
-            query = query.filter(models.Snippet.collection_id == collection_id)
-        if favorite_only:
-            query = query.filter(models.Snippet.is_favorite == True)
-            
-        snippets = query.all()
+        if ids:
+            query = query.filter(models.Snippet.id.in_(ids))
+        else:
+            if collection_id:
+                query = query.filter(models.Snippet.collection_id == collection_id)
+            if favorite_only:
+                query = query.filter(models.Snippet.is_favorite == True)
+        return query
+
+    def export_to_markdown(self, db: Session, user_id: int, collection_id: int = None, favorite_only: bool = False, lang: str = "fr", ids: Optional[List[int]] = None) -> str:
+        snippets = self._get_base_query(db, user_id, collection_id, favorite_only, ids).all()
         date_str = datetime.now().strftime('%Y-%m-%d')
         title = f"# Snippets Export ({date_str})\n\n"
         md_content = title
@@ -29,14 +35,8 @@ class ExportService:
             md_content += "---\n\n"
         return md_content
 
-    def export_to_pdf(self, db: Session, user_id: int, collection_id: int = None, favorite_only: bool = False, lang: str = "fr") -> BytesIO:
-        query = db.query(models.Snippet).filter(models.Snippet.owner_id == user_id)
-        if collection_id:
-            query = query.filter(models.Snippet.collection_id == collection_id)
-        if favorite_only:
-            query = query.filter(models.Snippet.is_favorite == True)
-            
-        snippets = query.all()
+    def export_to_pdf(self, db: Session, user_id: int, collection_id: int = None, favorite_only: bool = False, lang: str = "fr", ids: Optional[List[int]] = None) -> BytesIO:
+        snippets = self._get_base_query(db, user_id, collection_id, favorite_only, ids).all()
         
         # Load template
         template_path = os.path.join(os.path.dirname(__file__), "export_template.html")

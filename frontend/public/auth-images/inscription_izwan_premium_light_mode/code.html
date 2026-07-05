@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+
+<html class="light" lang="fr"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Izwan | Inscription</title>
+<!-- Fonts & Icons -->
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@500;600;700;900&amp;family=Inter:wght@400;600&amp;family=Fira+Code:wght@450&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<!-- Shared Tailwind Config -->
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "tertiary-container": "#393535",
+                        "inverse-surface": "#332f30",
+                        "inverse-primary": "#f7b5c3",
+                        "outline": "#837376",
+                        "on-surface-variant": "#514346",
+                        "on-primary-fixed": "#350e1a",
+                        "on-secondary-fixed": "#31111b",
+                        "error": "#ba1a1a",
+                        "on-tertiary-fixed": "#1e1b1b",
+                        "surface-bright": "#fff8f8",
+                        "on-primary-container": "#cc8e9c",
+                        "tertiary-fixed": "#e9e1e1",
+                        "surface-variant": "#e9e0e1",
+                        "on-tertiary": "#ffffff",
+                        "surface-container-low": "#faf1f2",
+                        "inverse-on-surface": "#f7eff0",
+                        "on-secondary-container": "#7b4f5b",
+                        "secondary-fixed-dim": "#f0b8c5",
+                        "surface-container-high": "#efe6e7",
+                        "error-container": "#ffdad6",
+                        "tertiary-fixed-dim": "#ccc5c5",
+                        "on-error": "#ffffff",
+                        "surface-container": "#f4eced",
+                        "primary": "#3b131f",
+                        "surface-tint": "#844f5c",
+                        "primary-container": "#552834",
+                        "background": "#fff8f8",
+                        "on-secondary-fixed-variant": "#643b46",
+                        "surface-dim": "#e0d8d9",
+                        "on-tertiary-fixed-variant": "#4a4646",
+                        "on-primary": "#ffffff",
+                        "secondary-container": "#ffc5d3",
+                        "secondary": "#7e525e",
+                        "primary-fixed-dim": "#f7b5c3",
+                        "surface-container-lowest": "#ffffff",
+                        "on-primary-fixed-variant": "#683844",
+                        "on-error-container": "#93000a",
+                        "primary-fixed": "#ffd9e0",
+                        "surface-container-highest": "#e9e0e1",
+                        "secondary-fixed": "#ffd9e1",
+                        "on-surface": "#1e1b1c",
+                        "tertiary": "#232020",
+                        "outline-variant": "#d5c2c5",
+                        "on-secondary": "#ffffff",
+                        "on-background": "#1e1b1c",
+                        "surface": "#fff8f8",
+                        "on-tertiary-container": "#a49d9d"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    "spacing": {
+                        "margin-mobile": "16px",
+                        "base": "4px",
+                        "xl": "40px",
+                        "sm": "8px",
+                        "md": "16px",
+                        "gutter": "24px",
+                        "lg": "24px",
+                        "xs": "4px",
+                        "margin-desktop": "64px"
+                    },
+                    "fontFamily": {
+                        "headline-md": ["Poppins"],
+                        "body-lg": ["Inter"],
+                        "label-caps": ["Inter"],
+                        "headline-lg": ["Poppins"],
+                        "headline-lg-mobile": ["Poppins"],
+                        "code-md": ["Fira Code"],
+                        "display": ["Poppins"],
+                        "body-sm": ["Inter"],
+                        "body-md": ["Inter"]
+                    },
+                    "fontSize": {
+                        "headline-md": ["24px", {"lineHeight": "32px", "fontWeight": "600"}],
+                        "body-lg": ["18px", {"lineHeight": "28px", "fontWeight": "400"}],
+                        "label-caps": ["12px", {"lineHeight": "16px", "letterSpacing": "0.05em", "fontWeight": "600"}],
+                        "headline-lg": ["32px", {"lineHeight": "40px", "fontWeight": "600"}],
+                        "headline-lg-mobile": ["28px", {"lineHeight": "36px", "fontWeight": "600"}],
+                        "code-md": ["14px", {"lineHeight": "22px", "fontWeight": "450"}],
+                        "display": ["48px", {"lineHeight": "56px", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                        "body-sm": ["14px", {"lineHeight": "20px", "fontWeight": "400"}],
+                        "body-md": ["16px", {"lineHeight": "24px", "fontWeight": "400"}]
+                    }
+                },
+            },
+        }
+    </script>
+<style>
+        body {
+            background-color: #fff8f8;
+            color: #1e1b1c;
+            overflow-x: hidden;
+        }
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .wine-glow:focus-within {
+            box-shadow: 0 0 0 4px rgba(85, 40, 52, 0.1);
+        }
+        .bento-pattern {
+            background-image: linear-gradient(#e0d8d8 0.5px, transparent 0.5px), linear-gradient(90deg, #e0d8d8 0.5px, transparent 0.5px);
+            background-size: 32px 32px;
+        }
+    </style>
+</head>
+<body class="font-body-md text-body-md antialiased">
+<main class="min-h-screen flex flex-col md:flex-row">
+<!-- Left Panel: Minimalist Technical Pattern -->
+<section class="hidden md:flex w-1/2 relative bg-surface-container-low overflow-hidden items-center justify-center border-r border-outline-variant/30">
+<div class="absolute inset-0 bento-pattern opacity-40"></div>
+<div class="relative z-10 p-16 flex flex-col items-start max-w-lg">
+<div class="mb-12">
+<span class="text-primary font-headline-md text-headline-md font-bold tracking-tight">Izwan</span>
+</div>
+<h1 class="font-display text-display text-primary leading-tight mb-6">
+                    Rejoignez la communauté Izwan
+                </h1>
+<p class="text-on-surface-variant font-body-lg text-body-lg mb-12">
+                    Gérez vos snippets, automatisez vos workflows et collaborez avec une précision technique absolue dans notre environnement premium.
+                </p>
+<!-- Technical Pattern Asset Image -->
+<div class="w-full aspect-video rounded-xl overflow-hidden shadow-2xl border border-outline-variant/30 relative">
+<img alt="Technical pattern" class="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida/AP1WRLtQ_8ebPqP-gGJlRJwwtSxE_iz44q_H3Vj69zRWT8kz9r-oD0oWmAr_EQ9uAoqWxXS9RUAhzmaM3FWT4go0WIMG9zkiTcAjYcIm6rXmJ9LPRtVPX6DbY2ZOAH7iVUSw_FPz_0pRsxCRT0R_FUkVl2fB5PF905zbo0IXIJ4oi0Tha4z0F_lAlO4avyjx9lsp8wPDyUuivn4hnWiGkUGcslCeyvi01l8bW_KiHPpwL7y5m6rsQk8AZpKT3w"/>
+<div class="absolute inset-0 bg-primary/5 mix-blend-overlay"></div>
+</div>
+<div class="mt-12 flex gap-4">
+<div class="flex -space-x-3">
+<div class="w-10 h-10 rounded-full border-2 border-surface bg-primary-container flex items-center justify-center text-white text-xs font-bold">JD</div>
+<div class="w-10 h-10 rounded-full border-2 border-surface bg-secondary flex items-center justify-center text-white text-xs font-bold">AL</div>
+<div class="w-10 h-10 rounded-full border-2 border-surface bg-tertiary flex items-center justify-center text-white text-xs font-bold">MK</div>
+</div>
+<span class="text-on-surface-variant text-body-sm font-medium self-center">+2k ingénieurs déjà inscrits</span>
+</div>
+</div>
+<!-- Abstract background shapes inspired by user image -->
+<div class="absolute -top-20 -right-20 w-80 h-80 bg-surface-container-high rounded-full blur-3xl opacity-50"></div>
+<div class="absolute -bottom-20 -left-20 w-80 h-80 bg-primary-container/5 rounded-full blur-3xl opacity-50"></div>
+</section>
+<!-- Right Panel: Signup Form -->
+<section class="flex-1 flex flex-col items-center justify-center bg-white px-6 py-12 md:px-12 lg:px-24">
+<!-- Mobile Logo -->
+<div class="md:hidden mb-12">
+<span class="text-primary font-headline-md text-headline-md font-bold">Izwan</span>
+</div>
+<div class="w-full max-w-md">
+<header class="mb-10">
+<h2 class="font-headline-lg text-headline-lg text-primary mb-2">Créer un compte</h2>
+<p class="text-on-surface-variant">Prêt à porter votre code vers de nouveaux sommets ?</p>
+</header>
+<!-- Social Signup Options -->
+<div class="grid grid-cols-2 gap-4 mb-8">
+<button class="flex items-center justify-center gap-3 px-4 py-3 border border-outline-variant rounded-lg hover:bg-surface-container-lowest transition-colors wine-glow group">
+<span class="material-symbols-outlined text-primary group-hover:scale-110 transition-transform">google</span>
+<span class="font-label-caps text-label-caps text-on-surface-variant">Google</span>
+</button>
+<button class="flex items-center justify-center gap-3 px-4 py-3 border border-outline-variant rounded-lg hover:bg-surface-container-lowest transition-colors wine-glow group">
+<span class="material-symbols-outlined text-primary group-hover:scale-110 transition-transform">code</span>
+<span class="font-label-caps text-label-caps text-on-surface-variant">GitHub</span>
+</button>
+</div>
+<div class="relative flex items-center justify-center mb-8">
+<div class="w-full h-px bg-outline-variant/30"></div>
+<span class="absolute px-4 bg-white text-on-surface-variant text-label-caps font-label-caps">ou avec email</span>
+</div>
+<!-- Main Form -->
+<form class="space-y-5" onsubmit="event.preventDefault();">
+<!-- Nom Complet -->
+<div class="space-y-1.5">
+<label class="font-label-caps text-label-caps text-on-surface-variant px-1 uppercase tracking-wider" for="full_name">Nom complet</label>
+<div class="relative group">
+<span class="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-outline group-focus-within:text-primary transition-colors">person</span>
+<input class="w-full pl-12 pr-4 py-3 bg-white border border-outline-variant rounded-xl focus:ring-0 focus:border-primary transition-all wine-glow text-on-surface placeholder:text-outline/50" id="full_name" placeholder="Jean Dupont" type="text"/>
+</div>
+</div>
+<!-- Email -->
+<div class="space-y-1.5">
+<label class="font-label-caps text-label-caps text-on-surface-variant px-1 uppercase tracking-wider" for="email">Email</label>
+<div class="relative group">
+<span class="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-outline group-focus-within:text-primary transition-colors">mail</span>
+<input class="w-full pl-12 pr-4 py-3 bg-white border border-outline-variant rounded-xl focus:ring-0 focus:border-primary transition-all wine-glow text-on-surface placeholder:text-outline/50" id="email" placeholder="jean@exemple.com" type="email"/>
+</div>
+</div>
+<!-- Mot de passe -->
+<div class="space-y-1.5">
+<label class="font-label-caps text-label-caps text-on-surface-variant px-1 uppercase tracking-wider" for="password">Mot de passe</label>
+<div class="relative group">
+<span class="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-outline group-focus-within:text-primary transition-colors">lock</span>
+<input class="w-full pl-12 pr-12 py-3 bg-white border border-outline-variant rounded-xl focus:ring-0 focus:border-primary transition-all wine-glow text-on-surface placeholder:text-outline/50" id="password" placeholder="••••••••" type="password"/>
+<button class="absolute right-4 top-1/2 -translate-y-1/2 text-outline hover:text-primary" type="button">
+<span class="material-symbols-outlined">visibility</span>
+</button>
+</div>
+</div>
+<!-- Confirmation Mot de passe -->
+<div class="space-y-1.5">
+<label class="font-label-caps text-label-caps text-on-surface-variant px-1 uppercase tracking-wider" for="password_confirm">Confirmation du mot de passe</label>
+<div class="relative group">
+<span class="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-outline group-focus-within:text-primary transition-colors">shield_lock</span>
+<input class="w-full pl-12 pr-4 py-3 bg-white border border-outline-variant rounded-xl focus:ring-0 focus:border-primary transition-all wine-glow text-on-surface placeholder:text-outline/50" id="password_confirm" placeholder="••••••••" type="password"/>
+</div>
+</div>
+<!-- Terms Checkbox -->
+<div class="flex items-start gap-3 py-2">
+<input class="mt-1 w-5 h-5 rounded border-outline-variant text-primary focus:ring-primary/20" id="terms" type="checkbox"/>
+<label class="text-body-sm text-on-surface-variant leading-tight" for="terms">
+                            J'accepte les <a class="text-primary font-semibold hover:underline" href="#">Conditions d'utilisation</a> et la <a class="text-primary font-semibold hover:underline" href="#">Politique de confidentialité</a>.
+                        </label>
+</div>
+<!-- Primary Action -->
+<button class="w-full py-4 bg-primary text-on-primary font-headline-md text-headline-md rounded-xl hover:bg-primary-container active:scale-[0.98] transition-all shadow-lg shadow-primary/10" type="submit">
+                        Créer un compte
+                    </button>
+</form>
+<footer class="mt-10 text-center">
+<p class="text-on-surface-variant">
+                        Déjà un compte ? <a class="text-primary font-bold hover:underline" href="#">Connexion</a>
+</p>
+</footer>
+</div>
+</section>
+</main>
+<!-- Micro-interaction script -->
+<script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const inputs = document.querySelectorAll('input');
+            inputs.forEach(input => {
+                input.addEventListener('focus', () => {
+                    input.parentElement.classList.add('scale-[1.01]');
+                    input.parentElement.classList.add('transition-transform');
+                });
+                input.addEventListener('blur', () => {
+                    input.parentElement.classList.remove('scale-[1.01]');
+                });
+            });
+        });
+    </script>
+</body></html>
