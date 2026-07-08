@@ -1,8 +1,9 @@
-from fastapi import APIRouter, Depends, HTTPException, status
+from fastapi import APIRouter, Depends, HTTPException, status, Request
 from sqlalchemy.orm import Session
 from typing import List
 from ..core.database import get_db
 from ..core.security import get_current_user
+from ..core import rate_limit as rl
 from .. import models, schemas
 
 from ..services.embedding_service import embedding_service
@@ -56,6 +57,12 @@ def update_snippet_embedding(db: Session, snippet: models.Snippet):
 
 @router.post("/", response_model=schemas.Snippet, status_code=status.HTTP_201_CREATED)
 async def create_snippet(snippet: schemas.SnippetCreate, db: Session = Depends(get_db), current_user: models.User = Depends(get_current_user)):
+    if rl.is_creation_rate_limited(current_user.id):
+        raise HTTPException(
+            status_code=status.HTTP_429_TOO_MANY_REQUESTS,
+            detail="Too many snippet creations. Please try again later.",
+            headers={"Retry-After": str(rl.creation_retry_after(current_user.id))}
+        )
     # Auto-generate description and tags via AI if not provided
     ai_description = snippet.description
     ai_tags = snippet.tags or []
@@ -90,7 +97,8 @@ async def create_snippet(snippet: schemas.SnippetCreate, db: Session = Depends(g
     
     # Generate embedding
     update_snippet_embedding(db, db_snippet)
-    
+
+    rl.record_creation(current_user.id)
     return db_snippet
 
 @router.get("/", response_model=schemas.PaginatedSnippet)

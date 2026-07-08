@@ -4,6 +4,7 @@ from sqlalchemy import func
 from typing import List
 from ..core.database import get_db
 from ..core.security import get_current_user
+from ..core import rate_limit as rl
 from .. import models, schemas
 
 router = APIRouter()
@@ -14,10 +15,17 @@ def read_collections(db: Session = Depends(get_db), current_user: models.User = 
 
 @router.post("/", response_model=schemas.Collection)
 def create_collection(collection: schemas.CollectionCreate, db: Session = Depends(get_db), current_user: models.User = Depends(get_current_user)):
+    if rl.is_creation_rate_limited(current_user.id, max_creations=20):
+        raise HTTPException(
+            status_code=status.HTTP_429_TOO_MANY_REQUESTS,
+            detail="Too many collection creations. Please try again later.",
+            headers={"Retry-After": str(rl.creation_retry_after(current_user.id))}
+        )
     db_collection = models.Collection(**collection.model_dump(), owner_id=current_user.id)
     db.add(db_collection)
     db.commit()
     db.refresh(db_collection)
+    rl.record_creation(current_user.id)
     return db_collection
 
 @router.get("/{id}", response_model=schemas.Collection)
