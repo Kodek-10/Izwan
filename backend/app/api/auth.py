@@ -75,6 +75,10 @@ def change_password(
         detail = "Incorrect current password" if lang == "en" else "Mot de passe actuel incorrect"
         raise HTTPException(status_code=400, detail=detail)
 
+    if security.verify_password(data.new_password, current_user.hashed_password):
+        detail = "New password cannot be the same as the current password" if lang == "en" else "Le nouveau mot de passe ne peut pas être identique à l'actuel"
+        raise HTTPException(status_code=400, detail=detail)
+
     pw_error = security.password_policy_error(data.new_password, lang)
     if pw_error:
         raise HTTPException(status_code=400, detail=pw_error)
