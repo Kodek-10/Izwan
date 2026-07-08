@@ -16,7 +16,7 @@ jinja2
 markdown
 # weasyprint or reportlab for PDF
 reportlab
-python-jose[cryptography]
+PyJWT
 passlib[bcrypt]
 python-multipart
 fastembed
