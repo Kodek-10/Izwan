@@ -20,14 +20,11 @@ def register(user: schemas.UserCreate, db: Session = Depends(get_db), accept_lan
     pw_error = security.password_policy_error(user.password, lang)
     if pw_error:
         raise HTTPException(status_code=400, detail=pw_error)
-    db_user = db.query(models.User).filter(models.User.username == user.username).first()
+    db_user = db.query(models.User).filter(
+        (models.User.username == user.username) | (models.User.email == user.email)
+    ).first()
     if db_user:
-        detail = "Username already registered" if lang == "en" else "Nom d'utilisateur déjà enregistré"
-        raise HTTPException(status_code=400, detail=detail)
-
-    db_email = db.query(models.User).filter(models.User.email == user.email).first()
-    if db_email:
-        detail = "Email already registered" if lang == "en" else "Email déjà enregistré"
+        detail = "Username or email already registered" if lang == "en" else "Nom d'utilisateur ou email déjà enregistré"
         raise HTTPException(status_code=400, detail=detail)
 
     hashed_password = security.get_password_hash(user.password)
