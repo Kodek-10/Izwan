@@ -8,10 +8,12 @@ from sqlalchemy.orm import Session
 from ..core.database import get_db
 from .. import models
 
-# Config (Should be in config.py in a real app)
-# Clé de signature JWT : définie via l'environnement en production.
-# Le repli ci-dessous n'est qu'un dépannage de dev — NE PAS l'utiliser en prod.
-SECRET_KEY = os.getenv("JWT_SECRET_KEY") or "INSECURE-DEV-FALLBACK-set-JWT_SECRET_KEY-in-prod"
+SECRET_KEY = os.getenv("JWT_SECRET_KEY")
+if not SECRET_KEY:
+    raise ValueError(
+        "JWT_SECRET_KEY environment variable is required. "
+        "Set a secure key via environment variable or .env file."
+    )
 ALGORITHM = "HS256"
 ACCESS_TOKEN_EXPIRE_MINUTES = 60 * 24 # 24 hours
 
