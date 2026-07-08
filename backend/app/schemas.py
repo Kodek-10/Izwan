@@ -1,10 +1,10 @@
-from pydantic import BaseModel, ConfigDict
+from pydantic import BaseModel, ConfigDict, EmailStr
 from typing import List, Optional, Dict
 from datetime import datetime
 
 class UserBase(BaseModel):
     username: str
-    email: str
+    email: EmailStr
     display_name: Optional[str] = None
 
 class UserCreate(UserBase):

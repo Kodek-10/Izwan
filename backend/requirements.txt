@@ -5,7 +5,8 @@ fastapi
 uvicorn
 sqlalchemy
 psycopg2-binary>=2.9.12
-pydantic
+pydantic[email]
+email-validator
 pydantic-settings
 python-dotenv
 pytest
