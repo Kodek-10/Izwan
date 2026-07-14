@@ -63,6 +63,14 @@ async def create_snippet(snippet: schemas.SnippetCreate, db: Session = Depends(g
             detail="Too many snippet creations. Please try again later.",
             headers={"Retry-After": str(rl.creation_retry_after(current_user.id))}
         )
+    # M2 — valider l'appartenance de la collection (anti-IDOR cross-tenant + anti-énumération).
+    if snippet.collection_id is not None:
+        collection = db.query(models.Collection).filter(
+            models.Collection.id == snippet.collection_id,
+            models.Collection.owner_id == current_user.id,
+        ).first()
+        if collection is None:
+            raise HTTPException(status_code=404, detail="Collection not found")
     # Auto-generate description and tags via AI if not provided
     ai_description = snippet.description
     ai_tags = snippet.tags or []
@@ -194,6 +202,15 @@ def update_snippet(snippet_id: int, snippet: schemas.SnippetUpdate, db: Session 
     if "tags" in update_data:
         db_snippet.tags = get_or_create_tags(db, update_data["tags"])
         del update_data["tags"]
+
+    # M2 — valider l'appartenance de la collection si elle est modifiée.
+    if "collection_id" in update_data and update_data["collection_id"] is not None:
+        collection = db.query(models.Collection).filter(
+            models.Collection.id == update_data["collection_id"],
+            models.Collection.owner_id == current_user.id,
+        ).first()
+        if collection is None:
+            raise HTTPException(status_code=404, detail="Collection not found")
         
     for key, value in update_data.items():
         setattr(db_snippet, key, value)

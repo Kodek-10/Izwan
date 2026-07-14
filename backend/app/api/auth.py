@@ -15,8 +15,18 @@ def get_lang(accept_language: Optional[str] = None) -> str:
     return "en" if accept_language and "en" in accept_language.lower() else "fr"
 
 @router.post("/register", response_model=schemas.User)
-def register(user: schemas.UserCreate, db: Session = Depends(get_db), accept_language: Optional[str] = Header(None)):
+def register(request: Request, user: schemas.UserCreate, db: Session = Depends(get_db), accept_language: Optional[str] = Header(None)):
     lang = get_lang(accept_language)
+    # Anti-spam de création de comptes : toute tentative compte (succès ou échec).
+    rl_key = f"register:{rate_limit.get_client_ip(request)}"
+    if rate_limit.is_rate_limited(rl_key, max_failures=rate_limit.REGISTER_MAX_FAILURES):
+        retry = rate_limit.retry_after_seconds(rl_key)
+        detail = (
+            f"Too many registration attempts. Try again in {retry}s." if lang == "en"
+            else f"Trop de tentatives d'inscription. Réessayez dans {retry}s."
+        )
+        raise HTTPException(status_code=429, detail=detail, headers={"Retry-After": str(retry)})
+    rate_limit.record_failure(rl_key)  # comptabilise cette tentative (anti-bypass)
     pw_error = security.password_policy_error(user.password, lang)
     if pw_error:
         raise HTTPException(status_code=400, detail=pw_error)
@@ -97,7 +107,7 @@ def login_for_access_token(
     accept_language: Optional[str] = Header(None)
 ):
     lang = get_lang(accept_language)
-    client_ip = request.client.host if request.client else "unknown"
+    client_ip = rate_limit.get_client_ip(request)
     rl_key = f"login:{client_ip}"
     if rate_limit.is_rate_limited(rl_key):
         retry = rate_limit.retry_after_seconds(rl_key)

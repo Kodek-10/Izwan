@@ -8,7 +8,7 @@ def _auth(token):
 
 
 def _make(client, db, username, password, role="USER"):
-    client.post(f"{BASE}/auth/register", json={"username": username, "password": password})
+    client.post(f"{BASE}/auth/register", json={"username": username, "email": f"{username}@example.com", "password": password})
     if role == "ADMIN":
         user = db.query(models.User).filter(models.User.username == username).first()
         user.role = "ADMIN"
@@ -125,3 +125,16 @@ def test_admin_lists_snippets_metadata_only(client, db):
     assert any(s["title"] == "Mon secret" and s["language"] == "python" for s in data)
     # Confidentialité : le code n'est jamais exposé.
     assert all("code" not in s for s in data)
+
+
+def test_privacy_change_requires_admin(client, db):
+    # Un USER ne peut pas basculer la posture air-gapped du serveur (CWE-862).
+    user = _make(client, db, "bob", "password1")  # USER
+    r = client.put(f"{BASE}/ai/privacy", json={"air_gapped": True}, headers=_auth(user))
+    assert r.status_code == 403
+
+    # Un ADMIN le peut.
+    admin = _make(client, db, "boss", "password1", role="ADMIN")
+    r = client.put(f"{BASE}/ai/privacy", json={"air_gapped": True}, headers=_auth(admin))
+    assert r.status_code == 200
+    assert r.json()["air_gapped"] is True
