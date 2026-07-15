@@ -1,6 +1,12 @@
-from pydantic import BaseModel, ConfigDict, EmailStr
+from pydantic import BaseModel, ConfigDict, EmailStr, Field
 from typing import List, Optional, Dict
 from datetime import datetime
+
+# Bornes anti-DoS (CWE-770/400) : validation serveur avant tout appel DB/IA/embedding.
+MAX_TITLE_LEN = 200
+MAX_LANGUAGE_LEN = 50
+MAX_DESCRIPTION_LEN = 5_000
+MAX_CODE_LEN = 500_000  # ~500 Ko ; au-dela = payload abusive
 
 class UserBase(BaseModel):
     username: str
@@ -98,10 +104,10 @@ class Collection(CollectionBase):
     model_config = ConfigDict(from_attributes=True)
 
 class SnippetBase(BaseModel):
-    title: str
-    language: str
-    code: str
-    description: Optional[str] = None
+    title: str = Field(max_length=MAX_TITLE_LEN)
+    language: str = Field(max_length=MAX_LANGUAGE_LEN)
+    code: str = Field(max_length=MAX_CODE_LEN)
+    description: Optional[str] = Field(default=None, max_length=MAX_DESCRIPTION_LEN)
     is_favorite: bool = False
     collection_id: Optional[int] = None
 
@@ -109,10 +115,10 @@ class SnippetCreate(SnippetBase):
     tags: List[str] = []
 
 class SnippetUpdate(BaseModel):
-    title: Optional[str] = None
-    language: Optional[str] = None
-    code: Optional[str] = None
-    description: Optional[str] = None
+    title: Optional[str] = Field(default=None, max_length=MAX_TITLE_LEN)
+    language: Optional[str] = Field(default=None, max_length=MAX_LANGUAGE_LEN)
+    code: Optional[str] = Field(default=None, max_length=MAX_CODE_LEN)
+    description: Optional[str] = Field(default=None, max_length=MAX_DESCRIPTION_LEN)
     is_favorite: Optional[bool] = None
     collection_id: Optional[int] = None
     tags: Optional[List[str]] = None

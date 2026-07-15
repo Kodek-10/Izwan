@@ -54,10 +54,14 @@ def delete_collection(id: int, db: Session = Depends(get_db), current_user: mode
     db_collection = db.query(models.Collection).filter(models.Collection.id == id, models.Collection.owner_id == current_user.id).first()
     if not db_collection:
         raise HTTPException(status_code=404, detail="Collection not found")
-    
-    # Optional: Decide if we want to nullify collection_id in snippets or delete snippets
-    # Currently, SQLAlchemy will handle this based on relationship settings if configured.
-    # We'll just nullify it by default (Snippets stay).
+
+    # Détache les snippets rattachés AVANT la suppression (L2) :
+    # sans ça Postgres lève IntegrityError (FK RESTRICT) -> 500 ; SQLite -> orphelins.
+    # Filtre owner_id == current_user.id : on ne touche que ses propres snippets (cohérent M2).
+    db.query(models.Snippet).filter(
+        models.Snippet.collection_id == id,
+        models.Snippet.owner_id == current_user.id,
+    ).update({models.Snippet.collection_id: None}, synchronize_session=False)
     db.delete(db_collection)
     db.commit()
     return {"message": "Collection deleted successfully"}

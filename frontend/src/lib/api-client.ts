@@ -6,16 +6,11 @@ class ApiClient {
   public baseUrl = API_URL;
 
   private get headers() {
-    const token = isBrowser ? localStorage.getItem("token") : null;
     const lang = isBrowser ? localStorage.getItem("i18nextLng") || "fr" : "fr";
-    const headers: Record<string, string> = {
+    return {
       "Content-Type": "application/json",
       "Accept-Language": lang,
     };
-    if (token) {
-      headers["Authorization"] = `Bearer ${token}`;
-    }
-    return headers;
   }
 
   private async handleError(response: Response) {
@@ -30,18 +25,20 @@ class ApiClient {
     }
 
     if (response.status === 401 && isBrowser) {
-      localStorage.removeItem("token");
-      // Optionnel: On peut forcer un rechargement pour que le guard de route redirige vers /auth
+      // Le cookie httpOnly est invalidé côté serveur (expiration/révocation H4). On synchronise
+      // le flag de présence client puis on renvoie vers /auth.
+      document.cookie = "session=; Max-Age=0; path=/";
       if (!window.location.pathname.includes('/auth')) {
         window.location.href = '/auth';
       }
     }
-    
+
     throw new Error(message);
   }
 
   async get<T>(path: string): Promise<T> {
     const response = await fetch(`${API_URL}${path}`, {
+      credentials: "include",
       headers: this.headers,
     });
     if (!response.ok) {
@@ -53,6 +50,7 @@ class ApiClient {
   async post<T>(path: string, data: any): Promise<T> {
     const response = await fetch(`${API_URL}${path}`, {
       method: "POST",
+      credentials: "include",
       headers: this.headers,
       body: JSON.stringify(data),
     });
@@ -65,6 +63,7 @@ class ApiClient {
   async put<T>(path: string, data: any): Promise<T> {
     const response = await fetch(`${API_URL}${path}`, {
       method: "PUT",
+      credentials: "include",
       headers: this.headers,
       body: JSON.stringify(data),
     });
@@ -77,6 +76,7 @@ class ApiClient {
   async patch<T>(path: string, data: any): Promise<T> {
     const response = await fetch(`${API_URL}${path}`, {
       method: "PATCH",
+      credentials: "include",
       headers: this.headers,
       body: JSON.stringify(data),
     });
@@ -88,7 +88,7 @@ class ApiClient {
 
   async delete(path: string): Promise<void> {
     const response = await fetch(`${API_URL}${path}`, {
-      method: "DELETE",
+      credentials: "include",
       headers: this.headers,
     });
     if (!response.ok) {
@@ -100,6 +100,7 @@ class ApiClient {
   async signup(username: string, email: string, password: string, display_name?: string): Promise<{ access_token: string }> {
     const response = await fetch(`${API_URL}/auth/register`, {
       method: "POST",
+      credentials: "include",
       headers: {
         "Content-Type": "application/json",
       },
@@ -122,6 +123,7 @@ class ApiClient {
 
     const response = await fetch(`${API_URL}/auth/login`, {
       method: "POST",
+      credentials: "include",
       headers: {
         "Content-Type": "application/x-www-form-urlencoded",
       },
@@ -132,22 +134,28 @@ class ApiClient {
       await this.handleError(response);
     }
 
-    const data = await response.json();
-    if (isBrowser) {
-      localStorage.setItem("token", data.access_token);
-    }
-    return data;
+    // H2 : le JWT est posé en cookie httpOnly par le serveur. On ne le stocke pas
+    // en localStorage (ferme l'exfiltration XSS / CWE-922). data.access_token reste
+    // renvoyé pour back-compat clients non-navigateur.
+    return response.json();
   }
 
-  logout() {
+  async logout(): Promise<void> {
+    // Le cookie httpOnly ne peut être vidé que par le serveur. Le flag de présence
+    // (session=1) est effacé côté client pour qu'isAuthenticated() retourne faux immédiatement.
     if (isBrowser) {
-      localStorage.removeItem("token");
+      document.cookie = "session=; Max-Age=0; path=/";
+      try {
+        await this.post("/auth/logout", {});
+      } catch {
+        // Tolérant : le navigateur efface tout au prochain /auth.
+      }
     }
   }
 
   isAuthenticated() {
     if (!isBrowser) return false; // On redirige vers auth sur le serveur pour éviter les incohérences de rendu
-    return !!localStorage.getItem("token");
+    return document.cookie.split(";").some((c) => c.trim() === "session=1");
   }
 }
 

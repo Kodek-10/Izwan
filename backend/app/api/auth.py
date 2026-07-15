@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Depends, HTTPException, status, Header, Request
+from fastapi import APIRouter, Depends, HTTPException, status, Header, Request, Response
 from fastapi.security import OAuth2PasswordRequestForm
 from sqlalchemy.orm import Session
 from datetime import timedelta
@@ -94,6 +94,9 @@ def change_password(
         raise HTTPException(status_code=400, detail=pw_error)
 
     current_user.hashed_password = security.get_password_hash(data.new_password)
+    # Révoque TOUS les tokens existants (y compris un éventuel token volé) en
+    # incrémentant la version (H4 / CWE-613). Le token courant devient invalide -> re-login.
+    current_user.token_version += 1
     db.commit()
     msg = "Password updated successfully" if lang == "en" else "Mot de passe mis à jour avec succès"
     return {"message": msg}
@@ -102,6 +105,7 @@ def change_password(
 @router.post("/login", response_model=schemas.Token)
 def login_for_access_token(
     request: Request,
+    response: Response,
     db: Session = Depends(get_db),
     form_data: OAuth2PasswordRequestForm = Depends(),
     accept_language: Optional[str] = Header(None)
@@ -137,10 +141,19 @@ def login_for_access_token(
     rate_limit.reset(rl_key)
     access_token_expires = timedelta(minutes=security.ACCESS_TOKEN_EXPIRE_MINUTES)
     access_token = security.create_access_token(
-        data={"sub": user.username, "role": user.role}, expires_delta=access_token_expires
+        data={"sub": user.username, "role": user.role, "ver": user.token_version},
+        expires_delta=access_token_expires,
     )
+    # H2 : pose le JWT en cookie httpOnly (en plus du corps JSON pour back-compat clients/tests).
+    security.set_auth_cookie(response, access_token)
     record_audit(db, "auth", "login", actor=user.username)
     return {"access_token": access_token, "token_type": "bearer"}
+
+@router.post("/logout")
+def logout(response: Response):
+    # Vide le cookie httpOnly (H2) : JS ne peut pas le faire lui-même.
+    security.clear_auth_cookie(response)
+    return {"message": "Logged out"}
 
 @router.get("/github")
 def login_github(accept_language: Optional[str] = Header(None)):

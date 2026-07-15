@@ -108,8 +108,8 @@ export function AppShell({ children }: { children: React.ReactNode }) {
     }
   };
 
-  const handleLogout = () => {
-    api.logout();
+  const handleLogout = async () => {
+    await api.logout();
     toast.success("Déconnecté");
     navigate({ to: "/", replace: true });
   };

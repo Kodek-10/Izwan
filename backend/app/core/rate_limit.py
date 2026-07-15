@@ -36,8 +36,13 @@ def _prune(dq: Deque[float], now: float) -> None:
 
 
 def is_rate_limited(key: str, max_failures: int = MAX_FAILURES) -> bool:
-    dq = _failures[key]
+    dq = _failures.get(key)
+    if not dq:
+        return False
     _prune(dq, time.time())
+    if not dq:  # tous les evenements sortis de la fenetre -> GC de la cle inactive
+        del _failures[key]
+        return False
     return len(dq) >= max_failures
 
 
@@ -72,8 +77,13 @@ def _prune_creation(dq: Deque[float], now: float) -> None:
 def is_creation_rate_limited(user_id: int, max_creations: int = _MAX_CREATIONS) -> bool:
     key = f"create:{user_id}"
     now = time.time()
-    dq = _creation_counts[key]
+    dq = _creation_counts.get(key)
+    if not dq:
+        return False
     _prune_creation(dq, now)
+    if not dq:  # GC cle inactive (CWE-401) -> borne la memoire aux cles actives
+        del _creation_counts[key]
+        return False
     return len(dq) >= max_creations
 
 def record_creation(user_id: int) -> None:
@@ -103,8 +113,13 @@ def _prune_ai(dq: Deque[float], now: float) -> None:
 def is_ai_rate_limited(user_id: int, max_calls: int = _AI_MAX_CALLS) -> bool:
     key = f"ai:{user_id}"
     now = time.time()
-    dq = _ai_counts[key]
+    dq = _ai_counts.get(key)
+    if not dq:
+        return False
     _prune_ai(dq, now)
+    if not dq:  # GC cle inactive (CWE-401)
+        del _ai_counts[key]
+        return False
     return len(dq) >= max_calls
 
 def record_ai_call(user_id: int) -> None:
