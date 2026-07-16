@@ -44,8 +44,8 @@ Une fois lancé, accédez à la documentation interactive :
 - **ReDoc :** `http://localhost:8000/redoc`
 
 ## 🧪 Tests
-Exécutez la suite de tests unitaires (13 tests couvrant Auth, CRUD, Search, Export) :
+Exécutez la suite de tests depuis la **racine du monorepo** (le dossier parent de `backend/`) : le `conftest.py` importe `backend.app.main` et exige la racine sur le `PYTHONPATH`.
 ```bash
-$env:PYTHONPATH="."
-pytest tests/
+PYTHONPATH=. pytest backend/tests/           # bash
+$env:PYTHONPATH="."; pytest backend/tests/   # PowerShell
 ```

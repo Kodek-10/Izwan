@@ -204,9 +204,9 @@ function ExportPage() {
     if (selectionMode === "custom") {
       const res = await fetch(`${API_URL}/export/${formatId}`, {
         method: "POST",
+        credentials: "include",
         headers: {
           "Content-Type": "application/json",
-          Authorization: `Bearer ${localStorage.getItem("token") || ""}`,
         },
         body: JSON.stringify({
           ids: items.map((s) => s.id),
@@ -225,7 +225,7 @@ function ExportPage() {
     const q = p.toString() ? `?${p.toString()}` : "";
 
     const res = await fetch(`${API_URL}/export/${formatId}${q}`, {
-      headers: { Authorization: `Bearer ${localStorage.getItem("token") || ""}` },
+      credentials: "include",
     });
     if (!res.ok) throw new Error("Export échoué");
     const blob = await res.blob();

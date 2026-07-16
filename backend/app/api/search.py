@@ -1,9 +1,10 @@
-from fastapi import APIRouter, Depends
+from fastapi import APIRouter, Depends, HTTPException, Header
 from sqlalchemy.orm import Session
 from sqlalchemy import or_
-from typing import List
+from typing import List, Optional
 from ..core.database import get_db
 from ..core.security import get_current_user
+from ..core import rate_limit
 from .. import models, schemas
 
 from ..services.embedding_service import embedding_service
@@ -25,7 +26,14 @@ def search_snippets(q: str, db: Session = Depends(get_db), current_user: models.
     return results
 
 @router.get("/semantic", response_model=List[schemas.Snippet])
-def semantic_search(query: str, db: Session = Depends(get_db), current_user: models.User = Depends(get_current_user)):
+def semantic_search(query: str, db: Session = Depends(get_db), current_user: models.User = Depends(get_current_user), accept_language: Optional[str] = Header(None)):
+    if rate_limit.is_ai_rate_limited(current_user.id):
+        retry = rate_limit.ai_retry_after(current_user.id)
+        en = accept_language and "en" in accept_language.lower()
+        detail = (f"Too many search requests. Try again in {retry}s." if en
+                  else f"Trop de recherches sémantiques. Réessayez dans {retry}s.")
+        raise HTTPException(status_code=429, detail=detail, headers={"Retry-After": str(retry)})
+    rate_limit.record_ai_call(current_user.id)
     # 1. Generate embedding for the query
     query_vector = embedding_service.generate_embedding(query)
 

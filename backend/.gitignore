@@ -6,3 +6,5 @@ venv/
 *.db
 .pytest_cache/
 .vscode/
+# Fichiers de backup d'environnement locale
+.env.backup

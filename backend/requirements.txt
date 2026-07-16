@@ -5,7 +5,8 @@ fastapi
 uvicorn
 sqlalchemy
 psycopg2-binary>=2.9.12
-pydantic
+pydantic[email]
+email-validator
 pydantic-settings
 python-dotenv
 pytest
@@ -15,7 +16,7 @@ jinja2
 markdown
 # weasyprint or reportlab for PDF
 reportlab
-python-jose[cryptography]
+PyJWT
 passlib[bcrypt]
 python-multipart
 fastembed

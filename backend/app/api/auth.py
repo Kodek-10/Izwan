@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Depends, HTTPException, status, Header, Request
+from fastapi import APIRouter, Depends, HTTPException, status, Header, Request, Response
 from fastapi.security import OAuth2PasswordRequestForm
 from sqlalchemy.orm import Session
 from datetime import timedelta
@@ -15,19 +15,26 @@ def get_lang(accept_language: Optional[str] = None) -> str:
     return "en" if accept_language and "en" in accept_language.lower() else "fr"
 
 @router.post("/register", response_model=schemas.User)
-def register(user: schemas.UserCreate, db: Session = Depends(get_db), accept_language: Optional[str] = Header(None)):
+def register(request: Request, user: schemas.UserCreate, db: Session = Depends(get_db), accept_language: Optional[str] = Header(None)):
     lang = get_lang(accept_language)
+    # Anti-spam de création de comptes : toute tentative compte (succès ou échec).
+    rl_key = f"register:{rate_limit.get_client_ip(request)}"
+    if rate_limit.is_rate_limited(rl_key, max_failures=rate_limit.REGISTER_MAX_FAILURES):
+        retry = rate_limit.retry_after_seconds(rl_key)
+        detail = (
+            f"Too many registration attempts. Try again in {retry}s." if lang == "en"
+            else f"Trop de tentatives d'inscription. Réessayez dans {retry}s."
+        )
+        raise HTTPException(status_code=429, detail=detail, headers={"Retry-After": str(retry)})
+    rate_limit.record_failure(rl_key)  # comptabilise cette tentative (anti-bypass)
     pw_error = security.password_policy_error(user.password, lang)
     if pw_error:
         raise HTTPException(status_code=400, detail=pw_error)
-    db_user = db.query(models.User).filter(models.User.username == user.username).first()
+    db_user = db.query(models.User).filter(
+        (models.User.username == user.username) | (models.User.email == user.email)
+    ).first()
     if db_user:
-        detail = "Username already registered" if lang == "en" else "Nom d'utilisateur déjà enregistré"
-        raise HTTPException(status_code=400, detail=detail)
-
-    db_email = db.query(models.User).filter(models.User.email == user.email).first()
-    if db_email:
-        detail = "Email already registered" if lang == "en" else "Email déjà enregistré"
+        detail = "Username or email already registered" if lang == "en" else "Nom d'utilisateur ou email déjà enregistré"
         raise HTTPException(status_code=400, detail=detail)
 
     hashed_password = security.get_password_hash(user.password)
@@ -78,11 +85,18 @@ def change_password(
         detail = "Incorrect current password" if lang == "en" else "Mot de passe actuel incorrect"
         raise HTTPException(status_code=400, detail=detail)
 
+    if security.verify_password(data.new_password, current_user.hashed_password):
+        detail = "New password cannot be the same as the current password" if lang == "en" else "Le nouveau mot de passe ne peut pas être identique à l'actuel"
+        raise HTTPException(status_code=400, detail=detail)
+
     pw_error = security.password_policy_error(data.new_password, lang)
     if pw_error:
         raise HTTPException(status_code=400, detail=pw_error)
 
     current_user.hashed_password = security.get_password_hash(data.new_password)
+    # Révoque TOUS les tokens existants (y compris un éventuel token volé) en
+    # incrémentant la version (H4 / CWE-613). Le token courant devient invalide -> re-login.
+    current_user.token_version += 1
     db.commit()
     msg = "Password updated successfully" if lang == "en" else "Mot de passe mis à jour avec succès"
     return {"message": msg}
@@ -91,12 +105,13 @@ def change_password(
 @router.post("/login", response_model=schemas.Token)
 def login_for_access_token(
     request: Request,
+    response: Response,
     db: Session = Depends(get_db),
     form_data: OAuth2PasswordRequestForm = Depends(),
     accept_language: Optional[str] = Header(None)
 ):
     lang = get_lang(accept_language)
-    client_ip = request.client.host if request.client else "unknown"
+    client_ip = rate_limit.get_client_ip(request)
     rl_key = f"login:{client_ip}"
     if rate_limit.is_rate_limited(rl_key):
         retry = rate_limit.retry_after_seconds(rl_key)
@@ -126,10 +141,19 @@ def login_for_access_token(
     rate_limit.reset(rl_key)
     access_token_expires = timedelta(minutes=security.ACCESS_TOKEN_EXPIRE_MINUTES)
     access_token = security.create_access_token(
-        data={"sub": user.username, "role": user.role}, expires_delta=access_token_expires
+        data={"sub": user.username, "role": user.role, "ver": user.token_version},
+        expires_delta=access_token_expires,
     )
+    # H2 : pose le JWT en cookie httpOnly (en plus du corps JSON pour back-compat clients/tests).
+    security.set_auth_cookie(response, access_token)
     record_audit(db, "auth", "login", actor=user.username)
     return {"access_token": access_token, "token_type": "bearer"}
+
+@router.post("/logout")
+def logout(response: Response):
+    # Vide le cookie httpOnly (H2) : JS ne peut pas le faire lui-même.
+    security.clear_auth_cookie(response)
+    return {"message": "Logged out"}
 
 @router.get("/github")
 def login_github(accept_language: Optional[str] = Header(None)):

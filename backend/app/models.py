@@ -34,6 +34,9 @@ class User(Base):
         server_default=UserRole.USER.value,
     )
     created_at = Column(DateTime(timezone=True), server_default=func.now())
+    # Version du token (H4 / CWE-613) : incrémentée pour révoquer tous les tokens
+    # existants (ex: changement de mot de passe). Le token porte ce n° dans `ver`.
+    token_version = Column(Integer, nullable=False, default=0, server_default="0")
 
     snippets = relationship("Snippet", back_populates="owner")
     collections = relationship("Collection", back_populates="owner")
@@ -62,7 +65,7 @@ class Snippet(Base):
     created_at = Column(DateTime(timezone=True), server_default=func.now())
     updated_at = Column(DateTime(timezone=True), onupdate=func.now(), server_default=func.now())
     owner_id = Column(Integer, ForeignKey("users.id"))
-    collection_id = Column(Integer, ForeignKey("collections.id"), nullable=True)
+    collection_id = Column(Integer, ForeignKey("collections.id", ondelete="SET NULL"), nullable=True)
 
     owner = relationship("User", back_populates="snippets")
     collection_ref = relationship("Collection", back_populates="snippets")
