@@ -17,6 +17,7 @@ import { toast } from "sonner";
 import { useTheme } from "@/components/theme-provider";
 import { useTranslation } from "react-i18next";
 import { api } from "@/lib/api-client";
+import { EDITOR_PREFS_EVENT } from "@/lib/editor-preferences";
 import {
   Select,
   SelectContent,
@@ -101,6 +102,11 @@ function SettingsPage() {
     localStorage.setItem("izwan_ligatures", String(ligatures));
   }, [ligatures]);
 
+  // Notifie l'éditeur (CodeEditor) pour que les réglages s'appliquent immédiatement.
+  useEffect(() => {
+    window.dispatchEvent(new Event(EDITOR_PREFS_EVENT));
+  }, [fontSize, tabSize, ligatures]);
+
   useEffect(() => {
     if (i18n.language) {
       localStorage.setItem("izwan_language", i18n.language);
@@ -158,9 +164,9 @@ function SettingsPage() {
       toast.error("Les mots de passe ne correspondent pas.");
       return;
     }
-    if (newPw.length < 6) {
+    if (newPw.length < 8) {
       toast.error(
-        "Le nouveau mot de passe doit contenir au moins 6 caractères."
+        "Le nouveau mot de passe doit contenir au moins 8 caractères."
       );
       return;
     }

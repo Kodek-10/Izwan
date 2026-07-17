@@ -2,6 +2,7 @@ import { Maximize2, Minimize2 } from "lucide-react";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
+import { useEditorPreferences } from "@/lib/editor-preferences";
 
 type CodeEditorProps = {
   id?: string;
@@ -25,6 +26,13 @@ export function CodeEditor({
   className,
 }: CodeEditorProps) {
   const [isFullscreen, setIsFullscreen] = useState(false);
+  const { fontSize, tabSize, ligatures } = useEditorPreferences();
+  // Numéros de ligne et code doivent partager fontSize/lineHeight pour rester alignés.
+  const typography = {
+    fontSize: `${fontSize}px`,
+    lineHeight: `${Math.round(fontSize * 1.7)}px`,
+    fontVariantLigatures: ligatures ? "normal" : ("none" as const),
+  };
   const textareaRef = useRef<HTMLTextAreaElement>(null);
   const lineNumbersRef = useRef<HTMLPreElement>(null);
   const lineCount = Math.max(1, value.split("\n").length);
@@ -106,7 +114,8 @@ export function CodeEditor({
         <pre
           ref={lineNumbersRef}
           aria-hidden="true"
-          className="select-none overflow-hidden h-full border-r border-border bg-background/40 px-2 py-3 text-right font-mono text-sm leading-6 text-muted-foreground"
+          style={typography}
+          className="select-none overflow-hidden h-full border-r border-border bg-background/40 px-2 py-3 text-right font-mono text-muted-foreground"
         >
           {lineNumbers}
         </pre>
@@ -120,8 +129,9 @@ export function CodeEditor({
             readOnly={readOnly}
             placeholder={placeholder}
             spellCheck={false}
+            style={{ ...typography, tabSize }}
             className={cn(
-              "block w-full resize-none overflow-auto bg-transparent py-3 pl-3 pr-3 font-mono text-sm leading-6 outline-none md:pr-24",
+              "block w-full resize-none overflow-auto bg-transparent py-3 pl-3 pr-3 font-mono outline-none md:pr-24",
               "h-full",
               readOnly && "cursor-default",
             )}
