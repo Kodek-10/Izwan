@@ -3,7 +3,7 @@ import { IzwaAPI, Snippet, Collection } from './api';
 import { t } from './i18n';
 
 export class IzwaSidebarProvider implements vscode.WebviewViewProvider {
-    public static readonly viewType = 'izwa-snippets-view';
+    public static readonly viewType = 'izwan-snippets-view';
     private _view?: vscode.WebviewView;
 
     constructor(
@@ -20,7 +20,7 @@ export class IzwaSidebarProvider implements vscode.WebviewViewProvider {
 
         webviewView.webview.options = {
             enableScripts: true,
-            localResourceRoots: [this._extensionUri]
+            localResourceRoots: [vscode.Uri.joinPath(this._extensionUri, 'media')]
         };
 
         webviewView.webview.html = this._getHtmlForWebview(webviewView.webview);
@@ -56,12 +56,15 @@ export class IzwaSidebarProvider implements vscode.WebviewViewProvider {
     }
 
     public async refresh() {
-        if (this._view) {
+        if (!this._view) return;
+        try {
             const [snippets, collections] = await Promise.all([
                 IzwaAPI.fetchSnippets(this._context),
                 IzwaAPI.fetchCollections(this._context)
             ]);
             this._view.webview.postMessage({ type: 'setData', snippets, collections });
+        } catch {
+            this._view.webview.postMessage({ type: 'setError' });
         }
     }
 
@@ -77,7 +80,7 @@ export class IzwaSidebarProvider implements vscode.WebviewViewProvider {
     private async _smartInsertSnippet(code: string, language: string) {
         const editor = vscode.window.activeTextEditor;
         if (!editor) {
-            vscode.window.showWarningMessage('Aucun éditeur actif pour insérer le snippet.');
+            vscode.window.showWarningMessage(t('smart_insert.no_editor'));
             return;
         }
 
@@ -90,21 +93,23 @@ export class IzwaSidebarProvider implements vscode.WebviewViewProvider {
 
         vscode.window.withProgress({
             location: vscode.ProgressLocation.Notification,
-            title: "Adaptation du snippet en cours (IA)...",
+            title: t('smart_insert.in_progress'),
             cancellable: false
         }, async () => {
             try {
                 const adaptedCode = await IzwaAPI.adaptSnippet(this._context, code, language, surroundingCode);
-                if (vscode.window.activeTextEditor) {
-                    vscode.window.activeTextEditor.edit(editBuilder => {
-                        editBuilder.insert(vscode.window.activeTextEditor!.selection.active, adaptedCode);
+                const editor = vscode.window.activeTextEditor;
+                if (editor) {
+                    editor.edit(editBuilder => {
+                        editBuilder.insert(editor.selection.active, adaptedCode);
                     });
                 }
             } catch (error) {
-                vscode.window.showErrorMessage("Erreur lors de l'adaptation. Insertion standard...");
-                if (vscode.window.activeTextEditor) {
-                    vscode.window.activeTextEditor.edit(editBuilder => {
-                        editBuilder.insert(vscode.window.activeTextEditor!.selection.active, code);
+                vscode.window.showErrorMessage(t('smart_insert.error_fallback'));
+                const editor = vscode.window.activeTextEditor;
+                if (editor) {
+                    editor.edit(editBuilder => {
+                        editBuilder.insert(editor.selection.active, code);
                     });
                 }
             }
@@ -113,6 +118,13 @@ export class IzwaSidebarProvider implements vscode.WebviewViewProvider {
 
     private _getHtmlForWebview(webview: vscode.Webview) {
         const lang = vscode.env.language.startsWith('fr') ? 'fr' : 'en';
+
+        const prismCss = webview.asWebviewUri(vscode.Uri.joinPath(this._extensionUri, 'media', 'lib', 'prism-tomorrow.min.css'));
+        const prismJs = webview.asWebviewUri(vscode.Uri.joinPath(this._extensionUri, 'media', 'lib', 'prism.js'));
+        const prismPython = webview.asWebviewUri(vscode.Uri.joinPath(this._extensionUri, 'media', 'lib', 'prism-python.min.js'));
+        const prismTypescript = webview.asWebviewUri(vscode.Uri.joinPath(this._extensionUri, 'media', 'lib', 'prism-typescript.min.js'));
+        const prismJson = webview.asWebviewUri(vscode.Uri.joinPath(this._extensionUri, 'media', 'lib', 'prism-json.min.js'));
+        const markedJs = webview.asWebviewUri(vscode.Uri.joinPath(this._extensionUri, 'media', 'lib', 'marked.umd.js'));
         
         return `<!DOCTYPE html>
             <html lang="${lang}">
@@ -120,7 +132,7 @@ export class IzwaSidebarProvider implements vscode.WebviewViewProvider {
                 <meta charset="UTF-8">
                 <meta name="viewport" content="width=device-width, initial-scale=1.0">
                 <title>${t('sidebar.title')}</title>
-                <link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" />
+                <link href="${prismCss}" rel="stylesheet" />
                 <style>
                     body { font-family: var(--vscode-font-family); padding: 10px; color: var(--vscode-foreground); }
                     .search-box { 
@@ -286,6 +298,17 @@ export class IzwaSidebarProvider implements vscode.WebviewViewProvider {
                         overflow-x: auto;
                         margin: 8px 0;
                     }
+                    .retry-btn {
+                        background: var(--vscode-button-background);
+                        color: var(--vscode-button-foreground);
+                        border: none;
+                        padding: 6px 12px;
+                        border-radius: 2px;
+                        cursor: pointer;
+                    }
+                    .retry-btn:hover {
+                        background: var(--vscode-button-hoverBackground);
+                    }
                 </style>
             </head>
             <body>
@@ -296,18 +319,18 @@ export class IzwaSidebarProvider implements vscode.WebviewViewProvider {
                 <div id="explanation-modal" class="modal" style="display:none;">
                     <div class="modal-content">
                         <div class="modal-header">
-                            <span id="explanation-title">Explication</span>
+                            <span id="explanation-title">${t('explanation.title')}</span>
                             <button class="close-btn" onclick="closeExplanation()">&times;</button>
                         </div>
                         <div id="explanation-body"></div>
                     </div>
                 </div>
 
-                <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
-                <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
-                <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-typescript.min.js"></script>
-                <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-json.min.js"></script>
-                <script src="https://cdnjs.cloudflare.com/ajax/libs/marked/4.3.0/marked.min.js"></script>
+                <script src="${prismJs}"></script>
+                <script src="${prismPython}"></script>
+                <script src="${prismTypescript}"></script>
+                <script src="${prismJson}"></script>
+                <script src="${markedJs}"></script>
 
                 <script>
                     const vscode = acquireVsCodeApi();
@@ -325,9 +348,11 @@ export class IzwaSidebarProvider implements vscode.WebviewViewProvider {
                         } else if (message.type === 'explanationResult') {
                             const bodyEl = document.getElementById('explanation-body');
                             bodyEl.innerHTML = marked.parse(message.explanation);
-                        } else if (message.type === 'explanationError') {
+                         } else if (message.type === 'explanationError') {
                             const bodyEl = document.getElementById('explanation-body');
-                            bodyEl.innerHTML = '<div style="color:var(--vscode-errorForeground);padding:20px;text-align:center;">❌ Erreur lors de la génération de l\\'explication.</div>';
+                            bodyEl.innerHTML = '<div style="color:var(--vscode-errorForeground);padding:20px;text-align:center;">${t('explanation.error')}</div>';
+                        } else if (message.type === 'setError') {
+                            contentElement.innerHTML = '<div style="color:var(--vscode-errorForeground);padding:20px;text-align:center;">${t('sidebar.load_error')}</div><div style="text-align:center;margin-top:8px;"><button class="retry-btn" onclick="vscode.postMessage({type:\'refresh\'})">${t('sidebar.retry')}</button></div>';
                         }
                     });
 
@@ -343,8 +368,8 @@ export class IzwaSidebarProvider implements vscode.WebviewViewProvider {
                         const titleEl = document.getElementById('explanation-title');
                         const bodyEl = document.getElementById('explanation-body');
                         
-                        titleEl.innerText = "Explication : " + s.title;
-                        bodyEl.innerHTML = '<div style="display:flex;align-items:center;gap:8px;padding:20px;justify-content:center;">⏳ Analyse en cours par l\\'IA...</div>';
+                        titleEl.innerText = "${t('explanation.title')} : " + s.title;
+                        bodyEl.innerHTML = '<div style="display:flex;align-items:center;gap:8px;padding:20px;justify-content:center;">${t('explanation.in_progress')}</div>';
                         modal.style.display = 'flex';
                         
                         vscode.postMessage({

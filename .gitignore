@@ -19,6 +19,11 @@ backend/dist/
 
 # OS / IDE
 .vscode/
+.vscode-test/
+
+# Agents & Memory
+.claude/agents/
+memory/
 .DS_Store
 Thumbs.db
 .cursor/

@@ -1,10 +1,10 @@
 {
-    "izwa.searchSnippet.title": "Izwan: Search a snippet",
-    "izwa.saveSnippet.title": "Izwan: Save to Izwan",
-    "izwa.refreshSnippets.title": "Izwan: Refresh list",
-    "izwa.login.title": "Izwan: Login",
-    "izwa.view.name": "My Snippets",
-    "izwa.configuration.backendUrl.description": "Izwan Backend API URL",
-    "izwa.configuration.frontendUrl.description": "Izwan Web authentication URL",
-    "izwa.configuration.ghostSnippets.description": "Enable local ghost suggestions from your Izwan snippets."
+    "izwan.searchSnippet.title": "Izwan: Search a snippet",
+    "izwan.saveSnippet.title": "Izwan: Save to Izwan",
+    "izwan.refreshSnippets.title": "Izwan: Refresh list",
+    "izwan.login.title": "Izwan: Login",
+    "izwan.view.name": "My Snippets",
+    "izwan.configuration.backendUrl.description": "Izwan Backend API URL",
+    "izwan.configuration.frontendUrl.description": "Izwan Web authentication URL",
+    "izwan.configuration.ghostSnippets.description": "Enable local ghost suggestions from your Izwan snippets."
 }

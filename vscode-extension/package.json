@@ -1,9 +1,13 @@
 {
-  "name": "izwa-vscode",
+  "name": "izwan-vscode",
   "publisher": "kodek10",
   "displayName": "Izwan - Snippet Manager IA",
   "description": "Accédez à vos snippets Izwan directement depuis votre éditeur.",
   "version": "0.0.1",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Kodek-10/Izwan.git"
+  },
   "engines": {
     "vscode": "^1.85.0"
   },
@@ -12,9 +16,9 @@
   ],
   "activationEvents": [
     "onStartupFinished",
-    "onView:izwa-snippets-view",
-    "onCommand:izwa.saveSnippet",
-    "onCommand:izwa.login",
+    "onView:izwan-snippets-view",
+    "onCommand:izwan.saveSnippet",
+    "onCommand:izwan.login",
     "onUri"
   ],
   "main": "./out/extension.js",
@@ -22,43 +26,43 @@
     "viewsContainers": {
       "activitybar": [
         {
-          "id": "izwa-explorer",
+          "id": "izwan-explorer",
           "title": "Izwan",
           "icon": "media/icon.svg"
         }
       ]
     },
     "views": {
-      "izwa-explorer": [
+      "izwan-explorer": [
         {
-          "id": "izwa-snippets-view",
+          "id": "izwan-snippets-view",
           "type": "webview",
-          "name": "%izwa.view.name%"
+          "name": "%izwan.view.name%"
         }
       ]
     },
     "commands": [
       {
-        "command": "izwa.searchSnippet",
-        "title": "%izwa.searchSnippet.title%"
+        "command": "izwan.searchSnippet",
+        "title": "%izwan.searchSnippet.title%"
       },
       {
-        "command": "izwa.saveSnippet",
-        "title": "%izwa.saveSnippet.title%"
+        "command": "izwan.saveSnippet",
+        "title": "%izwan.saveSnippet.title%"
       },
       {
-        "command": "izwa.refreshSnippets",
-        "title": "%izwa.refreshSnippets.title%"
+        "command": "izwan.refreshSnippets",
+        "title": "%izwan.refreshSnippets.title%"
       },
       {
-        "command": "izwa.login",
-        "title": "%izwa.login.title%"
+        "command": "izwan.login",
+        "title": "%izwan.login.title%"
       }
     ],
     "menus": {
       "editor/context": [
         {
-          "command": "izwa.saveSnippet",
+          "command": "izwan.saveSnippet",
           "when": "editorHasSelection",
           "group": "navigation"
         }
@@ -67,20 +71,20 @@
     "configuration": {
       "title": "Izwan",
       "properties": {
-        "izwa.backendUrl": {
+        "izwan.backendUrl": {
           "type": "string",
           "default": "http://localhost:8000/api/v1",
-          "description": "%izwa.configuration.backendUrl.description%"
+          "description": "%izwan.configuration.backendUrl.description%"
         },
-        "izwa.frontendUrl": {
+        "izwan.frontendUrl": {
           "type": "string",
           "default": "http://localhost:5173/auth",
-          "description": "%izwa.configuration.frontendUrl.description%"
+          "description": "%izwan.configuration.frontendUrl.description%"
         },
-        "izwa.ghostSnippets.enabled": {
+        "izwan.ghostSnippets.enabled": {
           "type": "boolean",
           "default": true,
-          "description": "%izwa.configuration.ghostSnippets.description%"
+          "description": "%izwan.configuration.ghostSnippets.description%"
         }
       }
     }
@@ -94,11 +98,17 @@
     "test": "node ./out/test/runTest.js"
   },
   "devDependencies": {
-    "@types/vscode": "^1.85.0",
+    "@types/mocha": "^10.0.10",
     "@types/node": "20.x",
-    "typescript": "^5.3.3",
-    "eslint": "^8.56.0",
+    "@types/vscode": "^1.85.0",
+    "@typescript-eslint/eslint-plugin": "^6.19.1",
     "@typescript-eslint/parser": "^6.19.1",
-    "@typescript-eslint/eslint-plugin": "^6.19.1"
+    "@vscode/test-electron": "^3.1.0",
+    "eslint": "^8.56.0",
+    "typescript": "^5.3.3"
+  },
+  "dependencies": {
+    "marked": "^18.0.7",
+    "prismjs": "^1.30.0"
   }
 }

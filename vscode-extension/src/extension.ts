@@ -28,15 +28,15 @@ export function activate(context: vscode.ExtensionContext) {
         vscode.window.registerUriHandler(browserAuthHandler)
     );
 
-    let refreshCommand = vscode.commands.registerCommand('izwa.refreshSnippets', () => {
+    let refreshCommand = vscode.commands.registerCommand('izwan.refreshSnippets', () => {
         refreshAuthenticatedViews();
     });
 
-    let loginCommand = vscode.commands.registerCommand('izwa.login', async () => {
+    let loginCommand = vscode.commands.registerCommand('izwan.login', async () => {
         await browserAuthHandler.startLogin();
     });
 
-    let searchCommand = vscode.commands.registerCommand('izwa.searchSnippet', async () => {
+    let searchCommand = vscode.commands.registerCommand('izwan.searchSnippet', async () => {
         const query = await vscode.window.showInputBox({
             prompt: t('search.prompt'),
             placeHolder: t('search.placeholder')
@@ -71,7 +71,7 @@ export function activate(context: vscode.ExtensionContext) {
         }
     });
 
-    let saveCommand = vscode.commands.registerCommand('izwa.saveSnippet', async () => {
+    let saveCommand = vscode.commands.registerCommand('izwan.saveSnippet', async () => {
         const editor = vscode.window.activeTextEditor;
         if (!editor) {
             vscode.window.showWarningMessage(t('capture.no_selection'));
