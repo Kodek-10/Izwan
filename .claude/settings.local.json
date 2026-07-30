@@ -1,0 +1,26 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(git fetch *)",
+      "Bash(git merge *)",
+      "Bash(backend/venv/bin/python -c ' *)",
+      "Bash(grep -v '^$')",
+      "Bash(echo \"  pip terminé \\(code $?\\)\")",
+      "Bash(backend/venv/bin/python -m pytest backend/tests/test_auth.py backend/tests/test_admin.py -q)",
+      "Bash(npx tsc *)",
+      "Bash(npm run *)",
+      "Bash(npx vitest *)",
+      "Bash(python3 -m py_compile backend/app/core/database.py)",
+      "Bash(echo \"TSC_EXIT=$? -> $\\(wc -l < /tmp/claude-1000/-home-zangafigue-Documents-GitHub-Izwan/3bbf0489-83d4-4b45-b7a7-27d1adf7b588/scratchpad/tsc.log\\) lignes\")",
+      "Bash(git add *)",
+      "Bash(git commit *)",
+      "Bash(git push *)",
+      "Bash(gh pr create --base main --head zangafigue/etape2-admin --title 'fix: alignement post-refonte sécurité, suite de tests au vert, DATABASE_URL exigée' --body ' *)",
+      "Bash(python3 -m py_compile backend/app/core/security.py)",
+      "Bash(backend/venv/bin/python -m pytest backend/tests/test_auth.py -q)"
+    ],
+    "additionalDirectories": [
+      "/home/zangafigue/Documents/GitHub/Izwan/backend"
+    ]
+  }
+}
