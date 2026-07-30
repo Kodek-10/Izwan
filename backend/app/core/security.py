@@ -25,6 +25,10 @@ SESSION_FLAG_COOKIE = "session"  # non-httpOnly, non-secret : juste un booléen 
                                   # par JS pour isAuthenticated() (les gardes restent synchrones).
 # Secure=on uniquement si HTTPS (prod). Defaut faux = safe pour le dev http://localhost.
 COOKIE_SECURE = os.getenv("COOKIE_SECURE", "").lower() in ("1", "true", "yes")
+# SameSite : en prod le frontend et l'API sont sur des domaines differents (Vercel/…
+# + onrender.com) -> il faut "none" (sinon le cookie n'est pas envoye en cross-site).
+# "none" exige Secure=True, d'ou le couplage. En dev (localhost, meme site) : "lax".
+COOKIE_SAMESITE = "none" if COOKIE_SECURE else "lax"
 
 import bcrypt
 
@@ -36,19 +40,21 @@ oauth2_scheme = OAuth2PasswordBearer(tokenUrl="api/v1/auth/login", auto_error=Fa
 def set_auth_cookie(response: Response, token: str) -> None:
     """Pose le JWT en cookie httpOnly + un cookie de présence lisible par JS.
     Le token est fourni par l'appelant (login) qui le réutilise aussi dans le corps JSON."""
-    opts = {"httponly": True, "samesite": "lax", "secure": COOKIE_SECURE}
+    opts = {"httponly": True, "samesite": COOKIE_SAMESITE, "secure": COOKIE_SECURE}
     response.set_cookie(
         AUTH_COOKIE_NAME, token, max_age=ACCESS_TOKEN_EXPIRE_MINUTES * 60, path="/", **opts
     )
     response.set_cookie(
         SESSION_FLAG_COOKIE, "1", max_age=ACCESS_TOKEN_EXPIRE_MINUTES * 60,
-        path="/", samesite="lax", secure=COOKIE_SECURE,
+        path="/", samesite=COOKIE_SAMESITE, secure=COOKIE_SECURE,
     )
 
 
 def clear_auth_cookie(response: Response) -> None:
-    response.delete_cookie(AUTH_COOKIE_NAME, path="/")
-    response.delete_cookie(SESSION_FLAG_COOKIE, path="/")
+    # Les attributs doivent correspondre a la pose, sinon le navigateur n'efface pas
+    # le cookie cross-domaine.
+    response.delete_cookie(AUTH_COOKIE_NAME, path="/", samesite=COOKIE_SAMESITE, secure=COOKIE_SECURE)
+    response.delete_cookie(SESSION_FLAG_COOKIE, path="/", samesite=COOKIE_SAMESITE, secure=COOKIE_SECURE)
 
 def verify_password(plain_password: str, hashed_password: str):
     return bcrypt.checkpw(plain_password.encode('utf-8'), hashed_password.encode('utf-8'))

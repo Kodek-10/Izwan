@@ -1,6 +1,6 @@
+import type { ReactNode } from 'react';
 import { describe, it, expect, vi } from 'vitest';
 import { render, screen, fireEvent } from '@testing-library/react';
-import userEvent from '@testing-library/user-event';
 import { AppShell } from '../components/app-shell';
 import { ThemeProvider } from '../components/theme-provider';
 
@@ -11,79 +11,37 @@ vi.mock('@tanstack/react-router', () => ({
   useNavigate: () => vi.fn(),
 }));
 
-// Mock Radix UI Portal
-vi.mock('@radix-ui/react-dropdown-menu', async () => {
-  const actual = await vi.importActual('@radix-ui/react-dropdown-menu');
-  return {
-    ...actual as any,
-    Portal: ({ children }: any) => <>{children}</>,
-  };
-});
+function renderShell(children: ReactNode = 'Content') {
+  return render(
+    <ThemeProvider>
+      <AppShell>{children}</AppShell>
+    </ThemeProvider>,
+  );
+}
 
 describe('AppShell component', () => {
-  it('should render the sidebar and logo', () => {
-    render(
-      <ThemeProvider>
-        <AppShell>Content</AppShell>
-      </ThemeProvider>
-    );
-    
-    expect(screen.getByAltText('Izwan')).toBeInTheDocument();
-    expect(screen.getByText(/Izw/)).toBeInTheDocument();
-    expect(screen.getAllByText('Tableau de bord').length).toBeGreaterThan(0);
-  });
-
-  it('should render the children content', () => {
-    render(
-      <ThemeProvider>
-        <AppShell>
-          <div data-testid="child-content">My Dashboard</div>
-        </AppShell>
-      </ThemeProvider>
-    );
-    
+  it('affiche le contenu enfant', () => {
+    renderShell(<div data-testid="child-content">My Dashboard</div>);
     expect(screen.getByTestId('child-content')).toHaveTextContent('My Dashboard');
   });
 
-  it('should display the current page title in the header', () => {
-    render(
-      <ThemeProvider>
-        <AppShell>Content</AppShell>
-      </ThemeProvider>
-    );
-    
-    // '/dashboard' is mocked, so it should find "Tableau de bord" in the header
-    const headers = screen.getAllByText('Tableau de bord');
-    // One in the sidebar, one in the header
-    expect(headers.length).toBeGreaterThan(0);
+  it('affiche la barre de recherche globale', () => {
+    renderShell();
+    expect(screen.getByPlaceholderText(/Rechercher des snippets/i)).toBeInTheDocument();
   });
 
-  it('should toggle theme when the theme button is clicked', () => {
-    render(
-      <ThemeProvider>
-        <AppShell>Content</AppShell>
-      </ThemeProvider>
-    );
-    
-    const themeBtn = screen.getByLabelText('Toggle theme');
-    fireEvent.click(themeBtn);
-    
-    // The theme provider should have updated the document class
-    expect(document.documentElement.classList.contains('dark')).toBe(false);
+  it('affiche la navigation (dock) vers les sections principales', () => {
+    const { container } = renderShell();
+    // Le dock rend un lien par section ; on vérifie les destinations, pas les libellés
+    // (ceux-ci n'apparaissent que sur l'entrée active/survolée).
+    expect(container.querySelector('a[href="/snippets"]')).toBeTruthy();
+    expect(container.querySelector('a[href="/collections"]')).toBeTruthy();
   });
 
-  it('should show notifications when the bell button is clicked', async () => {
-    const user = userEvent.setup();
-    render(
-      <ThemeProvider>
-        <AppShell>Content</AppShell>
-      </ThemeProvider>
-    );
-    
-    const bellBtn = screen.getByLabelText('Notifications');
-    await user.click(bellBtn);
-    
-    expect(await screen.findByText('Notifications')).toBeInTheDocument();
-    expect(await screen.findByText('Nouveau snippet')).toBeInTheDocument();
+  it('bascule le thème au clic', () => {
+    renderShell();
+    const before = document.documentElement.classList.contains('dark');
+    fireEvent.click(screen.getByLabelText('Thème'));
+    expect(document.documentElement.classList.contains('dark')).toBe(!before);
   });
 });

@@ -29,16 +29,22 @@ describe('ApiClient', () => {
       .mockResolvedValueOnce(mockRegisterResponse)
       .mockResolvedValueOnce(mockLoginResponse);
 
-    const result = await api.signup('testuser', 'password');
+    const result = await api.signup('testuser', 'test@example.com', 'password');
 
     expect(global.fetch).toHaveBeenCalledTimes(2);
     expect(global.fetch).toHaveBeenNthCalledWith(1, expect.stringContaining('/auth/register'), expect.objectContaining({
       method: 'POST',
-      body: JSON.stringify({ username: 'testuser', password: 'password' }),
+      body: JSON.stringify({
+        username: 'testuser',
+        email: 'test@example.com',
+        password: 'password',
+        display_name: undefined,
+      }),
     }));
     expect(global.fetch).toHaveBeenNthCalledWith(2, expect.stringContaining('/auth/login'), expect.anything());
-    
+
     expect(result.access_token).toBe('fake-token');
-    expect(localStorage.getItem('token')).toBe('fake-token');
+    // Le JWT est désormais posé en cookie httpOnly par le serveur : plus rien en localStorage.
+    expect(localStorage.getItem('token')).toBeNull();
   });
 });
