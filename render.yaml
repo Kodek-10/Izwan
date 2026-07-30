@@ -1,0 +1,28 @@
+# Blueprint Render pour le backend Izwan (API FastAPI).
+# Déploiement : Render > New > Blueprint > connecter le repo. Render lit ce fichier.
+# Les secrets (sync: false / non renseignés ici) se saisissent dans le dashboard Render.
+services:
+  - type: web
+    name: izwan-backend
+    runtime: python
+    rootDir: backend
+    plan: starter # 512 Mo ; le free tier s'endort après 15 min (cold start ~30-60 s en démo)
+    buildCommand: pip install -r requirements.txt
+    # uvicorn tourne DANS backend/ -> app.main:app (pas backend.app.main, réservé aux tests)
+    startCommand: uvicorn app.main:app --host 0.0.0.0 --port $PORT
+    healthCheckPath: /
+    envVars:
+      - key: PYTHON_VERSION
+        value: "3.12" # 3.14 (venv local) n'est pas garanti côté Render
+      # --- Secrets à saisir dans le dashboard (jamais commités) ---
+      - key: DATABASE_URL
+        sync: false # Supabase (pooler IPv4, port 6543)
+      - key: GROQ_API_KEY
+        sync: false
+      - key: JWT_SECRET_KEY
+        generateValue: true # Render génère une clé forte
+      # --- Config cross-domaine (V2) ---
+      - key: COOKIE_SECURE
+        value: "true" # HTTPS en prod -> SameSite=None automatiquement (auth cross-domaine)
+      - key: CORS_ORIGINS
+        sync: false # ex: https://izwan.vercel.app (domaine EXACT du frontend, séparé par virgule)
