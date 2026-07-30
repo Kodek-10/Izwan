@@ -1,4 +1,5 @@
 import * as vscode from 'vscode';
+import { t } from './i18n';
 
 export interface Snippet {
     id: number;
@@ -19,7 +20,8 @@ export interface Collection {
 
 export class IzwaAPI {
     private static getBaseUrl(): string {
-        return vscode.workspace.getConfiguration('izwa').get('backendUrl') || 'http://localhost:8000/api/v1';
+        const url: string = vscode.workspace.getConfiguration('izwa').get('backendUrl') || 'http://localhost:8000/api/v1';
+        return url.replace(/\/+$/, '');
     }
 
     private static async getAuthHeader(context: vscode.ExtensionContext): Promise<Record<string, string>> {
@@ -35,50 +37,37 @@ export class IzwaAPI {
         try {
             const baseUrl = this.getBaseUrl();
             const headers = await this.getAuthHeader(context);
-            const response = await fetch(`${baseUrl}/snippets/`, { headers });
-            
-            if (response.status === 401) {
-                vscode.window.showWarningMessage('Izwan: Session expirée ou non connectée. Veuillez vous connecter.');
-                return [];
+            const pageSize = 100;
+            let allItems: Snippet[] = [];
+            let skip = 0;
+
+            while (true) {
+                const response = await fetch(`${baseUrl}/snippets/?skip=${skip}&limit=${pageSize}`, { headers });
+
+                if (response.status === 401) {
+                    vscode.window.showWarningMessage(t('session_expired'));
+                    return [];
+                }
+
+                if (!response.ok) {
+                    throw new Error(`Erreur HTTP: ${response.status}`);
+                }
+
+                const data = await response.json() as any;
+                const items: Snippet[] = data.items || [];
+                allItems = allItems.concat(items);
+
+                if (items.length < pageSize || allItems.length >= data.total) {
+                    break;
+                }
+                skip += pageSize;
             }
 
-            if (!response.ok) {
-                throw new Error(`Erreur HTTP: ${response.status}`);
-            }
-
-            const data = await response.json() as any;
-            // Gérer le format paginé { total, items, ... }
-            return (data.items || []) as Snippet[];
+            return allItems;
         } catch (error) {
             console.error('Izwan Error:', error);
-            vscode.window.showErrorMessage(`Izwan: Impossible de se connecter au backend. Vérifiez l'URL et assurez-vous qu'il est lancé.`);
+            vscode.window.showErrorMessage(t('connection_error'));
             return [];
-        }
-    }
-
-    static async login(context: vscode.ExtensionContext, username: string, password: string): Promise<boolean> {
-        try {
-            const baseUrl = this.getBaseUrl();
-            const formData = new URLSearchParams();
-            formData.append('username', username);
-            formData.append('password', password);
-
-            const response = await fetch(`${baseUrl}/auth/login`, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-                body: formData
-            });
-
-            if (!response.ok) {
-                return false;
-            }
-
-            const data = await response.json() as { access_token: string };
-            await this.storeToken(context, data.access_token);
-            return true;
-        } catch (error) {
-            console.error('Login error:', error);
-            return false;
         }
     }
 
@@ -150,12 +139,14 @@ export class IzwaAPI {
         try {
             const baseUrl = this.getBaseUrl();
             const headers = await this.getAuthHeader(context);
+            const lang = vscode.env.language.startsWith('fr') ? 'fr' : 'en';
             
             const response = await fetch(`${baseUrl}/ai/explain`, {
                 method: 'POST',
                 headers: {
                     ...headers,
-                    'Content-Type': 'application/json'
+                    'Content-Type': 'application/json',
+                    'Accept-Language': lang
                 },
                 body: JSON.stringify({ code, language })
             });
@@ -176,12 +167,14 @@ export class IzwaAPI {
         try {
             const baseUrl = this.getBaseUrl();
             const headers = await this.getAuthHeader(context);
+            const lang = vscode.env.language.startsWith('fr') ? 'fr' : 'en';
             
             const response = await fetch(`${baseUrl}/ai/adapt`, {
                 method: 'POST',
                 headers: {
                     ...headers,
-                    'Content-Type': 'application/json'
+                    'Content-Type': 'application/json',
+                    'Accept-Language': lang
                 },
                 body: JSON.stringify({ code, language, surrounding_code: surroundingCode })
             });

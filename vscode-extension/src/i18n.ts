@@ -17,7 +17,17 @@ const translations: Record<string, Record<string, string>> = {
         'capture.error': 'Izwan: Échec de la sauvegarde du snippet.',
         'sidebar.search_placeholder': 'Rechercher un snippet...',
         'sidebar.loading': 'Chargement...',
-        'sidebar.title': 'Izwan Snippets'
+        'sidebar.title': 'Izwan Snippets',
+        'sidebar.load_error': 'Impossible de charger les snippets.',
+        'sidebar.retry': 'Réessayer',
+        'session_expired': 'Izwan: Session expirée ou non connectée. Veuillez vous connecter.',
+        'connection_error': 'Izwan: Impossible de se connecter au backend. Vérifiez l\'URL et assurez-vous qu\'il est lancé.',
+        'smart_insert.no_editor': 'Aucun éditeur actif pour insérer le snippet.',
+        'smart_insert.in_progress': 'Adaptation du snippet en cours (IA)...',
+        'smart_insert.error_fallback': 'Erreur lors de l\'adaptation. Insertion standard...',
+        'explanation.in_progress': '⏳ Analyse en cours par l\'IA...',
+        'explanation.error': '❌ Erreur lors de la génération de l\'explication.',
+        'explanation.title': 'Explication'
     },
     en: {
         'extension.active': 'Congratulations, your extension "Izwan" is now active!',
@@ -35,7 +45,17 @@ const translations: Record<string, Record<string, string>> = {
         'capture.error': 'Izwan: Failed to save snippet.',
         'sidebar.search_placeholder': 'Search a snippet...',
         'sidebar.loading': 'Loading...',
-        'sidebar.title': 'Izwan Snippets'
+        'sidebar.title': 'Izwan Snippets',
+        'sidebar.load_error': 'Failed to load snippets.',
+        'sidebar.retry': 'Retry',
+        'session_expired': 'Izwan: Session expired or not logged in. Please log in.',
+        'connection_error': 'Izwan: Unable to connect to the backend. Check the URL and make sure it is running.',
+        'smart_insert.no_editor': 'No active editor to insert the snippet.',
+        'smart_insert.in_progress': 'Adapting snippet with AI...',
+        'smart_insert.error_fallback': 'Adaptation error. Inserting standard snippet...',
+        'explanation.in_progress': '⏳ AI analysis in progress...',
+        'explanation.error': '❌ Error generating explanation.',
+        'explanation.title': 'Explanation'
     }
 };
 

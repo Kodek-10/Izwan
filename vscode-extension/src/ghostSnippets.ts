@@ -38,7 +38,7 @@ export class GhostSnippetProvider implements vscode.InlineCompletionItemProvider
             .map((snippet) => this.toCompletion(snippet, prefix, currentLine))
             .filter((item): item is vscode.InlineCompletionItem => Boolean(item));
 
-        return completions.slice(0, 1);
+        return completions.slice(0, 3);
     }
 
     public clearCache() {
@@ -59,6 +59,12 @@ export class GhostSnippetProvider implements vscode.InlineCompletionItemProvider
                     this.snippets = snippets;
                     this.lastFetch = Date.now();
                     return snippets;
+                })
+                .catch(() => {
+                    if (this.snippets.length > 0) {
+                        this.lastFetch = 0;
+                    }
+                    return this.snippets;
                 })
                 .finally(() => {
                     this.pendingFetch = undefined;
