@@ -40,3 +40,4 @@ docs/design/
 .env.local
 **/.env
 **/.env.local
+frontend/package-lock.json
