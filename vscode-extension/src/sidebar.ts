@@ -3,7 +3,7 @@ import { IzwaAPI, Snippet, Collection } from './api';
 import { t } from './i18n';
 
 export class IzwaSidebarProvider implements vscode.WebviewViewProvider {
-    public static readonly viewType = 'izwa-snippets-view';
+    public static readonly viewType = 'izwan-snippets-view';
     private _view?: vscode.WebviewView;
 
     constructor(

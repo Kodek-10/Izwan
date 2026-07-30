@@ -20,17 +20,17 @@ export interface Collection {
 
 export class IzwaAPI {
     private static getBaseUrl(): string {
-        const url: string = vscode.workspace.getConfiguration('izwa').get('backendUrl') || 'http://localhost:8000/api/v1';
+        const url: string = vscode.workspace.getConfiguration('izwan').get('backendUrl') || 'http://localhost:8000/api/v1';
         return url.replace(/\/+$/, '');
     }
 
     private static async getAuthHeader(context: vscode.ExtensionContext): Promise<Record<string, string>> {
-        const token = await context.secrets.get('izwa.token');
+        const token = await context.secrets.get('izwan.token');
         return token ? { 'Authorization': `Bearer ${token}` } : {};
     }
 
     static async storeToken(context: vscode.ExtensionContext, token: string): Promise<void> {
-        await context.secrets.store('izwa.token', token);
+        await context.secrets.store('izwan.token', token);
     }
 
     static async fetchSnippets(context: vscode.ExtensionContext): Promise<Snippet[]> {

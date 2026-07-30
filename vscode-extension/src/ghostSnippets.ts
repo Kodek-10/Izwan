@@ -17,7 +17,7 @@ export class GhostSnippetProvider implements vscode.InlineCompletionItemProvider
         _context: vscode.InlineCompletionContext,
         token: vscode.CancellationToken
     ): Promise<vscode.InlineCompletionItem[] | undefined> {
-        if (!vscode.workspace.getConfiguration('izwa').get('ghostSnippets.enabled', true)) {
+        if (!vscode.workspace.getConfiguration('izwan').get('ghostSnippets.enabled', true)) {
             return undefined;
         }
 

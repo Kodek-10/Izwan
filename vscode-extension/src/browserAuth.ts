@@ -3,7 +3,7 @@ import * as vscode from 'vscode';
 import { IzwaAPI } from './api';
 import { t } from './i18n';
 
-const AUTH_STATE_KEY = 'izwa.browserAuth.state';
+const AUTH_STATE_KEY = 'izwan.browserAuth.state';
 
 export class BrowserAuthHandler implements vscode.UriHandler {
     constructor(
@@ -16,7 +16,7 @@ export class BrowserAuthHandler implements vscode.UriHandler {
         await this.context.globalState.update(AUTH_STATE_KEY, state);
 
         const callbackUri = await vscode.env.asExternalUri(
-            vscode.Uri.parse(`${vscode.env.uriScheme}://kodek10.izwa-vscode/auth`)
+            vscode.Uri.parse(`${vscode.env.uriScheme}://kodek10.izwan-vscode/auth`)
         );
         const authUrl = this.buildAuthUrl(callbackUri, state);
 
@@ -48,7 +48,7 @@ export class BrowserAuthHandler implements vscode.UriHandler {
 
     private buildAuthUrl(callbackUri: vscode.Uri, state: string): vscode.Uri {
         const frontendUrl = vscode.workspace
-            .getConfiguration('izwa')
+            .getConfiguration('izwan')
             .get<string>('frontendUrl', 'http://localhost:5173/auth');
         const authUrl = new URL(frontendUrl);
 
