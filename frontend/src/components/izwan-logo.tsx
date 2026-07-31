@@ -11,30 +11,29 @@ export function IzwaLogo({ className = "h-8 w-8" }: { className?: string }) {
       aria-label="Izwan"
     >
       <defs>
-        <linearGradient id="izwan-grad" x1="4" y1="4" x2="28" y2="28" gradientUnits="userSpaceOnUse">
+        <linearGradient id="izwan-grad" x1="5" y1="5" x2="27" y2="27" gradientUnits="userSpaceOnUse">
           <stop stopColor="#e8765a" />
           <stop offset="1" stopColor="#c75a45" />
         </linearGradient>
       </defs>
 
-      {/* Liens (le "I" : barre haute, hampe, barre basse + diagonales vers le centre) */}
-      <g stroke="url(#izwan-grad)" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" opacity="0.5">
-        <path d="M7 7 H25" />
-        <path d="M16 7 V25" />
-        <path d="M7 25 H25" />
-        <path d="M7 7 L16 16 L25 25" />
-        <path d="M25 7 L16 16 L7 25" />
+      {/* Accolades { } encadrant une petite constellation de nœuds (snippets reliés) */}
+      <g stroke="url(#izwan-grad)" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round">
+        <path d="M11 6.5 C8.3 6.5 9.4 13.4 6 16 C9.4 18.6 8.3 25.5 11 25.5" />
+        <path d="M21 6.5 C23.7 6.5 22.6 13.4 26 16 C22.6 18.6 23.7 25.5 21 25.5" />
+        <g opacity="0.55">
+          <path d="M16 16 L12.6 10.9" />
+          <path d="M16 16 L20 11.4" />
+          <path d="M16 16 L14.1 21.8" />
+        </g>
       </g>
 
       {/* Nœuds */}
       <g fill="url(#izwan-grad)">
-        <circle cx="7" cy="7" r="2" />
-        <circle cx="16" cy="7" r="2" />
-        <circle cx="25" cy="7" r="2" />
-        <circle cx="7" cy="25" r="2" />
-        <circle cx="16" cy="25" r="2" />
-        <circle cx="25" cy="25" r="2" />
-        <circle cx="16" cy="16" r="3.2" />
+        <circle cx="16" cy="16" r="2.5" />
+        <circle cx="12.6" cy="10.9" r="1.5" />
+        <circle cx="20" cy="11.4" r="1.5" />
+        <circle cx="14.1" cy="21.8" r="1.5" />
       </g>
     </svg>
   );
