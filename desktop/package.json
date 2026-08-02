@@ -3,6 +3,8 @@
   "version": "0.1.0",
   "private": true,
   "description": "Izwan desktop — coquille native qui charge l'application web hébergée (V2).",
+  "homepage": "https://github.com/Kodek-10/Izwan",
+  "author": "Izwan <contact@izwan.app>",
   "main": "src/main.cjs",
   "scripts": {
     "dev": "electron .",
