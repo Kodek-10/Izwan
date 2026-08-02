@@ -1,0 +1,41 @@
+name: Desktop Release
+
+# Publie les installeurs desktop (Windows + Linux) sur une GitHub Release
+# quand on pousse un tag "vX.Y.Z" (ex: git tag v0.1.0 && git push origin v0.1.0).
+# Déclenchable aussi à la main (workflow_dispatch).
+on:
+  push:
+    tags: ["v*"]
+  workflow_dispatch:
+
+permissions:
+  contents: write # nécessaire pour que electron-builder crée/alimente la Release
+
+jobs:
+  build:
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - os: ubuntu-latest
+            platform: linux
+          - os: windows-latest
+            platform: win
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+
+      - name: Installer les dépendances desktop
+        working-directory: desktop
+        run: npm install
+
+      - name: Build & publication (${{ matrix.platform }})
+        working-directory: desktop
+        run: npx electron-builder --${{ matrix.platform }} --publish always
+        env:
+          # Fourni automatiquement par Actions ; autorise la publication sur la Release.
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}

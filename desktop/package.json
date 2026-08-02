@@ -2,17 +2,13 @@
   "name": "izwan-desktop",
   "version": "0.1.0",
   "private": true,
-  "description": "Izwan desktop shell with local backend orchestration.",
+  "description": "Izwan desktop — coquille native qui charge l'application web hébergée (V2).",
   "main": "src/main.cjs",
   "scripts": {
     "dev": "electron .",
-    "build:frontend": "npm --prefix ../frontend run build",
-    "build:backend:win": "python -m PyInstaller ../backend/pyinstaller/izwan-backend.spec --noconfirm --distpath ../backend/dist --workpath ../backend/build",
-    "build:backend:unix": "pyinstaller ../backend/pyinstaller/izwan-backend.spec --noconfirm --distpath ../backend/dist --workpath ../backend/build",
-    "dist:win": "npm run build:frontend && electron-builder --win",
-    "dist:mac": "npm run build:frontend && electron-builder --mac",
-    "dist:linux": "npm run build:frontend && electron-builder --linux",
-    "check": "node --check src/main.cjs && node --check src/preload.cjs"
+    "dist:win": "electron-builder --win --publish never",
+    "dist:linux": "electron-builder --linux --publish never",
+    "check": "node --check src/main.cjs"
   },
   "devDependencies": {
     "electron": "^39.2.7",
@@ -22,47 +18,31 @@
     "appId": "com.kodek10.izwan",
     "productName": "Izwan",
     "directories": {
-      "output": "release"
+      "output": "release",
+      "buildResources": "build"
     },
     "files": [
       "src/**/*",
       "package.json"
     ],
-    "extraResources": [
+    "publish": [
       {
-        "from": "../frontend/dist",
-        "to": "frontend",
-        "filter": [
-          "**/*"
-        ]
-      },
-      {
-        "from": "../backend/dist",
-        "to": "backend",
-        "filter": [
-          "**/*"
-        ]
+        "provider": "github",
+        "owner": "Kodek-10",
+        "repo": "Izwan"
       }
     ],
     "win": {
-      "target": [
-        "nsis"
-      ]
-    },
-    "mac": {
-      "target": [
-        "dmg"
-      ]
-    },
-    "linux": {
-      "target": [
-        "AppImage",
-        "deb"
-      ]
+      "target": ["nsis"]
     },
     "nsis": {
       "oneClick": false,
       "allowToChangeInstallationDirectory": true
+    },
+    "linux": {
+      "target": ["AppImage", "deb"],
+      "category": "Development",
+      "maintainer": "Izwan <contact@izwan.app>"
     }
   }
 }
