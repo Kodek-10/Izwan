@@ -3,7 +3,8 @@
   "publisher": "kodek10",
   "displayName": "Izwan - Snippet Manager IA",
   "description": "Accédez à vos snippets Izwan directement depuis votre éditeur.",
-  "version": "0.0.1",
+  "version": "0.0.2",
+  "icon": "media/icon.png",
   "repository": {
     "type": "git",
     "url": "https://github.com/Kodek-10/Izwan.git"
