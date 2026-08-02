@@ -1,51 +1,38 @@
 # Izwan Desktop
 
-Electron shell for shipping Izwan as a native desktop app.
+Coquille native (Electron) qui ouvre l'application web hébergée d'Izwan dans une
+fenêtre bureau — modèle **V2** : le backend (Render) et le frontend (Cloudflare
+Pages) tournent en ligne, le desktop se contente de les charger.
 
-## What It Provides
+## Ce qu'elle apporte
+- Fenêtre native chargeant `https://izwan.pages.dev`.
+- Icône dans la barre système (tray) + raccourci global `Alt+Space` (recherche rapide).
+- Instance unique (une 2ᵉ ouverture refocalise la fenêtre existante).
+- Installeurs Windows (`.exe` NSIS) et Linux (`AppImage`, `.deb`).
 
-- Loads the React frontend in a native desktop window.
-- Starts the local FastAPI backend automatically.
-- Uses a bundled `izwan-backend` binary when present, with a Python/uvicorn fallback for development.
-- Stores the SQLite database in the app user data directory.
-- Adds a system tray menu.
-- Registers `Alt+Space` to show Izwan and focus the search field.
-- Can start a bundled or system Ollama process with `IZWAN_DESKTOP_MANAGE_OLLAMA=1`.
-- Defines installer targets for Windows (`nsis`), macOS (`dmg`) and Linux (`AppImage`, `deb`).
+L'URL chargée est configurable : `IZWAN_DESKTOP_URL=https://autre.exemple npm run dev`.
 
-## Development
-
+## Développement
 ```bash
 npm install
 npm run dev
 ```
 
-The development shell starts:
-
-- backend: `python -m uvicorn app.main:app --host 127.0.0.1 --port 8000`
-- frontend: `npm run dev -- --host 127.0.0.1 --port 4173`
-
-## Packaging
-
-Build the frontend first:
-
+## Build local
 ```bash
-npm run build:frontend
+npm run dist:win     # sur Windows -> release/*.exe
+npm run dist:linux   # sur Linux   -> release/*.AppImage, *.deb
 ```
+> Le backend embarqué (PyInstaller) et le frontend local ont été **retirés** en V2 :
+> tout est hébergé, la coquille ne fait que charger l'app en ligne.
 
-Build a backend executable with PyInstaller:
-
+## Publication des téléchargements
+La CI GitHub Actions (`.github/workflows/desktop-release.yml`) build Windows +
+Linux et publie les installeurs sur une **GitHub Release** dès qu'on pousse un tag :
 ```bash
-pip install -r ../backend/requirements-desktop.txt
-npm run build:backend:win
+# aligner la version dans package.json puis :
+git tag v0.1.0
+git push origin v0.1.0
 ```
-
-Then generate an installer:
-
-```bash
-npm run dist:win
-npm run dist:mac
-npm run dist:linux
-```
-
-To bundle Ollama, place the platform executable in `desktop/ollama/` before packaging.
+Les artefacts apparaissent dans l'onglet Releases (release en brouillon à finaliser).
+La landing pointera ensuite vers ces fichiers pour le téléchargement.
