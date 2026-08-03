@@ -35,7 +35,8 @@
       }
     ],
     "win": {
-      "target": ["nsis"]
+      "target": ["nsis"],
+      "artifactName": "Izwan-Setup.${ext}"
     },
     "nsis": {
       "oneClick": false,
@@ -43,6 +44,7 @@
     },
     "linux": {
       "target": ["AppImage", "deb"],
+      "artifactName": "Izwan.${ext}",
       "category": "Development",
       "maintainer": "Izwan <contact@izwan.app>"
     }
