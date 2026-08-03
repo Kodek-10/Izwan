@@ -10,6 +10,7 @@ import { Button } from "@/components/ui/button";
 import { IzwaLogo, IzwaWordmark } from "@/components/izwan-logo";
 import { useTheme } from "@/components/theme-provider";
 import { useLandingAnimations } from "@/hooks/use-landing-animations";
+import { DownloadSection } from "@/components/download-section";
 
 export const Route = createFileRoute("/")({
   head: () => ({
@@ -162,8 +163,8 @@ function LandingPage() {
           </Link>
           <div className="hidden md:flex items-center gap-8 text-sm font-medium">
             <a href="#features" className="text-muted-foreground hover:text-foreground transition-colors">Fonctionnalités</a>
-            <a href="#" className="text-muted-foreground hover:text-foreground transition-colors">Tarifs</a>
-            <a href="#" className="text-muted-foreground hover:text-foreground transition-colors">Documentation</a>
+            <a href="#download" className="text-muted-foreground hover:text-foreground transition-colors">Télécharger</a>
+            <a href="https://github.com/Kodek-10/Izwan" target="_blank" rel="noreferrer" className="text-muted-foreground hover:text-foreground transition-colors">GitHub</a>
           </div>
           <div className="flex items-center gap-4">
             <Button variant="ghost" size="icon" onClick={toggle} aria-label="Thème">
@@ -216,16 +217,16 @@ function LandingPage() {
               </div>
               {/* CTAs */}
               <div className="flex flex-col sm:flex-row items-center gap-4 pt-4">
-                <a data-gsap='hero-cta' href={GITHUB_RELEASES} target="_blank" rel="noreferrer" className="w-full sm:w-auto brand-gradient-bg text-white font-mono text-xs font-semibold px-8 py-4 rounded-lg hover:opacity-90 transition-all flex items-center justify-center gap-2 group shadow-lg">
-                  <ExternalLink className="h-5 w-5" />
-                  Télécharger pour Windows
+                <a data-gsap='hero-cta' href="#download" className="w-full sm:w-auto brand-gradient-bg text-white font-mono text-xs font-semibold px-8 py-4 rounded-lg hover:opacity-90 transition-all flex items-center justify-center gap-2 group shadow-lg">
+                  <Download className="h-5 w-5" />
+                  Télécharger l'application
                 </a>
                 <Link data-gsap='hero-cta' to="/signup" className="w-full sm:w-auto bg-background text-primary border border-primary/20 font-mono text-xs font-medium px-8 py-4 rounded-lg hover:bg-muted transition-all flex items-center justify-center gap-2 shadow-sm">
                   Ouvrir l'app web
                   <ExternalLink className="h-4 w-4" />
                 </Link>
               </div>
-              <p data-gsap='hero-version' className="text-xs text-foreground/60 font-mono">Version 2.4.0 • Nécessite Windows 10+ ou macOS 12+</p>
+              <p data-gsap='hero-version' className="text-xs text-foreground/60 font-mono">Windows &amp; Linux · extension VS Code · ou directement dans le navigateur</p>
             </div>
             {/* Right Column: Dashboard Visual */}
             <motion.div
@@ -457,6 +458,9 @@ function LandingPage() {
           </motion.div>
         </motion.div>
       </section>
+
+      {/* Téléchargement */}
+      <DownloadSection />
 
       {/* CTA Section */}
       <section ref={ctaRef} className="relative overflow-hidden py-24 px-6">
