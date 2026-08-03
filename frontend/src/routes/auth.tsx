@@ -78,10 +78,11 @@ function VscodeReturnScreen({
 
 function AuthPage() {
   const { t } = useTranslation();
-  const [username, setUsername] = useState("");
+  const [username, setUsername] = useState(() => localStorage.getItem("izwan_remember_username") ?? "");
   const [password, setPassword] = useState("");
   const [showPw, setShowPw] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [remember, setRemember] = useState(false);
   const [vscode, setVscode] = useState<VscodeContext | null>(null);
   const navigate = useNavigate();
 
@@ -131,6 +132,11 @@ function AuthPage() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
+    if (remember) {
+      localStorage.setItem("izwan_remember_username", username);
+    } else {
+      localStorage.removeItem("izwan_remember_username");
+    }
     try {
       const result = await api.login(username, password);
       toast.success(t("auth.login_success"));
@@ -175,27 +181,27 @@ function AuthPage() {
     <main className="auth-page min-h-screen flex overflow-x-hidden bg-surface-container-lowest">
       {/* Left Panel */}
       <section className="hidden lg:flex w-1/2 min-h-screen relative items-center justify-center overflow-hidden">
-        <div className="absolute inset-0 z-0 bg-gradient-to-br from-[#2b121c] to-[#1a0c12]" />
-        <div className="absolute inset-0 z-10 bg-gradient-to-br from-black/70 to-black/40" />
+        <div className="absolute inset-0 z-0 auth-hero" />
+        <div className="absolute inset-0 z-10 auth-hero-overlay" />
         <div className="relative z-20 flex flex-col items-center text-center max-w-lg px-8">
           <div className="mb-10">
-            <span className="font-display text-5xl text-white font-black tracking-tighter">
+            <span className="font-display text-5xl text-[var(--on-hero)] font-black tracking-tighter">
               Izwan
             </span>
-            <div className="h-1 w-12 bg-white mx-auto rounded-full mt-1" />
+            <div className="h-1 w-12 bg-[var(--on-hero)] mx-auto rounded-full mt-1" />
           </div>
-          <h1 className="font-headline-lg text-3xl text-white mb-6 leading-tight">
+          <h1 className="font-headline-lg text-3xl text-[var(--on-hero)] mb-6 leading-tight">
             Maîtrisez votre code avec élégance
           </h1>
-          <p className="font-body-lg text-lg text-white/80 max-w-md">
+          <p className="font-body-lg text-lg text-[var(--on-hero-muted)] max-w-md">
             Une plateforme de gestion de snippets conçue pour les artisans du logiciel exigeants.
             Structurez vos idées, accélérez votre workflow.
           </p>
           <div className="mt-10 glass-panel p-6 rounded-xl flex items-center gap-4 animate-pulse">
-            <Code className="text-white h-8 w-8" />
+            <Code className="text-[var(--on-hero)] h-8 w-8" />
             <div className="text-left">
-              <div className="h-2 w-24 bg-white/30 rounded mb-2" />
-              <div className="h-2 w-16 bg-white/20 rounded" />
+              <div className="h-2 w-24 bg-[var(--on-hero)]/30 rounded mb-2" />
+              <div className="h-2 w-16 bg-[var(--on-hero)]/20 rounded" />
             </div>
           </div>
         </div>
@@ -301,7 +307,7 @@ function AuthPage() {
               <div className="group">
                 <label
                   htmlFor="password"
-                  className="block font-label-c_List text-[var(--on-surface-variant)] mb-1"
+                  className="block font-label-caps text-[var(--on-surface-variant)] mb-1"
                 >
                   Mot de Passe
                 </label>
@@ -331,14 +337,22 @@ function AuthPage() {
 
             <div className="flex items-center justify-between">
               <label className="flex items-center gap-2 cursor-pointer group">
-                <input type="checkbox" className="auth-checkbox" />
+                <input
+                  type="checkbox"
+                  className="auth-checkbox"
+                  checked={remember}
+                  onChange={(e) => setRemember(e.target.checked)}
+                />
                 <span className="font-body-sm text-[var(--on-surface-variant)] group-hover:text-[var(--on-surface)] transition-colors">
                   Se souvenir de moi
                 </span>
               </label>
-              <span className="font-body-sm text-[var(--primary)] font-semibold hover:underline cursor-pointer">
+              <button
+                type="button"
+                className="font-body-sm text-[var(--primary)] font-semibold hover:underline cursor-pointer"
+              >
                 Mot de passe oublié ?
-              </span>
+              </button>
             </div>
 
             <button type="submit" className="auth-btn-primary" disabled={loading}>
@@ -357,15 +371,24 @@ function AuthPage() {
 
           <footer className="pt-8 border-t border-[var(--outline-variant)]/20">
             <div className="flex flex-wrap justify-center gap-x-6 gap-y-2 text-xs font-label-caps text-[var(--outline)]">
-              <span className="hover:text-[var(--primary)] transition-colors cursor-pointer">
+              <button
+                type="button"
+                className="hover:text-[var(--primary)] transition-colors cursor-pointer"
+              >
                 Aide
-              </span>
-              <span className="hover:text-[var(--primary)] transition-colors cursor-pointer">
+              </button>
+              <button
+                type="button"
+                className="hover:text-[var(--primary)] transition-colors cursor-pointer"
+              >
                 Confidentialité
-              </span>
-              <span className="hover:text-[var(--primary)] transition-colors cursor-pointer">
+              </button>
+              <button
+                type="button"
+                className="hover:text-[var(--primary)] transition-colors cursor-pointer"
+              >
                 Conditions
-              </span>
+              </button>
             </div>
             <p className="text-center text-[10px] text-[var(--outline)]/60 mt-4">
               © {new Date().getFullYear()} Izwan. Tous droits réservés.
