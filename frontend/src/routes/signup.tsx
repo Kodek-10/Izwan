@@ -1,5 +1,5 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
-import { Eye, EyeOff, Loader2, Mail, Lock } from "lucide-react";
+import { Eye, EyeOff, Loader2, Mail, Lock, User } from "lucide-react";
 import { useState, useEffect } from "react";
 import { useTranslation } from "react-i18next";
 import { IzwaLogo } from "@/components/izwan-logo";
@@ -47,9 +47,9 @@ function SignupPage() {
   };
 
   return (
-    <main className="auth-page min-h-screen flex flex-col md:flex-row">
+    <main className="auth-page min-h-screen flex flex-col lg:flex-row">
       {/* Left Panel: Pattern & Branding */}
-      <section className="hidden md:flex md:w-1/2 relative bg-[var(--surface-container-low)] overflow-hidden items-center justify-center border-r border-[var(--outline-variant)]/30">
+      <section className="hidden lg:flex lg:w-1/2 relative bg-[var(--surface-container-low)] overflow-hidden items-center justify-center border-r border-[var(--outline-variant)]/30">
         <div className="absolute inset-0 bento-pattern opacity-40" />
         <div className="relative z-10 p-16 flex flex-col items-start max-w-lg">
           <div className="mb-12">
@@ -83,15 +83,15 @@ function SignupPage() {
       {/* Right Panel: Form */}
       <section className="flex-1 flex flex-col items-center justify-center bg-white px-6 py-12 md:px-12 lg:px-24">
         {/* Mobile Logo */}
-        <div className="md:hidden mb-12 flex items-center gap-2">
+        <div className="lg:hidden mb-12 flex items-center gap-2">
           <IzwaLogo className="h-8 w-8 text-[var(--primary)]" />
           <span className="text-[var(--primary)] font-headline-md text-2xl font-bold">Izwan</span>
         </div>
 
         <div className="w-full max-w-md">
           <header className="mb-10">
-            <h2 className="font-headline-lg text-3xl text-[var(--primary)] mb-2">Créer un compte</h2>
-            <p className="text-[var(--on-surface-variant)]">Prêt à porter votre code vers de nouveaux sommets ?</p>
+            <h2 className="font-headline-lg text-3xl text-[var(--on-surface)] mb-2">Créer un compte</h2>
+            <p className="text-[var(--on-surface-variant)] font-body-md">Prêt à porter votre code vers de nouveaux sommets ?</p>
           </header>
 
           {/* Social Signup */}
@@ -128,6 +128,7 @@ function SignupPage() {
                 Nom d'utilisateur
               </label>
               <div className="relative group">
+                <User className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-[var(--outline)] group-focus-within:text-[var(--primary)] transition-colors" />
                 <input
                   id="username"
                   name="username"
@@ -135,7 +136,7 @@ function SignupPage() {
                   required
                   autoComplete="username"
                   placeholder="jean_dupont"
-                  className="auth-input"
+                  className="auth-input pl-12"
                   value={username}
                   onChange={(e) => setUsername(e.target.value)}
                 />
@@ -147,13 +148,14 @@ function SignupPage() {
                 Nom affiché (optionnel)
               </label>
               <div className="relative group">
+                <User className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-[var(--outline)] group-focus-within:text-[var(--primary)] transition-colors" />
                 <input
                   id="displayName"
                   name="displayName"
                   type="text"
                   autoComplete="name"
                   placeholder="Jean Dupont"
-                  className="auth-input"
+                  className="auth-input pl-12"
                   value={displayName}
                   onChange={(e) => setDisplayName(e.target.value)}
                 />
@@ -228,7 +230,7 @@ function SignupPage() {
             </div>
             {/* Terms */}
             <div className="flex items-start gap-3 py-2">
-              <input className="auth-checkbox mt-1 w-5 h-5" id="terms" type="checkbox" required />
+              <input className="auth-checkbox mt-1" id="terms" type="checkbox" required />
               <label htmlFor="terms" className="text-sm text-[var(--on-surface-variant)] leading-tight">
                 J'accepte les <span className="text-[var(--primary)] font-semibold hover:underline cursor-pointer">Conditions d'utilisation</span> et la <span className="text-[var(--primary)] font-semibold hover:underline cursor-pointer">Politique de confidentialité</span>.
               </label>
@@ -236,7 +238,7 @@ function SignupPage() {
             {/* Submit */}
             <button
               type="submit"
-              className="w-full h-14 bg-[var(--primary)] text-white font-semibold text-lg rounded-xl hover:bg-[var(--primary-container)] active:scale-[0.98] transition-all shadow-lg shadow-[var(--primary)]/10"
+              className="auth-btn-primary"
               disabled={loading}
             >
               {loading ? <Loader2 className="h-5 w-5 animate-spin mx-auto" /> : "Créer un compte"}
