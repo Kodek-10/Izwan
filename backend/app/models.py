@@ -27,6 +27,10 @@ class User(Base):
     email = Column(String, unique=True, index=True, nullable=False)
     display_name = Column(String, nullable=True)
     hashed_password = Column(String, nullable=False)
+    # Liaison OAuth (optionnel) : provider ("google"/"github") + identifiant externe.
+    # Un user OAuth a un mot de passe aléatoire (hashed_password non null, jamais utilisé).
+    oauth_provider = Column(String, nullable=True)
+    oauth_id = Column(String, nullable=True)
     role = Column(
         String,
         nullable=False,

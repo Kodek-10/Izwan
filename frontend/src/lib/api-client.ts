@@ -28,8 +28,8 @@ class ApiClient {
       // Le cookie httpOnly est invalidé côté serveur (expiration/révocation H4). On efface
       // le drapeau de présence puis on renvoie vers /auth.
       localStorage.removeItem("izwan_auth");
-      if (!window.location.pathname.includes('/auth')) {
-        window.location.href = '/auth';
+      if (!window.location.pathname.includes("/auth")) {
+        window.location.href = "/auth";
       }
     }
 
@@ -97,7 +97,12 @@ class ApiClient {
   }
 
   // Helper for registration + login
-  async signup(username: string, email: string, password: string, display_name?: string): Promise<{ access_token: string }> {
+  async signup(
+    username: string,
+    email: string,
+    password: string,
+    display_name?: string,
+  ): Promise<{ access_token: string }> {
     const response = await fetch(`${API_URL}/auth/register`, {
       method: "POST",
       credentials: "include",
@@ -141,6 +146,20 @@ class ApiClient {
     const data = await response.json();
     if (isBrowser) localStorage.setItem("izwan_auth", "1");
     return data;
+  }
+
+  // OAuth : l'utilisateur doit être redirigé en plein écran vers le provider.
+  // Au retour, le backend pose le cookie JWT puis nous renvoie sur /auth?oauth=success|error.
+  // `vscode` (optionnel) : flux extension -> on transmet les paramètres au backend
+  // pour qu'il les fasse voyager dans le state OAuth et nous les renvoie en retour.
+  oauthLogin(
+    provider: "google" | "github",
+    vscode?: { redirect_uri: string; state: string },
+  ): void {
+    const query = vscode
+      ? `?redirect_uri=${encodeURIComponent(vscode.redirect_uri)}&state=${encodeURIComponent(vscode.state)}`
+      : "";
+    window.location.href = `${API_URL}/auth/${provider}${query}`;
   }
 
   async logout(): Promise<void> {

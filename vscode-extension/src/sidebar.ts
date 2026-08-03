@@ -8,7 +8,8 @@ export class IzwaSidebarProvider implements vscode.WebviewViewProvider {
 
     constructor(
         private readonly _extensionUri: vscode.Uri,
-        private readonly _context: vscode.ExtensionContext
+        private readonly _context: vscode.ExtensionContext,
+        private readonly _onLogin: () => void = () => {}
     ) {}
 
     public resolveWebviewView(
@@ -35,6 +36,9 @@ export class IzwaSidebarProvider implements vscode.WebviewViewProvider {
                     break;
                 case 'refresh':
                     this.refresh();
+                    break;
+                case 'login':
+                    this._onLogin();
                     break;
                 case 'explainSnippet':
                     try {
@@ -309,9 +313,24 @@ export class IzwaSidebarProvider implements vscode.WebviewViewProvider {
                     .retry-btn:hover {
                         background: var(--vscode-button-hoverBackground);
                     }
+                    .login-btn {
+                        width: 100%;
+                        background: var(--vscode-button-background);
+                        color: var(--vscode-button-foreground);
+                        border: none;
+                        padding: 8px 12px;
+                        border-radius: 2px;
+                        cursor: pointer;
+                        font-weight: 600;
+                        margin-bottom: 15px;
+                    }
+                    .login-btn:hover {
+                        background: var(--vscode-button-hoverBackground);
+                    }
                 </style>
             </head>
             <body>
+                <button class="login-btn" id="login-btn">${t('sidebar.login')}</button>
                 <input type="text" class="search-box" id="search" placeholder="${t('sidebar.search_placeholder')}">
                 <div id="content">${t('sidebar.loading')}</div>
 
@@ -352,7 +371,7 @@ export class IzwaSidebarProvider implements vscode.WebviewViewProvider {
                             const bodyEl = document.getElementById('explanation-body');
                             bodyEl.innerHTML = '<div style="color:var(--vscode-errorForeground);padding:20px;text-align:center;">${t('explanation.error')}</div>';
                         } else if (message.type === 'setError') {
-                            contentElement.innerHTML = '<div style="color:var(--vscode-errorForeground);padding:20px;text-align:center;">${t('sidebar.load_error')}</div><div style="text-align:center;margin-top:8px;"><button class="retry-btn" onclick="vscode.postMessage({type:\'refresh\'})">${t('sidebar.retry')}</button></div>';
+                            contentElement.innerHTML = '<div style="color:var(--vscode-errorForeground);padding:20px;text-align:center;">${t('sidebar.load_error')}<br><br></div><div style="text-align:center;margin-top:8px;"><button class="login-btn" style="max-width:220px;margin:0 auto;display:block;margin-bottom:8px;" onclick="vscode.postMessage({type:\'login\'})">${t('sidebar.login')}</button><button class="retry-btn" onclick="vscode.postMessage({type:\'refresh\'})">${t('sidebar.retry')}</button></div>';
                         }
                     });
 
@@ -473,6 +492,10 @@ export class IzwaSidebarProvider implements vscode.WebviewViewProvider {
                     }
 
                     searchInput.oninput = render;
+
+                    document.getElementById('login-btn').onclick = () => {
+                        vscode.postMessage({ type: 'login' });
+                    };
                 </script>
             </body>
             </html>`;

@@ -8,13 +8,18 @@ import { BrowserAuthHandler } from './browserAuth';
 export function activate(context: vscode.ExtensionContext) {
     console.log(t('extension.active'));
 
-    const sidebarProvider = new IzwaSidebarProvider(context.extensionUri, context);
     const ghostSnippetProvider = new GhostSnippetProvider(context);
+    let sidebarProvider: IzwaSidebarProvider;
     const refreshAuthenticatedViews = () => {
         ghostSnippetProvider.clearCache();
         sidebarProvider.refresh();
     };
     const browserAuthHandler = new BrowserAuthHandler(context, refreshAuthenticatedViews);
+    sidebarProvider = new IzwaSidebarProvider(
+        context.extensionUri,
+        context,
+        () => browserAuthHandler.startLogin()
+    );
 
     context.subscriptions.push(
         vscode.window.registerWebviewViewProvider(
