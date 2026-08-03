@@ -19,8 +19,8 @@ export default defineConfig({
         registerType: "autoUpdate",
         includeAssets: ["favicon.ico", "pwa-192x192.png", "pwa-512x512.png"],
         manifest: {
-          name: "Izwa - Snippet Manager IA",
-          short_name: "Izwa",
+          name: "Izwan - Snippet Manager IA",
+          short_name: "Izwan",
           description: "Gestionnaire de snippets intelligent et local",
           theme_color: "#6366f1",
           background_color: "#ffffff",

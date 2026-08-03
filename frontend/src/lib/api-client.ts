@@ -25,9 +25,9 @@ class ApiClient {
     }
 
     if (response.status === 401 && isBrowser) {
-      // Le cookie httpOnly est invalidé côté serveur (expiration/révocation H4). On synchronise
-      // le flag de présence client puis on renvoie vers /auth.
-      document.cookie = "session=; Max-Age=0; path=/";
+      // Le cookie httpOnly est invalidé côté serveur (expiration/révocation H4). On efface
+      // le drapeau de présence puis on renvoie vers /auth.
+      localStorage.removeItem("izwan_auth");
       if (!window.location.pathname.includes('/auth')) {
         window.location.href = '/auth';
       }
@@ -134,17 +134,20 @@ class ApiClient {
       await this.handleError(response);
     }
 
-    // H2 : le JWT est posé en cookie httpOnly par le serveur. On ne le stocke pas
-    // en localStorage (ferme l'exfiltration XSS / CWE-922). data.access_token reste
-    // renvoyé pour back-compat clients non-navigateur.
-    return response.json();
+    // H2 : le JWT reste en cookie httpOnly (jamais en localStorage -> pas d'exfiltration
+    // XSS). On ne garde côté client qu'un drapeau de présence NON secret, indispensable
+    // en cross-domaine : le cookie posé par le backend (onrender.com) n'est pas lisible
+    // par le JS du front (pages.dev).
+    const data = await response.json();
+    if (isBrowser) localStorage.setItem("izwan_auth", "1");
+    return data;
   }
 
   async logout(): Promise<void> {
-    // Le cookie httpOnly ne peut être vidé que par le serveur. Le flag de présence
-    // (session=1) est effacé côté client pour qu'isAuthenticated() retourne faux immédiatement.
+    // Le cookie httpOnly ne peut être vidé que par le serveur. Le drapeau de présence
+    // est effacé côté client pour qu'isAuthenticated() retourne faux immédiatement.
     if (isBrowser) {
-      document.cookie = "session=; Max-Age=0; path=/";
+      localStorage.removeItem("izwan_auth");
       try {
         await this.post("/auth/logout", {});
       } catch {
@@ -155,7 +158,9 @@ class ApiClient {
 
   isAuthenticated() {
     if (!isBrowser) return false; // On redirige vers auth sur le serveur pour éviter les incohérences de rendu
-    return document.cookie.split(";").some((c) => c.trim() === "session=1");
+    // Drapeau de présence NON secret (le vrai JWT reste en cookie httpOnly). En cross-domaine,
+    // le cookie du backend n'est pas lisible ici -> localStorage est la seule option fiable.
+    return localStorage.getItem("izwan_auth") === "1";
   }
 }
 

@@ -33,7 +33,14 @@ function AuthPage() {
     try {
       await api.login(username, password);
       toast.success(t("auth.login_success"));
-      navigate({ to: "/dashboard" });
+      // Redirection selon le rôle : un admin arrive directement dans sa console.
+      let role: string | undefined;
+      try {
+        role = (await api.get<{ role?: string }>("/auth/me")).role;
+      } catch {
+        /* si /auth/me échoue, on retombe sur la vue user par défaut */
+      }
+      navigate({ to: role === "ADMIN" ? "/admin" : "/dashboard" });
     } catch (error: any) {
       toast.error(error.message || t("auth.invalid_credentials"));
     } finally {
