@@ -19,11 +19,12 @@ if config.config_file_name is not None:
 
 # Charge backend/.env (comme app/main.py) puis injecte DATABASE_URL.
 # L'URL n'est jamais écrite dans alembic.ini -> pas de secret versionné.
+# Les '%' du mot de passe doivent être doublés ('%%') sinon configparser
+# tente une interpolation (ex: un mot de passe contenant '?' encodé en '%3F').
 env_path = Path(__file__).resolve().parents[1] / ".env"
 load_dotenv(dotenv_path=env_path)
-config.set_main_option(
-    "sqlalchemy.url", os.getenv("DATABASE_URL", "sqlite:///./snippets.db")
-)
+_db_url = os.getenv("DATABASE_URL", "sqlite:///./snippets.db").replace("%", "%%")
+config.set_main_option("sqlalchemy.url", _db_url)
 
 # MetaData des modèles pour le support 'autogenerate'.
 from app.core.database import Base  # noqa: E402

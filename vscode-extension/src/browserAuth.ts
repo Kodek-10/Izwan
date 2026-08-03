@@ -22,7 +22,15 @@ export class BrowserAuthHandler implements vscode.UriHandler {
 
         const opened = await vscode.env.openExternal(authUrl);
         if (!opened) {
-            vscode.window.showErrorMessage(t('login.browser_open_error'));
+            const url = authUrl.toString(true);
+            const copy = t('login.copy_url');
+            vscode.window
+                .showWarningMessage(t('login.browser_open_error'), copy)
+                .then((selection) => {
+                    if (selection === copy) {
+                        vscode.env.clipboard.writeText(url);
+                    }
+                });
         }
     }
 
@@ -49,7 +57,7 @@ export class BrowserAuthHandler implements vscode.UriHandler {
     private buildAuthUrl(callbackUri: vscode.Uri, state: string): vscode.Uri {
         const frontendUrl = vscode.workspace
             .getConfiguration('izwan')
-            .get<string>('frontendUrl', 'http://localhost:5173/auth');
+            .get<string>('frontendUrl', 'https://izwan.pages.dev/auth');
         const authUrl = new URL(frontendUrl);
 
         authUrl.searchParams.set('redirect_uri', callbackUri.toString(true));

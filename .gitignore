@@ -1,5 +1,6 @@
 # Python
 backend/venv/
+.venv/
 backend/__pycache__/
 backend/.env
 backend/*.db
@@ -23,6 +24,7 @@ backend/dist/
 
 # Agents & Memory
 .claude/agents/
+.opencode/node_modules/
 memory/
 .DS_Store
 Thumbs.db
@@ -34,6 +36,7 @@ snippets.db
 
 # Fichiers de travail locaux (non versionnés)
 CLAUDE.md
+oauth-credentials.md
 docs/design/
 # Fichiers env (au cas où ils seraient créés à la racine ou ailleurs)
 .env

@@ -4,6 +4,7 @@ const translations: Record<string, Record<string, string>> = {
     fr: {
         'extension.active': 'Félicitations, votre extension "Izwan" est maintenant active !',
         'login.browser_open_error': 'Izwan: Impossible d\'ouvrir le navigateur pour la connexion.',
+        'login.copy_url': 'Copier le lien de connexion',
         'login.callback_error': 'Izwan: Callback de connexion invalide ou expiré.',
         'login.success': 'Izwan: Connexion réussie !',
         'login.error': 'Izwan: Échec de la connexion. Vérifiez vos identifiants.',
@@ -20,6 +21,7 @@ const translations: Record<string, Record<string, string>> = {
         'sidebar.title': 'Izwan Snippets',
         'sidebar.load_error': 'Impossible de charger les snippets.',
         'sidebar.retry': 'Réessayer',
+        'sidebar.login': 'Se connecter',
         'session_expired': 'Izwan: Session expirée ou non connectée. Veuillez vous connecter.',
         'connection_error': 'Izwan: Impossible de se connecter au backend. Vérifiez l\'URL et assurez-vous qu\'il est lancé.',
         'smart_insert.no_editor': 'Aucun éditeur actif pour insérer le snippet.',
@@ -32,6 +34,7 @@ const translations: Record<string, Record<string, string>> = {
     en: {
         'extension.active': 'Congratulations, your extension "Izwan" is now active!',
         'login.browser_open_error': 'Izwan: Could not open the browser sign-in page.',
+        'login.copy_url': 'Copy sign-in link',
         'login.callback_error': 'Izwan: Invalid or expired sign-in callback.',
         'login.success': 'Izwan: Login successful!',
         'login.error': 'Izwan: Login failed. Check your credentials.',
@@ -48,6 +51,7 @@ const translations: Record<string, Record<string, string>> = {
         'sidebar.title': 'Izwan Snippets',
         'sidebar.load_error': 'Failed to load snippets.',
         'sidebar.retry': 'Retry',
+        'sidebar.login': 'Sign in',
         'session_expired': 'Izwan: Session expired or not logged in. Please log in.',
         'connection_error': 'Izwan: Unable to connect to the backend. Check the URL and make sure it is running.',
         'smart_insert.no_editor': 'No active editor to insert the snippet.',
