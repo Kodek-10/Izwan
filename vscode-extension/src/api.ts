@@ -20,7 +20,7 @@ export interface Collection {
 
 export class IzwaAPI {
     private static getBaseUrl(): string {
-        const url: string = vscode.workspace.getConfiguration('izwan').get('backendUrl') || 'http://localhost:8000/api/v1';
+        const url: string = vscode.workspace.getConfiguration('izwan').get('backendUrl') || 'https://izwan-backend.onrender.com/api/v1';
         return url.replace(/\/+$/, '');
     }
 
