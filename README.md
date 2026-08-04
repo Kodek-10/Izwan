@@ -6,9 +6,10 @@ Izwan est un écosystème complet pour capturer, organiser et réutiliser vos mo
 
 Ce projet est un monorepo comprenant :
 
-*   **[Backend](./backend)** : API REST haute performance construite avec **FastAPI**, incluant la recherche sémantique (FastEmbed) et la gestion de base de données (SQLite/SQLAlchemy).
-*   **[Frontend](./frontend)** : Interface web moderne et responsive en **React (TypeScript)** pour gérer vos collections.
-*   **[Extension VS Code](./vscode-extension)** : Extension intégrée pour accéder et insérer vos snippets directement depuis votre éditeur.
+*   **[Backend](./backend)** : API REST construite avec **FastAPI** — recherche sémantique locale (FastEmbed), IA (Groq en ligne ou Ollama hors-ligne), export, et persistance **PostgreSQL/Supabase** (ou SQLite en local) via SQLAlchemy + migrations Alembic.
+*   **[Frontend](./frontend)** : Interface web moderne (SSR) en **TanStack Start / React 19** pour gérer vos collections.
+*   **[Extension VS Code](./vscode-extension)** : Extension intégrée pour capturer, rechercher et insérer vos snippets depuis votre éditeur.
+*   **[Desktop](./desktop)** : Application de bureau **Electron** (Windows / Linux) qui embarque l'expérience Izwan dans une fenêtre native.
 
 ## ✨ Fonctionnalités Clés
 
@@ -23,7 +24,19 @@ Izwan évolue vers un véritable **Cerveau Numérique pour Développeurs** à l'
 - Consultez notre [Feuille de Route Détaillée](./ajout_supplementaires.md) pour les évolutions futures.
 - Retrouvez le [Résumé de nos orientations stratégiques](./docs/presentation/vision.md).
 
-## 🛠️ Installation Rapide
+## 🌐 Utiliser Izwan (sans rien installer)
+
+Izwan est hébergé et utilisable immédiatement :
+
+*   **Application web** : [izwan.pages.dev](https://izwan.pages.dev) (frontend sur Cloudflare Pages, API sur Render).
+*   **Application de bureau** : [dernière version](https://github.com/Kodek-10/Izwan/releases/latest) — installeurs à liens stables :
+    *   Windows : [`Izwan-Setup.exe`](https://github.com/Kodek-10/Izwan/releases/latest/download/Izwan-Setup.exe)
+    *   Linux : [`Izwan.AppImage`](https://github.com/Kodek-10/Izwan/releases/latest/download/Izwan.AppImage) · [`Izwan.deb`](https://github.com/Kodek-10/Izwan/releases/latest/download/Izwan.deb)
+*   **Extension VS Code** : [Marketplace](https://marketplace.visualstudio.com/items?itemName=kodek10.izwan-vscode) (ou `ext install kodek10.izwan-vscode`).
+
+> L'API peut mettre ~1 min à répondre à la première requête après une période d'inactivité (mise en veille de l'hébergement).
+
+## 🛠️ Installation Rapide (développement local)
 
 ### 1. Backend
 ```bash
