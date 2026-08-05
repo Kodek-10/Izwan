@@ -1,5 +1,7 @@
 C'est un excellent plan de départ pour **Snippet Manager IA**. Je peux maintenant te préparer le **cahier des charges complet** comme proposé, avec tous les détails techniques pour démarrer le développement immédiatement.
 
+> **Note historique** : version détaillée du cahier des charges du **MVP**. Le périmètre réel du projet a depuis évolué (voir les README des composants et la [feuille de route](../../ajout_supplementaires.md)).
+
 Voici le cahier des charges complet de ton projet :
 
 ***

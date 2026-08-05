@@ -1,5 +1,7 @@
 # Rapport de Test Frontend — Izwan
 
+> **Note historique** : ce rapport documente les tests de la première version du prototype. L'application a depuis intégré l'authentification, le dashboard admin, les collections, la constellation, l'i18n, etc. Voir le [`README`](../../frontend/README.md) du frontend pour l'état actuel.
+
 Ce rapport détaille les tests unitaires effectués et l'analyse de l'application du point de vue d'un testeur QA.
 
 ## 1. Tests Unitaires (Vitest)

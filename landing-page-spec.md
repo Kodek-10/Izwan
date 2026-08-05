@@ -1,5 +1,7 @@
 # Spécification Landing Page Izwan
 
+> **Statut** : spécification de la landing page, désormais **implémentée** dans `frontend/src/routes/index.tsx` (route `/`). Ce document décrit l'architecture et les choix d'implémentation de cette page.
+
 ## Vue d'ensemble
 Nouvelle page d'accueil pour l'application web Izwan. L'objectif est de présenter clairement la **valeur ajoutée** (cerveau numérique pour développeurs) et de **convertir** les visiteurs en utilisateurs (inscription / téléchargement).
 

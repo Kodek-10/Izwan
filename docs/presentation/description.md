@@ -2,7 +2,7 @@
 
 ## 📝 Qu'est-ce qu'un Snippet ?
 
-Un **snippet** (ou "morceau de code") est un petit fragment de code réutilisable, une fonction, un algorithme ou une configuration de texte que les développeurs conservent pour ne pas avoir à les réécrire de zéro. 
+Un **snippet** (ou "morceau de code") est un petit fragment de code réutilisable, une fonction, un algorithme ou une configuration de texte que les développeurs conservent pour ne pas avoir à les réécrire de zéro.
 
 Il peut s'agir de :
 *   Une connexion à une base de données.
@@ -12,13 +12,13 @@ Il peut s'agir de :
 
 ## Pourquoi utiliser Izwan ?
 
-Izwan n'est pas qu'un simple carnet de notes pour développeurs. C'est un **cerveau numérique** pour votre code. À l'ère du **Vibecoding**, il résout le problème du chaos de code généré par l'IA en centralisant vos solutions validées ("Source of Truth") dans une interface moderne et rapide.
+Izwan n'est pas qu'un simple carnet de notes pour développeurs. C'est un **cerveau numérique** pour votre code. À l'ère du **Vibecoding**, il résout le problème du chaos de code généré par l'IA en centralisant vos solutions validées ("Source of Truth") dans une interface moderne et rapide, disponible sur **plusieurs surfaces** : web, extension VS Code et application de bureau.
 
 ### Les Avantages :
 1.  **Gain de Temps** : Évitez de passer 20 minutes à chercher une solution que vous avez déjà implémentée ou "vibée" il y a 6 mois.
 2.  **Standardisation** : Gardez vos meilleures pratiques à portée de main pour maintenir une qualité de code constante face à l'instabilité des LLM.
 3.  **Apprentissage** : Utilisez l'IA intégrée pour expliquer des morceaux de code complexes ou générer des tags pertinents.
-4.  **Local & Sécurisé** : Vos données vous appartiennent, stockées localement pour une confidentialité totale, compatible avec des environnements restreints (Air-gapped).
+4.  **Local & Sécurisé** : Compatible avec les environnements restreints (air-gapped) grâce à Ollama + FastEmbed en local, avec authentification sécurisée (JWT + OAuth).
 
 ## 🛠️ Comment ça fonctionne ?
 
@@ -34,7 +34,7 @@ Izwan est flexible et s'adapte à vos besoins en supportant des modèles de lang
 *   **Recherche Sémantique** : Retrouver un snippet par son *intention* (ex: "comment trier une liste") plutôt que par des mots-clés exacts.
 
 ### 3. La Recherche & Filtrage
-Grâce à une barre de recherche ultra-rapide et des filtres par langage ou par tag, retrouver une information devient instantané, même avec des centaines de snippets stockés.
+Grâce à une barre de recherche ultra-rapide et des filtres par langage ou par tag, retrouver une information devient instantané, même avec des centaines de snippets stockés. La vue **Constellation** visualise les liens entre snippets.
 
 ### 4. L'Exportation
 Besoin d'emporter votre savoir ? Izwan permet d'exporter vos collections ou vos snippets favoris en formats standardisés (Markdown, PDF) pour vos documentations ou vos rapports.
