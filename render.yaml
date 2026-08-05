@@ -19,8 +19,20 @@ services:
         sync: false # Supabase (pooler IPv4, port 6543)
       - key: GROQ_API_KEY
         sync: false
+      # --- OAuth (secrets à saisir dans le dashboard Render) ---
+      - key: GOOGLE_CLIENT_ID
+        sync: false
+      - key: GOOGLE_CLIENT_SECRET
+        sync: false
+      - key: GITHUB_CLIENT_ID
+        sync: false
+      - key: GITHUB_CLIENT_SECRET
+        sync: false
       - key: JWT_SECRET_KEY
         generateValue: true # Render génère une clé forte
+      # --- URL publique du backend (callback OAuth / cookie) ---
+      - key: BACKEND_PUBLIC_URL
+        value: "https://izwan-backend.onrender.com"
       # --- Config cross-domaine (V2) ---
       - key: COOKIE_SECURE
         value: "true" # HTTPS en prod -> SameSite=None automatiquement (auth cross-domaine)
