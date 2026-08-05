@@ -1,5 +1,7 @@
 Cahier des charges — Snippet Manager IA
 
+> **Note historique** : ce cahier des charges correspond au **MVP initial**. L'implémentation actuelle va bien au-delà (JWT + cookies httpOnly, OAuth Google/GitHub, rôles USER/ADMIN, dashboard admin, collections, favoris, constellation, mode air-gapped, multiplateforme). Voir la [feuille de route](../../ajout_supplementaires.md) et les README des composants pour l'état réel.
+
 ## 1. Contexte et objectif
 Snippet Manager IA est un outil personnel de gestion de snippets destiné à centraliser, retrouver et réutiliser rapidement des morceaux de code. L’objectif est de gagner du temps, de garder une trace propre des solutions passées et, à terme, d’intégrer une extension VS Code pour utiliser les snippets directement dans l’éditeur.
 

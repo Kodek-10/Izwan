@@ -1,5 +1,7 @@
 # Backend Development Progress - Izwa
 
+> Rapport **historique** des premières phases. L'état actuel du code est décrit dans [`backend/README.md`](../../backend/README.md). Ce document est conservé pour tracer l'évolution.
+
 ## Step 1: Project Initialization
 - [x] Created `backend` directory structure.
 - [x] Defined `requirements.txt`.
@@ -34,13 +36,14 @@ Backend is fully functional and tested.
 ## Current Phase: Completed
 All advanced improvements requested are implemented and tested.
 
-# Phase 3: Infrastructure, Admin & Security (In Progress)
-- [ ] Migrate User model to support roles (USER, ADMIN).
-- [ ] Implement Admin API router and role-based protection.
-- [ ] Create separate Admin Dashboard backend logic.
-- [ ] Implement "Save from VS Code" API endpoint.
+# Phase 3: Infrastructure, Admin & Security (Completed)
+- [x] Migrate User model to support roles (USER, ADMIN).
+- [x] Implement Admin API router and role-based protection.
+- [x] Create separate Admin Dashboard backend logic.
+- [x] Implement "Save from VS Code" API endpoint.
+- [x] Add OAuth (Google/GitHub), audit log, rate limiting, token revocation and air-gapped mode.
 
-# Phase 4: Advanced AI Features (Planned)
-- [ ] Smart Adaptive Insertion.
-- [ ] Polyglot Vibe-Converter.
-- [ ] Knowledge Constellation Graph.
+# Phase 4: Advanced AI Features (Planned / Partially implemented)
+- [x] Smart Adaptive Insertion.
+- [x] Polyglot Vibe-Converter.
+- [ ] Knowledge Constellation Graph (backend-side).

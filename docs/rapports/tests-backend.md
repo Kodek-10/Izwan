@@ -1,5 +1,7 @@
 # Rapport de Test Backend Final - Izwa
 
+> **Note historique** : ce rapport date de la phase MVP (juin 2026). Depuis, la suite de tests a été considérablement étendue (auth cookie, OAuth, admin, rate limiting, révocation de tokens, mode air-gapped, collections, ...). Voir [`backend/README.md`](../../backend/README.md) et `backend/tests/`.
+
 ## 1. Introduction
 Ce rapport final présente les améliorations avancées apportées au backend, incluant la sécurité, la performance et l'IA.
 

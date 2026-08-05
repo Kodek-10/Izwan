@@ -32,24 +32,24 @@ _L'objectif est de transformer l'extension d'un simple visualiseur en un vérita
 
 ---
 
-## 🛡️ ÉTAPE 2 : Infrastructure Admin & Sécurité (Déploiement)
+## 🛡️ ÉTAPE 2 : Infrastructure Admin & Sécurité (Déploiement) - [FAIT] ✅
 
 _Préparer l'application pour le monde réel en isolant les fonctions critiques de gestion des fonctions utilisateurs._
 
-### 2.1 - Migration du Modèle "User"
+### 2.1 - Migration du Modèle "User" - [FAIT] ✅
 
 - **Pourquoi ?** Un système pro nécessite de distinguer celui qui _utilise_ le service de celui qui le _gère_.
-- **Comment ?** Modifier la base de données pour passer d'un simple utilisateur à un système de rôles (`Enum: USER, ADMIN`). Le token JWT portera désormais ce rôle pour que le backend sache immédiatement à qui il parle.
+- **Comment ?** Modifier le modèle User pour supporter les rôles (`USER`, `ADMIN`). Le token JWT porte désormais ce rôle pour que le backend sache immédiatement à qui il parle.
 
-### 2.2 - Sécurisation du Backend par Étanchéité
+### 2.2 - Sécurisation du Backend par Étanchéité - [FAIT] ✅
 
 - **Pourquoi ?** Empêcher qu'un utilisateur malveillant puisse appeler des fonctions de gestion (ex: supprimer d'autres utilisateurs).
-- **Comment ?** Créer un "Router" dédié aux admins. Toutes les routes sous `/api/v1/admin/` seront protégées par un "Garde de Rôle" (Role Guard). Si le rôle dans le JWT n'est pas "ADMIN", la requête est rejetée avant même de toucher la logique métier.
+- **Comment ?** Un "Router" dédié aux admins sous `/api/v1/admin/`, protégé par un "Garde de Rôle" (Role Guard). Si le rôle dans le JWT n'est pas "ADMIN", la requête est rejetée avant même de toucher la logique métier. Complété par un journal d'audit, du rate limiting sur les endpoints IA et la révocation des tokens.
 
-### 2.3 - Frontend Admin Isolé (Option A)
+### 2.3 - Frontend Admin Isolé (Option B retenue : dashboard intégré) - [FAIT] ✅
 
-- **Pourquoi ?** Sécurité par l'obscurité et performance. L'utilisateur n'a pas besoin de charger le code de l'interface d'administration.
-- **Comment ?** Déployer deux sites web distincts. L'application utilisateur (`app.izwan.com`) et le dashboard admin (`admin.izwan.com`). L'admin aura accès à des graphiques de charge, la gestion des comptes et la maintenance des modèles d'IA.
+- **Pourquoi ?** Faciliter la gestion pour les admins sans multiplier les domaines.
+- **Comment ?** Le dashboard admin est intégré à la même application sous `/admin` (routes `admin.*`), avec navigation dédiée et garde de rôle côté frontend. Option A (sous-domaine séparé) reste possible ultérieurement.
 
 ---
 
@@ -74,7 +74,7 @@ _Ce qui fera qu'un développeur choisira Izwan plutôt qu'un simple fichier text
 
 ---
 
-## 🔒 ÉTAPE 4 : Souveraineté et Confidentialité (Privacy)
+## 🔒 ÉTAPE 4 : Souveraineté et Confidentialité (Privacy) - [FAIT] ✅
 
 _Garantir que l'outil est utilisable dans des environnements ultra-sécurisés (banques, défense, etc.)._
 
@@ -155,4 +155,6 @@ _(Les nouveaux points abordés seront ajoutés en respectant cette structure)_
 
 ---
 
-_Note : Ce fichier est mis à jour par Gemini CLI tant que la discussion porte sur l'amélioration de l'application._
+_Note : état de la feuille de route au moment de la rédaction ; l'avancée réelle par composant est décrite dans les README de `backend/`, `frontend/`, `desktop/` et `vscode-extension/`._
+
+_Statut : toutes les étapes 1 à 7 sont réalisées._
