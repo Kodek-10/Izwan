@@ -17,6 +17,13 @@ interface VscodeContext {
   token: string;
 }
 
+// N'autorise que les URI de retour vers l'extension (schéma vscode:), jamais un
+// http(s) externe : empêche l'exfiltration du JWT via un redirect_uri malveillant.
+function isSafeVscodeRedirect(uri: string): boolean {
+  const u = uri.toLowerCase();
+  return u.startsWith("vscode://") || u.startsWith("vscode-insiders://");
+}
+
 // Flux extension VSCode : l'extension ouvre /auth?source=vscode&redirect_uri=...&state=...
 // et, au retour OAuth, le backend renvoie /auth#token=...&state=...&redirect_uri=...
 function readVscodeContext(): VscodeContext | null {
@@ -27,7 +34,9 @@ function readVscodeContext(): VscodeContext | null {
   if (!fromVscode) return null;
 
   const redirect_uri = hash.get("redirect_uri") || query.get("redirect_uri");
-  if (!redirect_uri) return null;
+  // Sécurité : on ne renvoie le token qu'à un schéma d'extension (vscode:).
+  // Tout http(s) externe est rejeté -> pas d'exfiltration du JWT vers un tiers.
+  if (!redirect_uri || !isSafeVscodeRedirect(redirect_uri)) return null;
 
   const context: VscodeContext = {
     redirect_uri,
