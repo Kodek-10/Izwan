@@ -57,7 +57,11 @@ function VscodeReturnScreen({
   token,
   onClose,
 }: VscodeContext & { onClose: () => void }) {
-  const vscodeUri = `${redirect_uri}?token=${encodeURIComponent(token)}&state=${encodeURIComponent(state)}`;
+  // asExternalUri() peut déjà ajouter une query au redirect_uri (ex: ?windowId=7 pour
+  // cibler la bonne fenêtre). On choisit donc le bon séparateur, sinon un second « ? »
+  // rend le token illisible côté extension -> « Invalid or expired sign-in callback ».
+  const sep = redirect_uri.includes("?") ? "&" : "?";
+  const vscodeUri = `${redirect_uri}${sep}token=${encodeURIComponent(token)}&state=${encodeURIComponent(state)}`;
   return (
     <div className="flex flex-col items-center justify-center text-center py-10">
       <CheckCircle2 className="h-16 w-16 text-emerald-500 mb-4" />
